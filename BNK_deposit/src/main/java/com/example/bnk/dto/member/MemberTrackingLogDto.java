@@ -1,4 +1,4 @@
-package com.example.bnk.dto;
+package com.example.bnk.dto.member;
 
 import java.time.LocalDate;
 
