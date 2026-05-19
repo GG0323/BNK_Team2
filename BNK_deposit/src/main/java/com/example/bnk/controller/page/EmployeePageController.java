@@ -1,14 +1,14 @@
-package com.example.bnk.controller.Employees;
+package com.example.bnk.controller.page;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/Employees")
-public class EmployeesController {
+@RequestMapping("/employee")
+public class EmployeePageController {
 	
-	@GetMapping("/toMain")
+	@GetMapping("/toMain") // /employee/toMain
 	public String mainWorkSpace() {
 		return "Employees/mainWorkspace";
 	}
