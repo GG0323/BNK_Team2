@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+
 <h1>Index Page</h1>
-<p>테스트로 만든 index page 입니다. 작업 시 수정해서 사용해주세요</p>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
