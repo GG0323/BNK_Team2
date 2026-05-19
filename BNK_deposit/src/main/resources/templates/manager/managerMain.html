@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 메인</title>
+    <link rel="stylesheet" th:href="@{templates/css/managerStyle.css}">
+</head>
+<body>
+	
+    <div th:replace="~{fragments/managerHeader :: mainHeader}"></div>
+
+    <main>
+        <div th:onclick="|location.href='@{/proposalPage}'|" class="managerMainDiv">
+        	제안서 보관함 페이지로 이동하기.
+        </div>
+        
+        
+    </main>
+
+</body>
+</html>
