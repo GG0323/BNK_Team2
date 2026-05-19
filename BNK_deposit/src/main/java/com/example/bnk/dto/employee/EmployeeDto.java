@@ -1,4 +1,4 @@
-package com.example.bnk.dto;
+package com.example.bnk.dto.employee;
 
 import java.time.LocalDate;
 

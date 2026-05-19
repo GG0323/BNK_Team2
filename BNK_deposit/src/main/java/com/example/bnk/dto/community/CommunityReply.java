@@ -1,4 +1,4 @@
-package com.example.bnk.dto;
+package com.example.bnk.dto.community;
 
 import java.time.LocalDate;
 
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Data @ToString
 @NoArgsConstructor
 @AllArgsConstructor						// 댓글
-public class CommunityBoardReply {
+public class CommunityReply {
 	private long reply_no;				// 댓글 PK
 	private long board_no;				// 게시글 FK
 	private long community_account_no;	// 댓글 작성자 FK

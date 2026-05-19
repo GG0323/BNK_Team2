@@ -1,4 +1,4 @@
-package com.example.bnk.dto;
+package com.example.bnk.dto.common;
 
 import java.time.LocalDate;
 
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Data @ToString
 @NoArgsConstructor
 @AllArgsConstructor					// 예금 FAQ
-public class DepositFAQDto {
+public class DepositFaqDto {
 	private long faq_no;			// FAQ PK
 	private long employee_no;		// 등록 직원 FK
 	private String question;		// 질문
