@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 메인</title>
+    <link rel="stylesheet" th:href="@{/css/managerStyle.css}">
+</head>
+<body>
+	
+    <div th:replace="~{fragments/managerHeader :: mainHeader}"></div>
+	
+	<section id="location_place">
+		<section id="location_section">
+	        <div th:onclick="|location.href='@{/ppsPage}'|" class="managerMainDiv">
+	        	<b>제안서 관리</b>
+	        </div>
+	        
+	        <div th:onclick="|location.href='@{/prdPage}'|" class="managerMainDiv">
+	        	<b>상품 관리</b>
+	        </div>
+	        
+	    </section>
+	
+		<section id="location_section_community">
+			<div th:onclick="|location.href='@{/comuPage}'|">
+				<b>커뮤니티로 이동</b>
+			</div>
+		</section>
+	</section>
+    
+</body>
+</html>

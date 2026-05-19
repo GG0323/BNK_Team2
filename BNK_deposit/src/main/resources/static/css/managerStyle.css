@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+/* ALL */
+body{
+	margin: 0 auto;
+	
+}
+a{
+	color: inherit;
+	text-decoration: none;
+}
+
+.go_mng_a{
+	font-size: 24px;
+	
+}
+
+
+/* Header Section*/
+header nav{
+	display: flex;
+	justify-content: space-between;
+	color: white;
+	padding: 10px;
+	align-items: center;
+}
+
+/* Manager Main Page Section*/
+.managerMainDiv{
+	margin-top: 50px;
+	width: 380px;
+	height: 180px;
+	border: 1px solid #ff000095;
+	border-radius: 15px;
+	padding: 20px;
+	
+}
+
+/* location Section*/
+#location_place{
+	width: 1000px;
+	margin: 0 auto;
+}
+
+
+#location_section{
+	display: flex;
+	justify-content: space-between;
+	
+}
+
+#location_section_community{
+	width: 100%;
+	height: 240px;
+	background-color: #ff000095;
+	border-radius: 15px;
+	text-align: center;
+	margin: 0 auto;
+	margin-top: 200px;
+	color: white;
+	line-height: 240px;
+}
