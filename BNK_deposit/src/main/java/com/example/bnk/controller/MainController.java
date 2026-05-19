@@ -34,10 +34,18 @@ public class MainController {
 		return "manager/managerMain";
 	}
 	
-	// 관리자 - 제안서 보관함
+	// 관리자 - 제안서 관리 페이지 이동
 	@GetMapping("/ppsPage")
 	public String goProposalPage() {
 		return "manager/proposal";
 	}
+	
+	// 관리자 - 상품 관리 페이지 이동
+	@GetMapping("/prdPage")
+	public String goProductPage() {
+		return "manager/product";
+	}
+	
+	
 
 }
