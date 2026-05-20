@@ -1,8 +1,14 @@
 @charset "UTF-8";
 
+/* Manager Page
+------------------------------------------------------------------------------------------------*/
+
 /* ALL */
 body{
 	margin: 0 auto;
+	padding: 0;
+	height: 100%; /* 브라우저 높이 가득 채우기 */
+	font-family: 'Malgun Gothic', sans-serif;
 }
 a{
 	color: inherit;
@@ -14,26 +20,80 @@ a{
 }
 
 
-/* Manager Header Section*/
+
+
+/* Header Section*/
 header nav{
 	display: flex;
+	height: 60px;
 	justify-content: space-between;
 	color: white;
-	padding: 10px;
+	padding: 20px;
 	align-items: center;
+	background-color: #ff000095;
 }
 
-/* Manager SideBar Section*/
+
+/* 3. 핵심! 하단 레이아웃 배치 (사이드바와 본문을 가로로 나열) */
+.manager-container {
+	display: flex;
+	/* 전체 화면 높이(100vh)에서 헤더 높이(약 60px)만큼을 제외한 나머지를 꽉 채움 */
+	height: calc(100vh - 100px);
+}
+
+
+
+/* SideBar Section*/
 #mngSideBar{
-	width: 400px;
-	height: 100%;
-	background-color: rgb(255, 230, 230);
+	width: 310px;
+	height: calc(100vh - 102px);
+	background-color: #ff000003;
 	border: 1px solid #ff000095;
 }
 
+#mngSideBar_nav{
+	text-align: center;
+}
+
+.sideBar_button{
+	margin: 0 auto;
+	margin-top: 20px;
+	width: 180px;
+	height: 40px;
+	border: 1px solid #ff000095;
+	background-color: white;
+	border-radius: 15px;
+	text-align: center;
+	align-items: center;
+	line-height: 40px;
+	font-weight: bold;
+	cursor: pointer; /* 마우스 올렸을 때 손가락 모양 필수! */
+	transition: all 0.2s;
+}
+
+#mngSideBar nav {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#mngSideBar h3 {
+	margin-bottom: 25px;
+	color: #333;
+}
+
+.sideBar_button:hover, .sideBar_button.active {
+	background-color: #ff5252;
+	color: white;
+	border-color: #ff5252;
+}
 
 
-/* Manager Main Page Section*/
+
+
+
+
+/* Main Page Section*/
 .managerMainDiv{
 	margin-top: 50px;
 	width: 380px;
@@ -43,6 +103,17 @@ header nav{
 	padding: 20px;
 	
 }
+
+.manager-main {
+	flex: 1; /* 사이드바를 제외한 나머지 모든 가로 공간을 다 차지함 */
+	height: 100%;
+	padding: 40px;
+	background-color: #ffffff;
+	box-sizing: border-box;
+	overflow-y: auto; /* 본문 내용이 길어지면 이 영역 안에서만 스크롤이 생김 */
+}
+
+
 
 /* location Section*/
 #location_place{
@@ -67,4 +138,246 @@ header nav{
 	margin-top: 200px;
 	color: white;
 	line-height: 240px;
+}
+
+
+
+/* Manager Container Section -> proposal, product, staff.html 셋 다 사용함.
+------------------------------------------------------------------------*/
+/* 본문 콘텐츠 스타일 */
+
+/* 1. 상단 검색 바 영역 정렬 */
+.search-bar-container {
+    display: flex;
+    gap: 15px; /* 셀렉트 박스와 검색창 사이 간격 */
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+/* 정렬 셀렉트 박스 디자인 */
+.sort-select {
+	width: 120px;
+    height: 45px;
+    padding: 0 15px;
+    border: 1px solid #ff8a8a; /* 연빨강/분홍 테두리 */
+    border-radius: 12px;
+    background-color: white;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* 검색창 전체 감싸는 박스 */
+.search-input-wrapper {
+    flex: 1; /* 남은 가로 공간을 꽉 채우기 */
+    display: flex;
+    align-items: center;
+    height: 45px;
+    border: 1px solid #ff8a8a;
+    border-radius: 12px;
+    background-color: white;
+    padding: 0 15px;
+}
+
+/* 순수 input 창 */
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+}
+
+/* 돋보기 버튼 */
+.search-submit-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+}
+
+
+/* 2. 하단 목록 카드 큰 상자 디자인 */
+.list-card-container {
+    border: 1px solid #ff8a8a;
+    border-radius: 20px; /* 둥글둥글한 모서리 */
+    padding: 30px;
+    background-color: white;
+    position: relative;
+    /* 카드 전체의 최소 높이를 지정해 이미지처럼 넓은 빈 방을 만듭니다 */
+    min-height: 67vh; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* 카드 헤더 (제안서 목록 글자들 주위 정렬) */
+.card-header {
+    display: flex;
+    justify-content: center; /* 제목을 가운데로 */
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* 전체 제안서 0건 (오른쪽 끝에 배치하기 위해 absolute 사용) */
+.card-count {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #333;
+}
+
+/* 요청이 들어온 제안서가 없습니다 구역 세로 정중앙 정렬 */
+.card-content.empty {
+    flex: 1; /* 남은 세로 공간을 다 차지함 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888; /* 흐릿한 회색 글씨 */
+    font-size: 16px;
+}
+
+/* 하단 페이지네이션 [1] 디자인 */
+.pagination-container {
+    text-align: center;
+    margin-top: auto; /* 맨 아래로 밀어내기 */
+    padding-top: 20px;
+}
+
+.page-number {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Customer Management Page
+------------------------------------------------------------------------------------------------*/
+
+/* 전체 콘텐츠를 중앙에 배치하고 적당한 너비를 줌 */
+.customer-manage-container {
+    max-width: 800px;
+    margin: 0 auto; /* 좌우 중앙 정렬 */
+    text-align: center; /* 텍스트 및 블록 요소 중앙 정렬 */
+    padding-top: 20px;
+}
+
+/* 메인 타이틀 "고객 관리" */
+.page-main-title {
+    margin: 50px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* 검색 폼 구조 */
+.customer-search-form {
+	width: 600px;
+	margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px; /* 행 간의 간격 */
+    margin-bottom: 50px;
+}
+
+/* 생년월일, 전화번호가 들어가는 첫 번째 행 */
+.filter-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px; /* 두 입력창 사이의 간격 */
+    width: 100%;
+}
+
+/* 개별 필드 박스 (둥근 흰색 알약 모양 테두리) */
+.filter-field-box {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ffb3b3; /* 연한 분홍 테두리 */
+    border-radius: 20px;       /* 둥근 모서리 */
+    padding: 5px 20px;
+    height: 38px;
+    box-sizing: border-box;
+}
+
+.filter-field-box label {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+    white-space: nowrap; /* 글자가 아래로 꺾이지 않게 고정 */
+}
+
+/* 인풋 기본 스타일 초기화 및 알약 안쪽 인풋 테두리 제거 */
+.filter-field-box input {
+    border: 1px solid #ffcfcf;
+    border-radius: 12px;
+    height: 24px;
+    padding: 0 10px;
+    outline: none;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+/* date 인풋 기본 브라우저 스타일 살짝 다듬기 */
+.date-input {
+    width: 120px;
+}
+
+/* 전화번호 인풋 */
+.phone-input {
+    width: 160px;
+}
+
+/* 아래쪽 이름 검색창 영역 */
+.name-search-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%; /* 부모 max-width인 800px을 다 씀 */
+    max-width: 650px; /* 이미지 비율에 맞춰 가로폭 약간 제한 */
+    height: 48px;
+    background-color: white;
+    border: 1px solid #ff8a8a; /* 조금 더 진한 분홍 */
+    border-radius: 25px;       /* 둥근 알약 모양 */
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.name-search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.name-search-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000;
+}
+
+/* 하단 고객 명단 텍스트 영역 */
+.customer-list-section {
+    text-align: left; /* 명단 타이틀은 왼쪽 정렬 */
+    max-width: 600px; /* 위의 이름 검색창과 좌측 정렬 선을 맞춤 */
+    margin: 0 auto;
+}
+
+.list-section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
 }
