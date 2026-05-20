@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>고객 관리 페이지</title>
+<link rel="stylesheet" th:href="@{/css/managerStyle.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
+    
+	<div class="manager-container">
+        
+        <div th:replace="~{fragments/mngFragment :: mngSideBar}"></div>
+        
+        <main class="manager-main">
+		    <div class="customer-manage-container">
+		        <h2 class="page-main-title">고객 관리</h2>
+		        <form class="customer-search-form">
+		            <div class="filter-row">
+		                <div class="filter-field-box">
+		                    <label>생년월일:</label>
+		                    <input type="date" class="date-input">
+		                </div>
+		                
+		                <div class="filter-field-box">
+		                    <label>전화번호:</label>
+		                    <input type="text" class="phone-input">
+		                </div>
+		            </div>
+		            
+		            <div class="name-search-wrapper">
+		                <input type="text" placeholder="이름을 입력해주세요." class="name-search-input">
+		                <button type="submit" class="name-search-btn">🔍</button>
+		            </div>
+		        </form>
+		        <div class="customer-list-section">
+		            <h3 class="list-section-title">고객 명단</h3>
+	            </div>
+		    </div>
+		</main>
+		
+    </div>
+
+</body>
+</html>
+

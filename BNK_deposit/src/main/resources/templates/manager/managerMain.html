@@ -7,7 +7,7 @@
 </head>
 <body>
 	
-    <div th:replace="~{fragments/managerHeader :: mainHeader}"></div>
+    <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
 	
 	<section id="location_place">
 		<section id="location_section">
@@ -23,7 +23,7 @@
 	
 		<section id="location_section_community">
 			<div th:onclick="|location.href='@{/comuPage}'|">
-				<b>커뮤니티로 이동</b>
+				<b>커뮤니티 공지 작성</b>
 			</div>
 		</section>
 	</section>

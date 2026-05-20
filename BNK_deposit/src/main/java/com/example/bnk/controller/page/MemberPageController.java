@@ -11,41 +11,5 @@ public class MemberPageController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* 관리자 페이지
-	------------------------------------------------------------------------------------*/
-	
-	// 관리자 메인페이지
-	@GetMapping("/mngMain")
-	public String goManagerMainPage() {
-		return "manager/managerMain";
-	}
-	
-	// 관리자 - 제안서 관리 페이지 이동
-	@GetMapping("/ppsPage")
-	public String goProposalPage() {
-		return "manager/proposal";
-	}
-	
-	// 관리자 - 상품 관리 페이지 이동
-	@GetMapping("/prdPage")
-	public String goProductPage() {
-		return "manager/product";
-	}
-	
-	
 
 }
