@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>상품 관리 페이지</title>
+<title>직원 관리 페이지</title>
 <link rel="stylesheet" th:href="@{/css/managerStyle.css}">
 </head>
 <body>
@@ -17,9 +17,10 @@
 
 	    <div class="search-bar-container">
 	        <select class="sort-select">
-	            <option value="latest">전체</option>
-	            <option value="oldest">예금</option>
-	            <option value="oldest">적금</option>
+	            <option value="latest">직원번호</option>
+	            <option value="oldest">이름</option>
+	            <option value="oldest">입사일</option>
+	            <option value="oldest">직급</option>
 	        </select>
 	        
 	        <div class="search-input-wrapper">
@@ -30,12 +31,12 @@
 	
 	    <div class="list-card-container">
 	        <div class="card-header">
-	            <h2 class="card-title">상품 목록</h2>
-	            <span class="card-count">[전체 상품 0건]</span>
+	            <h2 class="card-title">직원 목록</h2>
+	            <span class="card-count">[전체 요청 0명]</span>
 	        </div>
 	        
 	        <div class="card-content empty">
-	            <p>현재 상품이 없습니다.</p>
+	            <p>검색을 이용 바랍니다.</p>
 	        </div>
 	        
 	        <div class="pagination-container">
