@@ -9,5 +9,7 @@ public class MemberPageController {
 	public String index() {
 		return "index";
 	}
+	
+	
 
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>제안서 보관함 페이지</title>
+<link rel="stylesheet" th:href="@{/css/managerStyle.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
+    
+	<div class="manager-container">
+        
+        <div th:replace="~{fragments/mngFragment :: mngSideBar}"></div>
+        
+        <main class="manager-main">
+
+	    <div class="search-bar-container">
+	        <select class="sort-select">
+	            <option value="latest">최신 순서</option>
+	            <option value="oldest">오래된 순서</option>
+	        </select>
+	        
+	        <div class="search-input-wrapper">
+	            <input type="text" placeholder="검색어를 입력해주세요." class="search-input">
+	            <button type="button" class="search-submit-btn">🔍</button>
+	        </div>
+	    </div>
+	
+	    <div class="list-card-container">
+	        <div class="card-header">
+	            <h2 class="card-title">제안서 목록</h2>
+	            <span class="card-count">[전체 제안서 0건]</span>
+	        </div>
+	        
+	        <div class="card-content empty">
+	            <p>요청이 들어온 제안서가 없습니다.</p>
+	        </div>
+	        
+	        <div class="pagination-container">
+	            <span class="page-number active">[1]</span>
+	        </div>
+	    </div>
+
+</main>
+        
+    </div>
+
+</body>
+</html>

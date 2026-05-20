@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 관리 페이지</title>
+<link rel="stylesheet" th:href="@{/css/managerStyle.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
+    
+	<div class="manager-container">
+        
+        <div th:replace="~{fragments/mngFragment :: mngSideBar}"></div>
+        
+        <main class="manager-main">
+
+	    <div class="search-bar-container">
+	        <select class="sort-select">
+	            <option value="latest">전체</option>
+	            <option value="oldest">예금</option>
+	            <option value="oldest">적금</option>
+	        </select>
+	        
+	        <div class="search-input-wrapper">
+	            <input type="text" placeholder="검색어를 입력해주세요." class="search-input">
+	            <button type="button" class="search-submit-btn">🔍</button>
+	        </div>
+	    </div>
+	
+	    <div class="list-card-container">
+	        <div class="card-header">
+	            <h2 class="card-title">상품 목록</h2>
+	            <span class="card-count">[전체 상품 0건]</span>
+	        </div>
+	        
+	        <div class="card-content empty">
+	            <p>현재 상품이 없습니다.</p>
+	        </div>
+	        
+	        <div class="pagination-container">
+	            <span class="page-number active">[1]</span>
+	        </div>
+	    </div>
+
+</main>
+        
+    </div>
+
+</body>
+</html>

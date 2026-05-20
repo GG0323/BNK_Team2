@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 비교</title>
+    <link rel="stylesheet" th:href="@{/css/productView.css}">
+</head>
+<body class="compare-page-body">
+
+<div class="compare-page-wrap">
+
+    <!-- 상단 헤더 -->
+    <header class="compare-page-header">
+        <div>
+            <div class="logo-text">BNK 부산은행</div>
+            <h1>상품비교</h1>
+        </div>
+
+        <p>예금 / 적금 상품 비교</p>
+    </header>
+
+    <!-- 비교 영역 -->
+    <section class="compare-page-section">
+
+        <div class="section-title">
+            <div>
+                <h2>선택 상품 비교 결과</h2>
+                <p>선택한 상품의 금리와 가입 조건을 한눈에 비교해보세요.</p>
+            </div>
+
+            <span th:text="'기준일: ' + ${#temporals.format(#temporals.createToday(), 'yyyy.MM.dd')}">
+                기준일: 2026.05.20
+            </span>
+        </div>
+
+        <div class="empty-box" th:if="${#lists.isEmpty(compareList)}">
+            비교할 상품이 없습니다.
+        </div>
+
+        <div class="compare-table-wrap" th:if="${!#lists.isEmpty(compareList)}">
+
+            <table class="compare-table">
+
+                <thead>
+                    <tr>
+                        <th>구분</th>
+
+                        <th th:each="product : ${compareList}">
+                            <div>
+                                <span class="compare-product-type"
+                                      th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                                    예금
+                                </span>
+                            </div>
+
+                            <div class="compare-product-name"
+                                 th:text="${product.product_name}">
+                                상품명
+                            </div>
+
+                            <button type="button" class="ai-summary-btn">
+                                AI 요약 보기
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <th>상품명</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="${product.product_name}">
+                            상품명
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>최저금리</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="'연 ' + ${product.min_interest_rate} + '%'">
+                            연 0.00%
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>최고금리</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="'연 ' + ${product.max_interest_rate} + '%'">
+                            연 0.00%
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>가입단위</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="${product.min_join_amount != null ? #numbers.formatInteger(product.min_join_amount, 0, 'COMMA') + '원' : '-'}">
+                            10,000원
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>상품구분</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                            예금
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>가입방법</th>
+                        <td th:each="product : ${compareList}">
+                            <span th:if="${product.join_method_desc != null}"
+                                  th:text="${product.join_method_desc}">
+                                인터넷/영업점
+                            </span>
+
+                            <span th:if="${product.join_method_desc == null}">
+                                <span th:if="${product.branch_join_yn == 'Y'}">영업점</span>
+                                <span th:if="${product.branch_join_yn == 'Y' and product.internet_join_yn == 'Y'}">/</span>
+                                <span th:if="${product.internet_join_yn == 'Y'}">인터넷</span>
+                                <span th:if="${(product.branch_join_yn == 'Y' or product.internet_join_yn == 'Y') and product.mobile_join_yn == 'Y'}">/</span>
+                                <span th:if="${product.mobile_join_yn == 'Y'}">모바일</span>
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>우대조건</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="${product.condition_note != null ? product.condition_note : '-'}">
+                            우대조건
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>예금자보호</th>
+                        <td th:each="product : ${compareList}"
+                            th:text="${product.depositor_protection_yn == 'Y' ? '예금자보호 대상' : '해당 없음'}">
+                            예금자보호 대상
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>중도해지</th>
+                        <td th:each="product : ${compareList}">
+                            중도해지 시 약정금리보다 낮은 금리 적용 가능
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- 안내 문구 -->
+        <div class="compare-notice">
+            ※ 본 비교 화면은 프로젝트 시연용 프로토타입입니다.<br>
+            ※ 실제 상품 가입 조건, 우대금리, 세부 내용은 부산은행 공식 안내를 기준으로 확인해야 합니다.
+        </div>
+
+        <!-- 하단 버튼 -->
+        <div class="compare-bottom-actions">
+            <button type="button" onclick="window.print()">인쇄</button>
+
+            <button type="button" onclick="alert('맞춤 혜택 확인 기능은 추후 AI 추천 기능과 연결 예정입니다.')">
+                내 맞춤 혜택 확인
+            </button>
+
+            <button type="button" class="dark-btn" onclick="window.close()">
+                닫기
+            </button>
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

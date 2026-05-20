@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>커뮤니티 공지 페이지</title>
+<link rel="stylesheet" th:href="@{/css/managerStyle.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
+    
+	<div class="manager-container">
+        
+        <div th:replace="~{fragments/mngFragment :: mngSideBar}"></div>
+        
+        <main class="manager-main">
+        
+        	<h3>커뮤니티 공지용 페이지입니다.</h3>
+		
+		</main>
+        
+    </div>
+
+</body>
+</html>

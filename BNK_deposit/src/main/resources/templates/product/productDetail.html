@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BNK 상품 상세</title>
+    <link rel="stylesheet" th:href="@{/css/productView.css}">
+</head>
+<body>
+
+<div class="page-wrap">
+
+    <header class="product-header">
+        <div>
+            <h1 th:text="${product.product_name}">상품명</h1>
+            <p th:text="${product.subtitle != null ? product.subtitle : 'BNK 예금/적금 상품 상세 정보'}">
+                상품 상세 설명
+            </p>
+        </div>
+    </header>
+
+    <section class="detail-section">
+
+        <div class="detail-card">
+
+            <div class="card-top">
+                <span class="type-badge"
+                      th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                    예금
+                </span>
+
+                <span class="mobile-badge"
+                      th:if="${product.mobile_join_yn == 'Y'}">
+                    모바일 가입 가능
+                </span>
+            </div>
+
+            <h2>상품 기본 정보</h2>
+
+            <div class="detail-grid">
+                <div>
+                    <span>최고금리</span>
+                    <strong th:text="${product.max_interest_rate} + '%'">0.00%</strong>
+                </div>
+
+                <div>
+                    <span>최저금리</span>
+                    <strong style="color:#111111;" th:text="${product.min_interest_rate} + '%'">0.00%</strong>
+                </div>
+
+                <div>
+                    <span>이자 지급 방식</span>
+                    <strong th:text="${product.interest_payment_type != null ? product.interest_payment_type : '-'}">
+                        MATURITY
+                    </strong>
+                </div>
+
+                <div>
+                    <span>이자 계산 방식</span>
+                    <strong th:text="${product.interest_calc_type != null ? product.interest_calc_type : '-'}">
+                        SIMPLE
+                    </strong>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <h3>상품 설명</h3>
+                <p th:text="${product.content != null ? product.content : '등록된 상품 설명이 없습니다.'}">
+                    상품 설명 내용
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>가입 대상</h3>
+                <p th:text="${product.eligibility_desc != null ? product.eligibility_desc : '-'}">
+                    가입 대상 설명
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>가입 기간</h3>
+                <p th:text="${product.period_desc != null ? product.period_desc : '-'}">
+                    가입 기간 설명
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>가입 금액</h3>
+                <p th:text="${product.amount_desc != null ? product.amount_desc : '-'}">
+                    가입 금액 설명
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>우대금리</h3>
+                <p th:text="${product.preferential_rate_summary != null ? product.preferential_rate_summary : '-'}">
+                    우대금리 요약
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>가입 방법</h3>
+                <p th:text="${product.join_method_desc != null ? product.join_method_desc : '-'}">
+                    가입 방법 설명
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>필요 서류</h3>
+                <p th:text="${product.required_document_desc != null ? product.required_document_desc : '-'}">
+                    필요 서류 설명
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>세제 혜택</h3>
+                <p th:text="${product.tax_benefit_desc != null ? product.tax_benefit_desc : '-'}">
+                    세제 혜택 설명
+                </p>
+            </div>
+
+            <div class="info-block">
+                <h3>유의사항</h3>
+                <p th:text="${product.caution_note != null ? product.caution_note : '-'}">
+                    유의사항
+                </p>
+            </div>
+
+        </div>
+
+        <div class="detail-card">
+
+            <h2>가입 조건</h2>
+
+            <table class="detail-table">
+                <tr>
+                    <th>최소 가입 나이</th>
+                    <td th:text="${product.min_age} + '세'">19세</td>
+                </tr>
+
+                <tr>
+                    <th>최대 가입 나이</th>
+                    <td th:text="${product.max_age == 0 ? '제한 없음' : product.max_age + '세'}">
+                        제한 없음
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>고객 유형</th>
+                    <td th:text="${product.customer_type != null ? product.customer_type : '-'}">
+                        ALL
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>최소 가입금액</th>
+                    <td th:text="${#numbers.formatInteger(product.min_join_amount, 0, 'COMMA')} + '원'">
+                        0원
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>최대 가입금액</th>
+                    <td th:text="${product.max_join_amount == 0 ? '제한 없음' : #numbers.formatInteger(product.max_join_amount, 0, 'COMMA') + '원'}">
+                        제한 없음
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>입금 단위</th>
+                    <td th:text="${#numbers.formatInteger(product.deposit_unit, 0, 'COMMA')} + '원'">
+                        0원
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>가입 기간</th>
+                    <td>
+                        <span th:text="${product.min_term_months}">0</span>개월 ~
+                        <span th:text="${product.max_term_months}">0</span>개월
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>예금자 보호</th>
+                    <td th:text="${product.depositor_protection_yn == 'Y' ? '대상' : '비대상'}">
+                        대상
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>모바일 가입</th>
+                    <td th:text="${product.mobile_join_yn == 'Y' ? '가능' : '불가'}">
+                        가능
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>조건 비고</th>
+                    <td th:text="${product.condition_note != null ? product.condition_note : '-'}">
+                        조건 비고
+                    </td>
+                </tr>
+            </table>
+
+            <div class="mobile-guide detail-mobile-guide"
+                 th:if="${product.mobile_join_yn == 'Y'}">
+                이 상품은 모바일 가입 가능 상품입니다. 추후 QR을 통해 앱 이동을 지원할 수 있습니다.
+            </div>
+
+				<div class="detail-actions">
+				    <a th:href="@{/products}" class="detail-btn">목록으로</a>
+				
+				    <!-- 모바일 가입 가능 상품 -->
+				    <a th:if="${product.mobile_join_yn == 'Y'}"
+				       th:href="@{/products/mobile-qr(product_no=${product.product_no})}"
+				       class="compare-btn">
+				        모바일로 가입하기
+				    </a>
+				
+				    <!-- 일반 웹/영업점 가입 상품 -->
+				    <a th:if="${product.mobile_join_yn != 'Y'}"
+				       href="javascript:void(0);"
+				       onclick="alert('가입 신청 기능은 추후 구현 예정입니다.');"
+				       class="compare-btn">
+				        가입하기
+				    </a>
+				</div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>
