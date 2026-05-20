@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.dto.employee.EmployeeRegistDto;
 import com.example.bnk.service.Employees.EmployeesLoginService;
 
 @RestController
@@ -16,8 +17,8 @@ public class EmployeeApiController {
 	EmployeesLoginService loginService;
 	
 	//로그인 처리
-	@PostMapping("login")
-	private int login(
+	@PostMapping("/login")
+	public int login(
 			@RequestParam("login_id")String login_id,
 			@RequestParam("password")String password
 			) {
@@ -28,8 +29,17 @@ public class EmployeeApiController {
 		
 		System.out.println("결과 비교 ~~~~~ "+login);
 		
-		
 		return 0;
+	}
+	
+	@PostMapping("/HRM/regist")
+	public String regist(
+			EmployeeRegistDto empRegistDto
+			) {
+		System.out.println(empRegistDto.toString());
+		
+		
+		return "";
 	}
 	
 	

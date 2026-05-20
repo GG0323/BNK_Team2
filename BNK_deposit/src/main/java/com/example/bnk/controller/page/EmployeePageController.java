@@ -14,5 +14,9 @@ public class EmployeePageController {
 	}
 	
 	
+	@GetMapping("/manager/HRM/hrmRegist")  // /employee/manager/HRM/hrmRegist
+	public String hrmRegist() {
+		return "Employees/manager/HRM/hrmRegist";
+	}
 	
 }

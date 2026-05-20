@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.employee.IEmployeeDao;
-import com.example.bnk.dto.employee.EmployeeLoginDto;
+import com.example.bnk.dto.employee.EmployeeDto;
 
 @Service
 public class EmployeesLoginService {
@@ -19,7 +19,8 @@ public class EmployeesLoginService {
 	public boolean login(String login_id, String password) {
 		System.out.println("서비스 로그인 파리미터 확인"+login_id);
 		
-		EmployeeLoginDto empDto = iEmpDao.login(login_id);
+		//문제 지점
+		EmployeeDto empDto = iEmpDao.login(login_id);
 		
 		if(empDto == null) {
 			return false;

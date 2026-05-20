@@ -2,13 +2,13 @@ package com.example.bnk.dao.employee;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.bnk.dto.employee.EmployeeLoginDto;
+import com.example.bnk.dto.employee.EmployeeDto;
 
 @Mapper
 public interface IEmployeeDao {
 	
 	// 멤버 id 검사
-	public EmployeeLoginDto login(String login_id);
+	public EmployeeDto login(String login_id);
 	
 	
 	
