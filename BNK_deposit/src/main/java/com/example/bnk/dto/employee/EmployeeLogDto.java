@@ -15,7 +15,7 @@ public class EmployeeLogDto {
 	private long employee_no;			// 작업 수행 직원 번호
 	private String action_type;			// 수행 작업 유형
 	private String target_table;		// 작업 대상 테이블
-	private String target_pk;			// 작업 대상 테이블의 PK
+	private String select_key;			// 작업 대상 테이블의 PK
 	private String action_detail;		// 작업 상세 내용
 	private String request_method;		// 요청 메소드
 	private String request_url;			// 요청 URL
