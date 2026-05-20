@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<div th:fragment="mngHeader">
+	    <header style="background-color: #ff000095; padding: 20px;">
+	        <nav>
+	            <a th:href="@{/mngMain}" class="go_mng_a">BNK 관리자 페이지</a> 
+	            <a href="">로그아웃</a>
+	        </nav>
+	    </header>
+	</div>
+
+	<div th:fragment="mngSideBar">
+		<section id="mngSideBar">
+				<nav>
+					<h3>현재 문구</h3>
+					<div th:onlick="|location.href='@{/ppsPage}'|" id="pps_button">제안서 관리</div>
+					<div th:onlick="|location.href='@{/prdPage}'|" id="prd_button">상품 관리</div>
+					<div th:onlick="|location.href='@{/#}'|" id="stf_button">직원 관리</div>
+					<div th:onlick="|location.href='@{/#}'|" id="mmb_button">고객 관리</div>
+					<div th:onlick="|location.href='@{/#}'|" id="comu_button">켜뮤니티 공지</div>
+				</nav>
+		</section>
+	</div>
+</body>
+</html>

@@ -3,7 +3,6 @@
 /* ALL */
 body{
 	margin: 0 auto;
-	
 }
 a{
 	color: inherit;
@@ -12,11 +11,10 @@ a{
 
 .go_mng_a{
 	font-size: 24px;
-	
 }
 
 
-/* Header Section*/
+/* Manager Header Section*/
 header nav{
 	display: flex;
 	justify-content: space-between;
@@ -24,6 +22,16 @@ header nav{
 	padding: 10px;
 	align-items: center;
 }
+
+/* Manager SideBar Section*/
+#mngSideBar{
+	width: 400px;
+	height: 100%;
+	background-color: rgb(255, 230, 230);
+	border: 1px solid #ff000095;
+}
+
+
 
 /* Manager Main Page Section*/
 .managerMainDiv{
