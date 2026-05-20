@@ -88,9 +88,12 @@ header nav{
 	border-color: #ff5252;
 }
 
-
-
-
+/* !important 를 붙여주면 다른 스타일 설정에 밀리지 않고 현재 페이지 표시가 최우선으로 확실하게 적용 */
+.sideBar_button.active {
+	background-color: #ff5252 !important;
+	color: white !important;
+	border-color: #ff5252 !important;
+}
 
 
 /* Main Page Section*/

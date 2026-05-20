@@ -28,7 +28,7 @@ public class ManagerPageController {
 	}
 	
 	// 관리자 - 직원 관리 페이지 이동
-	@GetMapping("/mngPage")
+	@GetMapping("/stfPage")
 	public String goManagerPage() {
 		return "manager/staff";
 	}
