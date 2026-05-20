@@ -33,8 +33,5 @@ public class EmployeeRegistDto {
 	private String job_title;		// 직급
 	private String employee_role;	// 권한
 	
-	private File img;			// 프로필 사진
-
-	
 	
 }

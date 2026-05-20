@@ -6,15 +6,15 @@
 </head>
 <body>
 
-	<form id="hrmRegistForm">
+	<form id="hrmRegistForm" enctype="multipart/form-data">
 		
 		<label>부서</label>
 		<select name="dept_no">
-			<option value="MGMT-001">경영지원부</option>
-			<option value="PROD-001">상품기획부</option>	
-			<option value="DEV-001">개발부</option>
-			<option value="HR-001">인사부</option>
-			<option value="MKT-001">마케팅부</option>
+			<option value="1">경영지원부 : MGMT-001</option>
+			<option value="2">상품기획부 : PROD-001</option>	
+			<option value="3">개발부 : DEV-001</option>
+			<option value="4">인사부 : HR-001</option>
+			<option value="5">마케팅부 : MKT-001</option>
 		</select>
 		
 		
@@ -33,9 +33,9 @@
 		<input type="date" name="birth_date">
 		
 		<label>전화번호</label>
-		<input type="text" name="phone_number1" placeholder="010">-
-		<input type="text" name="phone_number2" placeholder="xxxx">-
-		<input type="text" name="phone_number3" placeholder="xxxx">
+		<input type="text" name="phone_number1" placeholder="010" maxlength="3">-
+		<input type="text" name="phone_number2" placeholder="xxxx" maxlength="4">-
+		<input type="text" name="phone_number3" placeholder="xxxx" maxlength="4">
 		
 		
 		<label>e-mail</label>
@@ -60,7 +60,6 @@
 		</select>
 		
 		<label>권한</label>
-		<input type="text" name="employee_role" placeholder="">
 		<input type="radio" name="employee_role" value="ADMIN" id="ADMIN"> <label for="ADMIN">ADMIN</label>
 		<input type="radio" name="employee_role" value="MANAGER" id="MANAGER"> <label for="MANAGER">MANAGER</label>
 		<input type="radio" name="employee_role" value="EMPLOYEE" id="EMPLOYEE"> <label for="EMPLOYEE">EMPLOYEE</label>
@@ -85,10 +84,15 @@
 		
 		fetch("/api/employee/HRM/regist",{
 			method: "POST",
-			body: new formData(hrmRegistForm)
+			body: new FormData(hrmRegistForm)
 		})
-		.than(response => response.text())
-		.than(data => {
+		.then(response => {
+			if(!response.ok){
+		        throw new Error("서버 오류");
+		    }
+		    return response.text();
+		})
+		.then(data => {
 			
 		})
 		.catch(e => console.log(e));

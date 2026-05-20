@@ -11,6 +11,19 @@
 		WHERE login_id = #{param}
 	</select>
 	
+	<insert id="regist">
+		INSERT INTO TB_employee 
+			(dept_no, login_id, password_hash,
+			 employee_name, gender, birth_date,
+			 phone_number, email, home_adress, hire_date,
+			 job_title, employee_role, status, img_url)
+		VALUES ( #{dept_no},#{login_id},#{password_hash},
+				 #{employee_name},#{gender},#{birth_date},
+				 #{phone_number},#{email},#{home_adress},#{hire_date},
+				 #{job_title},#{employee_role},#{status},#{img_url})
+	</insert>
+	
+	
 	
 	
 	
