@@ -8,16 +8,46 @@
 	
 	
 	<h1>로그인, 타임리프 더 해야함</h1>
-	<form action="/EmployeesFunction/login" method="POST">
+	<form id="loginform">
 		<input type="text" name="login_id" placeholder="ID">
 		<input type="text" name="password" placeholder="PW">
 		
 		<input type="submit" value="로그인">
 	</form>
 	
+	action="/EmployeesFunction/login"
+	
+	<script>
+		
+		const loginform = document.querySelector("#loginform");
+		
+		loginform.addEventListener("submit", (e) => {
+			e.preventDefault();
+			
+			fetch("/api/employee/login",{
+				method: "POST",
+				body: new FormData(loginform),
+			})
+			.than(e => 	e.json())
+			.than(e => {
+				
+				alert();
+				
+				
+				
+				//location.href="/";
+			
+			})
+			.catch();
+			
+			
+			
+		});
+		
 	
 	
 	
+	</script>
 	
 	
 	
