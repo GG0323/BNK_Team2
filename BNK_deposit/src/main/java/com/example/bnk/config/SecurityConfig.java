@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.example.bnk.auth.CustomLoginFailHandler;
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
@@ -36,15 +35,15 @@ public class SecurityConfig {
 			employee.loginPage("/employee/loginPage")
 			.loginProcessingUrl("/employee/login")
 			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
-			.failureHandler(new CustomLoginFailHandler())
+			.failureUrl("/employee/loginPage?message=fail")
 		);
 		
 		// 회원 로그인 설정
 		http.formLogin(member ->
-			member.loginPage("/member/loginPage")
+			member.loginPage("/loginPage")
 			.loginProcessingUrl("/member/login")
 			.successHandler(new MemberLoginSuccessHandler(jwtUtil))
-			.failureHandler(new CustomLoginFailHandler())
+			.failureUrl("/loginPage?message=fail")
 		);
 		
 		return http.build();

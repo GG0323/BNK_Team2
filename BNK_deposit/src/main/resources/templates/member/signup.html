@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Signup Page</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header_default}"></div>
+
+<h2>Signup Page</h2>
+
+<form th:action="@{/regist}" method="post" onsubmit="return mergeIdentifier();">
+
+    <input type="text" name="login_id" placeholder="Id" required>
+    <input type="password" name="password_hash" placeholder="Password" required>
+    <input type="text" name="member_name" placeholder="Name" required>
+
+    <select name="member_type" id="memberType" required onchange="changeMemberType();">
+        <option value="">회원구분 선택</option>
+        <option value="PERSONAL">개인</option>
+        <option value="BUSINESS">기업</option>
+    </select>
+
+    <div id="personalIdentifier" style="display:none;">
+        <input type="password" id="personalId1" maxlength="6" pattern="[0-9]{6}" placeholder="YYMMDD">
+        -
+        <input type="password" id="personalId2" maxlength="7" pattern="[0-9]{7}" placeholder="ABCDEFG">
+    </div>
+
+    <div id="businessIdentifier" style="display:none;">
+        <input type="password" id="businessId1" maxlength="3" pattern="[0-9]{3}" placeholder="000">
+        -
+        <input type="password" id="businessId2" maxlength="2" pattern="[0-9]{2}" placeholder="00">
+        -
+        <input type="password" id="businessId3" maxlength="5" pattern="[0-9]{5}" placeholder="00000">
+    </div>
+
+    <input type="hidden" name="member_identifier" id="memberIdentifier">
+
+    <select name="gender" id="gender">
+        <option value="">성별 선택</option>
+        <option value="M">남성</option>
+        <option value="F">여성</option>
+    </select>
+
+    <input type="date" name="birth_date" required>
+    <input type="text" name="phone_number" placeholder="Phone Number" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="adress" placeholder="Address" required>
+
+    <input type="submit" value="Signup">
+</form>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+function changeMemberType() {
+    const memberType = document.getElementById("memberType").value;
+
+    document.getElementById("personalIdentifier").style.display = "none";
+    document.getElementById("businessIdentifier").style.display = "none";
+
+    if (memberType === "PERSONAL") {
+        document.getElementById("personalIdentifier").style.display = "block";
+    } else if (memberType === "BUSINESS") {
+        document.getElementById("businessIdentifier").style.display = "block";
+    }
+}
+
+function mergeIdentifier() {
+    const memberType = document.getElementById("memberType").value;
+    const memberIdentifier = document.getElementById("memberIdentifier");
+
+    if (memberType === "PERSONAL") {
+        const id1 = document.getElementById("personalId1").value;
+        const id2 = document.getElementById("personalId2").value;
+
+        if (!/^[0-9]{6}$/.test(id1) || !/^[0-9]{7}$/.test(id2)) {
+            alert("주민등록번호 형식이 올바르지 않습니다.");
+            return false;
+        }
+
+        memberIdentifier.value = id1 + "-" + id2;
+    }
+
+    if (memberType === "BUSINESS") {
+        const id1 = document.getElementById("businessId1").value;
+        const id2 = document.getElementById("businessId2").value;
+        const id3 = document.getElementById("businessId3").value;
+
+        if (!/^[0-9]{3}$/.test(id1) || !/^[0-9]{2}$/.test(id2) || !/^[0-9]{5}$/.test(id3)) {
+            alert("사업자등록번호 형식이 올바르지 않습니다.");
+            return false;
+        }
+
+        memberIdentifier.value = id1 + "-" + id2 + "-" + id3;
+    }
+
+    return true;
+}
+</script>
+
+</body>
+</html>
