@@ -60,7 +60,7 @@ public class BankMemberPageController {
         model.addAttribute("logCount", logCount);
         model.addAttribute("pageName", "mypage");
         
-        return "members/mypage";
+        return "member/mypage";
     }
 	
 	// 사용자의 내 정보 페이지
@@ -72,7 +72,7 @@ public class BankMemberPageController {
 		model.addAttribute("member", memberInfo);
 		model.addAttribute("pageName", "myinfo");
         
-        return "members/myinfo";
+        return "member/myinfo";
 	}
 	
 	// 사용자의 내 정보 수정하기 페이지
@@ -87,7 +87,7 @@ public class BankMemberPageController {
 	    model.addAttribute("member", memberInfo);
 	    model.addAttribute("pageName", "myinfo"); // 서브 네비게이션 '2. 내정보' 활성화 유지
 	    
-	    return "members/myinfo_edit";
+	    return "member/myinfo_edit";
 	}
 	
 	// 내 정보 수정, DB 업데이트 기능
@@ -177,7 +177,7 @@ public class BankMemberPageController {
 	    model.addAttribute("accountList", accountList);
 	    model.addAttribute("pageName", "myaccounts"); // 서브 네비게이션 3번 활성화
 	    
-	    return "members/myaccounts";
+	    return "member/myaccounts";
 	}
 	
 	@GetMapping("/myhistory")
@@ -202,7 +202,7 @@ public class BankMemberPageController {
         model.addAttribute("transactionList", transactionList);
         model.addAttribute("pageName", "myhistory"); 
         
-        return "members/myhistory";
+        return "member/myhistory";
     }
 	
 	// 사용자의 가입 상품 내역 페이지 조회
@@ -218,6 +218,6 @@ public class BankMemberPageController {
 	    model.addAttribute("productList", productList);
 	    model.addAttribute("pageName", "myproducts"); // 5번 탭 활성화 암호
 	    
-	    return "members/myproducts";
+	    return "member/myproducts";
 	}
 }
