@@ -12,8 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountTransactionDto;
 import com.example.bnk.dto.member.BankMemberDto;
+import com.example.bnk.dto.member.MemberProductDto;
 import com.example.bnk.dto.member.MemberTrackingLogDto;
 import com.example.bnk.service.member.AccountService;
+import com.example.bnk.service.member.AccountTransactionService;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.member.MemberTrackingLogService;
 import com.example.bnk.service.product.ProductSalesService;
@@ -28,28 +30,28 @@ public class BankMemberPageController {
 	private final AccountService accountService;
 	private final ProductSalesService productSalesService;
 	private final MemberTrackingLogService memberTrackingLogService;
+	private final AccountTransactionService accountTransactionService;
 	
 	// 사용자의 마이페이지 
 	@GetMapping("/mypage")
     public String rootMembersMypage(Model model) {
-        // 1. 회원 정보 조회
+        // 회원 정보 조회
         String currentLoginId = "dev_hyun"; 
         BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
         long currentMemberNo = memberInfo.getMember_no();
         
-        // 2. 계좌 정보 조회
+        // 계좌 정보 조회
         List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
         int accountCount = accountList.size();
         long totalBalance = accountList.stream().mapToLong(AccountDto::getBalance).sum();
         int logCount = memberTrackingLogService.getLogCount(currentMemberNo);
         
-        // 3. 가입 상품 개수 조회
+        // 가입 상품 개수 조회
         int productCount = productSalesService.getSubscribedProductCount(currentMemberNo);
         
-        // 4. 최근 접속 기록 조회
+        // 최근 접속 기록 조회
         List<MemberTrackingLogDto> recentLogs = memberTrackingLogService.getRecentLogs(currentMemberNo);
         
-        // 5. 화면으로 모든 데이터 바인딩
         model.addAttribute("member", memberInfo);
         model.addAttribute("accountCount", accountCount);
         model.addAttribute("totalBalance", totalBalance);
@@ -79,7 +81,7 @@ public class BankMemberPageController {
 	    String currentLoginId = "dev_hyun";
 	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
 	    
-	    // 식별번호 임시 마스킹 처리 (이전과 동일)
+	    // 식별번호 임시 마스킹 처리
 	    memberInfo.setMember_identifier("980515-1******");
 	    
 	    model.addAttribute("member", memberInfo);
@@ -99,19 +101,19 @@ public class BankMemberPageController {
 		    
 		    String currentLoginId = "dev_hyun"; 
 		    
-		    // 0. 입력 데이터가 아예 없으면 DB 접근 차단 (Early Return)
+		    // 입력 데이터가 아예 없으면 DB 접근 차단 (Early Return)
 		    if (phoneNumber.trim().isEmpty() && email.trim().isEmpty() && addressMain.trim().isEmpty()) {
 		        rttr.addFlashAttribute("error", "수정할 정보가 입력되지 않았습니다.");
 		        return "redirect:/myinfo/edit";
 		    }
 
-		    // 1. 전화번호 백엔드 검증
+		    // 전화번호 백엔드 검증
 		    if (!phoneNumber.matches("^010-\\d{4}-\\d{4}$")) {
 		        rttr.addFlashAttribute("error", "전화번호 형식이 올바르지 않거나 조작되었습니다.");
 		        return "redirect:/myinfo/edit";
 		    }
 
-		    // 2. 이메일 백엔드 검증 (이메일이 비어있지 않은 경우에만 검증하도록 유연성 추가)
+		    // 이메일 백엔드 검증 (이메일이 비어있지 않은 경우에만 검증하도록 유연성 추가)
 		    if (!email.trim().isEmpty() && !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
 		        rttr.addFlashAttribute("error", "이메일 형식이 올바르지 않거나 조작되었습니다.");
 		        return "redirect:/myinfo/edit";
@@ -122,7 +124,7 @@ public class BankMemberPageController {
 		        fullAddress += " " + addressDetail;
 		    }
 
-		    // 3. 검증을 모두 통과한 데이터만 DTO에 세팅하여 전송
+		    // 검증을 모두 통과한 데이터만 DTO에 세팅하여 전송
 		    BankMemberDto updateDto = new BankMemberDto();
 		    updateDto.setLogin_id(currentLoginId); 
 		    updateDto.setPhone_number(phoneNumber);
@@ -144,7 +146,7 @@ public class BankMemberPageController {
 		) {
 		    String currentLoginId = "dev_hyun"; 
 		    
-		    // 0. 비밀번호 입력값이 비어있으면 DB 접근 차단
+		    // 비밀번호 입력값이 비어있으면 DB 접근 차단
 		    if (currentPassword.trim().isEmpty() || newPassword.trim().isEmpty()) {
 		        rttr.addFlashAttribute("error", "비밀번호를 정확히 입력해주세요.");
 		        return "redirect:/myinfo/edit";
@@ -165,13 +167,13 @@ public class BankMemberPageController {
 	// 내 계좌 정보 보기
 	@GetMapping("/myaccounts")
 	public String rootMembersAccounts(Model model) {
-	    // 1. 현재 로그인된 회원 번호 (임시)
+	    // 현재 로그인된 회원 번호 (임시)
 	    long currentMemberNo = 1L; // 실제 환경에서는 세션이나 앞서 조회한 회원 정보에서 가져오기
 	    
-	    // 2. 계좌 목록 조회
+	    // 계좌 목록 조회
 	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
 	    
-	    // 3. 모델에 데이터 및 활성화 탭 이름 전달
+	    // 모델에 데이터 및 활성화 탭 이름 전달
 	    model.addAttribute("accountList", accountList);
 	    model.addAttribute("pageName", "myaccounts"); // 서브 네비게이션 3번 활성화
 	    
@@ -184,24 +186,38 @@ public class BankMemberPageController {
             RedirectAttributes rttr, 
             Model model) {
 		
-		// 1. 만약 상단 네비게이션 탭을 통해 파라미터 없이 들어왔다면 계좌 목록으로 튕겨냄
+		// 만약 상단 네비게이션 탭을 통해 파라미터 없이 들어왔다면 계좌 목록으로 튕겨냄
 	    if (accountNo == null) {
 	        rttr.addFlashAttribute("msg", "조회할 계좌를 먼저 선택해 주세요.");
 	        return "redirect:/myaccounts";
 	    }
         
-        // 1. 서비스에 심부름을 시켜 데이터를 가져옵니다.
+        // 서비스에 심부름을 시켜 데이터를 가져옵니다.
 	    AccountDto account = accountService.getAccountDetail(accountNo.longValue());
-	    List<AccountTransactionDto> transactionList = accountService.getTransactions(accountNo.longValue());
+	    List<AccountTransactionDto> transactionList = accountTransactionService.getTransactions(accountNo.longValue());
         
-        // 2. 가져온 데이터를 HTML(Thymeleaf)이 읽을 수 있게 Model에 예쁘게 담아줍니다.
+        // 가져온 데이터를 HTML(Thymeleaf)이 읽을 수 있게 Model에 예쁘게 담아줍니다.
         // (이름을 "account", "transactionList"로 담았기 때문에 HTML에서 ${account...}로 꺼내 쓸 수 있습니다!)
         model.addAttribute("account", account);
         model.addAttribute("transactionList", transactionList);
-        
-        // 3. 4번 탭(거래내역) 버튼을 빨간색으로 켜기 위한 암호
         model.addAttribute("pageName", "myhistory"); 
         
         return "members/myhistory";
     }
+	
+	// 사용자의 가입 상품 내역 페이지 조회
+	@GetMapping("/myproducts")
+	public String rootMembersProducts(Model model) {
+	    //  현재 로그인한 회원 번호 세팅 (테스트용 1번 회원)
+	    long currentMemberNo = 1L; 
+	    
+	    // 서비스 호출하여 JOIN된 가입 상품 리스트 가져오기
+	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentMemberNo);
+	    
+	    // Thymeleaf HTML 화면으로 데이터 보내기
+	    model.addAttribute("productList", productList);
+	    model.addAttribute("pageName", "myproducts"); // 5번 탭 활성화 암호
+	    
+	    return "members/myproducts";
+	}
 }

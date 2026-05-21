@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.member.IAccountDao;
 import com.example.bnk.dto.member.AccountDto;
-import com.example.bnk.dto.member.AccountTransactionDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,13 +20,8 @@ public class AccountService {
         return accountDao.findAccountsByMemberNo(memberNo);
     }
 
-    // 1. 계좌 상세 정보 조회
+    // 계좌 상세 정보 조회
     public AccountDto getAccountDetail(long accountNo) {
         return accountDao.findAccountByAccountNo(accountNo);
-    }
-
-    // 2. 거래 내역 리스트 조회
-    public List<AccountTransactionDto> getTransactions(long accountNo) {
-        return accountDao.findTransactionsByAccountNo(accountNo);
     }
 }
