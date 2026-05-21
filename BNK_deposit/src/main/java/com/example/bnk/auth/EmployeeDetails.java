@@ -43,5 +43,9 @@ public class EmployeeDetails implements UserDetails{
 	public long getPk() {
 		return this.employee.getEmployee_no();
 	}
+	
+	public String getRole() {
+		return this.employee.getEmployee_role();
+	}
 
 }
