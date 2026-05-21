@@ -1,0 +1,215 @@
+@charset "UTF-8";
+
+:root {
+    --primary-red: #e3000f;
+    --text-dark: #222;
+    --text-gray: #666;
+    --border-color: #eaeaea;
+    --bg-light: #f8f9fa;
+    --bg-pink: #fdf5f6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--text-dark);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* 1. 최상단 헤더 */
+.top-header {
+    background-color: #000;
+    color: #fff;
+    padding: 20px 0;
+}
+
+.header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.header-title-group h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.header-title-group p {
+    font-size: 11px;
+    color: #aaa;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-right ul {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #ccc;
+}
+
+.header-right ul li::after {
+    content: '|';
+    margin-left: 15px;
+    color: #555;
+}
+
+.header-right ul li:last-child::after {
+    display: none;
+}
+
+.btn-mypage-header {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 2. 서브 네비게이션 탭 */
+.sub-nav {
+    max-width: 1000px;
+    margin: 30px auto;
+    display: flex;
+    gap: 10px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 25px;
+    background-color: var(--bg-light);
+    color: var(--text-gray);
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background-color: var(--primary-red);
+    color: #fff;
+}
+
+/* 3. 메인 컨테이너 */
+.myinfo-container {
+    max-width: 1000px;
+    margin: 0 auto 100px;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+/* 4. 내 정보 테이블 */
+.info-section {
+    margin-bottom: 40px;
+}
+
+.info-table {
+    width: 100%;
+    border-top: 2px solid #222;
+    border-collapse: collapse;
+}
+
+.info-table th, 
+.info-table td {
+    padding: 18px 20px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.info-table th {
+    width: 200px;
+    background-color: #fafafa;
+    color: var(--text-gray);
+    font-weight: 600;
+}
+
+.info-table td {
+    color: #333;
+}
+
+/* 뱃지 스타일 (회원상태용) */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.badge.red {
+    background-color: var(--primary-red);
+    color: #fff;
+}
+
+/* 5. 버튼 및 하단 노트 */
+.btn-wrap {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.btn-black-large {
+    background-color: #222;
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-black-large:hover {
+    background-color: #000;
+}

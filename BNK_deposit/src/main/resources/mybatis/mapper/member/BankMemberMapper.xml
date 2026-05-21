@@ -4,4 +4,55 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IBankMemberDao">
 
+	<select id="showMember" resultType="com.example.bnk.dto.member.BankMemberDto">
+		SELECT * FROM TB_BANK_MEMBER
+		WHERE birth_date = #{birth_date}
+		AND phone_number = #{phone_number}
+		AND member_name = #{member_name}
+	</select>
+
+	<select id="findMemberById" parameterType="String" resultType="com.example.bnk.dto.member.BankMemberDto">
+        SELECT
+            MEMBER_NO,
+            LOGIN_ID,
+            PASSWORD_HASH,
+            MEMBER_NAME,
+            MEMBER_TYPE,
+            MEMBER_IDENTIFIER,
+            GENDER,
+            BIRTH_DATE,
+            PHONE_NUMBER,
+            EMAIL,
+            ADRESS,                  CREDIT_SCORE,
+            MEMBER_STATUS,
+            CREATED_AT,
+            UPDATE_AT AS updated_at, LAST_LOGIN_AT
+        FROM tb_bank_member
+        WHERE LOGIN_ID = #{loginId}
+    </select>
+
+    <update id="updateMemberInfo" parameterType="com.example.bnk.dto.member.BankMemberDto">
+        UPDATE tb_bank_member
+        <set>
+            <if test="phone_number != null and phone_number != ''">
+                PHONE_NUMBER = #{phone_number},
+            </if>
+            <if test="email != null and email != ''">
+                EMAIL = #{email},
+            </if>
+            <if test="adress != null and adress != ''">
+                ADRESS = #{adress},
+            </if>
+            UPDATE_AT = SYSDATE
+        </set>
+        WHERE LOGIN_ID = #{login_id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE tb_bank_member
+        SET PASSWORD_HASH = #{newPassword},
+            UPDATE_AT = SYSDATE
+        WHERE LOGIN_ID = #{loginId}
+    </update>
+    
 </mapper>
