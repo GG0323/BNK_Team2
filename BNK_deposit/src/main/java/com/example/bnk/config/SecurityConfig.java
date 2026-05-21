@@ -36,6 +36,8 @@ public class SecurityConfig {
 			.loginProcessingUrl("/employee/login")
 			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
 			.failureUrl("/employee/loginPage?message=fail")
+			.passwordParameter("password_hash")
+			.usernameParameter("login_id")
 		);
 		
 		// 회원 로그인 설정
@@ -44,6 +46,8 @@ public class SecurityConfig {
 			.loginProcessingUrl("/member/login")
 			.successHandler(new MemberLoginSuccessHandler(jwtUtil))
 			.failureUrl("/loginPage?message=fail")
+			.passwordParameter("password_hash")
+			.usernameParameter("login_id")
 		);
 		
 		return http.build();
