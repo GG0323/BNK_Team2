@@ -21,7 +21,7 @@ public class BankMemberDto {
 	private LocalDate birth_date;		// 생년월일 / 개업일자
 	private String phone_number;		// 전화번호
 	private String email;				// 이메일
-	private String address;				// 주소
+	private String adress;				// 주소
 	private int credit_score;			// 신용 점수
 	private String member_status;		// 회원 상태 | ASSOCIATE: 준회원 | REGULAR: 정회원 | DORMANT: 휴면 | WITHDRAWN: 탈퇴
 	private LocalDate created_at;		// 생성일시
