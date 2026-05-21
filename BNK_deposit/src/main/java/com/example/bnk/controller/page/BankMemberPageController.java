@@ -44,7 +44,7 @@ public class BankMemberPageController {
         // 3. 가입 상품 개수 조회
         int productCount = productSalesService.getSubscribedProductCount(currentMemberNo);
         
-        // 4. 최근 접속 기록 조회 (새로 추가된 부분)
+        // 4. 최근 접속 기록 조회
         List<MemberTrackingLogDto> recentLogs = memberTrackingLogService.getRecentLogs(currentMemberNo);
         
         // 5. 화면으로 모든 데이터 바인딩
