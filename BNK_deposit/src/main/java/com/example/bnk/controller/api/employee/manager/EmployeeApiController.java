@@ -1,4 +1,4 @@
-package com.example.bnk.controller.api;
+package com.example.bnk.controller.api.employee.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bnk.dto.employee.EmployeeLogInsertDto;
 import com.example.bnk.dto.employee.EmployeeRegistDto;
-import com.example.bnk.service.Employees.EmployeeLogService;
-import com.example.bnk.service.Employees.EmployeeRegistService;
-import com.example.bnk.service.Employees.EmployeesLoginService;
+import com.example.bnk.service.employees.EmployeeLogService;
+import com.example.bnk.service.employees.EmployeeRegistService;
+import com.example.bnk.service.employees.EmployeesLoginService;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -42,7 +42,7 @@ public class EmployeeApiController {
 		return 0;
 	}
 	
-	//회원가입 처리 
+	// 회원가입 처리 
 	@PostMapping("/HRM/regist")
 	public ResponseEntity<String> regist(
 			EmployeeRegistDto empRegistDto,
@@ -50,8 +50,6 @@ public class EmployeeApiController {
 			) {
 		// 컨트롤러 안에 붙어서 log를 하드코딩한다. >> 필터단에 이 값을 넘긴다.
 		logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
-		
-		
 		
 		System.out.println(empRegistDto.toString());
 		if(!img.isEmpty() ) {
@@ -67,8 +65,6 @@ public class EmployeeApiController {
 		
 		return ResponseEntity.ok("등록 실패");
 	}
-	
-	
 	
 	
 	

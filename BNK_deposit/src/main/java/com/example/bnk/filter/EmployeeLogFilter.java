@@ -9,7 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.bnk.dao.employee.IEmployeeLogDao;
 import com.example.bnk.dto.employee.EmployeeLogInsertDto;
-import com.example.bnk.service.Employees.EmployeeLogService;
+import com.example.bnk.service.employees.EmployeeLogService;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -25,6 +25,7 @@ public class EmployeeLogFilter extends OncePerRequestFilter{
 	
 	@Autowired
 	private EmployeeLogService LogService;	
+	
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

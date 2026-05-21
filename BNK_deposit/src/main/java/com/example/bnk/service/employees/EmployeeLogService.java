@@ -1,4 +1,4 @@
-package com.example.bnk.service.Employees;
+package com.example.bnk.service.employees;
 
 import java.util.List;
 

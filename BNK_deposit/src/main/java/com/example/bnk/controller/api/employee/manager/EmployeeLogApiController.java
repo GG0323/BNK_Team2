@@ -1,4 +1,4 @@
-package com.example.bnk.controller.api.log;
+package com.example.bnk.controller.api.employee.manager;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.dto.employee.EmployeeLogDto;
 import com.example.bnk.dto.employee.EmployeeLogSelectDto;
-import com.example.bnk.service.Employees.EmployeeLogService;
+import com.example.bnk.service.employees.EmployeeLogService;
 
 @RestController
 @RequestMapping("/api/log/employee")
