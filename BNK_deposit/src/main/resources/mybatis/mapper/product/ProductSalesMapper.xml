@@ -4,4 +4,10 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductSalesDao">
 
+	<select id="countProductSalesByMemberNo" parameterType="long" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_product_sales
+        WHERE MEMBER_NO = #{memberNo}
+    </select>
+    
 </mapper>
