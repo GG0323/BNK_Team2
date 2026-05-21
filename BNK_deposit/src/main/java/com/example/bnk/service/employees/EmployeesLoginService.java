@@ -1,4 +1,4 @@
-package com.example.bnk.service.Employees;
+package com.example.bnk.service.employees;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

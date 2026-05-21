@@ -179,11 +179,20 @@ public class BankMemberPageController {
 	}
 	
 	@GetMapping("/myhistory")
-    public String rootMembersHistory(@RequestParam("accountNo") long accountNo, Model model) {
+    public String rootMembersHistory(
+    		@RequestParam(value = "accountNo", required = false) Long accountNo, // 필수 여부를 false로 변경
+            RedirectAttributes rttr, 
+            Model model) {
+		
+		// 1. 만약 상단 네비게이션 탭을 통해 파라미터 없이 들어왔다면 계좌 목록으로 튕겨냄
+	    if (accountNo == null) {
+	        rttr.addFlashAttribute("msg", "조회할 계좌를 먼저 선택해 주세요.");
+	        return "redirect:/myaccounts";
+	    }
         
         // 1. 서비스에 심부름을 시켜 데이터를 가져옵니다.
-        AccountDto account = accountService.getAccountDetail(accountNo);
-        List<AccountTransactionDto> transactionList = accountService.getTransactions(accountNo);
+	    AccountDto account = accountService.getAccountDetail(accountNo.longValue());
+	    List<AccountTransactionDto> transactionList = accountService.getTransactions(accountNo.longValue());
         
         // 2. 가져온 데이터를 HTML(Thymeleaf)이 읽을 수 있게 Model에 예쁘게 담아줍니다.
         // (이름을 "account", "transactionList"로 담았기 때문에 HTML에서 ${account...}로 꺼내 쓸 수 있습니다!)
