@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
 <body>
-	<header th:fragment="header">
+
+<th:block th:fragment="header_default">
+	<header>
+		<div>
+			<img th:src="@{/images/logo.png}" alt="BNK 부산은행">
+		</div>
 		<nav>
 			<a th:href="@{/}">홈</a>
 		</nav>
 	</header>
-	
-	<header th:fragment="header_product">
+</th:block>
+
+<th:block th:fragment="header_product">
+	<header>
 		<div>
-			<img>
+			<img th:src="@{/images/logo.png}" alt="BNK 부산은행">
 		</div>
 	</header>
+</th:block>
+
 </body>
 </html>

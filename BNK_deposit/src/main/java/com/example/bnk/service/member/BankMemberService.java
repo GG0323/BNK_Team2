@@ -18,7 +18,7 @@ public class BankMemberService {
     }
     
     public void modifyMemberInfo(BankMemberDto updateDto) {
-        bankMemberDao.updateMemberInfo(updateDto);
+        bankMemberDao.editMember(updateDto);
     }
     
     public boolean changePassword(String loginId, String currentPassword, String newPassword) {
