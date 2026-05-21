@@ -6,33 +6,58 @@
 <link rel="stylesheet" th:href="@{/css/managerStyle.css}">
 </head>
 <body>
-
+	<!-- 헤더 -->
     <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
     
 	<div class="manager-container">
-        
+        <!-- 사이드바 -->
         <div th:replace="~{fragments/mngFragment :: mngSideBar}"></div>
         
         <main class="manager-main">
 
 	    <div class="search-bar-container">
 	        <select class="sort-select">
+	        	<!-- 출력 선택 -->
 	            <option value="latest">직원번호</option>
 	            <option value="oldest">이름</option>
 	            <option value="oldest">입사일</option>
 	            <option value="oldest">직급</option>
 	        </select>
 	        
+	        <!-- 검색부분 -->
 	        <div class="search-input-wrapper">
 	            <input type="text" placeholder="검색어를 입력해주세요." class="search-input">
 	            <button type="button" class="search-submit-btn">🔍</button>
 	        </div>
 	    </div>
 	
+		<!-- 출력부분 -->
 	    <div class="list-card-container">
 	        <div class="card-header">
 	            <h2 class="card-title">직원 목록</h2>
-	            <span class="card-count">[전체 요청 0명]</span>
+	            <span class="card-count" th:text="|[전체 제안서 ${#lists.size(empList)}건]|"></span>
+	        </div>
+	        
+	        <!-- 데이터 출력 -->
+	        <div class="card-content" th:if="${not #lists.isEmpty(empList)}">
+	        	<table class="mng-table">
+	        		<thead>
+	        			<tr>
+	        				<th>번호</th>
+	        				<th>이름</th>
+	        				<th>입사일</th>
+	        				<th>직급</th>
+	        			</tr>
+	        		</thead>
+	        		<tbody>
+	        			<tr th:each="emp, stat : ${empList}" class="mng-table-tr">
+	        				<td th:text="${stat.count}"></td>
+	        				<td th:text="${emp.employee_name}"></td>
+	        				<td th:text="${emp.hire_date}"></td>
+	        				<td th:text="${emp.job_title}"></td>
+	        			</tr>
+	        		</tbody>
+	        	</table>
 	        </div>
 	        
 	        <div class="card-content empty">
