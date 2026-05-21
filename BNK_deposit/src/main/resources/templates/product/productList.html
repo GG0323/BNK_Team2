@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BNK 상품 목록</title>
+    <link rel="stylesheet" th:href="@{/css/productView.css}">
+</head>
+<body>
+
+<div class="page-wrap">
+
+    <header class="product-header">
+        <div>
+            <h1>BNK 예금/적금 상품</h1>
+            <p>비회원도 예금·적금 상품을 조회하고 비교할 수 있습니다.</p>
+        </div>
+    </header>
+
+    <section class="search-section">
+        <form th:action="@{/products/search}" method="get" class="search-box">
+            <input type="text"
+                   name="keyword"
+                   th:value="${keyword}"
+                   placeholder="상품명, 예금, 적금, 키워드 검색">
+            <button type="submit">검색</button>
+            <a th:href="@{/products}" class="reset-btn">전체보기</a>
+        </form>
+    </section>
+
+    <section class="product-section">
+
+        <div class="section-title">
+            <h2>판매중인 상품</h2>
+            <span th:text="${#lists.size(productList)} + '개 상품'">0개 상품</span>
+        </div>
+
+        <div class="empty-box" th:if="${#lists.isEmpty(productList)}">
+            조회된 상품이 없습니다.
+        </div>
+
+        <div class="product-grid" th:if="${!#lists.isEmpty(productList)}">
+
+            <div class="product-card" th:each="product : ${productList}">
+
+                <div class="card-top">
+                    <span class="type-badge"
+                          th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                        예금
+                    </span>
+
+                    <span class="mobile-badge"
+                          th:if="${product.mobile_join_yn == 'Y'}">
+                        모바일 가입 가능
+                    </span>
+                </div>
+
+                <h3 th:text="${product.product_name}">상품명</h3>
+
+                <p class="subtitle"
+                   th:text="${product.subtitle != null ? product.subtitle : 'BNK 금융상품'}">
+                    상품 부제목
+                </p>
+
+                <div class="rate-box">
+                    <div class="max-rate">
+                        <span>최고금리</span>
+                        <strong th:text="${product.max_interest_rate} + '%'">0.00%</strong>
+                    </div>
+
+                    <div class="min-rate">
+                        <span>최저금리</span>
+                        <strong th:text="${product.min_interest_rate} + '%'">0.00%</strong>
+                    </div>
+                </div>
+
+                <div class="join-info">
+                    <span th:if="${product.branch_join_yn == 'Y'}">영업점</span>
+                    <span th:if="${product.internet_join_yn == 'Y'}">인터넷</span>
+                    <span th:if="${product.mobile_join_yn == 'Y'}">모바일</span>
+                </div>
+
+                <div class="card-buttons">
+                    <a th:href="@{/products/detail(product_no=${product.product_no})}"
+                       class="detail-btn">
+                        상세보기
+                    </a>
+
+                    <button type="button"
+                            class="compare-btn"
+                            th:attr="data-id=${product.product_no}, data-name=${product.product_name}">
+                        비교함 담기
+                    </button>
+                </div>
+
+                <div class="mobile-guide" th:if="${product.mobile_join_yn == 'Y'}">
+                    모바일 전용 상품은 QR로 앱 이동을 지원합니다.
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- 상품 비교함 -->
+<div class="compare-bar expanded" id="compareBar">
+
+    <!-- 닫기 / 열기 버튼 -->
+    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">×</button>
+
+    <!-- 펼친 상태에서 보이는 비교함 -->
+    <div class="compare-expanded-area" id="compareExpandedArea">
+
+        <div class="compare-expanded-top">
+            <div class="compare-expanded-title">
+                <strong>상품 비교함</strong>
+                <p>상품을 최대 3개까지 담고 비교할 수 있습니다.</p>
+            </div>
+
+            <div class="compare-actions">
+                <button type="button" id="openCompareModalBtn">비교하기</button>
+                <button type="button" id="clearCompareBtn">비우기</button>
+            </div>
+        </div>
+
+        <div class="compare-slot-wrap" id="compareSlotWrap">
+            <div class="compare-slot">
+                <span class="plus">+</span>
+                <span>상품 추가 가능</span>
+            </div>
+
+            <div class="compare-slot">
+                <span class="plus">+</span>
+                <span>상품 추가 가능</span>
+            </div>
+
+            <div class="compare-slot">
+                <span class="plus">+</span>
+                <span>상품 추가 가능</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JS에서 개수 관리용으로만 쓰는 숨김 영역 -->
+    <div class="compare-summary-hidden">
+        <span id="compareCount">0/3</span>
+        <div id="compareItems"></div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/productView.js}"></script>
+</body>
+</html>

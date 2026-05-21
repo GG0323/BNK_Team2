@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	
+	<h1>로그인, 타임리프 형식으로 요청하기</h1>
+	<form id="loginform">
+		<input type="text" name="login_id" placeholder="ID">
+		<input type="text" name="password" placeholder="PW">
+		
+		<input type="submit" value="로그인">
+	</form>
+	
+	action="/EmployeesFunction/login"
+	
+	<script>
+		
+		const loginform = document.querySelector("#loginform");
+		
+		loginform.addEventListener("submit", (e) => {
+			e.preventDefault();
+			
+			fetch("/api/employee/login",{
+				method: "POST",
+				body: new FormData(loginform),
+			})
+			.than(e => 	e.json())
+			.than(e => {
+				
+				alert();
+				
+				
+				
+				//location.href="/";
+			
+			})
+			.catch();
+			
+			
+			
+		});
+		
+	
+	
+	
+	</script>
+	
+	
+	
+</body>
+</html>

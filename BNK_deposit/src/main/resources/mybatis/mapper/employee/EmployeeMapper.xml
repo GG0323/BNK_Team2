@@ -7,4 +7,27 @@
 	<select id="showAllEmp" resultType="com.example.bnk.dto.employee.EmployeeDto">
 		SELECT * FROM TB_EMPLOYEE ORDER BY employee_no DESC
 	</select>
+	<!-- TB_EMPLOYEE -->
+	
+	<!-- 로그인 인증 처리 id 검색 고민 반환을 전부 받을지, 아니면 pk랑, pw만 가져올지-->
+	<select id="login" resultType="com.example.bnk.dto.employee.EmployeeDto">
+		SELECT * FROM TB_EMPLOYEE 
+		WHERE login_id = #{param}
+	</select>
+	
+	<insert id="regist">
+		INSERT INTO TB_employee 
+			(dept_no, login_id, password_hash,
+			 employee_name, gender, birth_date,
+			 phone_number, email, home_adress, hire_date,
+			 job_title, employee_role, status, img_url)
+		VALUES ( #{dept_no},#{login_id},#{password_hash},
+				 #{employee_name},#{gender},#{birth_date},
+				 #{phone_number},#{email},#{home_adress},#{hire_date},
+				 #{job_title},#{employee_role},#{status},#{img_url})
+	</insert>
+	
+	
+	
+
 </mapper>

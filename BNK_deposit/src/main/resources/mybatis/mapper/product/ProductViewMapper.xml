@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bnk.dao.product.IProductViewDao">
+
+    <!--
+        판매중인 예금/적금 상품 목록 조회
+        조건:
+        1. product_status = 'SALE'
+        2. product_type IN ('DEPOSIT', 'SAVINGS')
+        3. 비회원도 접근 가능
+    -->
+    <select id="selectProductList"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        SELECT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.product_status,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+            p.sale_start_date,
+            p.sale_end_date,
+            d.subtitle,
+            d.content,
+            d.image_url
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        WHERE p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+        ORDER BY p.product_no DESC
+
+    </select>
+
+
+    <!--
+        상품 상세 조회
+        TB_PRODUCT + TB_PRODUCT_DESCRIPTION + TB_PRODUCT_CONDITION
+    -->
+    <select id="selectProductDetail"
+            parameterType="long"
+            resultType="com.example.bnk.dto.product.ProductDetailViewDto">
+
+        SELECT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.sale_start_date,
+            p.sale_end_date,
+            p.product_status,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+
+            d.subtitle,
+            d.content,
+            d.eligibility_desc,
+            d.period_desc,
+            d.amount_desc,
+            d.preferential_rate_summary,
+            d.product_feature_desc,
+            d.deposit_subject_desc,
+            d.payment_method_desc,
+            d.join_method_desc,
+            d.required_document_desc,
+            d.tax_benefit_desc,
+            d.interest_rate_desc,
+            d.interest_payment_desc,
+            d.preferential_rate_desc,
+            d.expected_interest_desc,
+            d.caution_note,
+            d.reference_note,
+            d.sale_period_desc,
+            d.non_taxable_savings_desc,
+            d.disclosure_approval_desc,
+            d.image_url,
+
+            c.min_age,
+            c.max_age,
+            c.customer_type,
+            c.tax_benefit_yn,
+            c.depositor_protection_yn,
+            c.min_join_amount,
+            c.max_join_amount,
+            c.deposit_unit,
+            c.min_term_months,
+            c.max_term_months,
+            c.fixed_term_yn,
+            c.fixed_term_values,
+            c.condition_note
+
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        LEFT JOIN TB_PRODUCT_CONDITION c
+            ON p.product_no = c.product_no
+        WHERE p.product_no = #{product_no}
+          AND p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+
+    </select>
+
+
+    <!--
+        키워드 기반 상품 검색
+        TB_KEYWORD.normalized_keyword 활용
+    -->
+    <select id="searchProductList"
+            parameterType="string"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        SELECT DISTINCT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.product_status,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+            p.sale_start_date,
+            p.sale_end_date,
+            d.subtitle,
+            d.content,
+            d.image_url
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        LEFT JOIN TB_KEYWORD k
+            ON (
+                p.product_name LIKE '%' || k.normalized_keyword || '%'
+                OR d.content LIKE '%' || k.normalized_keyword || '%'
+                OR d.subtitle LIKE '%' || k.normalized_keyword || '%'
+            )
+        WHERE p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (
+                p.product_name LIKE '%' || #{keyword} || '%'
+                OR d.content LIKE '%' || #{keyword} || '%'
+                OR d.subtitle LIKE '%' || #{keyword} || '%'
+                OR k.input_keyword LIKE '%' || #{keyword} || '%'
+                OR k.normalized_keyword LIKE '%' || #{keyword} || '%'
+          )
+        ORDER BY p.product_no DESC
+
+    </select>
+
+
+    <!--
+        상품 비교 조회
+        선택한 상품 번호 2~3개 비교
+        TB_PRODUCT + TB_PRODUCT_RATE + TB_PRODUCT_CONDITION + TB_PRODUCT_DESCRIPTION
+    -->
+    <select id="selectCompareProducts"
+            resultType="com.example.bnk.dto.product.ProductCompareViewDto">
+
+        SELECT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+
+            d.join_method_desc,
+
+            c.min_join_amount,
+            c.max_join_amount,
+            c.deposit_unit,
+            c.min_term_months,
+            c.max_term_months,
+            c.fixed_term_yn,
+            c.fixed_term_values,
+            c.condition_note,
+            c.depositor_protection_yn,
+
+            MAX(CASE WHEN r.rate_group = 'MATURITY'
+                     THEN r.rate_label END) AS maturity_rate_label,
+
+            MAX(CASE WHEN r.rate_group = 'MATURITY'
+                     THEN r.annual_rate END) AS maturity_annual_rate,
+
+            MAX(CASE WHEN r.rate_group = 'MATURITY'
+                     THEN r.annual_return_rate END) AS maturity_return_rate,
+
+            MAX(CASE WHEN r.rate_group = 'AFTER_MATURITY'
+                     THEN r.rate_label END) AS after_maturity_rate_label,
+
+            MAX(CASE WHEN r.rate_group = 'AFTER_MATURITY'
+                     THEN r.annual_rate END) AS after_maturity_annual_rate,
+
+            MAX(CASE WHEN r.rate_group = 'EARLY_TERMINATION'
+                     THEN r.rate_label END) AS early_rate_label,
+
+            MAX(CASE WHEN r.rate_group = 'EARLY_TERMINATION'
+                     THEN r.annual_rate END) AS early_annual_rate
+
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        LEFT JOIN TB_PRODUCT_CONDITION c
+            ON p.product_no = c.product_no
+        LEFT JOIN TB_PRODUCT_RATE r
+            ON p.product_no = r.product_no
+           AND r.use_yn = 'Y'
+
+        WHERE p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND p.product_no IN
+          <foreach collection="product_no_list"
+                   item="product_no"
+                   open="("
+                   separator=","
+                   close=")">
+              #{product_no}
+          </foreach>
+
+        GROUP BY
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+            d.join_method_desc,
+            c.min_join_amount,
+            c.max_join_amount,
+            c.deposit_unit,
+            c.min_term_months,
+            c.max_term_months,
+            c.fixed_term_yn,
+            c.fixed_term_values,
+            c.condition_note,
+            c.depositor_protection_yn
+
+        ORDER BY p.product_no
+
+    </select>
+
+</mapper>
