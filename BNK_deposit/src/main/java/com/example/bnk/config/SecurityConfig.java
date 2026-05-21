@@ -25,10 +25,13 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) {
 		
-		http.authorizeHttpRequests(request -> request
-				.requestMatchers("/**").permitAll()
+		// 권한별 제어
+		http.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
 		);
 		
+		
+		// 직원 로그인 설정
 		http.formLogin(employee ->
 			employee.loginPage("/employee/loginPage")
 			.loginProcessingUrl("/employee/login")
@@ -36,6 +39,7 @@ public class SecurityConfig {
 			.failureHandler(new CustomLoginFailHandler())
 		);
 		
+		// 회원 로그인 설정
 		http.formLogin(member ->
 			member.loginPage("/member/loginPage")
 			.loginProcessingUrl("/member/login")
