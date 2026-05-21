@@ -120,4 +120,5 @@ public class ProductPageController {
 
         return outputStream.toByteArray();
     }
+    
 }

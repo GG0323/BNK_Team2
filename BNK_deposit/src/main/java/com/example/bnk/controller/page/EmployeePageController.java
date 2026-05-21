@@ -22,6 +22,9 @@ public class EmployeePageController {
 	}
 	
 	
-	
+	@GetMapping("/staff/list")
+	public String employeeProductListPage() {
+		return "Employees/staff/productList";
+	}
 	
 }
