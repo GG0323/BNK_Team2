@@ -49,6 +49,4 @@ public class EmployeePageController {
 		return "Employees/manager/HRM/hrmEmployeeDetailList";
 	}
 	
-	
-	
 }

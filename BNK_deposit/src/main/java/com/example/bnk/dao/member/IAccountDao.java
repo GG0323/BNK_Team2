@@ -9,6 +9,10 @@ import com.example.bnk.dto.member.AccountDto;
 @Mapper
 public interface IAccountDao {
 
-	List<AccountDto> findAccountsByMemberNo(long memberNo);
+	// 회원 번호로 보유 계좌 목록 조회
+    List<AccountDto> findAccountsByMemberNo(long memberNo);
+
+    // 특정 계좌 번호로 '계좌 상세 정보' 1건 조회
+    AccountDto findAccountByAccountNo(long accountNo);
 
 }

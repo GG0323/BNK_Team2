@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 마이페이지</title>
-    <link rel="stylesheet" href="/css/members/mypage.css">
+    <link rel="stylesheet" href="/css/member/mypage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -31,16 +31,10 @@
     </header>
 
     <nav class="sub-nav">
-        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" 
-                th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>   
-        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" 
-                th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
-        <button class="tab-btn" th:classappend="${pageName == 'accounts'} ? 'active'"
-                th:onclick="|location.href='@{/accounts}'|">3. 계좌목록</button>
-        <button class="tab-btn" th:classappend="${pageName == 'history'} ? 'active'"
-                th:onclick="|location.href='@{/history}'|">4. 거래내역</button>
-        <button class="tab-btn" th:classappend="${pageName == 'products'} ? 'active'"
-                th:onclick="|location.href='@{/products}'|">5. 가입상품</button>
+        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myaccounts'} ? 'active'" th:onclick="|location.href='@{/myaccounts}'|">3. 계좌 및 거래내역</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myproducts'} ? 'active'" th:onclick="|location.href='@{/myproducts}'|">4. 가입상품</button>
     </nav>
 
     <main class="mypage-container">
@@ -88,19 +82,19 @@
                 <p>회원 기본정보와 연락처,<br>회원상태를 확인합니다.</p>
             </a>
             
-            <a th:href="@{/accounts}" class="action-card">
+            <a th:href="@{/myaccounts}" class="action-card">
                 <div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div>
                 <h5>계좌 조회</h5>
                 <p>보유 계좌 목록과 현재 잔액을 확인합니다.</p>
             </a>
             
-            <a th:href="@{/history}" class="action-card">
+            <a th:href="@{/myhistory}" class="action-card">
                 <div class="icon-wrapper"><i class="fa-solid fa-file-invoice-dollar"></i></div>
                 <h5>거래내역 조회</h5>
                 <p>선택한 계좌의 입금, 출금,<br>이체 내역을 확인합니다.</p>
             </a>
             
-            <a th:href="@{/products}" class="action-card">
+            <a th:href="@{/myproducts}" class="action-card">
                 <div class="icon-wrapper"><i class="fa-solid fa-box-archive"></i></div>
                 <h5>가입 상품 내역</h5>
                 <p>가입한 예금·적금 상품 정보를 확인합니다.</p>
