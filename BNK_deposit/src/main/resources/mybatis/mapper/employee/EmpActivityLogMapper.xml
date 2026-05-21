@@ -8,12 +8,40 @@
 		INSERT INTO TB_EMPLOYEE_LOG
 			(employee_no, action_type, target_table, select_key,
 			action_detail, request_method, request_url, request_ip, response_status)
-		VALUES (#{employee_no},#{action_type},#{target_table},#{select_key, jdbcType=VARCHAR},
+		VALUES (#{employee_no},#{action_type},#{target_table, jdbcType=VARCHAR},#{select_key, jdbcType=VARCHAR},
 			#{action_detail},#{request_method},#{request_url},#{request_ip},#{response_status})
-	
 	</insert>
 	
+	<select id="allLog" resultType="com.example.bnk.dto.employee.EmployeeLogDto">
+		SELECT * FROM TB_EMPLOYEE_LOG ORDER BY created_at DESC
+	</select>
 	
-	
+	<select id="conditionLog" resultType="com.example.bnk.dto.employee.EmployeeLogDto">
+		SELECT * FROM TB_EMPLOYEE_LOG
+		<where>
+			<if test="employee_no != null">
+	            AND EMPLOYEE_NO = #{employee_no}
+	        </if>
+	        <if test="action_type != null and action_type != ''">
+	            AND ACTION_TYPE = #{action_type}
+	        </if>
+	        <if test="target_table != null and target_table != ''">
+	            AND TARGET_TABLE = #{target_table}
+	        </if>
+	        <if test="response_status != null">
+	            AND RESPONSE_STATUS = #{response_status}
+	        </if>
+	        <if test="request_ip != null and request_ip != ''">
+	            AND REQUEST_IP LIKE #{request_ip} || '%'
+	        </if>
+	        <if test="from_date != null">
+	            AND CREATED_AT >= #{from_date}
+	        </if>
+	        <if test="to_date != null">
+	            AND CREATED_AT &lt; #{to_date} + 1
+	        </if>
+		</where>
+		ORDER BY created_at DESC
+	</select>
 	
 </mapper>
