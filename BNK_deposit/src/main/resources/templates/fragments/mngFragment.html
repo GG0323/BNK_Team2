@@ -29,10 +29,11 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 현재 브라우저의 주소창 경로 (예: /prdPage)
+        	
+            // 현재 브라우저의 주소창 경로 -> Ex) /prdPage
             const currentPath = window.location.pathname;
             
-            // 모든 사이드바 버튼을 찾아서 반복문 순회
+            // 모든 사이드바 버튼을 찾아서 반복문으로 순회
             const buttons = document.querySelectorAll('.sideBar_button');
             buttons.forEach(button => {
                 // 버튼에 지정된 data-uri 값과 현재 주소가 일치하면 active 클래스 추가

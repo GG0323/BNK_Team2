@@ -238,14 +238,15 @@ header nav{
     color: #333;
 }
 
-/* 요청이 들어온 제안서가 없습니다 구역 세로 정중앙 정렬 */
+/* '요청이 들어온 제안서가 없습니다' 구역 세로 정중앙 정렬 */
 .card-content.empty {
-    flex: 1; /* 남은 세로 공간을 다 차지함 */
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888; /* 흐릿한 회색 글씨 */
+    color: #888;
     font-size: 16px;
+    min-height: 300px; /* 데이터가 없을 때도 영역을 유지하도록 */
 }
 
 /* 하단 페이지네이션 [1] 디자인 */
@@ -384,3 +385,51 @@ header nav{
     color: #000;
     margin: 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+/* 관리자 페이지 공통 테이블 스타일
+-------------------------------------------------------------------------------------------------------*/
+.mng-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+.mng-table th {
+    background-color: #fff5f5;
+    color: #ff5252;
+    font-weight: bold;
+    padding: 12px 10px;
+    border-bottom: 2px solid #ffb3b3;
+}
+
+.mng-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    text-align: center;
+}
+
+/* 상품명만 왼쪽으로 출력해 주면서~ */
+.mng-table td.text-left {
+    text-align: left;
+    padding-left: 20px;
+}
+
+/* 마우스를 올렸을 때 행 색깔 바꾸기! */
+.mng-table-tr:hover {
+    background-color: #ff000080;
+    cursor: pointer;
+}
+
+

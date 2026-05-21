@@ -4,4 +4,7 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.employee.IEmployeeDao">
 
+	<select id="showAllEmp" resultType="com.example.bnk.dto.employee.EmployeeDto">
+		SELECT * FROM TB_EMPLOYEE ORDER BY employee_no DESC
+	</select>
 </mapper>
