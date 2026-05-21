@@ -6,43 +6,71 @@
 <link rel="stylesheet" th:href="@{/css/managerStyle.css}">
 </head>
 <body>
-
+	
+	<!-- 헤더 -->
     <div th:replace="~{fragments/mngFragment :: mngHeader}"></div>
     
 	<div class="manager-container">
-        
+	
+        <!-- 사이드바 -->
         <div th:replace="~{fragments/mngFragment :: mngSideBar}"></div>
         
         <main class="manager-main">
-
-	    <div class="search-bar-container">
-	        <select class="sort-select">
-	            <option value="latest">최신 순서</option>
-	            <option value="oldest">오래된 순서</option>
-	        </select>
-	        
-	        <div class="search-input-wrapper">
-	            <input type="text" placeholder="검색어를 입력해주세요." class="search-input">
-	            <button type="button" class="search-submit-btn">🔍</button>
-	        </div>
-	    </div>
-	
-	    <div class="list-card-container">
-	        <div class="card-header">
-	            <h2 class="card-title">제안서 목록</h2>
-	            <span class="card-count">[전체 제안서 0건]</span>
-	        </div>
-	        
-	        <div class="card-content empty">
-	            <p>요청이 들어온 제안서가 없습니다.</p>
-	        </div>
-	        
-	        <div class="pagination-container">
-	            <span class="page-number active">[1]</span>
-	        </div>
-	    </div>
-
-</main>
+		    <div class="search-bar-container">
+		    	<!-- 출력 선택 -->
+		        <select class="sort-select">
+		            <option value="latest">최신 순서</option>
+		            <option value="oldest">오래된 순서</option>
+		        </select>
+		        
+		        
+		        <!-- 검색부분 -->
+		        <div class="search-input-wrapper">
+		            <input type="text" placeholder="검색어를 입력해주세요." class="search-input">
+		            <button type="button" class="search-submit-btn">🔍</button>
+		        </div>
+		    </div>
+		
+			<!-- 여기가 화면(리스트라고 해야하나?) 출력부분 ~ -->
+			<div class="list-card-container">
+			    <div class="card-header">
+			        <h2 class="card-title">제안서 목록</h2>
+			        <!-- 아 참고로 #lists는 thymeleaf안에 내장되어있는 함수라고 합니다~ -->
+			        <span class="card-count" th:text="|[전체 제안서 ${#lists.size(ppsList)}건]|"></span>
+			    </div>
+			    
+			    <!-- 데이터 출력 -->
+			    <div class="card-content" th:if="${not #lists.isEmpty(ppsList)}">
+			        <table class="mng-table">
+			            <thead>
+			                <tr>
+			                    <th>번호</th>
+			                    <th>상품명</th>
+			                    <th>작성자 번호</th>
+			                    <th>작성일</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <tr th:each="pps, stat : ${ppsList}" class="mng-table-tr">
+			                    <td th:text="${stat.count}"></td>
+			                    <td th:text="${pps.product_name}" class="text-left"></td>
+			                    <td th:text="${pps.employee_no}"></td>
+			                    <td th:text="${pps.suggested_at}"></td>
+			                </tr>
+			            </tbody>
+			        </table>
+			    </div>
+			    
+			    <div class="card-content empty" th:if="${#lists.isEmpty(ppsList)}">
+			        <p>요청이 들어온 제안서가 없습니다.</p>
+			    </div>
+			    
+			    <div class="pagination-container">
+			        <span class="page-number active">[1]</span>
+			    </div>
+			</div>
+		
+		</main>
         
     </div>
 
