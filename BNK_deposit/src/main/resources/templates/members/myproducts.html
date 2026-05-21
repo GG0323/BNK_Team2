@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 가입 상품 내역 조회</title>
+    <link rel="stylesheet" href="/css/members/myproducts.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <h1>BNK</h1>
+                <div class="header-title-group">
+                    <h2>가입 상품 내역 조회</h2>
+                    <p>가입한 예금·적금 상품 확인</p>
+                </div>
+            </div>
+            <nav class="header-right">
+                <ul>
+                    <li><a href="#">메인</a></li>
+                    <li><a href="#">계좌조회</a></li>
+                    <li><a href="#">거래내역</a></li>
+                    <li><a href="#">가입상품</a></li>
+                </ul>
+                <button class="btn-mypage-header">가입상품</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myaccounts'} ? 'active'" th:onclick="|location.href='@{/myaccounts}'|">3. 계좌 및 거래내역</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myproducts'} ? 'active'" th:onclick="|location.href='@{/myproducts}'|">4. 가입상품</button>
+    </nav>
+
+    <main class="products-container">
+        
+        <section class="page-header">
+            <h3>가입 상품 내역 조회</h3>
+            <p>로그인한 회원이 가입한 상품 내역을 확인합니다.</p>
+        </section>
+
+        <section class="product-list">
+            
+            <div class="product-card" th:each="product : ${productList}" 
+                 th:onclick="|location.href='@{/myproducts/detail(subNo=${product.subscription_no})}'|"
+                 style="cursor: pointer;">
+                
+                <div class="prod-info-sec">
+                    <span class="type-badge" 
+                          th:classappend="${product.product_type == 'SAVINGS'} ? 'badge-red' : 'badge-black'"
+                          th:text="${#strings.toLowerCase(product.product_type)}">savings</span>
+                    
+                    <h4 class="prod-name" th:text="${product.product_name}">모바일 전용 적금</h4>
+                    <p class="prod-desc" th:text="${product.product_type == 'SAVINGS' ? '모바일뱅킹 이용 고객에게 우대 조건을 제공하는 적금 상품' : '목돈을 안정적으로 예치하는 대표 예금 상품'}">
+                        모바일뱅킹 이용 고객에게 우대 조건을 제공하는 적금 상품
+                    </p>
+                </div>
+
+                <div class="prod-data-sec">
+                    <span class="data-label">가입금액</span>
+                    <strong class="data-value" th:text="${#numbers.formatInteger(product.subscription_amount, 0, 'COMMA')} + '원'">1,000,000원</strong>
+                </div>
+
+                <div class="prod-data-sec">
+                    <span class="data-label">적용금리 / 만기일</span>
+                    <strong class="data-value" th:text="'연 ' + ${product.applied_interest_rate} + '% / ' + ${#temporals.format(product.maturity_date, 'yyyy.MM.dd')}">연 5.00% / 2027.06.01</strong>
+                </div>
+
+                <div class="prod-status-sec">
+                    <span class="status-badge" th:text="${#strings.toLowerCase(product.subscription_status)}">complete</span>
+                </div>
+
+            </div>
+            
+            <div class="empty-state" th:if="${#lists.isEmpty(productList)}">
+                가입하신 상품 내역이 없습니다.
+            </div>
+
+        </section>
+        
+    </main>
+</body>
+</html>

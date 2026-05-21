@@ -17,7 +17,6 @@
 	</insert>
 	
 	<update id="editMember">
-    UPDATE TB_BANK_MEMBER
     <set>
         <if test="dto.password_hash != null">password_hash = #{dto.password_hash},</if>
         <if test="dto.phone_number != null">phone_number = #{dto.phone_number},</if>
@@ -47,16 +46,22 @@
             BIRTH_DATE,
             PHONE_NUMBER,
             EMAIL,
-            ADRESS,                  CREDIT_SCORE,
+            ADRESS,
+            CREDIT_SCORE,
             MEMBER_STATUS,
             CREATED_AT,
-            UPDATE_AT AS updated_at, LAST_LOGIN_AT
+            UPDATE_AT AS updated_at,
+            LAST_LOGIN_AT
         FROM tb_bank_member
         WHERE LOGIN_ID = #{loginId}
     </select>
+    
+    <select id="findByAll" resultType="com.example.bnk.dto.member.BankMemberDto">
+    	SELECT * FROM TB_BANK_MEMBER;
+    </select>
 
     <update id="updatePassword">
-        UPDATE tb_bank_member
+        UPDATE TB_BANK_MEMBER
         SET PASSWORD_HASH = #{newPassword},
             UPDATE_AT = SYSDATE
         WHERE LOGIN_ID = #{loginId}
