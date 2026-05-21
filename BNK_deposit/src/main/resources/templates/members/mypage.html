@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 마이페이지</title>
+    <link rel="stylesheet" href="/css/members/mypage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <h1>BNK</h1>
+                <div class="header-title-group">
+                    <h2>마이페이지</h2>
+                    <p>회원 정보 · 계좌 · 상품 가입 내역</p>
+                </div>
+            </div>
+            <nav class="header-right">
+                <ul>
+                    <li><a href="#">메인</a></li>
+                    <li><a href="#">계좌조회</a></li>
+                    <li><a href="#">거래내역</a></li>
+                    <li><a href="#">가입상품</a></li>
+                </ul>
+                <button class="btn-mypage-header">마이페이지</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" 
+                th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>   
+        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" 
+                th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
+        <button class="tab-btn" th:classappend="${pageName == 'accounts'} ? 'active'"
+                th:onclick="|location.href='@{/accounts}'|">3. 계좌목록</button>
+        <button class="tab-btn" th:classappend="${pageName == 'history'} ? 'active'"
+                th:onclick="|location.href='@{/history}'|">4. 거래내역</button>
+        <button class="tab-btn" th:classappend="${pageName == 'products'} ? 'active'"
+                th:onclick="|location.href='@{/products}'|">5. 가입상품</button>
+    </nav>
+
+    <main class="mypage-container">
+        
+        <section class="page-header">
+            <h3>마이페이지 확인</h3>
+            <p>로그인한 회원의 금융 이용 현황을 요약해서 보여줍니다.</p>
+        </section>
+
+        <section class="welcome-box">
+            <h4 th:text="|${member.member_name}님, 안녕하세요|">&&&님, 안녕하세요</h4>
+            <p>최근 로그인 정보와 보유 계좌, 가입 상품, 최근 접속 기록을 한눈에 확인할 수 있습니다.</p>
+            <div class="badge-group">
+                <span class="badge red" th:text="${member.member_type == 'PERSONAL' ? '개인회원' : '기업회원'}">개인회원</span>
+                
+                <span class="badge black" th:text="${member.member_status}">REGULAR</span>
+                
+                <span class="badge outline-red" th:text="|마지막 로그인 : ${#temporals.format(member.last_login_at, 'yyyy. MM. dd')}|">마지막 로그인 : 2026. 6. 1. 10:30</span>
+            </div>
+        </section>
+
+        <section class="summary-stats">
+            <div class="stat-card">
+                <span class="stat-title">보유 계좌</span>
+                <strong class="stat-value" th:text="${accountCount} + '개'">3개</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title">총 잔액</span>
+                <strong class="stat-value highlight-red" th:text="${#numbers.formatInteger(totalBalance, 0, 'COMMA')} + '원'">6,560,000원</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-title">가입 상품</span>
+                <strong class="stat-value" th:text="${productCount} + '개'">2개</strong>
+            </div>
+            <div class="stat-card">
+			    <span class="stat-title">최근 접속</span>
+			    <strong class="stat-value" th:text="${logCount} + '건'">4건</strong>
+			</div>
+        </section>
+
+        <section class="action-cards">
+            <a th:href="@{/myinfo}" class="action-card">
+                <div class="icon-wrapper"><i class="fa-regular fa-id-card"></i></div>
+                <h5>내 정보 조회</h5>
+                <p>회원 기본정보와 연락처,<br>회원상태를 확인합니다.</p>
+            </a>
+            
+            <a th:href="@{/accounts}" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div>
+                <h5>계좌 조회</h5>
+                <p>보유 계좌 목록과 현재 잔액을 확인합니다.</p>
+            </a>
+            
+            <a th:href="@{/history}" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <h5>거래내역 조회</h5>
+                <p>선택한 계좌의 입금, 출금,<br>이체 내역을 확인합니다.</p>
+            </a>
+            
+            <a th:href="@{/products}" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-box-archive"></i></div>
+                <h5>가입 상품 내역</h5>
+                <p>가입한 예금·적금 상품 정보를 확인합니다.</p>
+            </a>
+        </section>
+
+        <section class="recent-login">
+            <h4>최근 접속 기록</h4>
+            <div class="table-wrapper">
+                <table class="login-table">
+                    <tbody>
+                        <tr th:each="log : ${recentLogs}">
+                            <td th:text="${#temporals.format(log.accessed_at, 'yyyy.M.d')}">2026.6.1</td>
+                            <td th:text="${log.requested_page}">마이페이지 접속</td>
+                            <td th:text="${log.request_ip}">127.0.0.1</td>
+                        </tr>
+                        
+                        <tr th:if="${#lists.isEmpty(recentLogs)}">
+                            <td colspan="3" style="color: var(--text-light-gray); padding: 20px 0;">최근 접속 기록이 존재하지 않습니다.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

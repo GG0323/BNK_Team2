@@ -14,4 +14,10 @@ public interface IBankMemberDao {
 			@Param("phone_number") String phone_number, 
 			@Param("member_name") String member_name
 		);
+	BankMemberDto findMemberById(String loginId);
+
+	void updateMemberInfo(BankMemberDto updateDto);
+
+	void updatePassword(@Param("loginId") String loginId, @Param("newPassword") String newPassword);
+
 }
