@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 계좌 목록 조회</title>
+    <link rel="stylesheet" href="/css/members/myaccounts.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <h1>BNK</h1>
+                <div class="header-title-group">
+                    <h2>계좌 목록 조회</h2>
+                    <p>보유 계좌 및 잔액 확인</p>
+                </div>
+            </div>
+            <nav class="header-right">
+                <ul>
+                    <li><a href="#">메인</a></li>
+                    <li><a href="#">계좌조회</a></li>
+                    <li><a href="#">거래내역</a></li>
+                    <li><a href="#">가입상품</a></li>
+                </ul>
+                <button class="btn-mypage-header">계좌목록</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myaccounts'} ? 'active'" th:onclick="|location.href='@{/myaccounts}'|">3. 계좌목록</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myhistory'} ? 'active'" th:onclick="|location.href='@{/myhistory}'|">4. 거래내역</button>
+        <button class="tab-btn" th:classappend="${pageName == 'myproducts'} ? 'active'" th:onclick="|location.href='@{/myproducts}'|">5. 가입상품</button>
+    </nav>
+
+    <main class="accounts-container">
+        
+        <section class="page-header">
+            <h3>계좌 목록 조회</h3>
+            <p>로그인한 회원이 보유한 계좌 목록을 카드 형태로 표시합니다.</p>
+        </section>
+
+        <section class="account-grid">
+            <div class="account-card" th:each="account : ${accountList}">
+                <div class="card-header">
+                    <h4 th:text="${account.account_alias != null ? account.account_alias : account.account_name}">생활비 통장</h4>
+                    <span class="status-badge" 
+                          th:classappend="${account.account_status == 'ACTIVE'} ? 'active' : 'inactive'"
+                          th:text="${#strings.toLowerCase(account.account_status)}">active</span>
+                </div>
+                
+                <div class="card-body">
+                    <p class="account-number" th:text="${account.account_number}">123-456-9999</p>
+                    
+                    <div class="balance-wrap">
+                        <span class="balance-label">현재 잔액</span>
+                        <strong class="balance-amount" th:text="${#numbers.formatInteger(account.balance, 0, 'COMMA')} + ' 원'">520,000 원</strong>
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+				    <button type="button" class="btn-red" 
+				            th:onclick="|location.href='@{/myhistory(accountNo=${account.account_no})}'|">
+				        상세 및 거래내역 조회
+				    </button>
+				</div>
+            </div>
+            
+            <div class="empty-state" th:if="${#lists.isEmpty(accountList)}">
+                보유하신 계좌가 없습니다.
+            </div>
+        </section>
+        
+    </main>
+</body>
+</html>

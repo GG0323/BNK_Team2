@@ -14,14 +14,9 @@ public class EmployeePageController {
 		return "Employees/mainWorkspaceLogin";
 	}
 	
-
-	
 	@GetMapping("/manager/HRM/hrmRegist")  // /employee/manager/HRM/hrmRegist
 	public String hrmRegist() {
 		return "Employees/manager/HRM/hrmRegist";
 	}
-	
-	
-	
 	
 }
