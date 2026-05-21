@@ -31,4 +31,31 @@
 		AND member_name = #{member_name}
 	</select>
 
+	<select id="findMemberById" parameterType="String" resultType="com.example.bnk.dto.member.BankMemberDto">
+        SELECT
+            MEMBER_NO,
+            LOGIN_ID,
+            PASSWORD_HASH,
+            MEMBER_NAME,
+            MEMBER_TYPE,
+            MEMBER_IDENTIFIER,
+            GENDER,
+            BIRTH_DATE,
+            PHONE_NUMBER,
+            EMAIL,
+            ADRESS,                  CREDIT_SCORE,
+            MEMBER_STATUS,
+            CREATED_AT,
+            UPDATE_AT AS updated_at, LAST_LOGIN_AT
+        FROM tb_bank_member
+        WHERE LOGIN_ID = #{loginId}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE tb_bank_member
+        SET PASSWORD_HASH = #{newPassword},
+            UPDATE_AT = SYSDATE
+        WHERE LOGIN_ID = #{loginId}
+    </update>
+    
 </mapper>

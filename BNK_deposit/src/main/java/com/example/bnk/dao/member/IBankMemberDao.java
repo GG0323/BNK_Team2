@@ -28,4 +28,9 @@ public interface IBankMemberDao {
 	
 	// 회원 전체 조회
 	public List<BankMemberDto> findByAll();
+	BankMemberDto findMemberById(String loginId);
+	
+	// 회원 비밀번호 수정
+	void updatePassword(@Param("loginId") String loginId, @Param("newPassword") String newPassword);
+
 }

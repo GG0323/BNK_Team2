@@ -25,6 +25,6 @@ public class BankMemberDto {
 	private int credit_score;			// 신용 점수
 	private String member_status;		// 회원 상태 | ASSOCIATE: 준회원 | REGULAR: 정회원 | DORMANT: 휴면 | WITHDRAWN: 탈퇴
 	private LocalDate created_at;		// 생성일시
-	private LocalDate updated_at;		// 수정일시
+	private LocalDate update_at;		// 수정일시
 	private LocalDate last_login_at;	// 마지막 로그인일시
 }
