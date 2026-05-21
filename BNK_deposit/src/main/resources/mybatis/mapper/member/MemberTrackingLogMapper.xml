@@ -4,4 +4,24 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IMemberTrackingLogDao">
 
+	<select id="countLogsByMemberNo" parameterType="long" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_member_tracking_log
+        WHERE MEMBER_NO = #{memberNo}
+    </select>
+
+    <select id="findRecentLogs" parameterType="long" resultType="com.example.bnk.dto.member.MemberTrackingLogDto">
+        SELECT
+            MEMBER_TRACKING_LOG_NO AS member_tracking_log_no,
+            MEMBER_NO AS member_no,
+            REQUESTED_PAGE AS requested_page,
+            REQUEST_METHOD AS request_method,
+            REQUEST_URL AS request_url,
+            REQUEST_IP AS request_ip,
+            ACCESSED_AT AS accessed_at
+        FROM tb_member_tracking_log
+        WHERE MEMBER_NO = #{memberNo}
+        ORDER BY ACCESSED_AT DESC
+    </select>
+    
 </mapper>

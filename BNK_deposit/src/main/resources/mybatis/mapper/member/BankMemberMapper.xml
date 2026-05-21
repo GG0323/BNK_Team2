@@ -3,10 +3,59 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IBankMemberDao">
+
+	<insert id="regist">
+		INSERT INTO TB_BANK_MEMBER(
+	        login_id, password_hash, member_name, member_type, member_identifier,
+	        gender, birth_date, phone_number, email, adress, credit_score
+        )
+    	VALUES(
+    		#{dto.login_id}, #{dto.password_hash}, #{dto.member_name}, #{dto.member_type}
+	    	#{dto.member_identifier}, #{dto.gender}, #{dto.birth_date}, #{dto.phone_number},
+	    	#{dto.email}, #{dto.adress}, #{dto.credit_score}
+    	)
+	</insert>
+	
+	<update id="editMember">
+		UPDATE TB_BANK_MEMBER
+		SET password_hash = #{dto.password_hash},
+			member_name = #{dto.member_name}, birth_date = #{dto.birth_date},
+			phone_number = #{dto.phone_number}, email = #{dto.email}, adress = #{dto.adress}
+		WHERE member_no = #{dto.member_no}
+	</update>
+
 	<select id="showMember" resultType="com.example.bnk.dto.member.BankMemberDto">
 		SELECT * FROM TB_BANK_MEMBER
 		WHERE birth_date = #{birth_date}
 		AND phone_number = #{phone_number}
 		AND member_name = #{member_name}
 	</select>
+
+	<select id="findMemberById" parameterType="String" resultType="com.example.bnk.dto.member.BankMemberDto">
+        SELECT
+            MEMBER_NO,
+            LOGIN_ID,
+            PASSWORD_HASH,
+            MEMBER_NAME,
+            MEMBER_TYPE,
+            MEMBER_IDENTIFIER,
+            GENDER,
+            BIRTH_DATE,
+            PHONE_NUMBER,
+            EMAIL,
+            ADRESS,                  CREDIT_SCORE,
+            MEMBER_STATUS,
+            CREATED_AT,
+            UPDATE_AT AS updated_at, LAST_LOGIN_AT
+        FROM tb_bank_member
+        WHERE LOGIN_ID = #{loginId}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE tb_bank_member
+        SET PASSWORD_HASH = #{newPassword},
+            UPDATE_AT = SYSDATE
+        WHERE LOGIN_ID = #{loginId}
+    </update>
+    
 </mapper>

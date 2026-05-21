@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 내 정보 조회</title>
+    <link rel="stylesheet" href="/css/members/myinfo.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <h1>BNK</h1>
+                <div class="header-title-group">
+                    <h2>내 정보 조회</h2>
+                    <p>회원 기본 정보 확인</p>
+                </div>
+            </div>
+            <nav class="header-right">
+                <ul>
+                    <li><a href="#">메인</a></li>
+                    <li><a href="#">계좌조회</a></li>
+                    <li><a href="#">거래내역</a></li>
+                    <li><a href="#">가입상품</a></li>
+                </ul>
+                <button class="btn-mypage-header">내정보</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" 
+                th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>  
+        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" 
+                th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
+        <button class="tab-btn" th:classappend="${pageName == 'accounts'} ? 'active'"
+                th:onclick="|location.href='@{/accounts}'|">3. 계좌목록</button>
+        <button class="tab-btn" th:classappend="${pageName == 'history'} ? 'active'"
+                th:onclick="|location.href='@{/history}'|">4. 거래내역</button>
+        <button class="tab-btn" th:classappend="${pageName == 'products'} ? 'active'"
+                th:onclick="|location.href='@{/products}'|">5. 가입상품</button>
+    </nav>
+
+    <main class="myinfo-container">
+        
+        <section class="page-header">
+            <h3>내 정보 조회</h3>
+            <p>로그인한 회원의 기본 정보를 조회합니다.</p>
+        </section>
+
+        <section class="info-section">
+            <table class="info-table">
+                <tbody>
+                    <tr>
+                        <th>아이디</th>
+                        <td th:text="${member.login_id}">hong</td>
+                    </tr>
+                    <tr>
+                        <th>회원명</th>
+                        <td th:text="${member.member_name}">홍길동</td>
+                    </tr>
+                    <tr>
+                        <th>회원구분</th>
+                        <td th:text="${member.member_type}">personal</td>
+                    </tr>
+                    <tr>
+                        <th>회원 식별번호</th>
+                        <td th:text="${member.member_identifier}">990101-1*******</td>
+                    </tr>
+                    <tr>
+                        <th>전화번호</th>
+                        <td th:text="${member.phone_number}">010-0000-0000</td>
+                    </tr>
+                    <tr>
+                        <th>이메일</th>
+                        <td th:text="${member.email}">email@email.com</td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td th:text="${member.adress}">부산광역시 부산진구</td>
+                    </tr>
+                    <tr>
+                        <th>신용점수</th>
+                        <td th:text="${member.credit_score} + '점'">700점</td>
+                    </tr>
+                    <tr>
+                        <th>회원상태</th>
+                        <td>
+                            <span class="badge red" th:text="${member.member_status}">REGULAR</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>가입일</th>
+                        <td th:text="${#temporals.format(member.created_at, 'yyyy. MM. dd.')}">2026. 06. 01.</td>
+                    </tr>
+                    <tr>
+                        <th>마지막 로그인</th>
+                        <td th:text="${#temporals.format(member.last_login_at, 'yyyy. MM. dd. HH:mm')}">2026. 06. 01. 10:34</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="btn-wrap">
+		    <button type="button" class="btn-black-large" th:onclick="|location.href='@{/myinfo/edit}'|">개인정보 수정하기</button>
+		</div>
+        
+    </main>
+</body>
+</html>
