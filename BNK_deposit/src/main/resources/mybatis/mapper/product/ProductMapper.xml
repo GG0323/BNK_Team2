@@ -3,5 +3,15 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductDao">
-
+	<select id="showProduct" resultType="com.example.bnk.dto.product.ProductDto">
+		SELECT * FROM TB_PRODUCT
+	</select>
+	
+	<select id="showPrdToDeposit" resultType="com.example.bnk.dto.product.ProductDto">
+		SELECT * FROM TB_PRODUCT WHERE product_type = deposit
+	</select>
+	
+	<select id="showPrdToSavings" resultType="com.example.bnk.dto.product.ProductDto">
+		SELECT * FROM TB_PRODUCT WHERE product_type = savings
+	</select>
 </mapper>

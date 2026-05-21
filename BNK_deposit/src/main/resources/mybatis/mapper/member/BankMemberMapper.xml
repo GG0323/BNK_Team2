@@ -3,6 +3,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IBankMemberDao">
+<<<<<<< HEAD
 	<insert id="regist">
 		INSERT INTO TB_bank_member(
         login_id, password_hash, member_name, member_type, member_identifier,
@@ -12,4 +13,12 @@
     	#{dto.email}, #{dto.adress}, #{dto.credit_score}
     	)
 	</insert>
+=======
+	<select id="showMember" resultType="com.example.bnk.dto.member.BankMemberDto">
+		SELECT * FROM TB_BANK_MEMBER
+		WHERE birth_date = #{birth_date}
+		AND phone_number = #{phone_number}
+		AND member_name = #{member_name}
+	</select>
+>>>>>>> main
 </mapper>
