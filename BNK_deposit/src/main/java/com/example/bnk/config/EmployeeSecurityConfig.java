@@ -23,11 +23,12 @@ public class EmployeeSecurityConfig {
 	}
 	
 	@Bean	@Order(2)
-	SecurityFilterChain filterChain(HttpSecurity http) {
+	SecurityFilterChain employeeFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
+		http.securityMatcher("/employee/**")
+			.authorizeHttpRequests(auth -> auth
+					.anyRequest().permitAll()
 		);
 		
 		
