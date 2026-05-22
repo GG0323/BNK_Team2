@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -8,9 +8,12 @@
 	
 	<h1>상품 제안서 작성 페이지</h1>
 	
-	<form id="suggestionForm">
+	여기에서 직원 로그인id를 히든으로 같이 보내고 그거로 db 조회때려서 fk를 넣어주자.
 	
-		<input type="text" name="employee_no" placeholder="직원 pk를 어디선가 가져오기">
+	<form id="suggestionForm">
+		
+		<input type="text" name="employee_no" th:value = "${username}" >
+		
 		<input type="text" name="manager_employee_no" placeholder="어디선가 상사 pk가져오기">
 		<input type="text" name="product_name" placeholder="제안 상품명">
 		<input type="text" name="suggestion_content" placeholder="제안 내용">
@@ -22,12 +25,29 @@
 	<script>
 		const suggestionForm = document.querySelector("#suggestionForm");
 		// 로그인한 직원의 pk, 현재 특정 직급 이상인 사람들
-		fetch("ㅁapi 여청 두소",{
-			method: "POST",
-			body: 
+		
+		
+		suggestionForm.addEventListener("submit", (e)=> {
+			fetch("/api/staff/suggestion 여청 두소",{
+				method: "POST",
+				body: new FormData(suggestionForm)
+			})
+			.then()
+			.then()
+			.catch(e=> console.log(e));
+			
+		});
+		
+		fetch("/api/staff/suggestion 여청 두소",{
+			method: "GET"
 		})
-		.then()
-		.then()
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			
+			
+		})
 		.catch(e=> console.log(e));
 		
 		

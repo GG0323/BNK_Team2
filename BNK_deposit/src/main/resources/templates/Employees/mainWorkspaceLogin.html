@@ -8,7 +8,8 @@
 	
 	
 	<h1>로그인, 타임리프 형식으로 요청하기</h1>
-	<form th:action="@{/employee/login}" method="POST">
+	<form id="employeeLoginForm">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
 		<input type="text" name="login_id" placeholder="ID" required>
 		<input type="text" name="password_hash" placeholder="PW" required>
@@ -22,6 +23,33 @@
 	
 	<script th:inline="javascript">
 		if([[${msg}]] != null) alert([[${msg}]])
+		
+		const employeeLoginForm = document.querySelector("#employeeLoginForm");
+		
+		employeeLoginForm.addEventListener("submit",(e) => {
+			e.preventDefault();
+			
+			fetch("/employee/login", {
+				method : "POST",
+				body: new FormData(employeeLoginForm)
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(data => {
+				console.log(data.result);
+				console.log(data.role);
+				
+				if(data.role === "ADMIN") location.href="/employee/manager/managerPage";
+				if(data.role === "MANAGER") location.href="/employee/manager/managerPage";
+				//-----------------------------------------
+				if(data.role === "EMPLOYEE") location.href="/employee/staff/staffPage";
+				if(data.role === "INTERN") location.href="/employee/staff/staffPage";
+				
+			})
+			.catch(e => console.log(e));
+		});
+		
 	</script>
 	
 	

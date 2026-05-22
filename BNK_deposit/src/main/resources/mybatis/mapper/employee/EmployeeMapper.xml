@@ -61,6 +61,11 @@
 	</insert>
 	
 	
+	<!-- 상사 목록 반환 -->
+	<select id="">
+		SELECT * FROM TB_employee WHERE employee_role IN ('ADMIN', 'MANAGER')
+	</select>
+	
 	
 
 </mapper>

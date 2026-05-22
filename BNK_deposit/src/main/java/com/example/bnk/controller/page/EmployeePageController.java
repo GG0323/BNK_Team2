@@ -1,22 +1,33 @@
 package com.example.bnk.controller.page;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.service.employees.EmployeeLogService;
+import com.example.bnk.service.member.AccountService;
 
 @Controller
 @RequestMapping("/employee")
 public class EmployeePageController {
+
+    private final AccountService accountService;
 	
 	@Autowired
 	EmployeeLogService logService;
+
+    EmployeePageController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
+	
+	
 	
 	// index 페이지 겸 로그인 페이지  /employee/loginPage
 	@GetMapping("/loginPage") 
@@ -28,6 +39,17 @@ public class EmployeePageController {
 	public String loginFail(Model model, @RequestParam("message") String msg) {
 		model.addAttribute("msg", msg);
 		return "/Employees/mainWorkspaceLogin";
+	}
+	
+	
+	
+	
+	
+	
+	// 관리자 페이지, 
+	@GetMapping("/manager/managerPage")
+	public String managerPage() {
+		return "/Employees/manager/managerPage";
 	}
 	
 	// 신규사원 등록 /employee/manager/HRM/hrmRegist
@@ -54,5 +76,39 @@ public class EmployeePageController {
 	public String hrmEmployeeDetailList() {
 		return "Employees/manager/HRM/hrmEmployeeDetail";
 	}
+	
+	
+	
+	
+	
+	// 스테프 페이지,
+	@GetMapping("/staff/staffPage")
+	public String staffPage() {
+		return "/Employees/staff/staffPage";
+	}
+	
+	// 제안서 작성 페이지
+	@GetMapping("/staff/writeSuggestionPage")
+	public String writeSuggestionPage(
+			@AuthenticationPrincipal String username,
+			Model model
+			) {
+
+		if (username == null) {	
+			System.out.println("사용자정보가 없는데?");
+            return "redirect:/employee/loginPage";
+        }
+		
+		System.out.println("유저 PK : " + username);
+		
+		model.addAttribute("username", username);
+
+		return "/Employees/staff/writeSuggestionPage";
+	}
+	
+	
+	
+	
+	
 	
 }
