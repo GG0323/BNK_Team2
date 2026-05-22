@@ -1,10 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
+	
+	// 여기서 상세 정보를 조회하고, 상세정보의 일부를 수정한다.
+	
+	<form id="updateEmployeeDetale" action="@{/api/employeeList/updateEmployeeDetale}" method="POST">
+		<div>
+	        <label>직원번호</label>
+	        <input type="text" id="employee_no" name="" readonly>  <!-- PK는 항상 readonly -->
+	    </div>
+	    <div>
+	        <label>이름</label>
+	        <input type="text" id="employee_name" readonly>
+	    </div>
+	    <div>
+	    	<img id="img_url" alt="img_url">
+	    </div>
+	    <div>
+	        <label>부서</label>
+	        <input type="text" id="dept_name" readonly>
+	    </div>
+	    <div>
+	        <label>직급</label>
+	        <input type="text" id="job_title" readonly>
+	    </div>
+	    <div>
+	        <label>전화번호</label>
+	        <input type="text" id="phone_number" readonly>
+	    </div>
+	    
+	    <div>
+	        <label>부서 대표번호</label>
+	        <input type="text" id="dept_phone" readonly>
+	    </div>
+	    <div>
+	        <label>부서 위치</label>
+	        <input type="text" id="dept_location" readonly>
+	    </div>
+	    <div>
+	        <label>이메일</label>
+	        <input type="text" id="email" readonly>
+	    </div>
+	    <div>
+	        <label>재직상태</label>
+	        <select id="status" disabled>
+	            <option value="ACTIVE">재직</option>
+	            <option value="LEAVE">휴직</option>
+	            <option value="RESIGNED">퇴직</option>
+	        </select>
+	    </div>
+
+	    <button type="button" id="editBtn"  onclick="enableEdit()">수정</button>
+	    <button type="submit" id="saveBtn" style="display:none;">저장</button>
+	    <button type="button" id="cancelBtn" onclick="cancelEdit()" style="display:none;">취소</button>
+	
+	</form>
+	
+	
+	<script>
+		
+		const employee_no = new URLSearchParams(location.search).get("employee_no");
+		// 최초의 fetch로 받아온 원본 데이터
+		let originalData = {};
+		
+		fetch("/api/employeeList/detail?employee_no=" + employee_no, {
+			method: "GET",
+			
+		}).then(response => {
+			return response.json();
+		}).then(data => {
+			console.log(data);
+			// 수정 전 DB값 저장
+			originalData = data;
+			detailForm(data);
+			
+		}).
+		catch(e => console.log(e));
+		// DB값 폼에 채우기 read only
+		function detailForm(data) {
+		    document.getElementById("employee_no").value  = data.employee_no;
+		    document.getElementById("employee_name").value = data.employee_name;
+		    document.getElementById("dept_name").value    = data.dept_name;
+		    document.getElementById("dept_phone").value    = data.dept_phone;
+		    document.getElementById("dept_location").value    = data.dept_location;
+		    
+		    document.getElementById("job_title").value    = data.job_title;
+		    document.getElementById("phone_number").value = data.phone_number;
+		    document.getElementById("email").value        = data.email;
+		    document.getElementById("status").value       = data.status;
+		    document.getElementById("img_url").src       = data.img_url;
+		}
+		
+		// 수정 버튼 → read only 삭제 input 활성화
+		function enableEdit() {
+		    ["employee_name", "job_title", "phone_number", "email"]
+		        .forEach(id => document.getElementById(id).removeAttribute("readonly"));
+		    document.getElementById("status").disabled = false;
+
+		    document.getElementById("editBtn").style.display   = "none";
+		    document.getElementById("saveBtn").style.display   = "inline";
+		    document.getElementById("cancelBtn").style.display = "inline";
+		}
+		
+		// 취소 버튼 → originalData를 이용해 원래 값으로 복구
+		function cancelEdit() {
+			detailForm(originalData);
+		    
+		    // read only 재 활성화
+		    ["employee_name", "job_title", "phone_number", "email"]
+	        .forEach(id => document.getElementById(id).setAttribute("readonly", true));
+		    document.getElementById("status").disabled = true;
+	
+		    document.getElementById("editBtn").style.display   = "inline";
+		    document.getElementById("saveBtn").style.display   = "none";
+		    document.getElementById("cancelBtn").style.display = "none";
+		}
+		
+		
+		
+	</script>
 
 </body>
 </html>

@@ -3,8 +3,10 @@ package com.example.bnk.controller.page;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bnk.service.employees.EmployeeLogService;
 
@@ -16,8 +18,9 @@ public class EmployeePageController {
 	EmployeeLogService logService;
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
 	
-	// /employee/toMain
-	@GetMapping("/toMain") 
+	
+	//  /employee/toMain
+	@GetMapping("/loginPage") 
 	public String mainWorkSpace() {
 		return "Employees/mainWorkspaceLogin";
 	}
@@ -42,11 +45,11 @@ public class EmployeePageController {
 	public String hrmEmployeeList() {
 		return "Employees/manager/HRM/hrmEmployeeList";
 	}
-	
-	// /employee/manager/HRM/hrmEmployeeDetailList
-	@GetMapping("/manager/HRM/hrmEmployeeDetailList")
+	// 직원 상세 페이지 직원 pk를 받아서 넘긴다.
+	// /employee/manager/HRM/hrmEmployeeDetail
+	@GetMapping("/manager/HRM/hrmEmployeeDetail")
 	public String hrmEmployeeDetailList() {
-		return "Employees/manager/HRM/hrmEmployeeDetailList";
+		return "Employees/manager/HRM/hrmEmployeeDetail";
 	}
 	
 	

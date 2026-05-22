@@ -3,11 +3,28 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.employee.IEmployeeDao">
-
+	
+	<!-- 사원 전체 목록 출력 -->
 	<select id="showAllEmp" resultType="com.example.bnk.dto.employee.EmployeeDto">
-		SELECT * FROM TB_EMPLOYEE ORDER BY employee_no DESC
+		SELECT * FROM TB_EMPLOYEE ORDER BY employee_no DESC;
 	</select>
-	<!-- TB_EMPLOYEE -->
+	
+	<!-- 사원 전체 목록 + 부서이름 출력 -->
+	<select id="employeeAllList" resultType="com.example.bnk.dto.employee.EmployeeListDto">
+		SELECT e.employee_no, e.dept_no, d.dept_name, e.employee_name, e.job_title, e.status
+		FROM TB_EMPLOYEE e
+		JOIN TB_DEPT d
+		ON e.dept_no = d.dept_id
+		ORDER BY employee_no DESC
+	</select>
+	<!-- 사원 상세 페이지 + 부서이름 출력 -->
+	<select id="employeeDetail" resultType="com.example.bnk.dto.employee.EmployeeListDetailDto">
+		SELECT *
+		FROM TB_EMPLOYEE e
+		JOIN TB_DEPT d
+		ON e.dept_no = d.dept_id
+		WHERE employee_no = #{param}
+	</select>
 	
 	<!-- 로그인 인증 처리 id 검색 고민 반환을 전부 받을지, 아니면 pk랑, pw만 가져올지-->
 	<select id="login" resultType="com.example.bnk.dto.employee.EmployeeDto">
@@ -15,16 +32,17 @@
 		WHERE login_id = #{param}
 	</select>
 	
+	<!-- 사원 신규 등록 -->
 	<insert id="regist">
 		INSERT INTO TB_employee 
 			(dept_no, login_id, password_hash,
 			 employee_name, gender, birth_date,
 			 phone_number, email, home_adress, hire_date,
 			 job_title, employee_role, status, img_url)
-		VALUES ( #{dept_no},#{login_id},#{password_hash},
-				 #{employee_name},#{gender},#{birth_date},
-				 #{phone_number},#{email},#{home_adress},#{hire_date},
-				 #{job_title},#{employee_role},#{status},#{img_url})
+		VALUES ( #{dto.dept_no},#{dto.login_id},#{dto.password_hash},
+				 #{dto.employee_name},#{dto.gender},#{dto.birth_date},
+				 #{dto.phone_number},#{dto.email},#{dto.home_adress},#{dto.hire_date},
+				 #{dto.job_title},#{dto.employee_role},#{dto.status},#{dto.img_url})
 	</insert>
 	
 	
