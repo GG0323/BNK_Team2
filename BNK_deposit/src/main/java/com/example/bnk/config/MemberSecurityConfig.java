@@ -11,6 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberDetailsService;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
+import com.example.bnk.auth.SecurityLoginFailHandler;
 import com.example.bnk.utils.JwtUtil;
 
 @Configuration
@@ -30,9 +31,8 @@ public class MemberSecurityConfig {
 	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http
-			.userDetailsService(memberDetailsService)
-			.securityMatcher("/member")
+		http.userDetailsService(memberDetailsService)
+			.securityMatcher("/member/**", "/loginPage", "/signupPage", "/api/member/**")
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
@@ -41,9 +41,7 @@ public class MemberSecurityConfig {
 			member.loginPage("/loginPage")
 			.loginProcessingUrl("/member/login")
 			.successHandler(new MemberLoginSuccessHandler(jwtUtil))
-			.failureUrl("/loginPage?message=fail")
-			.passwordParameter("password_hash")
-			.usernameParameter("login_id")
+			.failureHandler(new SecurityLoginFailHandler())
 		);
 		
 		return http.build();
