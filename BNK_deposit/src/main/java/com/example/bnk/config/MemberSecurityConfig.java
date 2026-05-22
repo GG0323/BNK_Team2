@@ -32,7 +32,7 @@ public class MemberSecurityConfig {
 		// 권한별 제어
 		http
 			.userDetailsService(memberDetailsService)
-			.securityMatcher("/member/**", "/loginPage", "/api/member/**")
+			.securityMatcher("/member")
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		

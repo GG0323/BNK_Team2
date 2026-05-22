@@ -25,6 +25,7 @@ public class MemberApiController {
 	
 	@PostMapping("/2/member")
 	public ResponseEntity<Boolean> signup(BankMemberDto dto){
+		System.out.println(dto);
 		return ResponseEntity.ok(service.regist(dto));
 	}
 	
