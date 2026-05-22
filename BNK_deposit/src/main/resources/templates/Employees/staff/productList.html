@@ -6,25 +6,74 @@
 </head>
 <body>
 	<h2>상품 목록</h2>
+	
+	<!-- 상품 가입 조건 등록 페이지로 이동 -->	
+	<div th:onclick="|productConditionWrite()|" style="border: 1px solid black; width: 250px; margin-top: 50px; margin-bottom: 50px;">
+		상품 가입 조건 등록하기 <span style="color: red;">이곳</span>을 <span style="color: blue;">클릭</span>
+	</div>
+	
+	<!-- 상품 금리 등록 페이지로 이동 -->	
+	<div th:onclick="|productRateWrite()|" style="border: 1px solid black; width: 250px; margin-top: 50px; margin-bottom: 50px;">
+		상품 금리 등록하기 <span style="color: red;">이곳</span>을 <span style="color: blue;">클릭</span>
+	</div>
+	
+	<!-- 상품 설명 등록 페이지로 이동 -->	
+	<div th:onclick="|productDescriptionWrite()|" style="border: 1px solid black; width: 250px; margin-top: 50px; margin-bottom: 50px;">
+		상품 설명 등록하기 <span style="color: red;">이곳</span>을 <span style="color: blue;">클릭</span>
+	</div>
+	
+	<!-- 전체 상품 리스트 출력 -->
 	<div id="product_list_place">
 		<table>
 			<thead>
 				<tr>
 					<th>번호</th>
+					<th>상품코드</th>
 					<th>상품명</th>
 					<th>구분</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody th:if="${#lists.isEmpty(productList)}">
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td colspan="4" style="text-align: center;">상품이 없습니다.</td>
+				</tr>
+			</tbody>
+			<tbody th:if="${not #lists.isEmpty(productList)}">
+				<tr th:each="prd, stat : ${productList}" 
+					th:onclick="|productDetail('${prd.product_no}')|">
+					
+					<td th:text="${stat.count}"></td>
+					<td th:text="${prd.product_no}"></td>
+					<td th:text="${prd.product_name}"></td>
+					<td th:text="${prd.product_type}"></td>
 				</tr>
 			</tbody>
 			
 		</table>
+
 	
 	</div>
+	<script>
+	
+	function productDetail(product_no) {
+	    // 상품 번호를 주소 경로(Path)의 일부로 포함시켜 이동.
+	    location.href = '/employee/prdPage/detail/' + product_no;
+	}
+	
+	// 상품 가입 조건 등록 페이지로 이동하는 함수
+	function productConditionWrite(){
+		location.href= '/employee/staff/product/condition';
+	}
+	
+	// 상품 금리 등록 페이지로 이동
+	function productRateWrite(){
+		location.href= '/employee/staff/product/rate';
+	}
+	
+	// 상품 설명 등록 페이지로 이동
+	function productDescriptionWrite(){
+		location.href= '/employee/staff/product/description';
+	}
+	</script>
 </body>
 </html>

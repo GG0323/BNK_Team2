@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 금리 등록 페이지</title>
+<style>
+	body{
+		padding: 20px;
+		font-family: sans-serif;
+	}
+	.table_name{
+		color: gray;
+		font-size: 0.9rem;
+	}
+    .hidden_group {
+        display: none; 
+    }
+</style>
+</head>
+<body>
+	<h2>상품 상품 금리 등록</h2>
+	<p class="table_name">테이블: TB_PRODUCT_RATE</p>
+	<hr>
+	
+	<form th:action="@{/employee/staff/product/rate/save}" method="POST">
+	
+		<span style="color: red">*</span>상품 FK: <input type="number" name="product_no" required placeholder="상품과 연결"/><br>
+		
+		<label for="rate_group">금리 구분</label>
+		<select id="rate_group" name="rate_group">
+		    <option value="MATURITY" selected>만기 지급</option>
+		    <option value="AFTER_MATURITY">만기 후</option>
+		    <option value="EARLY_TERMINATION">중도 해지</option>
+		</select><br>
+		
+		<span style="color: red">*</span>금리 구간/조건명: <input type="text" name="rate_label" required placeholder="예: 1개월 이상 6개월 미만"/><br>
+		
+		연이율: <input type="text" name="annual_rate" placeholder="예: 2.10 / -"/><br>
+		
+		연수익률: <input type="text" name="annual_return_rate" placeholder="예: 2.10 / -"/><br>
+		
+		비고: <textarea id="note" name="note" rows="4" style="width: 250px; padding: 5px;" placeholder="계산식 및 안내 문구"></textarea><br>
+		
+		<span style="color: red">*</span>노출 순서: <input type="number" name="display_order" required placeholder="화면 출력 순서"/><br>
+		
+		<label for="use_yn">사용 여부: </label>		
+		<select id="use_yn" name="use_yn">
+			<option value="Y">사용</option>
+			<option value="N">미사용</option>
+		</select><br>
+		
+		<input type="submit" value="등록 하기"/>
+		
+	</form>
+	
+</body>
+</html>
