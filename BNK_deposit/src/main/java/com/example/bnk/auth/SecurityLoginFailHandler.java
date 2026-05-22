@@ -14,7 +14,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class EmployeeLoginFailHandler implements AuthenticationFailureHandler{
+public class SecurityLoginFailHandler implements AuthenticationFailureHandler{
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
