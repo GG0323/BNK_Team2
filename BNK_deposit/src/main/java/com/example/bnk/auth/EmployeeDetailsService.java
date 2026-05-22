@@ -17,7 +17,12 @@ public class EmployeeDetailsService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		System.out.println("시큐리티~~~");
+		
 		EmployeeDto dto = dao.findByUsername(username);
+		System.out.println("시큐리티 로그인~~ "+dto.toString());
+		
 		return dto != null ? new EmployeeDetails(dto) : null;
 	}
 
