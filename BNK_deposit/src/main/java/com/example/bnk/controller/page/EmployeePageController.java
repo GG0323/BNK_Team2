@@ -18,14 +18,19 @@ public class EmployeePageController {
 	EmployeeLogService logService;
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
 	
-	
-	//  /employee/toMain
+	// index 페이지 겸 로그인 페이지  /employee/loginPage
 	@GetMapping("/loginPage") 
 	public String mainWorkSpace() {
 		return "Employees/mainWorkspaceLogin";
 	}
+	// 로그인 실패
+	@GetMapping(value="/loginPage", params="message")
+	public String loginFail(Model model, @RequestParam("message") String msg) {
+		model.addAttribute("msg", msg);
+		return "/Employees/mainWorkspaceLogin";
+	}
 	
-	// /employee/manager/HRM/hrmRegist
+	// 신규사원 등록 /employee/manager/HRM/hrmRegist
 	@GetMapping("/manager/HRM/hrmRegist")  
 	public String hrmRegist() {
 		logService.build("PAGEVIEW", null, null, "페이지간 이동을 실현한다: 인사관리/신규 사원 등록", "GET", "/employee/manager/HRM/hrmRegist");
@@ -39,14 +44,12 @@ public class EmployeePageController {
 		return "Employees/manager/LOG/logList";
 	}
 	
-	// 직원 리스트 페이지 
-	// /employee/manager/HRM/hrmEmployeeList
+	// 직원 리스트 페이지  /employee/manager/HRM/hrmEmployeeList
 	@GetMapping("/manager/HRM/hrmEmployeeList")
 	public String hrmEmployeeList() {
 		return "Employees/manager/HRM/hrmEmployeeList";
 	}
-	// 직원 상세 페이지 직원 pk를 받아서 넘긴다.
-	// /employee/manager/HRM/hrmEmployeeDetail
+	// 직원 상세 페이지 직원 pk를 받아서 넘긴다.   /employee/manager/HRM/hrmEmployeeDetail
 	@GetMapping("/manager/HRM/hrmEmployeeDetail")
 	public String hrmEmployeeDetailList() {
 		return "Employees/manager/HRM/hrmEmployeeDetail";

@@ -32,8 +32,8 @@ public class SecurityConfig {
 		
 		// 직원 로그인 설정
 		http.formLogin(employee ->
-			employee.loginPage("/employee/loginPage")
-			.loginProcessingUrl("/employee/login")
+			employee.loginPage("/employee/loginPage") // 페이지
+			.loginProcessingUrl("/employee/login") // 프로세스 html의 요청
 			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
 			.failureUrl("/employee/loginPage?message=fail")
 			.passwordParameter("password_hash")

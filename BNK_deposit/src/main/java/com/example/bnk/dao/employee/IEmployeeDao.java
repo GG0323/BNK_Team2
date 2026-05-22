@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.bnk.dto.employee.EmployeeDetailUpdateDto;
 import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.employee.EmployeeListDetailDto;
 import com.example.bnk.dto.employee.EmployeeListDto;
@@ -29,7 +30,10 @@ public interface IEmployeeDao {
 	// 사원 id 검사
 	public EmployeeDto login(String login_id);
 	
+	
 	// 사원 등록
 	public int regist(@Param("dto") EmployeeRegistInsertDto insertDto);
+	// 사원 정보 수정
+	public int updateEmployeeDetail(@Param("dto") EmployeeDetailUpdateDto detailDto);
 	
 }

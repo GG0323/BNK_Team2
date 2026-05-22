@@ -25,9 +25,24 @@
 		ON e.dept_no = d.dept_id
 		WHERE employee_no = #{param}
 	</select>
+	<!-- 사원 상세 정보 업데이트 -->
+	<update id="updateEmployeeDetail" >
+		UPDATE TB_EMPLOYEE
+		SET 
+			employee_name = #{dto.employee_name},
+			phone_number  = #{dto.phone_number},
+			email         = #{dto.email},
+			job_title     = #{dto.job_title},
+			status        = #{dto.status},
+			updated_at    = SYSDATE
+			 
+		WHERE employee_no = #{dto.employee_no}
+	</update>
+	
+	
 	
 	<!-- 로그인 인증 처리 id 검색 고민 반환을 전부 받을지, 아니면 pk랑, pw만 가져올지-->
-	<select id="login" resultType="com.example.bnk.dto.employee.EmployeeDto">
+	<select id="findByUsername" resultType="com.example.bnk.dto.employee.EmployeeDto">
 		SELECT * FROM TB_EMPLOYEE 
 		WHERE login_id = #{param}
 	</select>
