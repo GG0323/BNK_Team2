@@ -10,8 +10,9 @@
 <div>
 	<p>안녕하세요</p>
 </div>
-<br><br>
-<a href="/mypage">마이페이지</a>
+<br>
+<a th:href="@{/mypage}">마이페이지</a><br>
+<a th:href="@{/financedictionary}">금융용어사전</a>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>

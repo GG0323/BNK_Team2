@@ -1,5 +1,6 @@
 package com.example.bnk.controller.page;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -34,11 +35,11 @@ public class BankMemberPageController {
 	
 	// 사용자의 마이페이지 
 	@GetMapping("/mypage")
-    public String rootMembersMypage(Model model) {
+    public String rootMembersMypage(Principal principal, Model model) {
         // 회원 정보 조회
-        String currentLoginId = "dev_hyun"; 
-        BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-        long currentMemberNo = memberInfo.getMember_no();
+		String currentLoginId = principal.getName();
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+	    long currentMemberNo = memberInfo.getMember_no();
         
         // 계좌 정보 조회
         List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
@@ -65,10 +66,16 @@ public class BankMemberPageController {
 	
 	// 사용자의 내 정보 페이지
 	@GetMapping("/myinfo")
-	public String rootMembersMyinfo(Model model) {
-		String currentLoginId = "dev_hyun";
+	public String rootMembersMyinfo(Principal principal, Model model) {
+		String currentLoginId = principal.getName();
 		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		memberInfo.setMember_identifier("980515-1******"); // 임시로 만들어놓음
+		// ✨ 동적 마스킹 처리 (DB에 "980515-1234567" 형태로 저장되어 있다고 가정)
+		String realIdentifier = memberInfo.getMember_identifier();
+		if (realIdentifier != null && realIdentifier.length() >= 8) {
+		    // 앞 8자리(생년월일-성별코드)까지만 남기고 나머지는 * 로 처리
+		    String masked = realIdentifier.substring(0, 8) + "******";
+		    memberInfo.setMember_identifier(masked);
+		}
 		model.addAttribute("member", memberInfo);
 		model.addAttribute("pageName", "myinfo");
         
@@ -77,12 +84,17 @@ public class BankMemberPageController {
 	
 	// 사용자의 내 정보 수정하기 페이지
 	@GetMapping("/myinfo/edit")
-	public String rootMembersMyinfoEdit(Model model) {
-	    String currentLoginId = "dev_hyun";
+	public String rootMembersMyinfoEdit(Principal principal, Model model) {
+		String currentLoginId = principal.getName();
 	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
 	    
-	    // 식별번호 임시 마스킹 처리
-	    memberInfo.setMember_identifier("980515-1******");
+	    // ✨ 동적 마스킹 처리 (DB에 "980515-1234567" 형태로 저장되어 있다고 가정)
+	    String realIdentifier = memberInfo.getMember_identifier();
+	    if (realIdentifier != null && realIdentifier.length() >= 8) {
+	        // 앞 8자리(생년월일-성별코드)까지만 남기고 나머지는 * 로 처리
+	        String masked = realIdentifier.substring(0, 8) + "******";
+	        memberInfo.setMember_identifier(masked);
+	    }
 	    
 	    model.addAttribute("member", memberInfo);
 	    model.addAttribute("pageName", "myinfo"); // 서브 네비게이션 '2. 내정보' 활성화 유지
@@ -93,13 +105,14 @@ public class BankMemberPageController {
 	// 내 정보 수정, DB 업데이트 기능
 	@PostMapping("/myinfo/update")
 	public String updateMyInfo(
+			Principal principal,
 	        @RequestParam(value = "phone_number", defaultValue = "") String phoneNumber,
 	        @RequestParam(value = "email", defaultValue = "") String email,
 	        @RequestParam(value = "address_main", defaultValue = "") String addressMain,
 	        @RequestParam(value = "address_detail", defaultValue = "") String addressDetail,
 	        RedirectAttributes rttr) {
 	    
-	    String currentLoginId = "dev_hyun"; 
+		String currentLoginId = principal.getName();
 	    
 	    // 입력 데이터가 아예 없으면 DB 접근 차단 (Early Return)
 	    if (phoneNumber.trim().isEmpty() && email.trim().isEmpty() && addressMain.trim().isEmpty()) {
@@ -140,11 +153,11 @@ public class BankMemberPageController {
 	// 내 비밀번호 수정, DB 업데이트 기능
 	@PostMapping("/myinfo/update-password")
 	public String updatePassword(
+			Principal principal,
 	        @RequestParam(value = "current_password", defaultValue = "") String currentPassword,
 	        @RequestParam(value = "new_password", defaultValue = "") String newPassword,
-	        RedirectAttributes rttr ) 
-	{
-	    String currentLoginId = "dev_hyun"; 
+	        RedirectAttributes rttr ){
+		String currentLoginId = principal.getName();
 	    
 	    // 비밀번호 입력값이 비어있으면 DB 접근 차단
 	    if (currentPassword.trim().isEmpty() || newPassword.trim().isEmpty()) {
@@ -166,9 +179,12 @@ public class BankMemberPageController {
 	
 	// 내 계좌 정보 보기
 	@GetMapping("/myaccounts")
-	public String rootMembersAccounts(Model model) {
-	    // 현재 로그인된 회원 번호 (임시)
-	    long currentMemberNo = 1L; // 실제 환경에서는 세션이나 앞서 조회한 회원 정보에서 가져오기
+	public String rootMembersAccounts(Principal principal, Model model) {
+		String currentLoginId = principal.getName();
+	    
+	    // DB에서 해당 회원의 진짜 member_no 가져오기
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+	    long currentMemberNo = memberInfo.getMember_no();
 	    
 	    // 계좌 목록 조회
 	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
@@ -192,11 +208,11 @@ public class BankMemberPageController {
 	        return "redirect:/myaccounts";
 	    }
         
-        // 서비스에 심부름을 시켜 데이터를 가져옵니다.
+        // 서비스에 심부름을 시켜 데이터를 가져오기
 	    AccountDto account = accountService.getAccountDetail(accountNo.longValue());
 	    List<AccountTransactionDto> transactionList = accountTransactionService.getTransactions(accountNo.longValue());
         
-        // 가져온 데이터를 HTML(Thymeleaf)이 읽을 수 있게 Model에 예쁘게 담아줍니다.
+        // 가져온 데이터를 HTML(Thymeleaf)이 읽을 수 있게 Model에 예쁘게 담아주기
         // (이름을 "account", "transactionList"로 담았기 때문에 HTML에서 ${account...}로 꺼내 쓸 수 있습니다!)
         model.addAttribute("account", account);
         model.addAttribute("transactionList", transactionList);
@@ -207,9 +223,13 @@ public class BankMemberPageController {
 	
 	// 사용자의 가입 상품 내역 페이지 조회
 	@GetMapping("/myproducts")
-	public String rootMembersProducts(Model model) {
-	    //  현재 로그인한 회원 번호 세팅 (테스트용 1번 회원)
-	    long currentMemberNo = 1L; 
+	public String rootMembersProducts(Principal principal, Model model) {
+		// 토큰에서 로그인 아이디 추출
+	    String currentLoginId = principal.getName();
+	    
+	    // DB에서 해당 회원의 진짜 member_no 가져오기
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+	    long currentMemberNo = memberInfo.getMember_no(); 
 	    
 	    // 서비스 호출하여 JOIN된 가입 상품 리스트 가져오기
 	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentMemberNo);

@@ -28,4 +28,9 @@ public class FinanceDictionaryService {
 	    // 조회수가 올라간 최신 상태의 데이터를 가져와서 컨트롤러로 반환. (SELECT)
 	    return financeDictionaryDao.selectDictionaryByNo(dictionary_no);
 	}
+	
+	// 검색 로직 추가
+	public List<FinanceDictionaryDto> searchDictionary(String keyword) {
+		return financeDictionaryDao.searchDictionary(keyword);
+	}
 }

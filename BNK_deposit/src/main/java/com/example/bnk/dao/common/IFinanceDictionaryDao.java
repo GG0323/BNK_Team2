@@ -17,4 +17,7 @@ public interface IFinanceDictionaryDao {
 	
 	// ✨ 특정 용어의 조회수 1 증가시키기
 	void updateViewCount(long dictionary_no);
+	
+	// 검색 로직
+	List<FinanceDictionaryDto> searchDictionary(String keyword);
 }

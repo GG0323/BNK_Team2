@@ -7,13 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bnk.dto.common.FinanceDictionaryDto;
 import com.example.bnk.service.common.FinanceDictionaryService;
 
 @Controller
-@RequestMapping("/bnk")
 @CrossOrigin(origins = "*")
 public class FinanceDictionaryController {
 	
@@ -23,15 +22,26 @@ public class FinanceDictionaryController {
 		this.dictionaryService = dictionaryService;
 	}
 
-	@GetMapping("/findictionary")
-    public String rootFinDictionary(Model model) {
-        System.out.println("active rootFinDictionary()...");
-        List<FinanceDictionaryDto> list = dictionaryService.getAllDictionarys();
+	// 금융용어 사전 페이지 이동 및 검색
+	@GetMapping("/financedictionary")
+    public String rootFinDictionary(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        List<FinanceDictionaryDto> list;
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            // 검색어가 있으면 검색 결과 가져오기
+            list = dictionaryService.searchDictionary(keyword);
+            model.addAttribute("keyword", keyword); // 검색창에 검색어 유지용
+        } else {
+            // 검색어가 없으면 전체 목록 가져오기
+            list = dictionaryService.getAllDictionarys();
+        }
+        
         model.addAttribute("dictionaryList", list);
-        return "dictionary/findictionary"; 
+        return "financedictionary"; 
     }
 	
-	@GetMapping("/findictionary/{dictionary_no}")
+	// 금융용어 사전 상세 페이지
+	@GetMapping("/financedictionary/{dictionary_no}")
 	public String detailFinDictionary(@PathVariable("dictionary_no") int dictionary_no, Model model) {
 	    // 서비스에게 번호를 주고 해당 용어 데이터를 가져오라고 시킵니다.
 		FinanceDictionaryDto financeword = dictionaryService.getDictionary(dictionary_no);
@@ -40,6 +50,6 @@ public class FinanceDictionaryController {
 	    model.addAttribute("financeword", financeword);
 	    
 	    // 상세 화면용 HTML 파일(findictionaryDetail.html)을 엽니다.
-	    return "dictionary/findictionaryDetail"; 
+	    return "financedictionarydetail"; 
 	}
 }
