@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.bnk.auth.EmployeeDetailsService;
-import com.example.bnk.auth.EmployeeLoginFailHandler;
+import com.example.bnk.auth.SecurityLoginFailHandler;
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
@@ -42,7 +42,7 @@ public class EmployeeSecurityConfig {
 			employee.loginPage("/employee/loginPage")
 			.loginProcessingUrl("/employee/login")
 			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
-			.failureHandler(new EmployeeLoginFailHandler())
+			.failureHandler(new SecurityLoginFailHandler())
 			.passwordParameter("password_hash")
 			.usernameParameter("login_id")
 		);
