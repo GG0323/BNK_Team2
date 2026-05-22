@@ -30,9 +30,8 @@ public class MemberSecurityConfig {
 	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http
-			.userDetailsService(memberDetailsService)
-			.securityMatcher("/member")
+		http.userDetailsService(memberDetailsService)
+			.securityMatcher("/member/**", "/loginPage", "/signupPage", "/api/member/**")
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
