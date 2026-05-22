@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 상세 설명 항목 등록</title>
+<style>
+    body { padding: 20px; font-family: sans-serif; }
+    .form_group { margin-bottom: 15px; }
+    .form_group label { display: inline-block; width: 220px; font-weight: bold; vertical-align: top; margin-top: 5px; }
+    .form_group input[type="text"], .form_group textarea { width: 450px; padding: 6px; box-sizing: border-box; }
+    .form_group textarea { resize: vertical; }
+</style>
+</head>
+<body>
+
+<h2>상품 상세 설명 항목 등록</h2>
+<hr>
+
+	<form th:action="@{/employee/staff/product/description/save}" method="POST" enctype="multipart/form-data">
+		<!-- 스프링 시큐리티에서 제공해주는 CSRF. 사이트간 요청 위조 방어래용. 제미나이가 알려줘서 넣었음. -->
+	    <!-- 
+	    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		-->
+		
+	    <div class="form_group">
+	        <label th:for="product_no"><span style="color:red;">*</span>상품 FK :</label>
+	        <input type="text" id="product_no" name="product_no" required placeholder="연결할 상품 코드(NUMBER) 입력">
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="subtitle">부제목 :</label>
+	        <input type="text" id="subtitle" name="subtitle" placeholder="예: BNK가치성장 정기예금">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="content">홍보문구 :</label>
+	        <input type="text" id="content" name="content" placeholder="예: 생산적금융 참여 특판 정기예금">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="eligibility_desc">가입자격 :</label>
+	        <input type="text" id="eligibility_desc" name="eligibility_desc" placeholder="제한없음 등">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="period_desc">가입기간 :</label>
+	        <input type="text" id="period_desc" name="period_desc" placeholder="예: 6개월~36개월(일 단위)">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="amount_desc">가입금액 :</label>
+	        <input type="text" id="amount_desc" name="amount_desc" placeholder="예: 월 1만원 이상">
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="preferential_rate_summary">상단 우대금리 요약 (CLOB) :</label>
+	        <textarea id="preferential_rate_summary" name="preferential_rate_summary" rows="3" placeholder="상단 고정 영역 우대금리 요약 안내문..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="product_feature_desc">상품특징 :</label>
+	        <input type="text" id="product_feature_desc" name="product_feature_desc" placeholder="상품 특징 설명">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="deposit_subject_desc">예금과목 :</label>
+	        <input type="text" id="deposit_subject_desc" name="deposit_subject_desc" placeholder="예: 정기적금">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="payment_method_desc">납입방법 :</label>
+	        <input type="text" id="payment_method_desc" name="payment_method_desc" placeholder="예: 자유적립식">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="join_method_desc">가입방법 :</label>
+	        <input type="text" id="join_method_desc" name="join_method_desc" placeholder="영업점, 인터넷뱅킹 등">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="required_document_desc">필요서류 :</label>
+	        <input type="text" id="required_document_desc" name="required_document_desc" placeholder="예: 실명확인증표">
+	    </div>
+	    
+	    <div class="form_group">
+	        <label th:for="tax_benefit_desc">세제혜택 :</label>
+	        <input type="text" id="tax_benefit_desc" name="tax_benefit_desc" placeholder="비과세종합저축 가능">
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="principal_interest_limit_desc">원금 또는 이자지급 제한 (CLOB) :</label>
+	        <textarea id="principal_interest_limit_desc" name="principal_interest_limit_desc" rows="4" placeholder="원금 및 이자 지급 제한 관련 긴 안내문 입력..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="interest_rate_desc">적용금리 :</label>
+	        <input type="text" id="interest_rate_desc" name="interest_rate_desc" placeholder="예: 금리표 참조">
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="interest_payment_desc">이자지급방식 (CLOB) :</label>
+	        <textarea id="interest_payment_desc" name="interest_payment_desc" rows="3" placeholder="만기일시지급식 등 관련 안내..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="preferential_rate_desc">우대이율 (CLOB) :</label>
+	        <textarea id="preferential_rate_desc" name="preferential_rate_desc" rows="4" placeholder="우대조건 상세 안내 입력..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="expected_interest_desc">예상수취이자액 안내 (CLOB) :</label>
+	        <textarea id="expected_interest_desc" name="expected_interest_desc" rows="4" placeholder="표 또는 수취이자 관련 안내문..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="caution_note">유의사항 (CLOB) :</label>
+	        <textarea id="caution_note" name="caution_note" rows="4" placeholder="금융상품 유의사항 입력..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="reference_note">참고사항 (CLOB) :</label>
+	        <textarea id="reference_note" name="reference_note" rows="4" placeholder="기타 안내사항 입력..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="sale_period_desc">판매 기간 문구 :</label>
+	        <input type="text" id="sale_period_desc" name="sale_period_desc" placeholder="예: 2026-03-27 ~ 2026-05-31(단, 한도 5,000억원 소진 시 조기종료)">
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="non_taxable_savings_desc">비과세종합저축 (CLOB) :</label>
+	        <textarea id="non_taxable_savings_desc" name="non_taxable_savings_desc" rows="3" placeholder="세법 관련 안내문..."></textarea>
+	    </div>
+	
+	    <div class="form_group">
+	        <label th:for="disclosure_approval_desc">공시 승인 번호 :</label>
+	        <input type="text" id="disclosure_approval_desc" name="disclosure_approval_desc" placeholder="심의필, 심의일자, 유효기일 포함">
+	    </div>
+	
+	    <div class="form_group">
+	        <label for="image_file">대표 이미지 업로드 :</label>
+	        <input type="file" id="image_file" name="image_file" accept="image/*" />
+	    </div>
+	
+	    <hr>
+	    <div style="padding-left: 220px;">
+	        <input type="submit" value="상세 설명 등록하기" style="padding: 10px 30px; font-weight: bold; cursor: pointer;"></input>
+	    </div>
+	</form>
+
+</body>
+</html>

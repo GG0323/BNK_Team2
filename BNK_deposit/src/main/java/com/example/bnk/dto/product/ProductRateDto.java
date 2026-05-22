@@ -10,7 +10,7 @@ import lombok.ToString;
 @Data @ToString
 @NoArgsConstructor
 @AllArgsConstructor							// 상품 금리
-public class ProductRate {
+public class ProductRateDto {
 	private long rate_no;					// 상품 금리 PK
 	private long product_no;				// 상품 FK
 	private String rate_group;				// 금리 구분 ('MATURITY', 'AFTER_MATURITY', 'EARLY_TERMINATION')
