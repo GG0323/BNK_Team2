@@ -29,10 +29,13 @@ public interface IBankMemberDao {
 	// 회원 전체 조회
 	public List<BankMemberDto> findByAll();
 	
-	// 회원 pk로 조회
+	// 회원 id로 전체 내용 조회
 	public BankMemberDto findMemberById(@Param("loginId") String loginId);
 	
 	// 회원 비밀번호 수정
-	void updatePassword(@Param("loginId") String loginId, @Param("newPassword") String newPassword);
+	public void updatePassword(@Param("loginId") String loginId, @Param("newPassword") String newPassword);
+	
+	// 회원 id 중복 확인
+	public int idCheck(String id);
 
 }
