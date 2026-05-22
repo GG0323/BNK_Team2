@@ -2,44 +2,38 @@ package com.example.bnk.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
+import com.example.bnk.auth.MemberDetailsService;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class MemberSecurityConfig {
 	
+	private final MemberDetailsService memberDetailsService;
 	private final JwtUtil jwtUtil;
 	
-	public SecurityConfig(JwtUtil jwtUtil) {
+	
+	public MemberSecurityConfig(MemberDetailsService memberDetailsService, JwtUtil jwtUtil) {
+		this.memberDetailsService = memberDetailsService;
 		this.jwtUtil = jwtUtil;
 	}
 	
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http) {
-		
-		http.csrf(csrf -> csrf.disable());
+	@Bean	@Order(1)
+	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
-				.requestMatchers("/common/**").permitAll()
-		);
-		
-		// 직원 로그인 설정
-		http.formLogin(employee ->
-			employee.loginPage("/employee/loginPage")
-			.loginProcessingUrl("/employee/login")
-			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
-			.failureUrl("/employee/loginPage?message=fail")
-			.passwordParameter("password_hash")
-			.usernameParameter("login_id")
+		http
+			.userDetailsService(memberDetailsService)
+			.securityMatcher("/member/**", "/loginPage", "/api/member/**")
+			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
 		// 회원 로그인 설정
@@ -55,11 +49,6 @@ public class SecurityConfig {
 		return http.build();
 	}
 	
-	@Bean
-	BCryptPasswordEncoder passwordEncode() {
-		return new BCryptPasswordEncoder();
-	}
 	
-	
-	
+
 }
