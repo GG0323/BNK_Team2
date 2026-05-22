@@ -23,11 +23,11 @@ public class MemberSecurityConfig {
 	}
 	
 	@Bean	@Order(1)
-	SecurityFilterChain filterChain(HttpSecurity http) {
+	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
+		http.securityMatcher("/member/**", "/loginPage", "/api/member/**")
+			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
 		// 회원 로그인 설정
