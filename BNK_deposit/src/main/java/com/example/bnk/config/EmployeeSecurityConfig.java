@@ -2,6 +2,7 @@ package com.example.bnk.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,15 +14,15 @@ import com.example.bnk.utils.JwtUtil;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class EmployeeSecurityConfig {
 	
 	private final JwtUtil jwtUtil;
 	
-	public SecurityConfig(JwtUtil jwtUtil) {
+	public EmployeeSecurityConfig(JwtUtil jwtUtil) {
 		this.jwtUtil = jwtUtil;
 	}
 	
-	@Bean
+	@Bean	@Order(2)
 	SecurityFilterChain filterChain(HttpSecurity http) {
 		
 		// 권한별 제어
@@ -32,30 +33,14 @@ public class SecurityConfig {
 		
 		// 직원 로그인 설정
 		http.formLogin(employee ->
-			employee.loginPage("/employee/loginPage") // 페이지
-			.loginProcessingUrl("/employee/login") // 프로세스 html의 요청
+			employee.loginPage("/employee/loginPage")
+			.loginProcessingUrl("/employee/login")
 			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
 			.failureUrl("/employee/loginPage?message=fail")
 			.passwordParameter("password_hash")
 			.usernameParameter("login_id")
 		);
-		
-		// 회원 로그인 설정
-		http.formLogin(member ->
-			member.loginPage("/loginPage")
-			.loginProcessingUrl("/member/login")
-			.successHandler(new MemberLoginSuccessHandler(jwtUtil))
-			.failureUrl("/loginPage?message=fail")
-			.passwordParameter("password_hash")
-			.usernameParameter("login_id")
-		);
-		
+			
 		return http.build();
 	}
-	
-	@Bean
-	BCryptPasswordEncoder passwordEncode() {
-		return new BCryptPasswordEncoder();
-	}
-
 }

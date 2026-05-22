@@ -1,4 +1,6 @@
 let id_check = true;
+const member_type = "";
+const memberType = document.getElementById("memberType");
 const id = document.querySelector("input[name='login_id']");
 
 function idCheck(){
@@ -25,20 +27,19 @@ function idCheck(){
 }
 
 function changeMemberType() {
-    const memberType = document.getElementById("memberType").value;
+	const personal = document.getElementById("personalIdentifier");
+	const business = document.getElementById("businessIdentifier");
+    personal.style.display = "none"
+	business.style.display = "none"
 
-    document.getElementById("personalIdentifier").style.display = "none";
-    document.getElementById("businessIdentifier").style.display = "none";
-
-    if (memberType === "PERSONAL") {
-        document.getElementById("personalIdentifier").style.display = "block";
-    } else if (memberType === "BUSINESS") {
-        document.getElementById("businessIdentifier").style.display = "block";
-    }
+	member_type = memberType.value;
+	
+    if (memberType.value === "PERSONAL") personal.style.display = "block";
+	else if (memberType.value === "BUSINESS")	business.style.display = "block";
 }
 
 function mergeIdentifier() {
-    const memberType = document.getElementById("memberType").value;
+	const memberType = document.getElementById("memberType").value;
     const memberIdentifier = document.getElementById("memberIdentifier");
 
     if (memberType === "PERSONAL") {
@@ -73,14 +74,10 @@ function signup(){
 	const pw_first = document.querySelector("input[name='password_hash']");
 	const pw_last = document.querySelector("#pwCheck");
 	const name = document.querySelector("input[name='member_name']");
-	const type = document.querySelector("input[name='memberType']");
 	const identifier = document.querySelector("input[name='member_identifier']");
 	const phone = document.querySelector("input[name='phone_number']");
 	const email = document.querySelector("input[name='email']");
 	const address = document.querySelector("input[name='adress']");
-	
-	alert(pw_first + ' ' + pw_last);
-	
 	
 	if(id_check){
 		alert('아이디 중복 확인을 해주세요.');
@@ -88,12 +85,12 @@ function signup(){
 		return;
 	}
 	
-	if(pw_first == ""){
+	if(pw_first.value == ""){
 		alert('비밀번호를 입력해주세요.');
 		return;
 	}
 	
-	if(pw_first != pw_last){
+	if(pw_first.value != pw_last.value){
 		alert('비밀번호가 일치하지 않습니다.');
 		pw_first.value = "";
 		pw_last.value = "";
@@ -107,13 +104,13 @@ function signup(){
 		return;
 	}
 	
-	if(type.value == ""){
+	if(member_type == ""){
 		alert('회원구분을 선택해주세요.');
 		return;
 	}
 	
 	if(identifier.value == ""){
-		alert(type.value === "PERSONAL"?'주민등록번호를 입력해주세요.':'사업자등록번호를 입력해주세요.');
+		alert(member_type === "PERSONAL" ? '주민등록번호를 입력해주세요.' : '사업자등록번호를 입력해주세요.');
 		return;
 	}
 	
