@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.example.bnk.auth.EmployeeDetailsService;
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
@@ -16,9 +17,12 @@ import com.example.bnk.utils.JwtUtil;
 @EnableWebSecurity
 public class EmployeeSecurityConfig {
 	
+	private final EmployeeDetailsService employeeDetailsService;
+	
 	private final JwtUtil jwtUtil;
 	
-	public EmployeeSecurityConfig(JwtUtil jwtUtil) {
+	public EmployeeSecurityConfig(EmployeeDetailsService employeeDetailsService, JwtUtil jwtUtil) {
+		this.employeeDetailsService = employeeDetailsService;
 		this.jwtUtil = jwtUtil;
 	}
 	
@@ -27,8 +31,8 @@ public class EmployeeSecurityConfig {
 		
 		// 권한별 제어
 		http.securityMatcher("/employee/**")
-			.authorizeHttpRequests(auth -> auth
-					.anyRequest().permitAll()
+			.userDetailsService(employeeDetailsService)
+			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
 		
