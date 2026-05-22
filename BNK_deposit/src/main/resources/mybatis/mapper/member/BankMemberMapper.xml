@@ -4,6 +4,12 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IBankMemberDao">
 
+	<select id="findByUsername" resultType="com.example.bnk.dto.member.BankMemberDto">
+		SELECT *
+		FROM TB_BANK_MEMBER
+		WHERE login_id = #{id}
+	</select>
+	
 	<insert id="regist">
 		INSERT INTO TB_BANK_MEMBER(
 	        login_id, password_hash, member_name, member_type, member_identifier,
@@ -66,5 +72,9 @@
             UPDATE_AT = SYSDATE
         WHERE LOGIN_ID = #{loginId}
     </update>
+    
+    <select id="idCheck">
+    	SELECT COUNT(*) FROM TB_BANK_MEMBER WHERE LOGIN_ID = #{param}
+    </select>
     
 </mapper>

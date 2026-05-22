@@ -3,17 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <title>Signup Page</title>
+<script src="/js/members/signup.js" defer></script>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header_default}"></div>
 
 <h2>Signup Page</h2>
 
-<form th:action="@{/api/member/1/member}" method="post" onsubmit="return mergeIdentifier();">
-
-    <input type="text" name="login_id" placeholder="Id" required><br>
-    <input type="password" name="password_hash" placeholder="Password" required><br>
-    <input type="text" name="member_name" placeholder="Name" required><br>
+<form id="frm">
+	<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
+	
+    <input type="text" name="login_id" placeholder="Id">
+    <button type="button" onclick="idCheck()">확인</button><br>
+    
+    <input type="password" name="password_hash" placeholder="Password"><br>
+    <input id="pwCheck" type="password" placeholder="Password Check"><br>
+    
+    <input type="text" name="member_name" placeholder="Name"><br>
 
     <select name="member_type" id="memberType" required onchange="changeMemberType();">
         <option value="">회원구분 선택</option>
@@ -36,69 +42,14 @@
     </div><br>
 
     <input type="hidden" name="member_identifier" id="memberIdentifier">
+    
+    <input type="text" name="phone_number" placeholder="Phone Number"><br>
+    <input type="email" name="email" placeholder="Email"><br>
+    <input type="text" name="adress" placeholder="Address">
 
-    <select name="gender" id="gender">
-        <option value="">성별 선택</option>
-        <option value="M">남성</option>
-        <option value="F">여성</option>
-    </select><br>
-
-    <input type="date" name="birth_date" required><br>
-    <input type="text" name="phone_number" placeholder="Phone Number" required><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="text" name="adress" placeholder="Address" required>
-
-    <input type="submit" value="Signup">
+    <button type="button" onclick="signup()">Signup</button>
 </form>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-
-<script>
-function changeMemberType() {
-    const memberType = document.getElementById("memberType").value;
-
-    document.getElementById("personalIdentifier").style.display = "none";
-    document.getElementById("businessIdentifier").style.display = "none";
-
-    if (memberType === "PERSONAL") {
-        document.getElementById("personalIdentifier").style.display = "block";
-    } else if (memberType === "BUSINESS") {
-        document.getElementById("businessIdentifier").style.display = "block";
-    }
-}
-
-function mergeIdentifier() {
-    const memberType = document.getElementById("memberType").value;
-    const memberIdentifier = document.getElementById("memberIdentifier");
-
-    if (memberType === "PERSONAL") {
-        const id1 = document.getElementById("personalId1").value;
-        const id2 = document.getElementById("personalId2").value;
-
-        if (!/^[0-9]{6}$/.test(id1) || !/^[0-9]{7}$/.test(id2)) {
-            alert("주민등록번호 형식이 올바르지 않습니다.");
-            return false;
-        }
-
-        memberIdentifier.value = id1 + "-" + id2;
-    }
-
-    if (memberType === "BUSINESS") {
-        const id1 = document.getElementById("businessId1").value;
-        const id2 = document.getElementById("businessId2").value;
-        const id3 = document.getElementById("businessId3").value;
-
-        if (!/^[0-9]{3}$/.test(id1) || !/^[0-9]{2}$/.test(id2) || !/^[0-9]{5}$/.test(id3)) {
-            alert("사업자등록번호 형식이 올바르지 않습니다.");
-            return false;
-        }
-
-        memberIdentifier.value = id1 + "-" + id2 + "-" + id3;
-    }
-
-    return true;
-}
-</script>
-
 </body>
 </html>
