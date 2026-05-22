@@ -28,4 +28,29 @@ public class FinanceDictionaryService {
 	    // 조회수가 올라간 최신 상태의 데이터를 가져와서 컨트롤러로 반환. (SELECT)
 	    return financeDictionaryDao.selectDictionaryByNo(dictionary_no);
 	}
+	
+	// 검색 로직 추가
+	public List<FinanceDictionaryDto> searchDictionary(String keyword) {
+		return financeDictionaryDao.searchDictionary(keyword);
+	}
+	
+	// ✨ 수정 화면용 데이터 불러오기 (조회수 증가 없음!)
+    public FinanceDictionaryDto getDictionaryForEdit(long dictionary_no) {
+        return financeDictionaryDao.selectDictionaryByNo(dictionary_no);
+    }
+
+	// ✨ 용어 등록
+	public void addDictionary(FinanceDictionaryDto dto) {
+		financeDictionaryDao.insertDictionary(dto);
+	}
+	
+	// ✨ 용어 수정
+	public void modifyDictionary(FinanceDictionaryDto dto) {
+		financeDictionaryDao.updateDictionary(dto);
+	}
+	
+	// ✨ 용어 삭제
+	public void removeDictionary(long dictionary_no) {
+		financeDictionaryDao.deleteDictionary(dictionary_no);
+	}
 }
