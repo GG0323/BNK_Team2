@@ -1,6 +1,5 @@
 let id_check = true;
-const member_type = "";
-const memberType = document.getElementById("memberType");
+let member_type = "";
 const id = document.querySelector("input[name='login_id']");
 
 function idCheck(){
@@ -27,15 +26,18 @@ function idCheck(){
 }
 
 function changeMemberType() {
+	const memberType = document.getElementById("memberType").value;
 	const personal = document.getElementById("personalIdentifier");
 	const business = document.getElementById("businessIdentifier");
     personal.style.display = "none"
 	business.style.display = "none"
-
-	member_type = memberType.value;
 	
-    if (memberType.value === "PERSONAL") personal.style.display = "block";
-	else if (memberType.value === "BUSINESS")	business.style.display = "block";
+	
+	member_type = memberType;
+	
+    if (memberType === "PERSONAL") personal.style.display = "block";
+	else if (memberType === "BUSINESS") business.style.display = "block";
+	
 }
 
 function mergeIdentifier() {
@@ -65,6 +67,7 @@ function mergeIdentifier() {
         }
 
         memberIdentifier.value = id1 + "-" + id2 + "-" + id3;
+		console.log(identifier);
     }
 
     return true;
@@ -74,7 +77,6 @@ function signup(){
 	const pw_first = document.querySelector("input[name='password_hash']");
 	const pw_last = document.querySelector("#pwCheck");
 	const name = document.querySelector("input[name='member_name']");
-	const identifier = document.querySelector("input[name='member_identifier']");
 	const phone = document.querySelector("input[name='phone_number']");
 	const email = document.querySelector("input[name='email']");
 	const address = document.querySelector("input[name='adress']");
@@ -109,7 +111,7 @@ function signup(){
 		return;
 	}
 	
-	if(identifier.value == ""){
+	if(!mergeIdentifier()){
 		alert(member_type === "PERSONAL" ? '주민등록번호를 입력해주세요.' : '사업자등록번호를 입력해주세요.');
 		return;
 	}
@@ -131,8 +133,12 @@ function signup(){
 	
 	fetch("/api/member/2/member", {
 		method : "post",
-		body : new FormData(document.querySelector("#frm"))
+		body : new FormData(document.getElementById("frm"))
 	})
-	.then(data=> alert(data))
+	.then(data=> data.json())
+	.then(data=> {
+		alert('로그인 성공!');
+		location.href="/loginPage";
+	})
 	
 }
