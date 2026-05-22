@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 내 정보 조회</title>
+    <link rel="stylesheet" href="/css/member/myinfo.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <h1>BNK</h1>
+                <div class="header-title-group">
+                    <h2>내 정보 조회</h2>
+                    <p>회원 기본 정보 확인</p>
+                </div>
+            </div>
+            <nav class="header-right">
+                <ul>
+                    <li><a href="#">메인</a></li>
+                    <li><a href="#">계좌조회</a></li>
+                    <li><a href="#">거래내역</a></li>
+                    <li><a href="#">가입상품</a></li>
+                </ul>
+                <button class="btn-mypage-header">내정보</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-nav" id="subNav" data-page="myinfo">
+        <button class="tab-btn" data-tab="mypage"     onclick="location.href='/mypage'">1. 마이페이지</button>
+        <button class="tab-btn" data-tab="myinfo"     onclick="location.href='/myinfo'">2. 내정보</button>
+        <button class="tab-btn" data-tab="myaccounts" onclick="location.href='/myaccounts'">3. 계좌 및 거래내역</button>
+        <button class="tab-btn" data-tab="myproducts" onclick="location.href='/myproducts'">4. 가입상품</button>
+    </nav>
+
+    <main class="myinfo-container">
+
+        <section class="page-header">
+            <h3>내 정보 조회</h3>
+            <p>로그인한 회원의 기본 정보를 조회합니다.</p>
+        </section>
+
+        <section class="info-section">
+            <table class="info-table">
+                <tbody>
+                    <tr><th>아이디</th><td id="f_login_id">-</td></tr>
+                    <tr><th>회원명</th><td id="f_member_name">-</td></tr>
+                    <tr><th>회원구분</th><td id="f_member_type">-</td></tr>
+                    <tr><th>회원 식별번호</th><td id="f_member_identifier">-</td></tr>
+                    <tr><th>전화번호</th><td id="f_phone_number">-</td></tr>
+                    <tr><th>이메일</th><td id="f_email">-</td></tr>
+                    <tr><th>주소</th><td id="f_adress">-</td></tr>
+                    <tr><th>신용점수</th><td id="f_credit_score">-</td></tr>
+                    <tr><th>회원상태</th><td><span class="badge red" id="f_member_status">-</span></td></tr>
+                    <tr><th>가입일</th><td id="f_created_at">-</td></tr>
+                    <tr><th>마지막 로그인</th><td id="f_last_login_at">-</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="btn-wrap">
+            <button type="button" class="btn-black-large" onclick="location.href='/myinfo/edit'">개인정보 수정하기</button>
+        </div>
+
+    </main>
+
+    <script src="/js/members/common.js"></script>
+    <script src="/js/members/myinfo.js"></script>
+</body>
+</html>

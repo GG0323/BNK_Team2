@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Signup Page</title>
+<script src="/js/members/signup.js" defer></script>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header_default}"></div>
+
+<h2>Signup Page</h2>
+
+<form id="frm">
+	<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
+	
+    <input type="text" name="login_id" placeholder="Id">
+    <button type="button" onclick="idCheck()">확인</button><br>
+    
+    <input type="password" name="password_hash" placeholder="Password"><br>
+    <input id="pwCheck" type="password" placeholder="Password Check"><br>
+    
+    <input type="text" name="member_name" placeholder="Name"><br>
+
+    <select name="member_type" id="memberType" required onchange="changeMemberType();">
+        <option value="">회원구분 선택</option>
+        <option value="PERSONAL">개인</option>
+        <option value="BUSINESS">기업</option>
+    </select>
+
+    <div id="personalIdentifier" style="display:none;">
+        <input type="password" id="personalId1" maxlength="6" pattern="[0-9]{6}" placeholder="YYMMDD">
+        -
+        <input type="password" id="personalId2" maxlength="7" pattern="[0-9]{7}" placeholder="ABCDEFG">
+    </div>
+
+    <div id="businessIdentifier" style="display:none;">
+        <input type="password" id="businessId1" maxlength="3" pattern="[0-9]{3}" placeholder="000">
+        -
+        <input type="password" id="businessId2" maxlength="2" pattern="[0-9]{2}" placeholder="00">
+        -
+        <input type="password" id="businessId3" maxlength="5" pattern="[0-9]{5}" placeholder="00000">
+    </div><br>
+
+    <input type="hidden" name="member_identifier" id="memberIdentifier">
+    
+    <input type="text" name="phone_number" placeholder="Phone Number"><br>
+    <input type="email" name="email" placeholder="Email"><br>
+    <input type="text" name="adress" placeholder="Address">
+
+    <button type="button" onclick="signup()">Signup</button>
+</form>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

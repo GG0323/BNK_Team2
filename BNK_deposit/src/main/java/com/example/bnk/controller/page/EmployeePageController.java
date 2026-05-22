@@ -64,8 +64,6 @@ public class EmployeePageController {
 	public String hrmEmployeeDetailList() {
 		return "Employees/manager/HRM/hrmEmployeeDetailList";
 	}
-		
-	
 	
 	/* 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드 
 	-------------------------------------------------------------------------------------*/

@@ -1,148 +1,58 @@
 package com.example.bnk.controller.page;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.bnk.dto.member.AccountDto;
-import com.example.bnk.dto.member.BankMemberDto;
-import com.example.bnk.dto.member.MemberTrackingLogDto;
-import com.example.bnk.service.member.AccountService;
-import com.example.bnk.service.member.BankMemberService;
-import com.example.bnk.service.member.MemberTrackingLogService;
-import com.example.bnk.service.product.ProductSalesService;
-
-import lombok.RequiredArgsConstructor;
-
+/**
+ * 회원 마이페이지 관련 "화면(View) 이동"만 담당하는 컨트롤러.
+ *
+ * 완전 분리 원칙:
+ *  - 이 컨트롤러는 어떤 데이터도 조회하지 않는다. (Service / DAO 의존성 없음)
+ *  - 단지 비어 있는 Thymeleaf 템플릿(껍데기 HTML) 경로만 반환한다.
+ *  - 화면에 표시할 실제 데이터는 페이지 로드 후 JS 가 BankMemberApiController(@RestController)를
+ *    fetch 로 호출해서 JSON 으로 받아온 뒤 그린다.
+ *
+ * 이렇게 하면 동일한 API 를 웹 브라우저와 모바일 앱이 모두 재사용할 수 있다.
+ */
 @Controller
-@RequiredArgsConstructor
 public class BankMemberPageController {
-	
-	private final BankMemberService bankMemberService;
-	private final AccountService accountService;
-	private final ProductSalesService productSalesService;
-	private final MemberTrackingLogService memberTrackingLogService;
 
+	// 마이페이지
 	@GetMapping("/mypage")
-    public String rootMembersMypage(Model model) {
-        // 1. 회원 정보 조회
-        String currentLoginId = "dev_hyun"; 
-        BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-        long currentMemberNo = memberInfo.getMember_no();
-        
-        // 2. 계좌 정보 조회
-        List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
-        int accountCount = accountList.size();
-        long totalBalance = accountList.stream().mapToLong(AccountDto::getBalance).sum();
-        int logCount = memberTrackingLogService.getLogCount(currentMemberNo);
-        
-        // 3. 가입 상품 개수 조회
-        int productCount = productSalesService.getSubscribedProductCount(currentMemberNo);
-        
-        // 4. 최근 접속 기록 조회 (새로 추가된 부분)
-        List<MemberTrackingLogDto> recentLogs = memberTrackingLogService.getRecentLogs(currentMemberNo);
-        
-        // 5. 화면으로 모든 데이터 바인딩
-        model.addAttribute("member", memberInfo);
-        model.addAttribute("accountCount", accountCount);
-        model.addAttribute("totalBalance", totalBalance);
-        model.addAttribute("productCount", productCount);
-        model.addAttribute("recentLogs", recentLogs);
-        model.addAttribute("logCount", logCount);
-        model.addAttribute("pageName", "mypage");
-        
-        return "members/mypage";
-    }
-	
+	public String mypage() {
+		return "member/mypage";
+	}
+
+	// 내 정보 조회
 	@GetMapping("/myinfo")
-	public String rootMembersMyinfo(Model model) {
-		String currentLoginId = "dev_hyun";
-		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		memberInfo.setMember_identifier("980515-1******"); // 임시로 만들어놓음
-		model.addAttribute("member", memberInfo);
-		model.addAttribute("pageName", "myinfo");
-        
-        return "members/myinfo";
+	public String myinfo() {
+		return "member/myinfo";
 	}
-	
+
+	// 내 정보 수정
 	@GetMapping("/myinfo/edit")
-	public String rootMembersMyinfoEdit(Model model) {
-	    String currentLoginId = "dev_hyun";
-	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-	    
-	    // 식별번호 임시 마스킹 처리 (이전과 동일)
-	    memberInfo.setMember_identifier("980515-1******");
-	    
-	    model.addAttribute("member", memberInfo);
-	    model.addAttribute("pageName", "myinfo"); // 서브 네비게이션 '2. 내정보' 활성화 유지
-	    
-	    return "members/myinfo_edit";
+	public String myinfoEdit() {
+		return "member/myinfo_edit";
 	}
-	
-	@PostMapping("/myinfo/update")
-	public String updateMyInfo(
-	        @RequestParam("phone_number") String phoneNumber,
-	        @RequestParam("email") String email,
-	        @RequestParam("address_main") String addressMain,
-	        @RequestParam("address_detail") String addressDetail,
-	        RedirectAttributes rttr) {
-	    // 1. [핵심 보안] HTML에서 사용자가 변조해서 보냈을지도 모를 login_id 파라미터는 아예 받지 않습니다!
-	    // 대신, 서버가 보증하는 "현재 로그인한 아이디(세션)"를 직접 꺼내옵니다.
-	    String currentLoginId = "dev_hyun"; 
-	    
-	    // 전화번호 백엔드 검증 (010-숫자4개-숫자4개)
-	    if (!phoneNumber.matches("^010-\\d{4}-\\d{4}$")) {
-	        rttr.addFlashAttribute("error", "전화번호 형식이 올바르지 않거나 조작되었습니다.");
-	        return "redirect:/myinfo/edit";
-	    }
 
-	    // 이메일 백엔드 검증 (기본적인 이메일 형태)
-	    if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
-	        rttr.addFlashAttribute("error", "이메일 형식이 올바르지 않거나 조작되었습니다.");
-	        return "redirect:/myinfo/edit";
-	    }
-	    
-	    String fullAddress = addressMain;
-	    if (addressDetail != null && !addressDetail.trim().isEmpty()) {
-	        fullAddress += " " + addressDetail;
-	    }
-
-	    BankMemberDto updateDto = new BankMemberDto();
-	    updateDto.setLogin_id(currentLoginId); // 폼 데이터가 아닌, 서버가 알고 있는 세션 아이디 셋팅
-	    updateDto.setPhone_number(phoneNumber);
-	    updateDto.setEmail(email);
-	    updateDto.setAdress(fullAddress);
-
-	    bankMemberService.modifyMemberInfo(updateDto);
-
-	    rttr.addFlashAttribute("msg", "개인정보가 성공적으로 수정되었습니다.");
-	    return "redirect:/myinfo";
+	// 계좌 목록 조회
+	@GetMapping("/myaccounts")
+	public String myaccounts() {
+		return "member/myaccounts";
 	}
-	
-	@PostMapping("/myinfo/update-password")
-	public String updatePassword(
-	        @RequestParam("current_password") String currentPassword,
-	        @RequestParam("new_password") String newPassword,
-	        RedirectAttributes rttr // 리다이렉트 시 화면에 알림 메시지를 전달하기 위한 객체
-	) {
-	    String currentLoginId = "dev_hyun"; 
-	    
-	    // 서비스 계층에 비밀번호 변경 요청
-	    boolean isChanged = bankMemberService.changePassword(currentLoginId, currentPassword, newPassword);
-	    
-	    if (isChanged) {
-	        // 성공 시: 조회 화면으로 이동하며 성공 메시지 전달 (추후 myinfo.html 에도 알림 스크립트 추가 필요)
-	        rttr.addFlashAttribute("msg", "비밀번호가 성공적으로 변경되었습니다.");
-	        return "redirect:/myinfo"; 
-	    } else {
-	        // 실패 시: 기존 수정 화면으로 되돌아가며 에러 메시지 전달
-	        rttr.addFlashAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
-	        return "redirect:/myinfo/edit";
-	    }
+
+	// 계좌 상세 / 거래내역 조회
+	// 기존에는 accountNo 가 없으면 서버에서 redirect 했지만,
+	// 완전 분리 구조에서는 페이지는 항상 열어주고
+	// accountNo 유효성 및 안내 처리는 클라이언트(JS)가 담당한다.
+	@GetMapping("/myhistory")
+	public String myhistory() {
+		return "member/myhistory";
+	}
+
+	// 가입 상품 내역 조회
+	@GetMapping("/myproducts")
+	public String myproducts() {
+		return "member/myproducts";
 	}
 }

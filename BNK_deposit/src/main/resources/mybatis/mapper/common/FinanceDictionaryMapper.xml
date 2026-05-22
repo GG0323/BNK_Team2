@@ -4,4 +4,73 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.common.IFinanceDictionaryDao">
 
+	<!-- 금융용어 사전 전체 리스트 출력 -->
+	<select id="selectAllDictionarys" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        SELECT 
+            dictionary_no,
+            dictionary_nm,
+            dictionary_content,
+            dictionary_category,
+            view_count,
+            created_at,
+            updated_at
+        FROM tb_finance_dictionary
+        ORDER BY dictionary_no DESC </select>
+    
+    <!-- 선택한 금융 용어의 상세 페이지 출력 -->
+    <select id="selectDictionaryByNo" parameterType="long" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        SELECT 
+            dictionary_no,
+            dictionary_nm,
+            dictionary_content,
+            dictionary_category,
+            view_count,
+            created_at,
+            updated_at
+        FROM tb_finance_dictionary
+        WHERE dictionary_no = #{dictionary_no}
+    </select>
+    
+    <!-- 조회 수 증가 로직 -->
+    <update id="updateViewCount" parameterType="long">
+        UPDATE tb_finance_dictionary 
+        SET view_count = view_count + 1
+        WHERE dictionary_no = #{dictionary_no}
+    </update>
+    
+    <!-- 검색 기능 -->
+    <select id="searchDictionary" parameterType="string" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        SELECT 
+            dictionary_no, dictionary_nm, dictionary_content, dictionary_category, view_count, created_at, updated_at
+        FROM tb_finance_dictionary
+        WHERE dictionary_nm LIKE '%' || #{keyword} || '%' 
+           OR dictionary_content LIKE '%' || #{keyword} || '%'
+        ORDER BY dictionary_no DESC
+    </select>
+    
+    <!-- 새로운 용어 삽입 -->
+    <insert id="insertDictionary" parameterType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        INSERT INTO tb_finance_dictionary (
+            dictionary_no, dictionary_nm, dictionary_content, dictionary_category, view_count, created_at, updated_at
+        ) VALUES (
+            SEQ_FIN_DICTIONARY.NEXTVAL,  #{dictionary_nm}, #{dictionary_content}, #{dictionary_category}, 0, SYSDATE, SYSDATE
+        )
+    </insert>
+
+	<!-- 기존 용어 수정 -->
+    <update id="updateDictionary" parameterType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        UPDATE tb_finance_dictionary
+        SET dictionary_nm = #{dictionary_nm},
+            dictionary_category = #{dictionary_category},
+            dictionary_content = #{dictionary_content},
+            updated_at = SYSDATE
+        WHERE dictionary_no = #{dictionary_no}
+    </update>
+
+	<!-- 용어 삭제 -->
+    <delete id="deleteDictionary" parameterType="long">
+        DELETE FROM tb_finance_dictionary
+        WHERE dictionary_no = #{dictionary_no}
+    </delete>
+    
 </mapper>

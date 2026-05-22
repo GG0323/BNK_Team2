@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>QR 로그인 완료</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Noto Sans KR", Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111111;
+        }
+
+        .success-wrap {
+            max-width: 460px;
+            margin: 90px auto;
+            background: white;
+            border-radius: 22px;
+            padding: 38px 30px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eeeeee;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #d71920;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: 900;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 26px;
+        }
+
+        .desc {
+            margin: 0 0 24px;
+            color: #555555;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .member-box {
+            background: #fafafa;
+            border: 1px solid #eeeeee;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .member-box p {
+            margin: 8px 0;
+            color: #333333;
+            font-size: 14px;
+        }
+
+        .member-box strong {
+            color: #111111;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            height: 46px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .main-btn {
+            background: #d71920;
+            color: white;
+        }
+
+        .main-btn:hover {
+            background: #b81218;
+        }
+
+        .sub-btn {
+            border: 1px solid #111111;
+            background: white;
+            color: #111111;
+        }
+
+        .sub-btn:hover {
+            background: #111111;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="success-wrap">
+
+    <div class="logo">BNK</div>
+
+    <div class="success-icon">✓</div>
+
+    <h1>QR 로그인 완료</h1>
+
+    <p class="desc">
+        QR 인증이 정상적으로 완료되었습니다.<br>
+        웹 로그인 상태로 전환되었습니다.
+    </p>
+
+    <!-- 모바일 인증 완료 후 넘어왔을 때 member 객체가 있음 -->
+    <div class="member-box" th:if="${member != null}">
+        <p>
+            <strong>회원명</strong> :
+            <span th:text="${member.member_name}">회원명</span>
+        </p>
+        <p>
+            <strong>로그인 ID</strong> :
+            <span th:text="${member.login_id}">login_id</span>
+        </p>
+        <p>
+            <strong>회원 상태</strong> :
+            <span th:text="${member.member_status}">ACTIVE</span>
+        </p>
+    </div>
+
+    <!-- PC 로그인 완료 화면에서 세션 이름만 넘어왔을 때 -->
+    <div class="member-box" th:if="${member == null and loginMemberName != null}">
+        <p>
+            <strong>로그인 회원</strong> :
+            <span th:text="${loginMemberName}">회원명</span>
+        </p>
+    </div>
+
+    <div class="btn-box">
+        <a th:href="@{/}" class="btn main-btn">메인으로</a>
+        <a th:href="@{/products}" class="btn sub-btn">상품 보러가기</a>
+    </div>
+
+</div>
+
+</body>
+</html>

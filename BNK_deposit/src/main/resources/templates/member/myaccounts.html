@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 계좌 목록 조회</title>
+    <link rel="stylesheet" href="/css/member/myaccounts.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <h1>BNK</h1>
+                <div class="header-title-group">
+                    <h2>계좌 목록 조회</h2>
+                    <p>보유 계좌 및 잔액 확인</p>
+                </div>
+            </div>
+            <nav class="header-right">
+                <ul>
+                    <li><a href="#">메인</a></li>
+                    <li><a href="#">계좌조회</a></li>
+                    <li><a href="#">거래내역</a></li>
+                    <li><a href="#">가입상품</a></li>
+                </ul>
+                <button class="btn-mypage-header">계좌목록</button>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="sub-nav" id="subNav" data-page="myaccounts">
+        <button class="tab-btn" data-tab="mypage"     onclick="location.href='/mypage'">1. 마이페이지</button>
+        <button class="tab-btn" data-tab="myinfo"     onclick="location.href='/myinfo'">2. 내정보</button>
+        <button class="tab-btn" data-tab="myaccounts" onclick="location.href='/myaccounts'">3. 계좌 및 거래내역</button>
+        <button class="tab-btn" data-tab="myproducts" onclick="location.href='/myproducts'">4. 가입상품</button>
+    </nav>
+
+    <main class="accounts-container">
+
+        <section class="page-header">
+            <h3>계좌 목록 조회</h3>
+            <p>로그인한 회원이 보유한 계좌 목록을 카드 형태로 표시합니다.</p>
+        </section>
+
+        <section class="account-grid" id="accountGrid">
+            <div class="empty-state">불러오는 중...</div>
+        </section>
+
+    </main>
+
+    <script src="/js/members/common.js"></script>
+    <script src="/js/members/myaccounts.js"></script>
+</body>
+</html>

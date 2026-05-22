@@ -1,0 +1,161 @@
+@charset "UTF-8";
+
+/* 1. 기본 설정 및 마이페이지 공통 변수 계승 */
+:root {
+    --primary-red: #e3000f;
+    --text-dark: #222;
+    --text-gray: #666;
+    --text-light-gray: #999;
+    --bg-light: #f8f9fa;
+    --bg-pink: #fdf5f6;
+    --border-color: #eaeaea;
+    --guide-bg: #FFF0F0;
+    --guide-text: #D37070;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--text-dark);
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* 2. 상단 헤더 & 네비게이션 (mypage와 100% 일치) */
+.top-header { background-color: #000; color: #fff; padding: 20px 0; }
+.header-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.header-left { display: flex; align-items: center; gap: 15px; }
+.header-left h1 { font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+.header-title-group h2 { font-size: 16px; font-weight: bold; margin-bottom: 2px; }
+.header-title-group p { font-size: 11px; color: #aaa; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.header-right ul { display: flex; gap: 15px; font-size: 13px; color: #ccc; }
+.header-right ul li::after { content: '|'; margin-left: 15px; color: #555; }
+.header-right ul li:last-child::after { display: none; }
+.btn-mypage-header { background-color: #fff; color: #000; border: none; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; }
+
+.sub-nav { max-width: 1000px; margin: 30px auto; display: flex; gap: 10px; }
+.tab-btn { flex: 1; padding: 12px 0; border: none; border-radius: 25px; background-color: var(--bg-light); color: var(--text-gray); font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { background-color: var(--primary-red); color: #fff; }
+
+/* 3. 메인 레이아웃 (1000px 중앙 정렬) */
+.products-container {
+    max-width: 1000px;
+    margin: 0 auto 100px;
+}
+
+.page-header { margin-bottom: 25px; }
+.page-header h3 { font-size: 20px; margin-bottom: 8px; }
+.page-header p { font-size: 13px; color: var(--text-gray); }
+
+/* 4. 가입 상품 가로형 리스트 카드 */
+.product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 카드 사이 간격 */
+    margin-bottom: 40px;
+}
+
+.product-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px 40px;
+    transition: box-shadow 0.2s, border 0.2s;
+}
+
+.product-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+/* 상품명 및 구분 뱃지 영역 (Flex 비율 40%) */
+.prod-info-sec {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: lowercase;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.badge-red { background-color: var(--primary-red); }
+.badge-black { background-color: #222; }
+
+.prod-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.prod-desc {
+    font-size: 13px;
+    color: var(--text-light-gray);
+    line-height: 1.4;
+}
+
+/* 데이터 출력 영역 (금액, 금리/일자) (Flex 비율 25%씩) */
+.prod-data-sec {
+    flex: 0 0 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.data-label {
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+.data-value {
+    font-size: 15px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* 가입 상태 뱃지 영역 (우측 끝) */
+.prod-status-sec {
+    flex: 0 0 10%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.status-badge {
+    background-color: #000;
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: lowercase;
+}
+
+/* 빈 화면 처리 */
+.empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text-light-gray);
+    background-color: var(--bg-light);
+    border-radius: 12px;
+    font-size: 14px;
+}

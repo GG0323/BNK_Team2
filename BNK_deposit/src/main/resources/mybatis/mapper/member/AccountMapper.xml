@@ -4,6 +4,7 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IAccountDao">
 
+	<!-- 사용자의 계좌 정보 출력 -->
 	<select id="findAccountsByMemberNo" parameterType="long" resultType="com.example.bnk.dto.member.AccountDto">
         SELECT
             ACCOUNT_NO AS account_no,
@@ -18,6 +19,22 @@
         FROM tb_account
         WHERE MEMBER_NO = #{memberNo}
         ORDER BY OPENED_AT DESC
+    </select>
+    
+    <!-- 선택한 계좌의 상세 정보 출력 -->
+    <select id="findAccountByAccountNo" parameterType="long" resultType="com.example.bnk.dto.member.AccountDto">
+        SELECT
+            ACCOUNT_NO AS account_no,
+            MEMBER_NO AS member_no,
+            ACCOUNT_NUMBER AS account_number,
+            ACCOUNT_ALIAS AS account_alias,
+            BALANCE AS balance,
+            ACCOUNT_STATUS AS account_status,
+            OPENED_AT AS opened_at,
+            CLOSED_AT AS closed_at,
+            UPDATED_AT AS updated_at
+        FROM tb_account
+        WHERE ACCOUNT_NO = #{accountNo}
     </select>
     
 </mapper>

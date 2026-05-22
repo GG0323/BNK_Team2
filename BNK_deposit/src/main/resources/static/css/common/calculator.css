@@ -1,0 +1,228 @@
+@charset "UTF-8";
+
+/* 1. 기본 폰트 및 배경 설정 (productView 톤앤매너 완벽 일치) */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap');
+
+body {
+    font-family: "Noto Sans KR", Arial, sans-serif;
+    padding: 24px;
+    background-color: #f5f5f5; /* 메인 배경과 동일한 연회색 */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    color: #111111;
+}
+
+/* 2. 메인 컨테이너 (product-card 스타일 적용) */
+.calc-container {
+    background: white;
+    padding: 32px 28px;
+    border-radius: 22px; /* productView의 메인 카드 모서리 반경 */
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.07);
+    border: 1px solid #eeeeee;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+}
+
+h2 {
+    text-align: center;
+    color: #111111;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-weight: 800;
+    font-size: 24px;
+}
+
+/* 3. 탭 버튼 영역 */
+.main-tabs { 
+    display: flex; 
+    margin-bottom: 18px; 
+    background: #f1f1f1; 
+    border-radius: 12px; 
+    padding: 4px; 
+}
+.main-tab-btn {
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-weight: 700;
+    font-size: 15px;
+    color: #666666;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+.main-tab-btn.active {
+    background: white;
+    color: #111111;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.sub-tabs { display: flex; margin-bottom: 25px; gap: 10px; }
+.sub-tab-btn {
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #666666;
+    transition: all 0.2s ease;
+}
+.sub-tab-btn.active {
+    border-color: #d71920;
+    color: #d71920;
+    background-color: #fff1f1;
+}
+
+/* 4. 입력 폼 영역 */
+.form-group { margin-bottom: 20px; }
+.label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.label-row label { margin-bottom: 0; font-weight: 700; font-size: 14px; color: #111111; }
+
+.input-wrapper { display: flex; align-items: center; gap: 15px; }
+.input-wrapper input[type="range"] {
+    flex: 1;
+    cursor: pointer;
+    accent-color: #d71920;
+}
+
+/* 텍스트 입력창 (search-box 스타일 차용) */
+.text-input-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dddddd;
+    border-radius: 12px;
+    padding: 0 14px;
+    /* ✨ 수정: 180px -> 210px로 넓히고, 화면이 좁아져도 찌그러지지 않게 강제합니다. */
+    width: 210px; 
+    flex-shrink: 0; 
+    height: 46px;
+    background: white;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+.text-input-box:focus-within {
+    border-color: #d71920;
+    box-shadow: 0 0 0 3px rgba(215, 25, 32, 0.12);
+}
+.text-input-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: right;
+    background: transparent;
+    font-size: 15px;
+    font-family: inherit;
+    color: #111111;
+    font-weight: 500;
+}
+/* ✨ 수정: 단위 글자가 절대 밑으로 떨어지지 않게(nowrap) 고정합니다. */
+.text-input-box .unit { 
+    font-size: 14px; 
+    color: #666666; 
+    font-weight: 700; 
+    margin-left: 6px;
+    white-space: nowrap; 
+}
+select { 
+    width: 100%; 
+    height: 46px;
+    padding: 0 16px; 
+    box-sizing: border-box;
+    border: 1px solid #dddddd; 
+    border-radius: 12px;
+    font-size: 15px; 
+    color: #111111; 
+    font-family: inherit;
+    transition: all 0.2s ease;
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23111111" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>') no-repeat right 16px center;
+    background-color: white; 
+    cursor: pointer;
+}
+select:focus { outline: none; border-color: #d71920; box-shadow: 0 0 0 3px rgba(215, 25, 32, 0.12); }
+
+/* 5. 버튼 스타일 */
+.calc-submit {
+    width: 100%;
+    height: 50px;
+    background-color: #d71920;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 15px;
+    transition: background 0.2s;
+}
+.calc-submit:hover { background-color: #b81218; }
+
+.copy-btn {
+    width: 100%;
+    height: 46px;
+    background-color: #111111; /* productView의 다크 버튼 톤앤매너 */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+.copy-btn:hover { background-color: #333333; }
+
+/* 6. 결과 출력 영역 */
+.result-section { margin-top: 30px; display: none; padding-top: 25px; border-top: 1px solid #eeeeee; }
+.chart-container { position: relative; height: 200px; width: 100%; margin-bottom: 25px; }
+
+/* detail-grid 톤앤매너 적용 */
+.tax-grid { display: flex; gap: 12px; margin-bottom: 20px; }
+.tax-card {
+    flex: 1;
+    padding: 20px 14px;
+    border-radius: 16px;
+    border: 1px solid #eeeeee;
+    background: #fafafa;
+}
+.tax-card h4 {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #111111;
+    text-align: center;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 12px;
+}
+.result-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; color: #666666; }
+.result-row span:last-child { font-weight: 700; color: #111111; }
+
+/* 🔥 문제의 줄바꿈 해결 + 강조 영역 🔥 */
+.total-row {
+    display: flex;
+    /* ✨ 수정: 가로 정렬(row)에서 세로 정렬(column)로 변경하여 2줄로 나눕니다! */
+    flex-direction: column; 
+    margin-top: 15px;
+    border-top: 1px dashed #dddddd;
+    padding-top: 18px;
+    gap: 8px; /* 글자 위아래 간격 띄우기 */
+}
+.total-row span:first-child { 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: #555555; 
+    align-self: flex-start; /* 항목명은 왼쪽 위에 차분하게 배치 */
+}
+.total-row span:last-child { 
+    /* ✨ 수정: 한 줄을 혼자 다 쓰게 되었으므로 폰트 크기를 확 키워서 시원하게 보여줍니다! */
+    font-size: 24px; 
+    font-weight: 900; 
+    color: #d71920; 
+    align-self: flex-end; /* 금액은 오른쪽 아래에 큼직하게 배치 */
+}
