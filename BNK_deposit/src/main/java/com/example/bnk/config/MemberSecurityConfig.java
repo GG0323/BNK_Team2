@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
+import com.example.bnk.auth.MemberDetailsService;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
 
@@ -16,9 +17,12 @@ import com.example.bnk.utils.JwtUtil;
 @EnableWebSecurity
 public class MemberSecurityConfig {
 	
+	private final MemberDetailsService memberDetailsService;
 	private final JwtUtil jwtUtil;
 	
-	public MemberSecurityConfig(JwtUtil jwtUtil) {
+	
+	public MemberSecurityConfig(MemberDetailsService memberDetailsService, JwtUtil jwtUtil) {
+		this.memberDetailsService = memberDetailsService;
 		this.jwtUtil = jwtUtil;
 	}
 	
@@ -26,7 +30,9 @@ public class MemberSecurityConfig {
 	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.securityMatcher("/member/**", "/loginPage", "/api/member/**")
+		http
+			.userDetailsService(memberDetailsService)
+			.securityMatcher("/member/**", "/loginPage", "/api/member/**")
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
@@ -44,9 +50,6 @@ public class MemberSecurityConfig {
 		return http.build();
 	}
 	
-	@Bean
-	BCryptPasswordEncoder passwordEncode() {
-		return new BCryptPasswordEncoder();
-	}
+	
 
 }

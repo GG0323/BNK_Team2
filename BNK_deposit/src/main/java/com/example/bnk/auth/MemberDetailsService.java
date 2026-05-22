@@ -18,7 +18,8 @@ public class MemberDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		BankMemberDto dto = dao.findByUsername(username);
-		return dto != null ? new MemberDetails(dto) : null;
+		if(dto == null)	 throw new UsernameNotFoundException("해당 직원을 찾을 수 없습니다: " + username);
+		return new MemberDetails(dto);
 	}
 
 }

@@ -21,9 +21,10 @@ public class EmployeeDetailsService implements UserDetailsService{
 		System.out.println("시큐리티~~~");
 		
 		EmployeeDto dto = dao.findByUsername(username);
-		System.out.println("시큐리티 로그인~~ "+dto.toString());
-		
-		return dto != null ? new EmployeeDetails(dto) : null;
+
+		if(dto == null) throw new UsernameNotFoundException("해당 직원을 찾을 수 없습니다: " + username);
+		return new EmployeeDetails(dto);
+
 	}
 
 }
