@@ -28,8 +28,8 @@ public class SecurityConfig {
 		
 		// 권한별 제어
 		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/css/**", "/js/**", "/images/**", "/**", "/common/**").permitAll()
-				
+				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
+				.requestMatchers("/common/**").permitAll()
 		);
 		
 		// 직원 로그인 설정
