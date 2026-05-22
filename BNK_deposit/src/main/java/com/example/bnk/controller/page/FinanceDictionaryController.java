@@ -37,7 +37,7 @@ public class FinanceDictionaryController {
         }
         
         model.addAttribute("dictionaryList", list);
-        return "financedictionary"; 
+        return "common/financedictionary"; 
     }
 	
 	// 금융용어 사전 상세 페이지
@@ -50,6 +50,6 @@ public class FinanceDictionaryController {
 	    model.addAttribute("financeword", financeword);
 	    
 	    // 상세 화면용 HTML 파일(findictionaryDetail.html)을 엽니다.
-	    return "financedictionarydetail"; 
+	    return "common/financedictionarydetail"; 
 	}
 }
