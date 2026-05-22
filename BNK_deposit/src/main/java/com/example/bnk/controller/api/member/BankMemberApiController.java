@@ -39,92 +39,178 @@ public class BankMemberApiController {
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
 	
-	private static final String TEMP_LOGIN_ID = "abcd";
+	private BankMemberDto getLoginMember(Principal principal) {
+	    if (principal == null) {
+	        return null;
+	    }
 
+	    String currentLoginId = principal.getName();
+	    return bankMemberService.getMemberInfo(currentLoginId);
+	}
 
 	// ===================== 조회(GET) =====================
 
 	// 마이페이지 요약 데이터
 	@GetMapping("/mypage")
-	public ResponseEntity<ApiResponse<MypageSummaryDto>> getMypageSummary(Principal principal) {
+	public ResponseEntity<ApiResponse<?>> getMypageSummary(Principal principal) {
 
-		String currentLoginId = TEMP_LOGIN_ID;
-		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		long currentMemberNo = memberInfo.getMember_no();
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
 
-		List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
-		int accountCount = accountList.size();
-		long totalBalance = accountList.stream().mapToLong(AccountDto::getBalance).sum();
-		int logCount = memberTrackingLogService.getLogCount(currentMemberNo);
-		int productCount = productSalesService.getSubscribedProductCount(currentMemberNo);
-		List<MemberTrackingLogDto> recentLogs = memberTrackingLogService.getRecentLogs(currentMemberNo);
+	    String currentLoginId = principal.getName();
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
 
-		MypageSummaryDto summary = MypageSummaryDto.builder()
-				.member(memberInfo)
-				.accountCount(accountCount)
-				.totalBalance(totalBalance)
-				.productCount(productCount)
-				.logCount(logCount)
-				.recentLogs(recentLogs)
-				.build();
-		return ResponseEntity.ok(ApiResponse.ok(summary));
+	    if (memberInfo == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+	    }
+
+	    long currentMemberNo = memberInfo.getMember_no();
+
+	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
+	    int accountCount = accountList.size();
+	    long totalBalance = accountList.stream().mapToLong(AccountDto::getBalance).sum();
+
+	    int logCount = memberTrackingLogService.getLogCount(currentMemberNo);
+	    int productCount = productSalesService.getSubscribedProductCount(currentMemberNo);
+	    List<MemberTrackingLogDto> recentLogs = memberTrackingLogService.getRecentLogs(currentMemberNo);
+
+	    MypageSummaryDto summary = MypageSummaryDto.builder()
+	            .member(memberInfo)
+	            .accountCount(accountCount)
+	            .totalBalance(totalBalance)
+	            .productCount(productCount)
+	            .logCount(logCount)
+	            .recentLogs(recentLogs)
+	            .build();
+
+	    return ResponseEntity.ok(ApiResponse.ok(summary));
 	}
 
 	// 내 정보 조회
 	@GetMapping("/myinfo")
-	public ResponseEntity<ApiResponse<BankMemberDto>> getMyInfo(Principal principal) {
+	public ResponseEntity<ApiResponse<?>> getMyInfo(Principal principal) {
 
-		String currentLoginId = TEMP_LOGIN_ID;
-		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		return ResponseEntity.ok(ApiResponse.ok(memberInfo));
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+
+	    String currentLoginId = principal.getName();
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+
+	    if (memberInfo == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+	    }
+
+	    return ResponseEntity.ok(ApiResponse.ok(memberInfo));
 	}
 
 	// 내 계좌 목록 조회
 	@GetMapping("/myaccounts")
-	public ResponseEntity<ApiResponse<List<AccountDto>>> getMyAccounts(Principal principal) {
-		
-		String currentLoginId = TEMP_LOGIN_ID;
-		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		long currentMemberNo = memberInfo.getMember_no();
-		List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
-		return ResponseEntity.ok(ApiResponse.ok(accountList));
+	public ResponseEntity<ApiResponse<?>> getMyAccounts(Principal principal) {
 
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+
+	    String currentLoginId = principal.getName();
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+
+	    if (memberInfo == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+	    }
+
+	    long currentMemberNo = memberInfo.getMember_no();
+	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
+
+	    return ResponseEntity.ok(ApiResponse.ok(accountList));
 	}
 
 	// 계좌 상세 + 거래내역 조회
 	@GetMapping("/accounts/{accountNo}/history")
-	public ResponseEntity<ApiResponse<AccountHistoryDto>> getAccountHistory(@PathVariable Long accountNo) {
-		
-		AccountDto account = accountService.getAccountDetail(accountNo);
-		List<AccountTransactionDto> transactionList = accountTransactionService.getTransactions(accountNo);
-		AccountHistoryDto historyData = AccountHistoryDto.builder()
-				.account(account)
-				.transactionList(transactionList)
-				.build();
-		return ResponseEntity.ok(ApiResponse.ok(historyData));
+	public ResponseEntity<ApiResponse<?>> getAccountHistory(
+	        Principal principal,
+	        @PathVariable(name = "accountNo") Long accountNo) {
+
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+
+	    String currentLoginId = principal.getName();
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+
+	    if (memberInfo == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+	    }
+
+	    AccountDto account = accountService.getAccountDetail(accountNo);
+
+	    if (account == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("계좌 정보를 찾을 수 없습니다."));
+	    }
+
+	    if (account.getMember_no() != memberInfo.getMember_no()) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+	                .body(ApiResponse.fail("본인 계좌만 조회할 수 있습니다."));
+	    }
+
+	    List<AccountTransactionDto> transactionList =
+	            accountTransactionService.getTransactions(accountNo);
+
+	    AccountHistoryDto historyData = AccountHistoryDto.builder()
+	            .account(account)
+	            .transactionList(transactionList)
+	            .build();
+
+	    return ResponseEntity.ok(ApiResponse.ok(historyData));
 	}
 
 	// 가입 상품 내역 조회
 	@GetMapping("/myproducts")
-	public ResponseEntity<ApiResponse<List<MemberProductDto>>> getMyProducts(Principal principal) {
-		
-		String currentLoginId = TEMP_LOGIN_ID;
-		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		long currentMemberNo = memberInfo.getMember_no();
-		List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentMemberNo);
-		return ResponseEntity.ok(ApiResponse.ok(productList));
+	public ResponseEntity<ApiResponse<?>> getMyProducts(Principal principal) {
+
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+
+	    String currentLoginId = principal.getName();
+	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+
+	    if (memberInfo == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+	    }
+
+	    long currentMemberNo = memberInfo.getMember_no();
+	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentMemberNo);
+
+	    return ResponseEntity.ok(ApiResponse.ok(productList));
 	}
 
 	// 내 정보 수정
 	@PostMapping("/myinfo/update")
 	public ResponseEntity<ApiResponse<Void>> updateMyInfo(
-			Principal principal,
-			@RequestParam(value = "phone_number", defaultValue = "") String phoneNumber,
-			@RequestParam(value = "email", defaultValue = "") String email,
-			@RequestParam(value = "address_main", defaultValue = "") String addressMain,
-			@RequestParam(value = "address_detail", defaultValue = "") String addressDetail) {
+	        Principal principal,
+	        @RequestParam(value = "phone_number", defaultValue = "") String phoneNumber,
+	        @RequestParam(value = "email", defaultValue = "") String email,
+	        @RequestParam(value = "address_main", defaultValue = "") String addressMain,
+	        @RequestParam(value = "address_detail", defaultValue = "") String addressDetail) {
 
-		String currentLoginId = TEMP_LOGIN_ID;
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+		String currentLoginId = principal.getName();
 
 		// 입력 데이터가 아예 없으면 DB 접근 차단 (Early Return)
 		if (phoneNumber.trim().isEmpty() && email.trim().isEmpty() && addressMain.trim().isEmpty()) {
@@ -175,11 +261,15 @@ public class BankMemberApiController {
 	// 비밀번호 변경
 	@PostMapping("/myinfo/update-password")
 	public ResponseEntity<ApiResponse<Void>> updatePassword(
-			Principal principal,
-			@RequestParam(value = "current_password", defaultValue = "") String currentPassword,
-			@RequestParam(value = "new_password", defaultValue = "") String newPassword) {
+	        Principal principal,
+	        @RequestParam(value = "current_password", defaultValue = "") String currentPassword,
+	        @RequestParam(value = "new_password", defaultValue = "") String newPassword) {
 
-		String currentLoginId = TEMP_LOGIN_ID;
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+		String currentLoginId = principal.getName();
 
 		if (currentPassword.trim().isEmpty() || newPassword.trim().isEmpty()) {
 			return ResponseEntity.badRequest()
