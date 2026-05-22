@@ -52,37 +52,66 @@
 		        
 		        
 	        	<!-- 출력하는 부분 -->
-		        <div class="customer-list-section">
-		            <h3 class="list-section-title">고객 명단</h3>
-		            
-		            <!-- 여기에 출력! -->
-		            <!-- 출력될 데이터가 없다면? -->
-		            
-		            
-		            <!-- 출력될 데이터가 있다면 -->
-		            <div th:if="${not #lists.isEmpty(mmbList)}">
-			            <table>
-			            	<tbody>
-			            		<tr class="mng-table-tr">
-			            			<td></td>
-			            			<td></td>
-			            			<td></td>
-			            		</tr>
-			            	</tbody>
-			            </table>
-		            </div>
-	            </div>
+				<div class="customer-list-section">
+				    <h3 class="list-section-title">고객 명단</h3>
+				    
+				    <!-- 비동기 fetch가 이 div 알맹이를 통째로 갈아 끼웁니다 -->
+				    <div id="memberTableResult">
+				        
+				        <!-- Case 1: 출력될 데이터가 없다면 (최초 진입 또는 결과 없음) -->
+				        <div th:if="${#lists.isEmpty(mmbList)}" class="empty-result-box">
+				            <div id="result">조회된 회원 정보가 없습니다. 조건 입력 후 검색해주세요.</div>		            	
+				        </div>
+				        
+				        <!-- Case 2: 출력될 데이터가 있다면 -->
+				        <div th:if="${not #lists.isEmpty(mmbList)}">
+				            <!-- id와 함께 공통 스타일 클래스인 mng-table을 부여합니다 -->
+				            <table id="member-list-table" class="mng-table">
+				                <thead>
+				                    <tr>
+				                        <th style="width: 80px;">번호</th>
+				                        <th>이름</th>
+				                        <th>생년월일</th>
+				                        <th>전화번호</th>
+				                    </tr>
+				                </thead>
+				                <tbody>
+				                    <tr th:each="mmb, stat : ${mmbList}" class="mng-table-tr">
+				                        <td th:text="${stat.count}"></td>
+				                        <td th:text="${mmb.member_name}" class="font-weight-bold"></td>
+				                        <td th:text="${mmb.birth_date}"></td>
+				                        <td th:text="${mmb.phone_number}"></td>
+				                    </tr>
+				                </tbody>
+				            </table>
+				        </div>
+				        
+				    </div>
+				</div>
 		    </div>
 		</main>
 		
     </div>
 
 <script>
-	const showMember = document.querySelector("showMember").addEventListener('click', showMember);
+	document.querySelector("#showMember").addEventListener('click', showMember);
+	
 	function showMember () {
-		const birth = document.querySelector("birth_date").value;
-		const phone = document.querySelector("phone_number").value;
-		const member_name =  document.querySelector("member_name").value;
+	    const birth = document.querySelector("#birth_date").value;
+	    const phone = document.querySelector("#phone_number").value;
+	    const member = document.querySelector("#member_name").value;
+	    
+	    // 요청 경로는 동일하게 호출하되
+	    fetch('/mmbPage/search?birth_date='+birth+"&phone_number="+phone+"&member_name="+member)
+	    .then(response => {
+	        if (!response.ok) throw new Error("에러 발생");
+	        return response.text(); // 중요: json()이 아니라 text()로 HTML 코드를 그대로 받습니다.
+	    })
+	    .then(htmlFragment => {
+	        // 서버에서 받아온 완성된 HTML 조각을 감싸고 있는 원래 div에 쏙 덮어씌웁니다.
+	        document.querySelector("#memberTableResult").outerHTML = htmlFragment;
+	    })
+	    .catch(error => console.error("에러:", error));
 	}
 	
 </script>

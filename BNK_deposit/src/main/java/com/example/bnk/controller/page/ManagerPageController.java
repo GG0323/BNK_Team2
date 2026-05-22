@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -97,31 +96,23 @@ public class ManagerPageController {
 		return "manager/member";
 	}
 	
-	// 관리자 - 회원 관리 페이지 검색 기능
-	@PostMapping("/mmbPage/search")
-	@ResponseBody
-	public List<BankMemberDto> handleSearchRequest(
-			@RequestParam(value = "birth_date", required = false) String birth_date,
-			@RequestParam(value = "phone_number", required = false) String phone_number,
-			@RequestParam(value = "member_name", required = false) String member_name) {
-		
-		System.out.println("작동");
-		System.out.println(birth_date);
-		System.out.println(phone_number);
-		System.out.println(member_name);
-		
-		List<BankMemberDto> resultList = bnkmemService.showMember(birth_date, phone_number, member_name);
-		
-		if (resultList == null) {
-			System.out.println("데이터 없음");
-			resultList = new ArrayList<>();
-		}
-		
-		for(int i = 0; i < resultList.size(); i++) {
-			System.out.println(resultList.get(i));			
-		}
-		
-		return resultList; // 요청 전송(?이라고 해야하나) 갈 때 JSON 배열로 자동 변환됨.
+	// 관리자 - 회원 관리 페이지 검색 기능 (타임리프 fragment 방식)
+	@GetMapping("/mmbPage/search")
+	public String handleSearchRequest(
+	        @RequestParam(value = "birth_date", required = false) String birth_date,
+	        @RequestParam(value = "phone_number", required = false) String phone_number,
+	        @RequestParam(value = "member_name", required = false) String member_name,
+	        Model model) {
+	    
+	    List<BankMemberDto> resultList = bnkmemService.showMember(birth_date, phone_number, member_name);
+	    
+	    if (resultList == null) {
+	        resultList = new ArrayList<>();
+	    }
+	    
+	    model.addAttribute("mmbList", resultList);
+	    
+	    return "manager/member :: #memberTableResult"; 
 	}
 	
 	// 관리자 - 커뮤니티 공지 작성 페이지

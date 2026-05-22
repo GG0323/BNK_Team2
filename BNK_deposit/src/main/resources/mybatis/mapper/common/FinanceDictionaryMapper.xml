@@ -4,4 +4,35 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.common.IFinanceDictionaryDao">
 
+	<select id="selectAllDictionarys" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        SELECT 
+            dictionary_no,
+            dictionary_nm,
+            dictionary_content,
+            dictionary_category,
+            view_count,
+            created_at,
+            updated_at
+        FROM tb_finance_dictionary
+        ORDER BY dictionary_no DESC </select>
+    
+    <select id="selectDictionaryByNo" parameterType="long" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        SELECT 
+            dictionary_no,
+            dictionary_nm,
+            dictionary_content,
+            dictionary_category,
+            view_count,
+            created_at,
+            updated_at
+        FROM tb_finance_dictionary
+        WHERE dictionary_no = #{dictionary_no}
+    </select>
+    
+    <update id="updateViewCount" parameterType="long">
+        UPDATE tb_dictionary
+        SET view_count = view_count + 1
+        WHERE dictionary_no = #{dictionary_no}
+    </update>
+    
 </mapper>
