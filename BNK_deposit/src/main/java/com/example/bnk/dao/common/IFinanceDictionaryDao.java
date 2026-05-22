@@ -20,4 +20,13 @@ public interface IFinanceDictionaryDao {
 	
 	// 검색 로직
 	List<FinanceDictionaryDto> searchDictionary(String keyword);
+	
+	// ✨ 용어 등록 (Create)
+		int insertDictionary(FinanceDictionaryDto dto);
+		
+	// ✨ 용어 수정 (Update)
+	int updateDictionary(FinanceDictionaryDto dto);
+	
+	// ✨ 용어 삭제 (Delete)
+	int deleteDictionary(long dictionary_no);
 }

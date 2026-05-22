@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bnk.dto.common.FinanceDictionaryDto;
@@ -51,5 +52,42 @@ public class FinanceDictionaryController {
 	    
 	    // 상세 화면용 HTML 파일(findictionaryDetail.html)을 엽니다.
 	    return "common/financedictionarydetail"; 
+	}
+	
+	// ✨ 1. 등록 폼 화면 띄우기 (C)
+	@GetMapping("/financedictionary/write")
+	public String writeForm() {
+		return "common/financedictionary_write";
+	}
+	
+	// ✨ 2. 작성한 데이터 DB에 저장하기 (C)
+	@PostMapping("/financedictionary/write")
+	public String writeProcess(FinanceDictionaryDto dto) {
+		dictionaryService.addDictionary(dto);
+		return "redirect:/financedictionary"; // 작성 완료 후 목록으로 튕겨냄
+	}
+	
+	// ✨ 3. 수정 폼 화면 띄우기 (U)
+	@GetMapping("/financedictionary/edit/{dictionary_no}")
+	public String editForm(@PathVariable("dictionary_no") long dictionary_no, Model model) {
+		// 조회수 증가 없는 메서드 사용!
+		FinanceDictionaryDto financeword = dictionaryService.getDictionaryForEdit(dictionary_no);
+		model.addAttribute("financeword", financeword);
+		return "common/financedictionary_edit";
+	}
+	
+	// ✨ 4. 수정한 데이터 DB에 덮어쓰기 (U)
+	@PostMapping("/financedictionary/edit")
+	public String editProcess(FinanceDictionaryDto dto) {
+		dictionaryService.modifyDictionary(dto);
+		// 수정 완료 후 수정한 그 단어의 상세 페이지로 다시 이동
+		return "redirect:/financedictionary/" + dto.getDictionary_no(); 
+	}
+	
+	// ✨ 5. 데이터 삭제하기 (D)
+	@GetMapping("/financedictionary/delete/{dictionary_no}")
+	public String deleteProcess(@PathVariable("dictionary_no") long dictionary_no) {
+		dictionaryService.removeDictionary(dictionary_no);
+		return "redirect:/financedictionary"; // 삭제 후 목록으로 이동
 	}
 }

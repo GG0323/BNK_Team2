@@ -48,4 +48,29 @@
         ORDER BY dictionary_no DESC
     </select>
     
+    <!-- 새로운 용어 삽입 -->
+    <insert id="insertDictionary" parameterType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        INSERT INTO tb_finance_dictionary (
+            dictionary_no, dictionary_nm, dictionary_content, dictionary_category, view_count, created_at, updated_at
+        ) VALUES (
+            seq_dictionary.NEXTVAL,  #{dictionary_nm}, #{dictionary_content}, #{dictionary_category}, 0, SYSDATE, SYSDATE
+        )
+    </insert>
+
+	<!-- 기존 용어 수정 -->
+    <update id="updateDictionary" parameterType="com.example.bnk.dto.common.FinanceDictionaryDto">
+        UPDATE tb_finance_dictionary
+        SET dictionary_nm = #{dictionary_nm},
+            dictionary_category = #{dictionary_category},
+            dictionary_content = #{dictionary_content},
+            updated_at = SYSDATE
+        WHERE dictionary_no = #{dictionary_no}
+    </update>
+
+	<!-- 용어 삭제 -->
+    <delete id="deleteDictionary" parameterType="long">
+        DELETE FROM tb_finance_dictionary
+        WHERE dictionary_no = #{dictionary_no}
+    </delete>
+    
 </mapper>
