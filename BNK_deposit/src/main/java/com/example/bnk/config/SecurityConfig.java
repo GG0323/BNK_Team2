@@ -24,20 +24,13 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) {
 		
+		http.csrf(csrf -> csrf.disable());
+		
 		// 권한별 제어
 		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
-//				.requestMatchers("/mypage/**", "/myinfo/**", "/myinfo_edit/**", "/myaccounts/**", "/myhistory/**","/myproducts/**").hasAuthority("ROLE_MEMBER").anyRequest().permitAll()
+				.requestMatchers("/css/**", "/js/**", "/images/**", "/**", "/common/**").permitAll()
+				
 		);
-		
-//		http.exceptionHandling(exception -> exception
-//				.authenticationEntryPoint((request, response, authException) -> {
-//					// 권한이 없으면 로그인 페이지로 튕겨냅니다. 
-//	                // (?error=login_required 라는 꼬리표를 달아서 보냅니다)
-//					response.sendRedirect("/loginPage?error=login_required");
-//			})
-//		);
-		
 		
 		// 직원 로그인 설정
 		http.formLogin(employee ->

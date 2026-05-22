@@ -53,7 +53,7 @@
         INSERT INTO tb_finance_dictionary (
             dictionary_no, dictionary_nm, dictionary_content, dictionary_category, view_count, created_at, updated_at
         ) VALUES (
-            seq_dictionary.NEXTVAL,  #{dictionary_nm}, #{dictionary_content}, #{dictionary_category}, 0, SYSDATE, SYSDATE
+            SEQ_FIN_DICTIONARY.NEXTVAL,  #{dictionary_nm}, #{dictionary_content}, #{dictionary_category}, 0, SYSDATE, SYSDATE
         )
     </insert>
 

@@ -67,4 +67,8 @@
         WHERE LOGIN_ID = #{loginId}
     </update>
     
+    <select id="idCheck">
+    	SELECT COUNT(*) FROM TB_BANK_MEMBER WHERE LOGIN_ID = #{param}
+    </select>
+    
 </mapper>

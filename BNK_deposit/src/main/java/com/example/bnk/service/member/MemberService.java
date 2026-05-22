@@ -1,11 +1,14 @@
 package com.example.bnk.service.member;
 
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.member.IBankMemberDao;
 import com.example.bnk.dto.member.BankMemberDto;
+import com.example.bnk.utils.AesCryptoUtil;
 
 @Service
 public class MemberService {
@@ -16,15 +19,22 @@ public class MemberService {
 	@Autowired
 	private BCryptPasswordEncoder pwEncoder;
 	
+	@Autowired
+	private AesCryptoUtil aesUtil;
+	
 	// 회원 등록
 	public boolean regist(BankMemberDto dto) {
+		String identifier = dto.getMember_identifier();
+		
+		dto.setBirth_date(LocalDate.parse(identifier.substring(0, 6), DateTimeFormatter.ofPattern("yyMMdd")));
+		dto.setGender(identifier.charAt(6) == '1' ? "M" : "F");
 		dto.setPassword_hash(pwEncoder.encode(dto.getPassword_hash()));
-		dto.setMember_identifier(pwEncoder.encode(dto.getMember_identifier()));
+		dto.setMember_identifier(aesUtil.encrypt(identifier));
 		return memberDao.regist(dto) == 1;
 	}
 	
-	// 회원 수정
-	public boolean editMember(BankMemberDto dto) {
-		return memberDao.editMember(dto) == 1;
+	// 회원 ID 중복 확인	(true: 사용가능, false: 중복)
+	public boolean idCheck(String id) {
+		return memberDao.idCheck(id) == 0;
 	}
 }

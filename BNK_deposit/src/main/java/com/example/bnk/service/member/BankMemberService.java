@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.member.IBankMemberDao;
 import com.example.bnk.dto.member.BankMemberDto;
+import com.example.bnk.utils.AesCryptoUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,29 +14,40 @@ import lombok.RequiredArgsConstructor;
 public class BankMemberService {
 
 	private final IBankMemberDao bankMemberDao;
-	private final BCryptPasswordEncoder passwordEncoder;
-
+	private final BCryptPasswordEncoder pwEncoder;
+	private final AesCryptoUtil aesUtil;
+	
+	// 회원 정보 검색
     public BankMemberDto getMemberInfo(String loginId) {
-        return bankMemberDao.findMemberById(loginId);
+    	BankMemberDto dto = bankMemberDao.findMemberById(loginId);
+    	if(dto == null) return null;
+    	String identifier = aesUtil.decrypt(dto.getMember_identifier());
+    	identifier = dto.getMember_type().equals("BUSINESS")
+    				? identifier
+    				: String.format("%s-%c******", identifier.substring(0, 6), identifier.charAt(6));
+    	dto.setMember_identifier(identifier);
+        return dto;
     }
     
+    // 회원 정보 수정
     public void modifyMemberInfo(BankMemberDto updateDto) {
         bankMemberDao.editMember(updateDto);
     }
     
+    // 회원 비밀번호 수정
     public boolean changePassword(String loginId, String currentPassword, String newPassword) {
         BankMemberDto member = bankMemberDao.findMemberById(loginId);
         
-        // 회원 존재 확인 & ✨ 암호화된 비밀번호와 평문 비밀번호를 matches()로 비교!
-        if (member != null && passwordEncoder.matches(currentPassword, member.getPassword_hash())) {
+        // 회원 정보가 존재하고, 입력한 비밀번호가 DB의 암호화된 비밀번호와 일치하는지 확인
+        if (member != null && pwEncoder.matches(currentPassword, member.getPassword_hash())) {
             
             // 일치하면 '새 비밀번호'도 암호화해서 DB에 업데이트!
-            String encodedNewPassword = passwordEncoder.encode(newPassword);
+            String encodedNewPassword = pwEncoder.encode(newPassword);
             bankMemberDao.updatePassword(loginId, encodedNewPassword);
             return true;
         }
         
-        // 일치하지 않으면 실패처리
+        // 일치하지 않으면 바로 실패(false) 반환
         return false;
     }
 }
