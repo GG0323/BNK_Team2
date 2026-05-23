@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.employee.IEmployeeDao;
 import com.example.bnk.dto.employee.EmployeeDetailUpdateDto;
+import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.employee.EmployeeListDetailDto;
 import com.example.bnk.dto.employee.EmployeeListDto;
 
@@ -43,6 +44,19 @@ public class EmployeeListService {
 			) {
 		int result = empDao.updateEmployeeDetail(detailDto);
 		return result;
+	}
+	
+	
+	
+	// 상품제안서 작성을 위한 상사들의 목록을 반환하는 함수
+	public List<EmployeeDto> managers() {
+		List<EmployeeDto> managers = empDao.managers();
+		return managers;
+	}
+	// 로그인한 사원의 정보를 auth영역에서 로그인 id를 꺼내와서 DB에 검색한다. 
+	public EmployeeDto findByUsername(String username) {
+		EmployeeDto myInfo = empDao.findByUsername(username);
+		return myInfo;
 	}
 	
 	

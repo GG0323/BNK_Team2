@@ -8,5 +8,18 @@
 	<select id="showPrdSugt" resultType="com.example.bnk.dto.product.ProductSuggestionDto">
 		SELECT * FROM TB_PRODUCTS_SUGGESTION ORDER BY suggested_at DESC
 	</select>
-
+	
+	<insert id="writeSuggestion">
+		INSERT INTO TB_PRODUCTS_SUGGESTION
+			(employee_no, manager_employee_no, product_name, suggestion_content,
+			proposed_min_interest_rate, proposed_max_interest_rate)
+		VALUES (#{dto.employee_no},#{dto.manager_employee_no},
+				#{dto.product_name},#{dto.suggestion_content},
+				#{dto.proposed_min_interest_rate},
+				#{dto.proposed_max_interest_rate});
+	</insert>
+	
+	
+	
+	
 </mapper>

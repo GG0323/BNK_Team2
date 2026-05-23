@@ -36,4 +36,7 @@ public interface IEmployeeDao {
 	// 사원 정보 수정
 	public int updateEmployeeDetail(@Param("dto") EmployeeDetailUpdateDto detailDto);
 	
+	// 상사 목록
+	public List<EmployeeDto> managers();
+	
 }

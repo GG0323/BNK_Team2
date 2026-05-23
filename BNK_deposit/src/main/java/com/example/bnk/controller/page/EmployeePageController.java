@@ -87,22 +87,19 @@ public class EmployeePageController {
 		return "/Employees/staff/staffPage";
 	}
 	
-	// 제안서 작성 페이지
+	// 제안서 작성 페이지 이동
 	@GetMapping("/staff/writeSuggestionPage")
 	public String writeSuggestionPage(
-			@AuthenticationPrincipal String username,
-			Model model
+			@AuthenticationPrincipal String username
 			) {
-
+		
 		if (username == null) {	
 			System.out.println("사용자정보가 없는데?");
             return "redirect:/employee/loginPage";
         }
 		
-		System.out.println("유저 PK : " + username);
+		System.out.println("로그인 한 유저 id : " + username);
 		
-		model.addAttribute("username", username);
-
 		return "/Employees/staff/writeSuggestionPage";
 	}
 	

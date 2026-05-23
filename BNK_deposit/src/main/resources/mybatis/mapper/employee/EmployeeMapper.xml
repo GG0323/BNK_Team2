@@ -62,7 +62,7 @@
 	
 	
 	<!-- 상사 목록 반환 -->
-	<select id="">
+	<select id="managers" resultType="com.example.bnk.dto.employee.EmployeeDto">
 		SELECT * FROM TB_employee WHERE employee_role IN ('ADMIN', 'MANAGER')
 	</select>
 	

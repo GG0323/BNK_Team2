@@ -12,45 +12,81 @@
 	
 	<form id="suggestionForm">
 		
-		<input type="text" name="employee_no" th:value = "${username}" >
 		
-		<input type="text" name="manager_employee_no" placeholder="어디선가 상사 pk가져오기">
+		<div>
+	        <label>작성자</label>
+			<input type="hidden" name="employee_no" id="employee_no">
+	        <div id="my_name"></div>
+		</div>
+		
+		<div>
+			<label>승인 책임자</label>
+	        <select name="manager_employee_no" id="manager_select">
+	        	<option value="">-- 책임자 선택 --</option>
+	        </select>
+	    </div>
+		
 		<input type="text" name="product_name" placeholder="제안 상품명">
 		<input type="text" name="suggestion_content" placeholder="제안 내용">
 		<input type="text" name="proposed_min_interest_rate" placeholder="제안 최저 금리">
 		<input type="text" name="proposed_max_interest_rate" placeholder="제안 최고 금리">
-		<input type="text" name="suggested_at" placeholder="작성 일">
 	</form>
 	
 	<script>
 		const suggestionForm = document.querySelector("#suggestionForm");
-		// 로그인한 직원의 pk, 현재 특정 직급 이상인 사람들
-		
-		
-		suggestionForm.addEventListener("submit", (e)=> {
-			fetch("/api/staff/suggestion 여청 두소",{
-				method: "POST",
-				body: new FormData(suggestionForm)
-			})
-			.then()
-			.then()
-			.catch(e=> console.log(e));
-			
-		});
-		
-		fetch("/api/staff/suggestion 여청 두소",{
+	
+		// 페이지 들어오자마자 시작함수
+		// 1. 시큐리티에서 로그인한 직원의 id로 직원의 정보를 반환하고
+		// 2. 현재 특정 권한 이상인 사람들을 찾아서 반환 
+		fetch("/api/staff/suggestion/managers",{
 			method: "GET"
 		})
 		.then(response => {
 			return response.json();
 		})
 		.then(data => {
+			console.log(data);
 			
+			// 내 id로 찾아온 내 정보
+			document.querySelector("#my_name").textContent = data.myInfo.employee_name;
+			document.querySelector("#employee_no").value = data.myInfo.employee_no;
+			// 관리자 권한을 가진 사람들 정보
 			
+			const select = document.querySelector("#manager_select");
+			
+			data.managers.forEach(m => {
+	            const option = document.createElement("option"); // 옵션 생성
+	            option.value = m.employee_no;         // 넘어갈 값 (no)
+	            option.textContent = m.employee_name; // 화면에 보일 값 (이름)
+	            select.appendChild(option);           // 자식으로 넣어주기
+			});
 		})
 		.catch(e=> console.log(e));
 		
-		
+		// 폼 등록 함수
+		suggestionForm.addEventListener("submit", (e)=> {
+			e.preventDefault();
+			
+			fetch("/api/staff/suggestion/writeSuggestion",{
+				method: "POST",
+				body: new FormData(suggestionForm)
+			})
+			.then(response => {
+			
+				
+					return response.json();
+			})
+			.then(data => {
+				console.log(data);
+				
+				// 릉록한 제안서 리스트로 location.href="페이지 컨트롤러 주소"
+				if (data === 1) { 
+					//location.href = "/staff/suggestion/list"; 
+		        }
+			})
+			.catch(e=> console.log(e));
+			
+		});
 		
 	
 	</script>
