@@ -56,5 +56,28 @@ public class EmployeePageController {
 	public String hrmEmployeeDetailList() {
 		return "Employees/manager/HRM/hrmEmployeeDetailList";
 	}
+
+	// !! 제안서 리스트 페이지    /employee/manager/SUG/suggestionList
+	@GetMapping("/manager/SUG/suggestionList")
+	public String suggestionList() {
+		return "Employees/manager/SUG/suggestionListPage";
+	}
+	// !! 제안서 상세 페이지
+	@GetMapping("/manager/SUG/suggestionReview")
+	public String suggestionReview() {
+		return "Employees/manager/SUG/suggestionReviewPage";
+	}
+	// !! 승인된 제안서 리스트 (중간 테이블)  /employee/manager/SUG/approvedList
+	@GetMapping("/manager/SUG/approvedList")
+	public String approvedList() {
+		return "Employees/manager/SUG/approvedSuggestionList";
+	}
+	// !! 승인된 제안서 상세 (중간 테이블)
+	@GetMapping("/manager/SUG/approvedDetail")
+	public String approvedDetail() {
+		return "Employees/manager/SUG/approvedSuggestionDetail";
+	}
+	
+
 	
 }
