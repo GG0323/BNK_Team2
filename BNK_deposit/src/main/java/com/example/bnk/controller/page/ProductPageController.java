@@ -33,15 +33,14 @@ public class ProductPageController {
     // 비회원도 접근 가능
     // 조건: product_type = DEPOSIT / SAVINGS, product_status = SALE
     @GetMapping
-    public String productList(Model model) {
-
-        List<ProductListViewDto> productList = productViewService.getProductList();
-
-        model.addAttribute("productList", productList);
+    public String productList(Model model,
+    		@RequestParam(value="sort", required = false, defaultValue = "baseRateDesc")String sort) {
+        model.addAttribute("productList", productViewService.getProductList(sort));
+        model.addAttribute("sort", sort);
 
         return "product/productList";
     }
-
+    
     // 상품 검색
     // TB_KEYWORD.normalized_keyword 활용
     @GetMapping("/search")

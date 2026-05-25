@@ -3,10 +3,13 @@ package com.example.bnk.controller.page;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bnk.service.employees.EmployeeLogService;
+
 
 @Controller
 @RequestMapping("/employee")
@@ -18,7 +21,12 @@ public class EmployeePageController {
 	
 	// /employee/toMain
 	@GetMapping("/toMain") 
-	public String mainWorkSpace() {
+	public String mainWorkSpace(Model model,
+			@RequestParam(value = "message", required = false)String msg) {
+		if(msg != null) {
+			model.addAttribute("msg", msg);
+		}
+		
 		return "Employees/mainWorkspaceLogin";
 	}
 	

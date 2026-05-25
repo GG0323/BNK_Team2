@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/member")
 public class BankMemberPageController {
 	
 	private final BankMemberService bankMemberService;
@@ -32,7 +34,7 @@ public class BankMemberPageController {
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
 	
-	// 사용자의 마이페이지 
+	// 고객 마이페이지 
 	@GetMapping("/mypage")
     public String rootMembersMypage(Model model) {
         // 회원 정보 조회
@@ -63,7 +65,7 @@ public class BankMemberPageController {
         return "member/mypage";
     }
 	
-	// 사용자의 내 정보 페이지
+	// 고객의 내 정보 페이지
 	@GetMapping("/myinfo")
 	public String rootMembersMyinfo(Model model) {
 		String currentLoginId = "dev_hyun";
@@ -75,7 +77,7 @@ public class BankMemberPageController {
         return "member/myinfo";
 	}
 	
-	// 사용자의 내 정보 수정하기 페이지
+	// 고객의 내 정보 수정하기 페이지
 	@GetMapping("/myinfo/edit")
 	public String rootMembersMyinfoEdit(Model model) {
 	    String currentLoginId = "dev_hyun";
@@ -90,7 +92,7 @@ public class BankMemberPageController {
 	    return "member/myinfo_edit";
 	}
 	
-	// 내 정보 수정, DB 업데이트 기능
+	// 고객의 내 정보 수정, DB 업데이트 기능
 	@PostMapping("/myinfo/update")
 	public String updateMyInfo(
 	        @RequestParam(value = "phone_number", defaultValue = "") String phoneNumber,
@@ -137,7 +139,7 @@ public class BankMemberPageController {
 	    return "redirect:/myinfo";
 	}
 		
-	// 내 비밀번호 수정, DB 업데이트 기능
+	// 고객 비밀번호 수정, DB 업데이트 기능
 	@PostMapping("/myinfo/update-password")
 	public String updatePassword(
 	        @RequestParam(value = "current_password", defaultValue = "") String currentPassword,
@@ -164,7 +166,7 @@ public class BankMemberPageController {
 	    }
 	}
 	
-	// 내 계좌 정보 보기
+	// 고객의 내 계좌 정보 보기
 	@GetMapping("/myaccounts")
 	public String rootMembersAccounts(Model model) {
 	    // 현재 로그인된 회원 번호 (임시)
@@ -205,7 +207,7 @@ public class BankMemberPageController {
         return "member/myhistory";
     }
 	
-	// 사용자의 가입 상품 내역 페이지 조회
+	// 고객의 가입 상품 내역 페이지 조회
 	@GetMapping("/myproducts")
 	public String rootMembersProducts(Model model) {
 	    //  현재 로그인한 회원 번호 세팅 (테스트용 1번 회원)

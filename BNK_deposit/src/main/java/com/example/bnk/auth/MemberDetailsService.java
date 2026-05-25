@@ -20,7 +20,6 @@ public class MemberDetailsService implements UserDetailsService{
 		System.out.println(username);
 		BankMemberDto dto = dao.findByUsername(username);
 		if(dto == null)	 throw new UsernameNotFoundException("해당 직원을 찾을 수 없습니다: " + username);
-		System.out.println(dto);
 		return new MemberDetails(dto);
 	}
 
