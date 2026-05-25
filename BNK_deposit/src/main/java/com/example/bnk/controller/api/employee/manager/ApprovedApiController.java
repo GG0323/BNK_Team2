@@ -14,7 +14,7 @@ public class ApprovedApiController {
 	@GetMapping("/approvedList")
 	public void approvedList() {
 		//리턴할 DTO 있어야하고 
-		//서비스
+		//서비스 있어야하고
 		//
 	}
 	
