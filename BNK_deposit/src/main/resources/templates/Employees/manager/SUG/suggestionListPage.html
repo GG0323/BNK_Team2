@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	
+	<h1>나에게 온 제안서를 검토하는 페이지(list)</h1>	
+	
+	<div>
+		<table>
+			<thead>
+				<tr>
+					<th>suggestion_no</th>
+					<th>employee_no	</th>
+					-> join으로 제안한 직원의 이름도 
+					
+					<th>manager_employee_no</th>
+					-> 나에게 온 것만
+					
+					<th>product_name</th>
+					<th>suggestion_content</th> -> 생략
+					<th>proposed_min_interest_rate</th>
+					<th>proposed_max_interest_rate</th>
+					<th>approval_status</th> 
+					<th>reject_reason</th> -> 생략
+					<th>suggested_at</th> 
+					<th>processed_at</th>
+				</tr>
+			</thead>
+			<tbody id="suggestionListTable">		
+			
+			</tbody>		
+		
+		</table>	
+		
+	</div>
+	
+	
+	
+	
+	<script>
+		
+		// 
+		fetch("" , {
+			method: "GET"
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			console.log(data);
+			
+			const suggestionListTable = document.querySelector("#suggestionListTable");
+			
+			let html = "/api/employee/suggestion/suggestionList";
+			
+			data.forEach(sug => {
+				
+				html += `
+					<tr>
+						<td>${sug.suggestion_no}</td>
+						<td>${sug.employee_no}</td>
+						<td>${sug.employee_name}</td>  
+						<td>${sug.job_title}</td> 
+						
+						<td>${sug.manager_employee_no}</td>
+						
+						<td>${sug.product_name}</td>
+						<td>${sug.proposed_min_interest_rate}</td>
+						<td>${sug.proposed_max_interest_rate}</td>
+						<td>${sug.approval_status}</td>
+						<td>${sug.suggested_at}</td>
+						<td>${sug.processed_at ?? "-"}</td>
+						<td>
+							<button onclick="reviewPage(${sug.suggestion_no})">조회</button>
+						</td>
+					</tr>
+				`;
+				
+				suggestionListTable.innerHTML = html;
+			});
+			
+		})
+		.catch(e => console.log(e));
+		
+		// 함수
+		function reviewPage( suggestion_no ){
+			location.href = "/employee/manager/SUG/suggestionReviewPage?suggestion_no=" + suggestion_no;
+		}
+	
+	
+	</script>
+	
+	
+	
+</body>
+</html>

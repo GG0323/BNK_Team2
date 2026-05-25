@@ -9,6 +9,7 @@
 		SELECT * FROM TB_PRODUCTS_SUGGESTION ORDER BY suggested_at DESC
 	</select>
 	
+	<!-- 제안서 작성 페이지 -->
 	<insert id="writeSuggestion">
 		INSERT INTO TB_PRODUCTS_SUGGESTION
 			(employee_no, manager_employee_no, product_name, suggestion_content,
@@ -19,7 +20,75 @@
 				#{dto.proposed_max_interest_rate});
 	</insert>
 	
+	<!-- 나에게 온 제안서 조회 -->
+	<select id="mySuggestionList" resultType="com.example.bnk.dto.product.suggestion.SuggestionListDto">
+    	SELECT 
+        	s.suggestion_no,
+        	s.employee_no,
+        	e.employee_name,        <!-- 작성자 이름 -->
+        	e.job_title,            <!-- 작성자 직급 -->
+        	s.product_name,
+        	s.suggestion_content,
+        	s.proposed_min_interest_rate,
+        	s.proposed_max_interest_rate,
+        	s.approval_status,
+        	s.suggested_at
+    	FROM TB_PRODUCTS_SUGGESTION s
+    	JOIN TB_employee e 
+    	ON s.employee_no = e.employee_no
+    	WHERE s.manager_employee_no = #{manager_employee_no}
+   		ORDER BY s.suggested_at DESC
+	</select>
+	<!-- 제안서 상세 보기 -->
+	<select id="suggestionReview" resultType="com.example.bnk.dto.product.suggestion.SuggestionListDto">
+	    SELECT
+			s.suggestion_no,
+        	s.employee_no,
+        	e.employee_name,
+        	e.job_title,
+        	e.dept_no,
+        	s.manager_employee_no,
+        	m.employee_name     AS manager_name,   
+        	s.product_name,
+        	s.suggestion_content,
+        	s.proposed_min_interest_rate,
+        	s.proposed_max_interest_rate,
+        	s.approval_status,
+        	s.reject_reason,
+        	s.suggested_at,
+        	s.processed_at
+    	FROM TB_PRODUCTS_SUGGESTION s
+    	JOIN TB_employee e                         
+    	ON s.employee_no = e.employee_no
+    	JOIN TB_employee m                   
+    	ON s.manager_employee_no = m.employee_no
+    	WHERE s.suggestion_no = #{suggestion_no}
+	</select>
 	
+	<!-- 제안서 승인 -->
+	<update id="approveSuggestion">
+    	UPDATE TB_PRODUCTS_SUGGESTION
+    	SET 
+        	approval_status = 'APPROVED',
+        	processed_at = SYSDATE
+    	
+    	WHERE suggestion_no = #{suggestion_no}
+	</update>
+	<insert id="insertApprovedProduct">
+		INSERT INTO TB_APPROVED_PRODUCTS
+        	(suggestion_no, rate_no, terms_no, description_no, condition_no)
+   		VALUES (#{suggestion_no}, null, null, null, null)
+	</insert>
 	
+	<!-- 제안서 거부 -->	
+	<update id="rejectSuggestion">
+    	UPDATE TB_PRODUCTS_SUGGESTION
+   		SET 
+        	approval_status = 'REJECTED',
+        	reject_reason = #{reject_reason},
+        	processed_at = SYSDATE
+    	
+    	WHERE suggestion_no = #{suggestion_no}
+	</update>
 	
 </mapper>
