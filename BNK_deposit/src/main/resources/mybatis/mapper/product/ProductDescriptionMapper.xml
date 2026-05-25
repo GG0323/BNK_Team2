@@ -55,4 +55,21 @@
 		    #{disclosure_approval_desc, jdbcType=VARCHAR},
 		    #{image_url, jdbcType=VARCHAR})
 	</insert>
+	
+	<update id="updateProductDescription" parameterType="com.example.bnk.dto.product.ProductDescriptionDto">
+		UPDATE TB_PRODUCT_DESCRIPTION
+		SET subtitle = #{subtitle, jdbcType=VARCHAR},
+			content = #{content, jdbcType=VARCHAR},
+			eligibility_desc = #{eligibility_desc, jdbcType=VARCHAR},
+			preferential_rate_summary = #{preferential_rate_summary, jdbcType=VARCHAR},
+			product_feature_desc = #{product_feature_desc, jdbcType=VARCHAR},
+			join_method_desc = #{join_method_desc, jdbcType=VARCHAR},
+			tax_benefit_desc = #{tax_benefit_desc, jdbcType=VARCHAR},
+			caution_note = #{caution_note, jdbcType=VARCHAR},
+			disclosure_approval_desc = #{disclosure_approval_desc, jdbcType=VARCHAR},
+			image_url = #{image_url, jdbcType=VARCHAR},
+			update_at = SYSDATE
+		WHERE description_no = #{description_no}
+		AND product_no = #{product_no}
+	</update>	
 </mapper>

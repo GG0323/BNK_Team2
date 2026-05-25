@@ -135,4 +135,49 @@ public class ProductForEmployee {
         
         return 0;
     }
+    
+    
+    // 상품 기본정보 업데이트
+    public int updateProductStatus(ProductDto productDto) {
+    	if(productDto != null) {
+    		productDao.updateProductStatus(productDto);
+    		System.out.println("상품기본정보 업데이트 완료!");
+    		return 1;
+    	}
+    	System.out.println("업데이트 할 데이터가 없습니다.");
+    	return 0;
+    }
+    
+    // 상품 금리 업데이트
+    public int updateRateStatus(ProductRateDto prdRateDto) {
+    	if(prdRateDto != null) {
+    		iProductRateDao.updateProductRate(prdRateDto);
+    		System.out.println("상품 금리 업데이트 완료!");
+    		return 1;
+    	}
+    	return 0;
+    }
+    
+    // 상품 설명 업데이트
+    public int updateProductDescription(ProductDescriptionDto prdDescDto) {
+    	if(prdDescDto != null) {
+    		iProductDescDao.updateProductDescription(prdDescDto);
+    		System.out.println("상품 설명 업데이트완료!");
+    		return 1;
+    	}
+    	System.out.println("업데이트 할 데이터가 안들어왔습니다!");
+    	return 0;
+    }
+    
+    // 상품 가입 조건 업데이트
+    public int updateProductCondition(ProductConditionDto prdCndDto){
+    	if(prdCndDto != null) {
+    		iProductionDao.updateProductCondition(prdCndDto);
+    		System.out.println("상품 가입 조건 업데이트 완료!");
+    		return 1;
+    	}
+    	System.out.println("업데이트 할 데이터가 들어오지 않았습니다.");
+    	return 0;
+    }
+
 }

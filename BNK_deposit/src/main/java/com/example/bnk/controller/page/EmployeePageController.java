@@ -165,4 +165,59 @@ public class EmployeePageController {
 		return "redirect:/employee/staff/product/description";
 	}
 	
+	
+	/* 상품 상세 페이지 수정용.
+	-----------------------------------------------------------------------------------------*/
+	// 상품 기본 정보 수정
+	@PostMapping("staff/product/update/product")
+	public String updateProduct(ProductDto productDto) {
+		int product_no = (int) productDto.getProduct_no();
+		
+		if(prdForEmpService.updateProductStatus(productDto) == 1) {
+			System.out.println("성공");
+			return "redirect:/employee/staff/product/list";
+		}
+		System.out.println("실패");
+		
+		return "redirect:/employee/prdPage/detail/" + product_no;
+	}
+	
+	// 상품 금리 정보 수정
+	@PostMapping("staff/product/update/rate")
+	public String updateRate(ProductRateDto productRateDto){
+		int product_no = (int) productRateDto.getProduct_no();
+		
+		if(prdForEmpService.updateRateStatus(productRateDto) == 1) {
+			System.out.println("성공");
+			return "redirect:/employee/staff/product/list";
+		}
+		System.out.println("실패");
+		return "redirect:/employee/prdPage/detail" + product_no;
+	}
+	
+	// 상품 설명 변경
+	@PostMapping("/staff/product/update/description")
+	public String updateDescription(ProductDescriptionDto prdDescDto) {
+		int product_no = (int) prdDescDto.getProduct_no();
+		
+		if(prdForEmpService.updateProductDescription(prdDescDto) == 1) {
+			System.out.println("성공");
+			return "redirect:/employee/staff/product/list";
+		}
+		System.out.println("실패");
+		return "redirect:/employee/prdPage/detail" + product_no;
+	}
+	
+	// 상품 가입 조건 변경
+	@PostMapping("/staff/product/update/condition")
+	public String updateProductCondition(ProductConditionDto prdCndDto) {
+		int product_no = (int) prdCndDto.getProduct_no();
+		
+		if(prdForEmpService.updateProductCondition(prdCndDto) == 1) {
+			System.out.println("성공");
+			return "redirect:/employee/staff/product/list";
+		}
+		System.out.println("실패");
+		return "redirect:/employee/prdPage/detail" + product_no;
+	}
 }

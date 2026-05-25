@@ -13,4 +13,5 @@ public interface IProductDao {
 	public List<ProductDto> showPrdToDeposit();
 	public List<ProductDto> showPrdToSavings();
 	public ProductDto showProductDetails(@Param("product_no") int product_no);
+	public int updateProductStatus(ProductDto productDto);
 }
