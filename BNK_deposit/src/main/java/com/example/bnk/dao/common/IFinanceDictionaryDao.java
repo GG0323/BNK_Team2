@@ -17,4 +17,16 @@ public interface IFinanceDictionaryDao {
 	
 	// ✨ 특정 용어의 조회수 1 증가시키기
 	void updateViewCount(long dictionary_no);
+	
+	// 검색 로직
+	List<FinanceDictionaryDto> searchDictionary(String keyword);
+	
+	// ✨ 용어 등록 (Create)
+		int insertDictionary(FinanceDictionaryDto dto);
+		
+	// ✨ 용어 수정 (Update)
+	int updateDictionary(FinanceDictionaryDto dto);
+	
+	// ✨ 용어 삭제 (Delete)
+	int deleteDictionary(long dictionary_no);
 }

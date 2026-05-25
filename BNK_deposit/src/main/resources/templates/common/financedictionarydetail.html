@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>금융 용어 사전 상세</title>
+<style>
+    body { font-family: sans-serif; }
+    .detail-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-top: 2px solid #8b7355; }
+    .detail-table th, .detail-table td { border-bottom: 1px solid #ddd; padding: 15px; }
+    .detail-table th { background-color: #f9f9f9; width: 20%; text-align: center; }
+    .btn-wrap { text-align: center; margin-top: 30px; }
+    .list-btn { padding: 10px 30px; border: 1px solid #ccc; background: white; cursor: pointer; text-decoration: none; color: black; }
+</style>
+</head>
+<body>
+    <h1 style="background-color: #8b7355; color: white; padding: 15px;">금융용어사전</h1>
+    
+    <h2 class="dict-header">금융용어사전</h2>
+	<table class="detail-table">
+	    <tr>
+	        <th>카테고리</th>
+	        <td th:text="${financeword.dictionary_category}">예적금</td>
+	    </tr>
+	    <tr>
+	        <th>조회수</th>
+	        <td th:text="${financeword.view_count} + ' 회'">0 회</td>
+	    </tr>
+	    <tr>
+	        <th>용어 설명</th>
+	        <td th:text="${financeword.dictionary_content}">내용...</td>
+	    </tr>
+	</table>
+
+	<div class="btn-wrap">
+        <a href="/financedictionary" class="list-btn">목록으로</a>
+        <a th:href="@{/financedictionary/edit/{no}(no=${financeword.dictionary_no})}" class="list-btn" style="border-color: #d71920; color: #d71920;">수정</a>
+        <a th:href="@{/financedictionary/delete/{no}(no=${financeword.dictionary_no})}" class="list-btn" style="background-color: #d71920; color: white; border: none;" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+    </div>
+</body>
+</html>

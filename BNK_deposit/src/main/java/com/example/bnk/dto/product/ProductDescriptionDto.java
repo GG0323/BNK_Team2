@@ -2,6 +2,8 @@ package com.example.bnk.dto.product;
 
 import java.time.LocalDate;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,9 +29,9 @@ public class ProductDescriptionDto {
 	public String payment_method_desc;           // 납입방법
 	public String join_method_desc;              // 가입방법
 	public String required_document_desc;        // 필요서류
-	public String  tax_benefit_desc;             // 세제혜택
+	public String tax_benefit_desc;             // 세제혜택
 	public String principal_interest_limit_desc; // 원금 또는 이자지급제한
-	public String  interest_rate_desc;           // 적용금리
+	public String interest_rate_desc;           // 적용금리
 	public String interest_payment_desc;         // 이자지급방식
 	public String preferential_rate_desc;        // 우대이율
 	public String expected_interest_desc;        // 예상수취이자액 안내
@@ -41,5 +43,6 @@ public class ProductDescriptionDto {
 	public String image_url;                     // 이미지 URL
 	public LocalDate created_at;                 // 생성일 DEFAULT SYSDATE
 	public LocalDate updated_at;                 // 수정일
-
+	
+	private MultipartFile image_file;
 }
