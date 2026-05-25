@@ -131,14 +131,16 @@ function signup(){
 		return;
 	}
 	
-	fetch("/api/member/2/member", {
+	fetch("/api/2/member", {
 		method : "post",
 		body : new FormData(document.getElementById("frm"))
 	})
 	.then(data=> data.json())
 	.then(data=> {
-		alert('로그인 성공!');
-		location.href="/loginPage";
-	})
+		if(data){
+			alert('회원가입 성공!');
+			location.href="/loginPage";
+		}else alert('잠시후 다시 실행해주세요.');
+	}).catch(e => alert(e));
 	
 }

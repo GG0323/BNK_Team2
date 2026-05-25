@@ -1,24 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>BNK 부산은행</title>
+
+	<link rel="stylesheet" th:href="@{/css/index.css}">
+	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 </head>
 <body>
+
 <div th:replace="~{fragments/header :: header_default}"></div>
 
-<div>
-	<p>안녕하세요</p>
-</div>
-<br>
-<a th:href="@{/mypage}">마이페이지</a><br>
-<a th:href="@{/financedictionary}">금융용어사전</a><br>
-<a href="#" onclick="openCalculatorPopup(); return false;" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background-color: #d71920; color: white; text-decoration: none; border-radius: 5px;">
-    🧮 스마트 금융계산기 열기
-</a>
+<!-- Main -->
+<main class="main">
+
+    <!-- Main Visual -->
+    <section class="visual-section">
+        <div class="visual-banner">
+            <div class="visual-text">
+                <p class="visual-label">BNK 금융상품</p>
+                <h1>나에게 맞는 금융상품을<br>쉽고 빠르게 찾아보세요</h1>
+                <p>
+                    예금부터 적금, 대출상품까지<br>
+                    필요한 상품을 한눈에 확인할 수 있습니다.
+                </p>
+            </div>
+
+            <div class="visual-graphic">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="card-graphic">
+                    <span>금융상품</span>
+                    <strong>맞춤추천</strong>
+                </div>
+            </div>
+
+            <div class="visual-dots">
+                <span></span>
+                <span></span>
+                <span class="active"></span>
+                <span></span>
+            </div>
+        </div>
+
+        <aside class="quick-service">
+            <button type="button" class="quick red" onclick="alert('준비중입니다.')">
+                <span>↗</span>
+                빠른조회 서비스
+            </button>
+
+            <button type="button" class="quick dark" onclick="alert('준비중입니다.')">
+                <span>⚠</span>
+                사고분실 신고
+            </button>
+
+            <button type="button" class="quick teal" onclick="alert('준비중입니다.')">
+                <span>🛡</span>
+                금융소비자보호
+            </button>
+        </aside>
+    </section>
+
+    <!-- Product Shortcut -->
+    <section class="product-shortcut">
+        <button type="button" class="shortcut-item shortcut-button" onclick="productSearch()">
+            <div class="shortcut-icon medal">★</div>
+            <strong>상품검색</strong>
+            <p>원하는 상품을 빠르게 검색</p>
+        </button>
+
+        <a th:href="@{/products}" class="shortcut-item">
+            <div class="shortcut-icon target">◎</div>
+            <strong>상품 리스트 보기</strong>
+            <p>전체 상품 목록 확인</p>
+        </a>
+
+        <button type="button" class="shortcut-item shortcut-button" onclick="alert('준비중입니다.')">
+            <div class="shortcut-icon chart">↗</div>
+            <strong>AI로 나에게 맞는 상품 찾기</strong>
+            <p>내 조건에 맞춘 상품 추천</p>
+        </button>
+
+        <button type="button" class="shortcut-item shortcut-button" onclick="alert('준비중입니다.')">
+            <div class="shortcut-icon calc">₩</div>
+            <strong>금융계산기</strong>
+            <p>이자와 만기금액 계산</p>
+        </button>
+    </section>
+
+</main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script src="/js/index.js"></script>
 </body>
 </html>

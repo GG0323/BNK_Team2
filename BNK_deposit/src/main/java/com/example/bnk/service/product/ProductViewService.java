@@ -1,6 +1,7 @@
 package com.example.bnk.service.product;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,9 +19,30 @@ public class ProductViewService {
 
     private final IProductViewDao productViewDao;
 
-    // 상품 목록 조회
-    public List<ProductListViewDto> getProductList() {
-        return productViewDao.selectProductList();
+    // 상품 목록 조회 + 정렬
+    public List<ProductListViewDto> getProductList(String sort) {
+        List<ProductListViewDto> list = productViewDao.selectProductList();
+
+        // 최대금리 높은 순
+        if ("maxRateDesc".equals(sort)) {
+            list.sort(Comparator
+            				.comparingDouble(ProductListViewDto::getMax_interest_rate)
+            				.reversed()
+            );
+         // 상품명 순
+        } else if ("nameAsc".equals(sort)) {
+            list.sort(Comparator
+            		.comparing(ProductListViewDto::getProduct_name,
+            				Comparator.nullsLast(String::compareTo)));
+         
+        // 기본금리 높은 순
+        } else {
+            list.sort(
+                Comparator.comparingDouble(ProductListViewDto::getMin_interest_rate)
+                          .reversed()
+            );
+        }
+        return list;
     }
 
     // 상품 상세 조회
