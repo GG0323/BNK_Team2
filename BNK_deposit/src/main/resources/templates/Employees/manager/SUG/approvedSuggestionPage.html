@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	
+	
+	승인된 중간테이블의 모든 항목을 조회한다.
+	<table>
+		<thead>
+			<tr>
+				<th>suggestion_no</th>
+				<th>상품명</th>
+	            <th>최저금리</th>
+	            <th>최고금리</th>
+				
+				<th>rate_no</th>
+				<th>terms_no</th>
+				<th>description_no</th>
+				<th>condition_no</th>
+			</tr>
+			
+		</thead>
+		
+		<tbody id="approvedListTable">
+			
+		</tbody>
+		
+	</table>
+
+	
+	
+	
+	
+	조인? 조건? 
+	제안서 내가 승인함, 1. 승인자 나임 2. 승인됨 >> pk
+	
+	중간 테이블 >> 
+	
+	
+	
+	
+	
+	<script>
+		
+		fetch("/api/employee/approved/approvedList", {
+	        method: "GET"
+	    })
+	    .then(response => response.json())
+	    .then(data => {
+	        console.log(data);
+
+	        const tbody = document.getElementById("approvedListTable");
+
+	        let html = "";
+
+	        data.forEach(ap => {
+	            html += `
+	                <tr>
+	                    <td>${ap.suggestion_no}</td>
+	                    <td>${ap.product_name}</td>
+	                    <td>${ap.proposed_min_interest_rate}%</td>
+	                    <td>${ap.proposed_max_interest_rate}%</td>
+	                    <td>${ap.rate_no ?? "미등록"}</td>
+	                    <td>${ap.terms_no ?? "미등록"}</td>
+	                    <td>${ap.description_no ?? "미등록"}</td>
+	                    <td>${ap.condition_no ?? "미등록"}</td>
+	                    <td>
+	                        <button onclick="goDetail(${ap.suggestion_no})">상세보기</button>
+	                    </td>
+	                </tr>
+	            `;
+	        });
+
+	        tbody.innerHTML = html;
+	    })
+	    .catch(e => console.log(e));
+
+		// 상세 페이지로 이동
+		function goDetail(suggestion_no) {
+	         location.href = "/employee/manager/PRODUCT      /approvedDetail?suggestion_no=" + suggestion_no;
+	    }
+		
+		
+		
+		
+		
+	</script>
+	
+	
+	
+	
+	
+	
+</body>
+</html>

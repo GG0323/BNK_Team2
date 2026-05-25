@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<h1>제안서 상세</h1>
+
+	<div id="suggestionDetail">
+		<div>
+	        <span>제안서 번호 : </span>
+	        <span id="suggestion_no"></span>
+	    </div>
+		<hr>
+		
+		<div>
+	       <span>작성자 : </span>
+	       <span id="employee_name"></span>
+	       &nbsp;
+	       <span id="job_title"></span>
+	   	</div>
+	   	
+	   	
+	   	<div>
+	       <span>승인 책임자 : </span>
+	       <span id="manager_name"></span>
+	   	</div>
+	   	<div>
+	       <span>제안일 : </span>
+	       <span id="suggested_at"></span>
+	   	</div>
+	
+	   	<hr>	   
+	   
+	   	<div>
+			<h2 id="product_name"></h2>  <!-- 상품명  -->
+	  	</div>
+		
+		<div>
+			<p id="suggestion_content"></p>  <!-- 제안 내용 -->
+		</div>
+		
+		<div>
+			<span>최저 금리 : </span>
+			<span id="proposed_min_interest_rate"></span>
+            &nbsp; ~ &nbsp;	
+			<span>최고 금리 : </span>
+            <span id="proposed_max_interest_rate"></span>
+		</div>
+		
+		<hr>
+		
+		<div>
+            <span>승인 상태 : </span>
+            <span id="approval_status"></span>
+        </div>
+			
+		<!-- 거부된 경우에만 표시 -->
+        <div id="rejectReasonArea" style="display:none;">
+            <span>거부 사유 : </span>
+            <span id="reject_reason"></span>
+        </div>
+
+        <div>
+            <span>처리일 : </span>
+            <span id="processed_at"></span>
+        </div>
+
+        <hr>
+
+        <!-- 승인상태가 PENDING일 때만 표시 -->
+        <div id="actionButtons" style="display:none;">
+            <button onclick="openApprovePopup()"> 승인 </button>
+            <button onclick="openRejectPopup()"> 거부 </button>
+        </div>
+			
+	</div>
+		
+	<!-- 거부 팝업 -->
+    <div id="rejectPopup" style="display:none;">
+        <h3>거부 사유 입력</h3>
+        <textarea id="reject_reason_input" placeholder="거부 사유를 입력하세요" rows="4" cols="40"></textarea>
+        <br>
+        <button onclick="reject()">확인</button>
+        <button onclick="closeRejectPopup()">취소</button>
+    </div>
+	
+	<!-- 승인 팝업 -->
+    <div id="approvePopup" style="display:none;">
+        <h3>승인하시겠습니까?</h3>
+        
+        <br>
+        <button onclick="approve()">확인</button>
+        <button onclick="closeApprovePopup()">취소</button>
+    </div>
+		
+		보내야하는 파라미터 
+		승인시 =>  suggestion_no
+		
+		거부시 => 팝업 등장해서 거부이유 작성 => reject_reason, suggestion_no
+		
+		
+		
+	<script>
+		const suggestion_no = new URLSearchParams(location.search).get("suggestion_no");
+		// 페이지 진입시 작동
+		fetch("/api/employee/suggestion/suggestionReview?suggestion_no=" + suggestion_no , {
+			method: "GET"
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			console.log(data);
+			// 데이터 채우기
+			document.getElementById("suggestion_no").textContent              = data.suggestion_no;
+			document.getElementById("employee_name").textContent              = data.employee_name;
+			document.getElementById("job_title").textContent                  = data.job_title;
+			
+			document.getElementById("manager_name").textContent               = data.manager_name;
+			document.getElementById("product_name").textContent               = data.product_name;
+			document.getElementById("suggestion_content").textContent         = data.suggestion_content;
+			document.getElementById("proposed_min_interest_rate").textContent = data.proposed_min_interest_rate + "%";
+			document.getElementById("proposed_max_interest_rate").textContent = data.proposed_max_interest_rate + "%";
+			
+			document.getElementById("approval_status").textContent            = data.approval_status;
+		
+			document.getElementById("suggested_at").textContent               = data.suggested_at;
+			document.getElementById("processed_at").textContent               = data.processed_at ?? "-";
+			
+			// PENDING이면 승인/거부 버튼 표시
+            if (data.approval_status === "PENDING") {
+                document.getElementById("actionButtons").style.display = "block";
+            }
+			// REJECTED면 거부 사유 표시
+            if (data.approval_status === "REJECTED") {
+                document.getElementById("rejectReasonArea").style.display = "block";
+                document.getElementById("reject_reason").textContent = data.reject_reason ?? "-";
+            }
+		
+		
+		})
+		.catch(e => console.log(e));
+		
+		// 팝업 컨트롤러
+		function openApprovePopup() {document.getElementById("approvePopup").style.display = "block";}
+		function closeApprovePopup() {document.getElementById("approvePopup").style.display = "none";}
+		
+		function openRejectPopup() {document.getElementById("rejectPopup").style.display = "block";}
+        function closeRejectPopup() {document.getElementById("rejectPopup").style.display = "none";}
+		
+		
+		//승인
+		function approve() {
+            fetch("/api/employee/suggestion/approveSuggestion", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ suggestion_no: suggestion_no })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data === 1) {
+                    alert("승인 완료");
+                    location.href = "/employee/manager/SUG/suggestionList";
+                }
+            })
+            .catch(e => console.log(e));
+        }
+		
+		function reject() {
+            const reject_reason = document.getElementById("reject_reason_input").value.trim();
+
+            if (!reject_reason) {
+                alert("거부 사유를 입력해주세요.");
+                return;
+            }
+
+            fetch("/api/employee/suggestion/rejectSuggestion", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    suggestion_no: suggestion_no,
+                    reject_reason: reject_reason
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data === 1) {
+                    alert("거부 처리 완료");
+                    location.href = "/employee/manager/SUG/suggestionList";
+                }
+            })
+            .catch(e => console.log(e));
+        }
+		
+		
+	
+	</script>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</body>
+</html>

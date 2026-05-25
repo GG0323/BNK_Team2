@@ -76,8 +76,16 @@ public class EmployeePageController {
 	public String hrmEmployeeDetailList() {
 		return "Employees/manager/HRM/hrmEmployeeDetail";
 	}
-	
-	
+	// !! 제안서 리스트 페이지    /employee/manager/SUG/suggestionList
+	@GetMapping("/manager/SUG/suggestionList")
+	public String suggestionList() {
+		return "Employees/manager/SUG/suggestionListPage";
+	}
+	// !! 제안서 상세 페이지
+	@GetMapping("/manager/SUG/suggestionReview")
+	public String suggestionReview() {
+		return "Employees/manager/SUG/suggestionReviewPage";
+	}
 	
 	
 	
