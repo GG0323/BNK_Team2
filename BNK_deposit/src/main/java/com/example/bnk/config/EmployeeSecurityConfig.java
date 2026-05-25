@@ -14,6 +14,8 @@ import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
 
+import jakarta.servlet.http.Cookie;
+
 @Configuration
 @EnableWebSecurity
 public class EmployeeSecurityConfig {
@@ -31,11 +33,10 @@ public class EmployeeSecurityConfig {
 	SecurityFilterChain employeeFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.securityMatcher("/employee/**")
+		http.securityMatcher("/employee/**, /api/employee")
 			.userDetailsService(employeeDetailsService)
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
-		
 		
 		// 직원 로그인 설정
 		http.formLogin(employee ->
@@ -45,6 +46,21 @@ public class EmployeeSecurityConfig {
 			.failureHandler(new SecurityLoginFailHandler())
 			.passwordParameter("password_hash")
 			.usernameParameter("login_id")
+		);
+		
+		// 직원 로그아웃 설정
+		http.logout(logout -> logout
+				.logoutUrl("/employee/logout")
+				.logoutSuccessHandler((request, response, auth)->{
+					Cookie cookie = new Cookie("bnk_token", null);
+					cookie.setPath("/");
+					response.addCookie(cookie);
+					cookie.setHttpOnly(true);
+					
+					response.sendRedirect("/employee/toMain?message=logout");
+				})
+				.invalidateHttpSession(true)
+				.clearAuthentication(true)
 		);
 			
 		return http.build();

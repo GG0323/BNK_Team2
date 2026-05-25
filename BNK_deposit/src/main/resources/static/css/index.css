@@ -1,0 +1,314 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+    background-color: #fff;
+    color: #222;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+}
+
+/* Main */
+.main {
+    width: 1120px;
+    margin: 32px auto 60px;
+}
+
+/* Visual */
+.visual-section {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    gap: 24px;
+}
+
+.visual-banner {
+    position: relative;
+    height: 265px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #173b92 0%, #213e91 52%, #142e73 100%);
+    color: #fff;
+    padding: 58px 60px;
+    border-radius: 0;
+}
+
+.visual-label {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 5px 12px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    font-size: 14px;
+    color: #ffe86a;
+    font-weight: 700;
+}
+
+.visual-text h1 {
+    margin-bottom: 16px;
+    font-size: 33px;
+    line-height: 1.35;
+    letter-spacing: -1px;
+}
+
+.visual-text p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.visual-graphic {
+    position: absolute;
+    right: 70px;
+    top: 42px;
+    width: 260px;
+    height: 180px;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.circle-1 {
+    width: 150px;
+    height: 150px;
+    right: 34px;
+    top: 20px;
+    background-color: rgba(215, 25, 32, 0.82);
+}
+
+.circle-2 {
+    width: 85px;
+    height: 85px;
+    right: 155px;
+    top: 65px;
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.card-graphic {
+    position: absolute;
+    right: 0;
+    top: 60px;
+    width: 160px;
+    height: 96px;
+    padding: 18px;
+    background-color: #fff;
+    color: #222;
+    border-radius: 10px;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25);
+    transform: rotate(-8deg);
+}
+
+.card-graphic span {
+    display: block;
+    margin-bottom: 8px;
+    color: #777;
+    font-size: 13px;
+}
+
+.card-graphic strong {
+    color: #d71920;
+    font-size: 22px;
+}
+
+.visual-dots {
+    position: absolute;
+    right: 36px;
+    top: 24px;
+    display: flex;
+    gap: 7px;
+}
+
+.visual-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.visual-dots span.active {
+    width: 22px;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+/* Quick Service */
+.quick-service {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.quick {
+    height: 78px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.quick span {
+    font-size: 20px;
+}
+
+.quick:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.16);
+}
+
+.quick.red {
+    background-color: #d7281f;
+}
+
+.quick.dark {
+    background-color: #25262a;
+}
+
+.quick.teal {
+    background-color: #02a0aa;
+}
+
+/* Product Shortcut */
+.product-shortcut {
+    margin: 54px 0 42px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.shortcut-item {
+    min-height: 165px;
+    text-align: center;
+    padding: 26px 16px 24px;
+    border-radius: 18px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        background-color 0.2s;
+}
+
+.shortcut-button {
+    width: 100%;
+    appearance: none;
+}
+
+.shortcut-item:hover {
+    transform: translateY(-6px);
+    background-color: #fafafa;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 15px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: 900;
+}
+
+.shortcut-icon.medal {
+    color: #ffb400;
+    background-color: #fff4c7;
+}
+
+.shortcut-icon.target {
+    color: #d71920;
+    background-color: #ffe9e9;
+}
+
+.shortcut-icon.chart {
+    color: #3aa64b;
+    background-color: #e8f8e9;
+}
+
+.shortcut-icon.calc {
+    color: #27469c;
+    background-color: #ebefff;
+}
+
+.shortcut-item strong {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 18px;
+    color: #222;
+}
+
+.shortcut-item p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+    .main {
+        width: 94%;
+    }
+
+    .visual-section {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-service {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .main {
+        margin: 24px auto 48px;
+    }
+
+    .visual-banner {
+        height: auto;
+        padding: 38px 28px;
+    }
+
+    .visual-graphic {
+        display: none;
+    }
+
+    .visual-text h1 {
+        font-size: 26px;
+    }
+
+    .visual-text p {
+        font-size: 15px;
+    }
+
+    .product-shortcut,
+    .quick-service {
+        grid-template-columns: 1fr;
+    }
+
+    .shortcut-item {
+        min-height: 150px;
+    }
+}

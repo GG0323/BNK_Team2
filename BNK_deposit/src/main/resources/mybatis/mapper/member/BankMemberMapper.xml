@@ -13,7 +13,7 @@
 	<insert id="regist">
 		INSERT INTO TB_BANK_MEMBER(
 	        login_id, password_hash, member_name, member_type, member_identifier,
-	        gender, birth_date, phone_number, email, adress, credit_score
+	        gender, birth_date, phone_number, email, address, credit_score
         )
     	VALUES(
     		#{dto.login_id}, #{dto.password_hash}, #{dto.member_name}, #{dto.member_type},

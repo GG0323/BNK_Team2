@@ -33,6 +33,7 @@ private final JwtUtil jwtUtil;
 		// Cookie에 토큰 저장
 		Cookie cookie = new Cookie("bnk_token", token);
 		cookie.setPath("/");
+		cookie.setHttpOnly(true);
 		
 		response.addCookie(cookie);
 		

@@ -23,6 +23,6 @@ function login() {
 		if(data.result === 'success'){
 			alert('로그인 성공!');
 			location.href="/products";
-		}
-	})
+		}else alert('아이디 또는 비밀번호를 다시 확인해주세요.');
+	}).catch(e => alert(e));
 }

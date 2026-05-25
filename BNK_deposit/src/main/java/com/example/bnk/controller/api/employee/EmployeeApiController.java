@@ -1,4 +1,4 @@
-package com.example.bnk.controller.api.employee.manager;
+package com.example.bnk.controller.api.employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,21 +26,6 @@ public class EmployeeApiController {
 	EmployeeLogService logService;
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
 	
-	//로그인 처리
-	@PostMapping("/login")
-	public int login(
-			@RequestParam("login_id")String login_id,
-			@RequestParam("password")String password
-			) {
-		System.out.println(login_id+"직원~~~~~~~"+ password);
-		
-		//결과로 t/f 반환
-		boolean login = loginService.login(login_id, password);
-		
-		System.out.println("결과 비교 ~~~~~ "+login);
-		
-		return 0;
-	}
 	
 	// 회원가입 처리 
 	@PostMapping("/HRM/regist")

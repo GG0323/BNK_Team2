@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <th:block th:fragment="footerCss">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+    </th:block>
 </head>
 <body>
-	<footer th:fragment="footer">
-		<hr>
-		<nav>
-			<a href="">개인정보처리방침</a>
-		</nav>
+	<footer th:fragment="footer" class="footer">
+	    <div class="footer-inner">
+	        <a href="#">개인정보처리방침</a>
+	        <a href="#">경영공시</a>
+	        <a href="#">고객정보취급방침</a>
+	        <a href="#">상품공시실</a>
+	        <a href="#">전자민원접수</a>
+	    </div>
 	</footer>
 </body>
 </html>

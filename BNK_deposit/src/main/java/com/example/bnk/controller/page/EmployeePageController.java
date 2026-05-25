@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
@@ -18,7 +19,7 @@ import com.example.bnk.dto.product.ProductDetailResponseDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.service.employees.EmployeeLogService;
-import com.example.bnk.service.product.ProductForEmployee;
+
 
 @Controller
 @RequestMapping("/employee")
@@ -28,13 +29,14 @@ public class EmployeePageController {
 	EmployeeLogService logService;
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
 	
-	@Autowired
-	private ProductForEmployee prdForEmpService;
-	
-	
 	// /employee/toMain
 	@GetMapping("/toMain") 
-	public String mainWorkSpace() {
+	public String mainWorkSpace(Model model,
+			@RequestParam(value = "message", required = false)String msg) {
+		if(msg != null) {
+			model.addAttribute("msg", msg);
+		}
+		
 		return "Employees/mainWorkspaceLogin";
 	}
 	

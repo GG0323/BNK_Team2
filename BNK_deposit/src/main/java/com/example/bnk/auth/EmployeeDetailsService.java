@@ -17,9 +17,14 @@ public class EmployeeDetailsService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		System.out.println("시큐리티~~~");
+		
 		EmployeeDto dto = dao.findByUsername(username);
+
 		if(dto == null) throw new UsernameNotFoundException("해당 직원을 찾을 수 없습니다: " + username);
 		return new EmployeeDetails(dto);
+
 	}
 
 }

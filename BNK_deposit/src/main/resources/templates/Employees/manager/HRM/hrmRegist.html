@@ -6,7 +6,9 @@
 </head>
 <body>
 
-	<form id="hrmRegistForm" enctype="multipart/form-data">
+	<form id="hrmRegistForm" action="@{/api/employee/HRM/regist}" method="POST" enctype="multipart/form-data">
+		<!-- 
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> -->
 		
 		<label>부서</label>
 		<select name="dept_no">
@@ -79,7 +81,7 @@
 	
 	const hrmRegistForm = document.querySelector("#hrmRegistForm");
 	
-	hrmRegistForm.addEventListener("submit", (e) => {
+/* 	hrmRegistForm.addEventListener("submit", (e) => {
 		e.preventDefault();
 		
 		fetch("/api/employee/HRM/regist",{
@@ -94,15 +96,11 @@
 		})
 		.then(data => {
 			
-			
-			
+			페이지 이동
 		})
 		.catch(e => console.log(e));
-		
-		
-		
 	});
-	
+	 */
 	
 	
 	
