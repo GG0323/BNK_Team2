@@ -1,4 +1,4 @@
-package com.example.bnk.service.member;
+package com.example.bnk.service.common;
 
 import java.util.HashMap;
 import java.util.Map;

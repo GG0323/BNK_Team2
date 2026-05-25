@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.bnk.service.member.CalcService;
+import com.example.bnk.service.common.CalcService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +36,6 @@ public class CalcController {
     
     @GetMapping("/calc/popup")
     public String showCalcPopup() {
-        return "product/calculator"; 
+        return "common/calculator"; 
     }
 }

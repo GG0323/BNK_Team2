@@ -38,14 +38,16 @@ public class BankMemberService {
     public boolean changePassword(String loginId, String currentPassword, String newPassword) {
         BankMemberDto member = bankMemberDao.findMemberById(loginId);
         
-        // 1. 회원 정보가 존재하고, 입력한 현재 비밀번호가 DB의 비밀번호와 일치하는지 확인
-        if (member != null && pwEncoder.encode(newPassword).equals(member.getPassword_hash())) {
-            // 2. 일치하면 새 비밀번호로 업데이트
-            bankMemberDao.updatePassword(loginId, pwEncoder.encode(newPassword));
+        // 회원 정보가 존재하고, 입력한 비밀번호가 DB의 암호화된 비밀번호와 일치하는지 확인
+        if (member != null && pwEncoder.matches(currentPassword, member.getPassword_hash())) {
+            
+            // 일치하면 '새 비밀번호'도 암호화해서 DB에 업데이트!
+            String encodedNewPassword = pwEncoder.encode(newPassword);
+            bankMemberDao.updatePassword(loginId, encodedNewPassword);
             return true;
         }
         
-        // 3. 일치하지 않으면 실패 처리
+        // 일치하지 않으면 바로 실패(false) 반환
         return false;
     }
 }

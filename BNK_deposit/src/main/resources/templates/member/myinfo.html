@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,15 +29,15 @@
         </div>
     </header>
 
-    <nav class="sub-nav">
-        <button class="tab-btn" th:classappend="${pageName == 'mypage'} ? 'active'" th:onclick="|location.href='@{/mypage}'|">1. 마이페이지</button>
-        <button class="tab-btn" th:classappend="${pageName == 'myinfo'} ? 'active'" th:onclick="|location.href='@{/myinfo}'|">2. 내정보</button>
-        <button class="tab-btn" th:classappend="${pageName == 'myaccounts'} ? 'active'" th:onclick="|location.href='@{/myaccounts}'|">3. 계좌 및 거래내역</button>
-        <button class="tab-btn" th:classappend="${pageName == 'myproducts'} ? 'active'" th:onclick="|location.href='@{/myproducts}'|">4. 가입상품</button>
+    <nav class="sub-nav" id="subNav" data-page="myinfo">
+        <button class="tab-btn" data-tab="mypage"     onclick="location.href='/mypage'">1. 마이페이지</button>
+        <button class="tab-btn" data-tab="myinfo"     onclick="location.href='/myinfo'">2. 내정보</button>
+        <button class="tab-btn" data-tab="myaccounts" onclick="location.href='/myaccounts'">3. 계좌 및 거래내역</button>
+        <button class="tab-btn" data-tab="myproducts" onclick="location.href='/myproducts'">4. 가입상품</button>
     </nav>
 
     <main class="myinfo-container">
-        
+
         <section class="page-header">
             <h3>내 정보 조회</h3>
             <p>로그인한 회원의 기본 정보를 조회합니다.</p>
@@ -46,60 +46,28 @@
         <section class="info-section">
             <table class="info-table">
                 <tbody>
-                    <tr>
-                        <th>아이디</th>
-                        <td th:text="${member.login_id}">hong</td>
-                    </tr>
-                    <tr>
-                        <th>회원명</th>
-                        <td th:text="${member.member_name}">홍길동</td>
-                    </tr>
-                    <tr>
-                        <th>회원구분</th>
-                        <td th:text="${member.member_type}">personal</td>
-                    </tr>
-                    <tr>
-                        <th>회원 식별번호</th>
-                        <td th:text="${member.member_identifier}">990101-1*******</td>
-                    </tr>
-                    <tr>
-                        <th>전화번호</th>
-                        <td th:text="${member.phone_number}">010-0000-0000</td>
-                    </tr>
-                    <tr>
-                        <th>이메일</th>
-                        <td th:text="${member.email}">email@email.com</td>
-                    </tr>
-                    <tr>
-                        <th>주소</th>
-                        <td th:text="${member.adress}">부산광역시 부산진구</td>
-                    </tr>
-                    <tr>
-                        <th>신용점수</th>
-                        <td th:text="${member.credit_score} + '점'">700점</td>
-                    </tr>
-                    <tr>
-                        <th>회원상태</th>
-                        <td>
-                            <span class="badge red" th:text="${member.member_status}">REGULAR</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>가입일</th>
-                        <td th:text="${#temporals.format(member.created_at, 'yyyy. MM. dd.')}">2026. 06. 01.</td>
-                    </tr>
-                    <tr>
-                        <th>마지막 로그인</th>
-                        <td th:text="${#temporals.format(member.last_login_at, 'yyyy. MM. dd. HH:mm')}">2026. 06. 01. 10:34</td>
-                    </tr>
+                    <tr><th>아이디</th><td id="f_login_id">-</td></tr>
+                    <tr><th>회원명</th><td id="f_member_name">-</td></tr>
+                    <tr><th>회원구분</th><td id="f_member_type">-</td></tr>
+                    <tr><th>회원 식별번호</th><td id="f_member_identifier">-</td></tr>
+                    <tr><th>전화번호</th><td id="f_phone_number">-</td></tr>
+                    <tr><th>이메일</th><td id="f_email">-</td></tr>
+                    <tr><th>주소</th><td id="f_adress">-</td></tr>
+                    <tr><th>신용점수</th><td id="f_credit_score">-</td></tr>
+                    <tr><th>회원상태</th><td><span class="badge red" id="f_member_status">-</span></td></tr>
+                    <tr><th>가입일</th><td id="f_created_at">-</td></tr>
+                    <tr><th>마지막 로그인</th><td id="f_last_login_at">-</td></tr>
                 </tbody>
             </table>
         </section>
 
         <div class="btn-wrap">
-		    <button type="button" class="btn-black-large" th:onclick="|location.href='@{/myinfo/edit}'|">개인정보 수정하기</button>
-		</div>
-        
+            <button type="button" class="btn-black-large" onclick="location.href='/myinfo/edit'">개인정보 수정하기</button>
+        </div>
+
     </main>
+
+    <script src="/js/members/common.js"></script>
+    <script src="/js/members/myinfo.js"></script>
 </body>
 </html>

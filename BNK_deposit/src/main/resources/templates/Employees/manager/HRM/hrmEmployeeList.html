@@ -1,10 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
+	
+	
+	
+	<div>
+	
+		<table border="1">
+			<thead>
+				<tr>
+					<th>employee_no</th>
+					<th>dept_no</th>
+					<th>dept_name</th>
+					<th>employee_name</th>
+					<th>job_title</th>
+					<th>status</th>
+				</tr>
+			</thead>
+			<tbody id="employeeListtablebody">
+				
+			</tbody>
+		
+		</table>
+	
+	</div>
+	
+	
+	
+	<script>
+		
+		fetch("/api/employeeList/allList", {
+			method: "GET",
+			
+		})
+		.then(response => {
+			
+			return response.json();
+		})
+		.then(data => {
+			console.log(data);
+			
+			const logtablebody = document.querySelector("#employeeListtablebody");
+			
+			let html = "";
+			
+			data.forEach(employee => {
+
+		        html += `
+		            <tr>
+		                <td>${employee.employee_no}</td>
+		                <td>${employee.dept_no}</td>
+		                <td>${employee.dept_name}</td>
+		                <td>${employee.employee_name}</td>
+		                <td>${employee.job_title}</td>
+		                <td>${employee.status}</td>
+		                <td><button onclick="toDetailPage(${employee.employee_no})">조회</button> </td>
+		            </tr>
+		        `;
+		    });
+
+		    logtablebody.innerHTML = html;
+			
+		})
+		.catch(e => console.log(e));
+		
+		// 사원 tr 클릭시 해당 사원의 상세 페이지로 이동
+		function toDetailPage(employee_no){
+			location.href = "/employee/manager/HRM/hrmEmployeeDetail?employee_no=" + employee_no;
+		}
+		
+	</script>
+	
+	
 	
 </body>
 </html>
