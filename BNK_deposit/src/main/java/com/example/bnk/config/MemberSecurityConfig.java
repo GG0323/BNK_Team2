@@ -36,6 +36,7 @@ public class MemberSecurityConfig {
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
+
 		// 회원 로그인 설정
 		http.formLogin(member ->
 			member.loginPage("/loginPage")

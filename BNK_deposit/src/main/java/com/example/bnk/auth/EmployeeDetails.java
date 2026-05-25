@@ -47,5 +47,8 @@ public class EmployeeDetails implements UserDetails{
 	public String getRole() {
 		return this.employee.getEmployee_role();
 	}
-
+	
+	public String getName() {
+		return this.employee.getEmployee_name();
+	}
 }

@@ -1,17 +1,21 @@
 package com.example.bnk.controller.page;
 
-
 import java.io.IOException;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
+import com.example.bnk.auth.EmployeeDetails;
+import com.example.bnk.service.employees.EmployeeLogService;
+import com.example.bnk.service.member.AccountService;
 import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductDetailResponseDto;
@@ -23,46 +27,90 @@ import com.example.bnk.service.product.ProductForEmployee;
 @Controller
 @RequestMapping("/employee")
 public class EmployeePageController {
+
+  private final AccountService accountService;
 	
 	@Autowired
-	EmployeeLogService logService;
-	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
-	
-	@Autowired
+	private EmployeeLogService logService;
+  
+  @Autowired
 	private ProductForEmployee prdForEmpService;
+
+  public EmployeePageController(AccountService accountService) {
+        this.accountService = accountService;
+    }
+	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
+
+	// index 페이지 겸 로그인 페이지  /employee/loginPage
+	@GetMapping("/loginPage") 
+  public String loginPage(){
+      return "/employee/loginPage";
+  }
 	
 	
 	// /employee/toMain
 	@GetMapping("/toMain") 
 	public String mainWorkSpace() {
-		return "Employees/mainWorkspaceLogin";
+		return "/employee/mainWorkspaceLogin";
+	}
+	// 로그인 실패
+	@GetMapping(value="/loginPage", params="message")
+	public String loginFail(Model model, @RequestParam("message") String msg) {
+		model.addAttribute("msg", msg);
+		return "/employee/mainWorkspaceLogin";
 	}
 	
-	// /employee/manager/HRM/hrmRegist
+	// 관리자 페이지, 
+	@GetMapping("/manager/managerPage")
+	public String managerPage() {
+		return "/employee/manager/managerPage";
+	}
+	
+	// 신규사원 등록 /employee/manager/HRM/hrmRegist
 	@GetMapping("/manager/HRM/hrmRegist")  
 	public String hrmRegist() {
 		logService.build("PAGEVIEW", null, null, "페이지간 이동을 실현한다: 인사관리/신규 사원 등록", "GET", "/employee/manager/HRM/hrmRegist");
-		return "Employees/manager/HRM/hrmRegist";
+		return "/employee/manager/HRM/hrmRegist";
 	}
 	
 	// 직원 로그 조회 페이지 /employee/manager/LOG/logList
 	@GetMapping("/manager/LOG/logList")
 	public String logList() {
 		logService.build("PAGEVIEW", null, null, "페이지간 이동을 실현한다: 로그/목록 보기", "GET", "/employee/manager/LOG/logList");
-		return "Employees/manager/LOG/logList";
+		return "/employee/manager/LOG/logList";
 	}
 	
-	// 직원 리스트 페이지 
-	// /employee/manager/HRM/hrmEmployeeList
+	// 직원 리스트 페이지  /employee/manager/HRM/hrmEmployeeList
 	@GetMapping("/manager/HRM/hrmEmployeeList")
 	public String hrmEmployeeList() {
-		return "Employees/manager/HRM/hrmEmployeeList";
+		return "/employee/manager/HRM/hrmEmployeeList";
+	}
+	// 직원 상세 페이지 직원 pk를 받아서 넘긴다.   /employee/manager/HRM/hrmEmployeeDetail
+	@GetMapping("/manager/HRM/hrmEmployeeDetail")
+	public String hrmEmployeeDetailList() {
+		return "/employee/manager/HRM/hrmEmployeeDetail";
 	}
 	
-	// /employee/manager/HRM/hrmEmployeeDetailList
-	@GetMapping("/manager/HRM/hrmEmployeeDetailList")
-	public String hrmEmployeeDetailList() {
-		return "Employees/manager/HRM/hrmEmployeeDetailList";
+	// 스테프 페이지,
+	@GetMapping("/staff/staffPage")
+	public String staffPage() {
+		return "/employee/staff/staffPage";
+	}
+	
+	// 제안서 작성 페이지 이동
+	@GetMapping("/staff/writeSuggestionPage")
+	public String writeSuggestionPage(
+			@AuthenticationPrincipal String username
+			) {
+		
+		if (username == null) {	
+			System.out.println("사용자정보가 없는데?");
+            return "redirect:/employee/loginPage";
+        }
+		
+		System.out.println("로그인 한 유저 id : " + username);
+		
+		return "/employee/staff/writeSuggestionPage";
 	}
 	
 	/* 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드 
@@ -75,7 +123,7 @@ public class EmployeePageController {
 		// productList를 model에 저장
 		model.addAttribute("productList", productList);
 		
-		return "Employees/staff/productList";
+		return "/employee/staff/productList";
 	}
 	
 	
@@ -93,7 +141,7 @@ public class EmployeePageController {
 	    ProductDetailResponseDto prdDtResDto = prdForEmpService.selectProductDetail(Long.parseLong(product_no));
 	    model.addAttribute("prdDtResDto", prdDtResDto);
 	    
-	    return "Employees/staff/productDetails";
+	    return "/employee/staff/productDetails";
 	}
 	
 	// 상품 가입 조건 등록 페이지
@@ -101,7 +149,7 @@ public class EmployeePageController {
 	@GetMapping("/staff/product/condition")
 	public String goWriteToCondition() {
 		
-		return"Employees/staff/productConditionWrite";
+		return"/employee/staff/productConditionWrite";
 	}
 	
 	// 상품 가입 조건 등록하기
@@ -109,15 +157,12 @@ public class EmployeePageController {
 	@PostMapping("/staff/product/condition/save")
 	public String saveProductCondition(ProductConditionDto prdCndDto) {
 
-//		System.out.println(prdCndDto);
-		
-		
+  //	System.out.println(prdCndDto);
 		if(prdForEmpService.insertAllCondition(prdCndDto) == 1) {
 			System.out.println("성공");
 		}else {
 			System.out.println("실패");
 		}
-		
 		
 		return "redirect:/employee/staff/product/list";
 	}
@@ -126,7 +171,7 @@ public class EmployeePageController {
 	// /employee/staff/product/rate
 	@GetMapping("/staff/product/rate")
 	public String goWriteToRate() {
-		return "Employees/staff/productRateWrite";
+		return "/employee/staff/productRateWrite";
 	}
 	
 	// 상품 금리 등록하기
@@ -134,8 +179,7 @@ public class EmployeePageController {
 	@PostMapping("/staff/product/rate/save")
 	public String saveProductRate(ProductRateDto prdRateDto) {
 		
-//		System.out.println(prdRateDto);
-		
+  //	System.out.println(prdRateDto);
 		if(prdForEmpService.insertAllRate(prdRateDto) == 1) {
 			System.out.println("성공");
 		}else {
@@ -148,7 +192,7 @@ public class EmployeePageController {
 	// /employee/staff/product/description
 	@GetMapping("/staff/product/description")
 	public String goWriteToDescription() {
-		return "Employees/staff/productDescriptionWrite";
+		return "/employee/staff/productDescriptionWrite";
 	}
 	
 	// 상품 설명 관리 등록하기

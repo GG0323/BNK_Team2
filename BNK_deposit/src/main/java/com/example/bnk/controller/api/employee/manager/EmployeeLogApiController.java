@@ -31,7 +31,7 @@ public class EmployeeLogApiController {
 		return list;
 	}
 	
-	// 사원 검색
+	// 사원 활동이력 조건 검색
 	@GetMapping("/conditionList")
 	public List<EmployeeLogDto> conditionList(
 			EmployeeLogSelectDto selectDto 
