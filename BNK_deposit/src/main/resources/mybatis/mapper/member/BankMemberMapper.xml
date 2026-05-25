@@ -56,7 +56,7 @@
             CREDIT_SCORE,
             MEMBER_STATUS,
             CREATED_AT,
-            UPDATE_AT AS updated_at,
+            UPDATE_AT,
             LAST_LOGIN_AT
         FROM tb_bank_member
         WHERE LOGIN_ID = #{loginId}

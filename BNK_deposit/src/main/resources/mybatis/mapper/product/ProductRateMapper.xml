@@ -3,5 +3,25 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductRateDao">
+	<insert id="insertAllRate">
+		INSERT INTO TB_PRODUCT_RATE(
+		    product_no,
+		    rate_group,
+		    rate_label,
+		    annual_rate,
+		    annual_return_rate,
+		    note,
+		    display_order,
+		    use_yn)
+		VALUES(
+		    #{product_no},
+		    #{rate_group},
+		    #{rate_label},
+		    #{annual_rate, jdbcType=VARCHAR},
+		    #{annual_return_rate, jdbcType=VARCHAR},
+		    #{note, jdbcType=VARCHAR},
+		    #{display_order},
+		    #{use_yn})
+	</insert>
 
 </mapper>

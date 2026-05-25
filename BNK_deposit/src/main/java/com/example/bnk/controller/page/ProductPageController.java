@@ -120,4 +120,17 @@ public class ProductPageController {
 
         return outputStream.toByteArray();
     }
+	 // 사용자 정보 기반 맞춤 상품 추천
+	 // 현재는 시연용으로 member_no = 1 회원 기준 추천
+	 @GetMapping("/recommend")
+	 public String recommendProductList(Model model) {
+	
+	     List<ProductListViewDto> productList = productViewService.getRecommendProductList();
+	
+	     model.addAttribute("productList", productList);
+	     model.addAttribute("recommendMode", true);
+	
+	     return "product/productList";
+	 }
+    
 }

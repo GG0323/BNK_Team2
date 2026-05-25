@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bnk.dao.member.IQrLoginDao">
+
+    <!--
+        QR 로그인용 회원 조회
+        회원가입/일반로그인 로직은 건드리지 않고,
+        기존 TB_BANK_MEMBER 회원 정보만 조회한다.
+
+        현재 DB 기준:
+        MEMBER_STATUS = 'REGULAR'
+    -->
+    <select id="selectQrLoginMember"
+            parameterType="long"
+            resultType="com.example.bnk.dto.member.QrLoginMemberDto">
+
+        SELECT
+            member_no,
+            login_id,
+            member_name,
+            member_type,
+            member_status
+        FROM TB_BANK_MEMBER
+        WHERE member_no = #{member_no}
+          AND member_status = 'REGULAR'
+
+    </select>
+
+</mapper>
