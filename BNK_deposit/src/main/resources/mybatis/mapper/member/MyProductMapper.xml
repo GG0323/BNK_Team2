@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bnk.dao.member.IMyProductDao">
+
+    <select id="findMyProductsByMemberNo" resultType="com.example.bnk.dto.member.MyProductDto">
+        SELECT
+            ps.SUBSCRIPTION_NO,
+            ps.MEMBER_NO,
+            ps.PRODUCT_NO,
+            p.PRODUCT_NAME,
+            p.PRODUCT_TYPE,
+            p.INTEREST_PAYMENT_TYPE,
+            p.INTEREST_CALC_TYPE,
+            ps.JOIN_CHANNEL,
+            ps.APPLIED_INTEREST_RATE,
+            ps.SUBSCRIPTION_MONTHS,
+            ps.SUBSCRIPTION_AMOUNT,
+            ps.AUTO_TRANSFER_AMOUNT,
+            ps.LINKED_ACCOUNT_NO,
+            ps.SUBSCRIBED_AT,
+            ps.MATURITY_DATE,
+            ps.SUBSCRIPTION_STATUS,
+            TRUNC(ps.MATURITY_DATE) - TRUNC(SYSDATE) AS REMAINING_DAYS
+        FROM TB_PRODUCT_SALES ps
+        JOIN TB_PRODUCT p
+          ON ps.PRODUCT_NO = p.PRODUCT_NO
+        WHERE ps.MEMBER_NO = #{memberNo}
+        ORDER BY ps.SUBSCRIBED_AT DESC
+    </select>
+
+    <select id="findMyProductDetail" resultType="com.example.bnk.dto.member.MyProductDto">
+        SELECT
+            ps.SUBSCRIPTION_NO,
+            ps.MEMBER_NO,
+            ps.PRODUCT_NO,
+            p.PRODUCT_NAME,
+            p.PRODUCT_TYPE,
+            p.MIN_INTEREST_RATE,
+            p.MAX_INTEREST_RATE,
+            p.INTEREST_PAYMENT_TYPE,
+            p.INTEREST_CALC_TYPE,
+            ps.JOIN_CHANNEL,
+            ps.APPLIED_INTEREST_RATE,
+            ps.SUBSCRIPTION_MONTHS,
+            ps.SUBSCRIPTION_AMOUNT,
+            ps.AUTO_TRANSFER_AMOUNT,
+            ps.LINKED_ACCOUNT_NO,
+            ps.SUBSCRIBED_AT,
+            ps.MATURITY_DATE,
+            ps.SUBSCRIPTION_STATUS,
+            TRUNC(ps.MATURITY_DATE) - TRUNC(SYSDATE) AS REMAINING_DAYS
+        FROM TB_PRODUCT_SALES ps
+        JOIN TB_PRODUCT p
+          ON ps.PRODUCT_NO = p.PRODUCT_NO
+        WHERE ps.MEMBER_NO = #{memberNo}
+          AND ps.SUBSCRIPTION_NO = #{subscriptionNo}
+    </select>
+
+</mapper>

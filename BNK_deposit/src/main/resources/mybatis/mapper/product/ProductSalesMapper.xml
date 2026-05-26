@@ -12,7 +12,7 @@
     </select>
 
 	<!-- 사용자가 가입한 상품 리스트 출력 -->
-    <select id="findSubscribedProductsByMemberNo" parameterType="long" resultType="com.example.bnk.dto.member.MemberProductDto">
+    <select id="findSubscribedProductsByMemberNo" parameterType="String" resultType="com.example.bnk.dto.member.MemberProductDto">
         SELECT
             s.subscription_no AS subscription_no,
             s.member_no AS member_no,
@@ -27,7 +27,8 @@
             p.product_type AS product_type
         FROM tb_product_sales s
         JOIN tb_product p ON s.product_no = p.product_no
-        WHERE s.member_no = #{memberNo}
+        JOIN TB_BANK_MEMBER M ON S.MEMBER_NO = M.MEMBER_NO
+        WHERE M.LOGIN_ID = #{username}
         ORDER BY s.subscribed_at DESC
     </select>
     

@@ -21,7 +21,7 @@ function renderMyInfo(m) {
 document.addEventListener("DOMContentLoaded", async () => {
   activateTab();
   try {
-    const body = await fetchApi("/api/myinfo");
+    const body = await fetchApi("/api/member/myinfo");
     renderMyInfo(body.data);
   } catch (e) {
     console.error(e);

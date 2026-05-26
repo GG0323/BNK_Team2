@@ -4,6 +4,12 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.member.IBankMemberDao">
 
+	<update id="lastLogin">
+		UPDATE TB_BANK_MEMBER
+		SET LAST_LOGIN_AT = SYSDATE
+		WHERE MEMBER_NO = #{param}
+	</update>
+
 	<select id="findByUsername" resultType="com.example.bnk.dto.member.BankMemberDto">
 		SELECT *
 		FROM TB_BANK_MEMBER
@@ -77,4 +83,24 @@
     	SELECT COUNT(*) FROM TB_BANK_MEMBER WHERE LOGIN_ID = #{param}
     </select>
     
+    <update id="updateLastLoginAt">
+	    UPDATE TB_BANK_MEMBER
+	    SET LAST_LOGIN_AT = SYSDATE
+	    WHERE LOGIN_ID = #{loginId}
+	</update>
+	
+	<update id="withdrawMember">
+	    UPDATE TB_BANK_MEMBER
+	    SET MEMBER_STATUS = 'WITHDRAWN',
+	        UPDATE_AT = SYSDATE
+	    WHERE LOGIN_ID = #{loginId}
+	</update>
+	
+	<!-- 회원 상태 변경 -->
+	<update id="updateMemberStatus">
+	    UPDATE TB_BANK_MEMBER
+	    SET MEMBER_STATUS = #{memberStatus},
+	        UPDATE_AT = SYSDATE
+	    WHERE LOGIN_ID = #{loginId}
+	</update>
 </mapper>

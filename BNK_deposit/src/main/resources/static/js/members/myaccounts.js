@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   activateTab();
 
   try {
-    const body = await fetchApi("/api/myaccounts");
+    const body = await fetchApi("/api/member/myaccounts");
 
     // fetchApi가 전체 응답을 주는 경우: body.data
     // fetchApi가 data만 주는 경우: body

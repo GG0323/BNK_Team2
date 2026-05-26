@@ -64,9 +64,11 @@ ul { list-style: none; }
 }
 
 .product-card {
-    display: flex;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.4fr 130px;
     align-items: center;
-    justify-content: space-between;
+    gap: 24px;
+
     background-color: #fff;
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -81,7 +83,7 @@ ul { list-style: none; }
 
 /* 상품명 및 구분 뱃지 영역 (Flex 비율 40%) */
 .prod-info-sec {
-    flex: 0 0 40%;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -116,7 +118,7 @@ ul { list-style: none; }
 
 /* 데이터 출력 영역 (금액, 금리/일자) (Flex 비율 25%씩) */
 .prod-data-sec {
-    flex: 0 0 25%;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -135,19 +137,22 @@ ul { list-style: none; }
 
 /* 가입 상태 뱃지 영역 (우측 끝) */
 .prod-status-sec {
-    flex: 0 0 10%;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
 }
 
 .status-badge {
+    min-width: 92px;
     background-color: #000;
     color: #fff;
-    padding: 6px 16px;
+    padding: 8px 16px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: bold;
-    text-transform: lowercase;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1.2;
 }
 
 /* 빈 화면 처리 */
