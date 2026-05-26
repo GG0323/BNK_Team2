@@ -6,11 +6,174 @@
 </head>
 <body>
 	
+	<h1>승인된 제안서 상세</h1>
+
+	<div id="suggestionDetail">
+		<div>
+	        <span>제안서 번호 : </span>
+	        <span id="suggestion_no"></span>
+	    </div>
+		<hr>
+		
+		<div>
+	       <span>작성자 : </span>
+	       <span id="employee_name"></span>
+	       &nbsp;
+	       <span id="job_title"></span>
+	   	</div>
+	   	
+	   	
+	   	<div>
+	       <span>승인 책임자 : </span>
+	       <span id="manager_name"></span>
+	   	</div>
+	   	<div>
+	       <span>제안일 : </span>
+	       <span id="suggested_at"></span>
+	   	</div>
 	
+	   	<hr>	   
+	   
+	   	<div>
+			<h2 id="product_name"></h2>  <!-- 상품명  -->
+	  	</div>
+		
+		<div>
+			<p id="suggestion_content"></p>  <!-- 제안 내용 -->
+		</div>
+		
+		<div>
+			<span>최저 금리 : </span>
+			<span id="proposed_min_interest_rate"></span>
+            &nbsp; ~ &nbsp;	
+			<span>최고 금리 : </span>
+            <span id="proposed_max_interest_rate"></span>
+		</div>
+		
+		<hr>
+		
+		<div>
+            <span>승인 상태 : </span>
+            <span id="approval_status"></span>
+        </div>
+
+        <div>
+            <span>처리일 : </span>
+            <span id="processed_at"></span>
+        </div>
+
+        <hr>
+			
+	</div>
 	
-	
+	<div>
+	    <h3>상품 구성 현황</h3>
+
+	    <div>
+	        <span>금리 : </span>
+	        <span id="rate_status"></span>
+	    </div>
+	    <div>
+	        <span>약관 : </span>
+	        <span id="terms_status"></span>
+	    </div>
+	    <div>
+	        <span>설명 : </span>
+	        <span id="description_status"></span>
+	    </div>
+	    <div>
+	        <span>조건 : </span>
+	        <span id="condition_status"></span>
+	    </div>
+	</div>
+	<!-- 상품 등록 버튼 (4개 다 등록됐을 때만 활성화) -->
+	<button id="registerBtn" onclick="openApprovePopup()" disabled>상품으로 등록</button>
+	<span id="registerBtnMsg" style="color:red;">※ 금리/약관/설명/조건이 모두 등록되어야 상품 등록이 가능합니다.</span>
 
 	
+	<!-- 삼품 등록 팝업 -->
+    <div id="approvePopup" style="display:none;">
+        <h3>상품으로 등록 하시겠습니까?</h3>
+        
+        <br>
+        <button onclick="registerProduct()">확인</button>
+        <button onclick="closeApprovePopup()">취소</button>
+    </div>
+		
+		
+	<script>
+		const suggestion_no = new URLSearchParams(location.search).get("suggestion_no");
+		// 페이지 진입시 작동 제안서 + 중간테이블 조회
+		fetch("/api/employee/approved/approvedDetail?suggestion_no=" + suggestion_no , {
+			method: "GET"
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			console.log(data);
+			// 데이터 채우기
+			document.getElementById("suggestion_no").textContent              = data.suggestion_no;
+	        document.getElementById("employee_name").textContent              = data.employee_name;
+	        document.getElementById("job_title").textContent                  = data.job_title;
+	        document.getElementById("manager_name").textContent               = data.manager_name;
+	        document.getElementById("product_name").textContent               = data.product_name;
+	        document.getElementById("suggestion_content").textContent         = data.suggestion_content;
+	        document.getElementById("proposed_min_interest_rate").textContent = data.proposed_min_interest_rate + "%";
+	        document.getElementById("proposed_max_interest_rate").textContent = data.proposed_max_interest_rate + "%";
+	        document.getElementById("approval_status").textContent            = data.approval_status;
+	        document.getElementById("suggested_at").textContent               = data.suggested_at;
+	        document.getElementById("processed_at").textContent               = data.processed_at;
+
+	        // 날개 등록 현황
+	        document.getElementById("rate_status").textContent        = data.rate_no        ? "등록됨" : "미등록";
+	        document.getElementById("terms_status").textContent       = data.terms_no       ? "등록됨" : "미등록";
+	        document.getElementById("description_status").textContent = data.description_no ? "등록됨" : "미등록";
+	        document.getElementById("condition_status").textContent   = data.condition_no   ? "등록됨" : "미등록";
+	    
+			// 날개 4장 체크 -> 버튼 
+			checkRegisterBtn(data);
+		})
+		.catch(e => console.log(e));
+		
+		// 날개 체크 -> 등록 버튼
+		function checkRegisterBtn(data){
+			if (data.rate_no && data.terms_no && data.description_no && data.condition_no) {
+	            document.getElementById("registerBtn").disabled = false;
+	            document.getElementById("registerBtnMsg").style.display = "none";
+	        }
+		}
+		
+		
+		
+		
+		
+		
+		// 팝업 컨트롤러
+		function openApprovePopup() {document.getElementById("approvePopup").style.display = "block";}
+		function closeApprovePopup() {document.getElementById("approvePopup").style.display = "none";}
+		
+		// 상품 등록
+		function registerProduct() {
+			
+            fetch("---------------------------------------", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                // 파라미터? body: JSON.stringify({ suggestion_no: suggestion_no })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data === 1) {
+                    alert("상품 등록 완료");
+                    location.href = "==================";
+                }
+            })
+            .catch(e => console.log(e));
+        }
+		
+		
+	
+	</script>
 	
 	
 	

@@ -106,13 +106,13 @@ public class EmployeePageController {
 	
 
 	
-	// 스테프 페이지,
+	// 스테프 페이지,  /employee/staff/staffPage
 	@GetMapping("/staff/staffPage")
 	public String staffPage() {
-		return "/employee/staff/staffPage";
+		return "Employees/staff/staffPage";
 	}
 	
-	// 제안서 작성 페이지 이동
+	// 제안서 작성 페이지 이동  /employee/staff/writeSuggestionPage
 	@GetMapping("/staff/writeSuggestionPage")
 	public String writeSuggestionPage(
 			@AuthenticationPrincipal String username
@@ -125,7 +125,7 @@ public class EmployeePageController {
 		
 		System.out.println("로그인 한 유저 id : " + username);
 		
-		return "/employee/staff/writeSuggestionPage";
+		return "Employees/staff/writeSuggestionPage";
 	}
 	
 	/* 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드 

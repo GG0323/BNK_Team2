@@ -10,9 +10,8 @@ import lombok.ToString;
 @Data
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor		
-public class SuggestionListDto {
-	// 나에게 온 제안서를 조회
+@AllArgsConstructor
+public class ApprovedSuggestionDetailDto {
 	
 	private long suggestion_no;					// 제안서 PK
 	
@@ -34,4 +33,11 @@ public class SuggestionListDto {
 	private String reject_reason;				// 거부 사유
 	private LocalDate suggested_at;				// 제안일시
 	private LocalDate processed_at;	            // 승인일시
+	
+    private Long rate_no;           // null 가능하니 Long(날개)
+    private Long terms_no;			//
+    private Long description_no;	//
+    private Long condition_no;		//
+	
+	
 }
