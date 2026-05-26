@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class EmployeePageController {
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
 	@Autowired
 	ProductForEmployee prdForEmpService;
+
 	
 	
 	// /employee/toMain
@@ -43,6 +45,13 @@ public class EmployeePageController {
 		
 		return "Employees/mainWorkspaceLogin";
 	}
+	
+	// /Employees/manager/managerPage
+	@GetMapping("/manager/managerPage")
+	public String managerPage() {
+		return "Employees/manager/managerPage";
+	}
+	
 	
 	// /employee/manager/HRM/hrmRegist
 	@GetMapping("/manager/HRM/hrmRegist")  
@@ -65,10 +74,10 @@ public class EmployeePageController {
 		return "Employees/manager/HRM/hrmEmployeeList";
 	}
 	
-	// /employee/manager/HRM/hrmEmployeeDetailList
-	@GetMapping("/manager/HRM/hrmEmployeeDetailList")
+	// /employee/manager/HRM/hrmEmployeeDetail
+	@GetMapping("/manager/HRM/hrmEmployeeDetail")
 	public String hrmEmployeeDetailList() {
-		return "Employees/manager/HRM/hrmEmployeeDetailList";
+		return "Employees/manager/HRM/hrmEmployeeDetail";
 	}
 
 	// !! 제안서 리스트 페이지    /employee/manager/SUG/suggestionList
@@ -92,7 +101,31 @@ public class EmployeePageController {
 		return "Employees/manager/SUG/approvedSuggestionDetail";
 	}
 	
+	
+	
 
+	
+	// 스테프 페이지,  /employee/staff/staffPage
+	@GetMapping("/staff/staffPage")
+	public String staffPage() {
+		return "Employees/staff/staffPage";
+	}
+	
+	// 제안서 작성 페이지 이동  /employee/staff/writeSuggestionPage
+	@GetMapping("/staff/writeSuggestionPage")
+	public String writeSuggestionPage(
+			@AuthenticationPrincipal String username
+			) {
+		
+		if (username == null) {	
+			System.out.println("사용자정보가 없는데?");
+            return "redirect:/employee/loginPage";
+        }
+		
+		System.out.println("로그인 한 유저 id : " + username);
+		
+		return "Employees/staff/writeSuggestionPage";
+	}
 	
 	/* 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드 
 	-------------------------------------------------------------------------------------*/

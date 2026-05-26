@@ -17,7 +17,7 @@
 		VALUES (#{dto.employee_no},#{dto.manager_employee_no},
 				#{dto.product_name},#{dto.suggestion_content},
 				#{dto.proposed_min_interest_rate},
-				#{dto.proposed_max_interest_rate});
+				#{dto.proposed_max_interest_rate})
 	</insert>
 	
 	<!-- 나에게 온 제안서 조회 -->
@@ -32,7 +32,8 @@
         	s.proposed_min_interest_rate,
         	s.proposed_max_interest_rate,
         	s.approval_status,
-        	s.suggested_at
+        	s.suggested_at,
+        	s.processed_at
     	FROM TB_PRODUCTS_SUGGESTION s
     	JOIN TB_employee e 
     	ON s.employee_no = e.employee_no
@@ -74,8 +75,9 @@
     	
     	WHERE suggestion_no = #{suggestion_no}
 	</update>
+	<!-- 상품 승인테이블 인서트 -->
 	<insert id="insertApprovedProduct">
-		INSERT INTO TB_APPROVED_PRODUCTS
+		INSERT INTO TB_APPROVED_SUGGESTION
         	(suggestion_no, rate_no, terms_no, description_no, condition_no)
    		VALUES (#{suggestion_no}, null, null, null, null)
 	</insert>
@@ -90,5 +92,14 @@
     	
     	WHERE suggestion_no = #{suggestion_no}
 	</update>
+	
+	
+	
+	<!-- 승인 상품 테이블 조회?? -->
+	
+	
+	
+	
+	
 	
 </mapper>

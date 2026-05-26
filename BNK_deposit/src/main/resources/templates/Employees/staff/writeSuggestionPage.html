@@ -30,6 +30,9 @@
 		<input type="text" name="suggestion_content" placeholder="제안 내용">
 		<input type="text" name="proposed_min_interest_rate" placeholder="제안 최저 금리">
 		<input type="text" name="proposed_max_interest_rate" placeholder="제안 최고 금리">
+		
+		
+		<input type="submit" value="등록">
 	</form>
 	
 	<script>
@@ -82,6 +85,8 @@
 				// 릉록한 제안서 리스트로 location.href="페이지 컨트롤러 주소"
 				if (data === 1) { 
 					//location.href = "/staff/suggestion/list"; 
+					// 일단 staffPage로
+					location.href = "/employee/staff/staffPage"; 
 		        }
 			})
 			.catch(e=> console.log(e));

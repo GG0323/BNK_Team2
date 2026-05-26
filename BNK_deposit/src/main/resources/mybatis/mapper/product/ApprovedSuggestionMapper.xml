@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.product.IApporvedSuggestionDao">
+	
+	<!-- 내가 승인한 제안서 리스트 불러오기 -->
+	<select id="approvedList" resultType="com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto">
+		SELECT
+		    ap.suggestion_no,
+		    s.product_name,                 <!-- 제안서 상세정보 포함 -->
+		    s.proposed_min_interest_rate,
+		    s.proposed_max_interest_rate,
+		    ap.rate_no,
+		    ap.terms_no,
+		    ap.description_no,
+		    ap.condition_no
+		FROM TB_APPROVED_SUGGESTION ap            <!-- 승인된 제안서 -->
+		JOIN TB_PRODUCTS_SUGGESTION s			  <!-- 그냥 제안서  -->
+		ON ap.suggestion_no = s.suggestion_no
+		WHERE s.manager_employee_no = #{manager_employee_no}  <!-- 내가 -->
+		AND s.approval_status = 'APPROVED'                    <!-- 승인함 -->
+		ORDER BY ap.suggestion_no DESC
+	</select>
+
+	<select id="approvedDetail" resultType="com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto">
+		SELECT
+	        s.suggestion_no,
+	
+	        s.employee_no,
+	        e.employee_name,
+	        e.job_title,
+	        e.dept_no,
+	
+	        s.manager_employee_no,
+	        m.employee_name     AS manager_name,
+	        m.job_title         AS manager_job_title,
+	        m.dept_no           AS manager_dept_no,
+	
+	        s.product_name,
+	        s.suggestion_content,
+	        s.proposed_min_interest_rate,
+	        s.proposed_max_interest_rate,
+	        s.approval_status,
+	        s.reject_reason,
+	        s.suggested_at,
+	        s.processed_at,
+	
+	        ap.rate_no,
+	        ap.terms_no,
+	        ap.description_no,
+	        ap.condition_no
+
+	    FROM TB_PRODUCTS_SUGGESTION s
+	    JOIN TB_employee e                       -- 작성자
+	    ON s.employee_no = e.employee_no
+	    JOIN TB_employee m                       -- 승인 책임자
+	    ON s.manager_employee_no = m.employee_no
+	    JOIN TB_APPROVED_SUGGESTION ap             -- 중간테이블
+	    ON s.suggestion_no = ap.suggestion_no
+	    WHERE s.suggestion_no = #{suggestion_no}
+	    AND s.approval_status = 'APPROVED'
+	</select>
+
+
+
+</mapper>
+	
