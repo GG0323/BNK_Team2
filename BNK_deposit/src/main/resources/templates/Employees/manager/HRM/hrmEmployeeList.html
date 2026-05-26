@@ -3,31 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<style>
+
+/* ===== 공통 ===== */
+*{
+	box-sizing:border-box;
+	margin:0;
+	padding:0;
+}
+
+body{
+	font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
+	background:#F5F5F5;
+	display:flex;
+	min-height:100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar{
+	width:190px;
+	background:#111111;
+	position:fixed;
+	top:0;
+	left:0;
+	min-height:100vh;
+}
+
+.sidebar .logo{
+	font-size:14px;
+	font-weight:700;
+	color:#ffffff;
+	padding:1.5rem 1.25rem;
+	border-bottom:1px solid #2a2a2a;
+}
+
+.sidebar .logo span{
+	color:#E8282F;
+}
+
+.nav-item{
+	display:flex;
+	align-items:center;
+	padding:11px 1.25rem;
+	font-size:13px;
+	color:#888888;
+	text-decoration:none;
+	border-left:3px solid transparent;
+	transition:all 0.15s;
+}
+
+.nav-item:hover{
+	background:#1c1c1c;
+	color:#ffffff;
+}
+
+.nav-item.active{
+	background:#1c1c1c;
+	color:#ffffff;
+	border-left-color:#E8282F;
+}
+
+/* ===== 메인 ===== */
+.main{
+	flex:1;
+	margin-left:190px;
+	padding:2rem;
+}
+
+/* ===== 제목 ===== */
+.page-title{
+	font-size:20px;
+	font-weight:700;
+	color:#111111;
+	margin-bottom:1.5rem;
+}
+
+/* ===== 테이블 카드 ===== */
+.table-card{
+	background:#ffffff;
+	border:1px solid #E8E8E8;
+	border-radius:12px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* ===== 테이블 ===== */
+table{
+	width:100%;
+	border-collapse:collapse;
+}
+
+thead tr{
+	background:#111111;
+}
+
+thead th{
+	padding:13px 16px;
+	font-size:12px;
+	font-weight:600;
+	color:#ffffff;
+	text-align:left;
+}
+
+tbody tr{
+	border-bottom:1px solid #F0F0F0;
+	transition:background 0.12s;
+}
+
+tbody tr:hover{
+	background:#FFF5F5;
+}
+
+tbody td{
+	padding:13px 16px;
+	font-size:13px;
+	color:#444444;
+}
+
+tbody tr:last-child{
+	border-bottom:none;
+}
+
+</style>
+
 </head>
 <body>
 	
+	<!-- 사이드바 -->
+	<aside class="sidebar">
+    	<div class="logo">BNK <span>관리자</span> 페이지</div>
+    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+   		<a class="nav-item active" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+	</aside>
 	
 	
-	<div>
-	
-		<table border="1">
-			<thead>
-				<tr>
-					<th>employee_no</th>
-					<th>dept_no</th>
-					<th>dept_name</th>
-					<th>employee_name</th>
-					<th>job_title</th>
-					<th>status</th>
-				</tr>
-			</thead>
-			<tbody id="employeeListtablebody">
-				
-			</tbody>
+	<div class="main">
+		<div class="page-title">직원 리스트</div>
+		<div class="table-card">
+			
+			<table border="1">
+				<thead>
+					<tr>
+						<th>employee_no</th>
+						<th>dept_no</th>
+						<th>dept_name</th>
+						<th>employee_name</th>
+						<th>job_title</th>
+						<th>status</th>
+					</tr>
+				</thead>
+				<tbody id="employeeListtablebody">
+					
+				</tbody>
+			
+			</table>
+			
+		</div>
 		
-		</table>
-	
 	</div>
+	
 	
 	
 	
