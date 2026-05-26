@@ -2,6 +2,8 @@ package com.example.bnk.controller.page;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.bnk.auth.MemberDetails;
 import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountTransactionDto;
 import com.example.bnk.dto.member.BankMemberDto;
@@ -36,14 +39,15 @@ public class BankMemberPageController {
 	
 	// 고객 마이페이지 
 	@GetMapping("/mypage")
-    public String rootMembersMypage(Model model) {
+    public String rootMembersMypage(Model model, SecurityContextHolder secu) {
+	
         // 회원 정보 조회
-        String currentLoginId = "dev_hyun"; 
+        String currentLoginId = secu.getContext().getAuthentication().getName(); 
         BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
         long currentMemberNo = memberInfo.getMember_no();
         
         // 계좌 정보 조회
-        List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
+        List<AccountDto> accountList = accountService.getAccounts(memberInfo.getLogin_id());
         int accountCount = accountList.size();
         long totalBalance = accountList.stream().mapToLong(AccountDto::getBalance).sum();
         int logCount = memberTrackingLogService.getLogCount(currentMemberNo);
@@ -67,10 +71,9 @@ public class BankMemberPageController {
 	
 	// 고객의 내 정보 페이지
 	@GetMapping("/myinfo")
-	public String rootMembersMyinfo(Model model) {
-		String currentLoginId = "dev_hyun";
+	public String rootMembersMyinfo(Model model, SecurityContextHolder secu) {
+		String currentLoginId = secu.getContext().getAuthentication().getName();
 		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-		memberInfo.setMember_identifier("980515-1******"); // 임시로 만들어놓음
 		model.addAttribute("member", memberInfo);
 		model.addAttribute("pageName", "myinfo");
         
@@ -79,12 +82,9 @@ public class BankMemberPageController {
 	
 	// 고객의 내 정보 수정하기 페이지
 	@GetMapping("/myinfo/edit")
-	public String rootMembersMyinfoEdit(Model model) {
-	    String currentLoginId = "dev_hyun";
+	public String rootMembersMyinfoEdit(Model model, SecurityContextHolder secu) {
+		String currentLoginId = secu.getContext().getAuthentication().getName();
 	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-	    
-	    // 식별번호 임시 마스킹 처리
-	    memberInfo.setMember_identifier("980515-1******");
 	    
 	    model.addAttribute("member", memberInfo);
 	    model.addAttribute("pageName", "myinfo"); // 서브 네비게이션 '2. 내정보' 활성화 유지
@@ -99,9 +99,9 @@ public class BankMemberPageController {
 	        @RequestParam(value = "email", defaultValue = "") String email,
 	        @RequestParam(value = "address_main", defaultValue = "") String addressMain,
 	        @RequestParam(value = "address_detail", defaultValue = "") String addressDetail,
-	        RedirectAttributes rttr) {
+	        RedirectAttributes rttr, SecurityContextHolder secu) {
 	    
-	    String currentLoginId = "dev_hyun"; 
+		String currentLoginId = secu.getContext().getAuthentication().getName(); 
 	    
 	    // 입력 데이터가 아예 없으면 DB 접근 차단 (Early Return)
 	    if (phoneNumber.trim().isEmpty() && email.trim().isEmpty() && addressMain.trim().isEmpty()) {
@@ -144,9 +144,9 @@ public class BankMemberPageController {
 	public String updatePassword(
 	        @RequestParam(value = "current_password", defaultValue = "") String currentPassword,
 	        @RequestParam(value = "new_password", defaultValue = "") String newPassword,
-	        RedirectAttributes rttr ) 
+	        RedirectAttributes rttr, SecurityContextHolder secu) 
 	{
-	    String currentLoginId = "dev_hyun"; 
+		String currentLoginId = secu.getContext().getAuthentication().getName();
 	    
 	    // 비밀번호 입력값이 비어있으면 DB 접근 차단
 	    if (currentPassword.trim().isEmpty() || newPassword.trim().isEmpty()) {
@@ -168,12 +168,13 @@ public class BankMemberPageController {
 	
 	// 고객의 내 계좌 정보 보기
 	@GetMapping("/myaccounts")
-	public String rootMembersAccounts(Model model) {
-	    // 현재 로그인된 회원 번호 (임시)
-	    long currentMemberNo = 1L; // 실제 환경에서는 세션이나 앞서 조회한 회원 정보에서 가져오기
+	public String rootMembersAccounts(Model model, SecurityContextHolder secu) {
+		
+		// 현재 로그인된 회원 번호
+	    String username = secu.getContext().getAuthentication().getName();
 	    
 	    // 계좌 목록 조회
-	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
+	    List<AccountDto> accountList = accountService.getAccounts(username);
 	    
 	    // 모델에 데이터 및 활성화 탭 이름 전달
 	    model.addAttribute("accountList", accountList);
@@ -209,12 +210,11 @@ public class BankMemberPageController {
 	
 	// 고객의 가입 상품 내역 페이지 조회
 	@GetMapping("/myproducts")
-	public String rootMembersProducts(Model model) {
+	public String rootMembersProducts(Model model, SecurityContextHolder secu) {
 	    //  현재 로그인한 회원 번호 세팅 (테스트용 1번 회원)
-	    long currentMemberNo = 1L; 
-	    
+	    String username = secu.getContext().getAuthentication().getName();
 	    // 서비스 호출하여 JOIN된 가입 상품 리스트 가져오기
-	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentMemberNo);
+	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(username);
 	    
 	    // Thymeleaf HTML 화면으로 데이터 보내기
 	    model.addAttribute("productList", productList);

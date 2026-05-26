@@ -1,5 +1,6 @@
 package com.example.bnk.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,6 +14,7 @@ import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberDetailsService;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.auth.SecurityLoginFailHandler;
+import com.example.bnk.dao.member.IBankMemberDao;
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
@@ -23,6 +25,9 @@ public class MemberSecurityConfig {
 	
 	private final MemberDetailsService memberDetailsService;
 	private final JwtUtil jwtUtil;
+	
+	@Autowired
+	private IBankMemberDao dao;
 	
 	
 	public MemberSecurityConfig(MemberDetailsService memberDetailsService, JwtUtil jwtUtil) {
@@ -44,7 +49,7 @@ public class MemberSecurityConfig {
 		http.formLogin(member ->
 			member.loginPage("/loginPage")
 			.loginProcessingUrl("/member/login")
-			.successHandler(new MemberLoginSuccessHandler(jwtUtil))
+			.successHandler(new MemberLoginSuccessHandler(jwtUtil, dao))
 			.failureHandler(new SecurityLoginFailHandler())
 		);
 		

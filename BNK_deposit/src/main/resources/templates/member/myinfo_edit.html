@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 개인정보 수정</title>
+    
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+    
     <link rel="stylesheet" href="/css/member/myinfo_edit.css">
+    <link rel="stylesheet" href="/css/member/member-nav.css">
+    
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" defer></script>
+    <script src="/js/members/common.js" defer></script>
+    <script src="/js/members/myinfo_edit.js" defer></script>
 </head>
 <body>
-
+	<div th:replace="~{fragments/header :: header_default}"></div>
     <header class="top-header">
         <div class="header-inner">
             <div class="header-left">
@@ -19,19 +28,14 @@
             </div>
             <nav class="breadcrumb">
                 <a href="/">메인</a> |
-                <a href="/mypage">마이페이지</a> |
-                <a href="/myinfo">내 정보 조회</a>
+                <a href="/member/mypage">마이페이지</a> |
+                <a href="/member/myinfo">내 정보 조회</a>
                 <span class="current-page">개인정보 수정</span>
             </nav>
         </div>
     </header>
 
-    <nav class="sub-nav" id="subNav" data-page="myinfo">
-        <button class="tab-btn" data-tab="mypage"     onclick="location.href='/mypage'">1. 마이페이지</button>
-        <button class="tab-btn" data-tab="myinfo"     onclick="location.href='/myinfo'">2. 내정보</button>
-        <button class="tab-btn" data-tab="myaccounts" onclick="location.href='/myaccounts'">3. 계좌 및 거래내역</button>
-        <button class="tab-btn" data-tab="myproducts" onclick="location.href='/myproducts'">4. 가입상품</button>
-    </nav>
+    <div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
 
     <main class="edit-container">
 
@@ -168,9 +172,6 @@
             </div>
         </div>
     </div>
-
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script src="/js/members/common.js"></script>
-    <script src="/js/members/myinfo_edit.js"></script>
+	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

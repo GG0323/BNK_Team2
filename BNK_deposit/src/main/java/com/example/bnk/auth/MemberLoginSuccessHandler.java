@@ -2,9 +2,11 @@ package com.example.bnk.auth;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import com.example.bnk.dao.member.IBankMemberDao;
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.ServletException;
@@ -15,9 +17,12 @@ import jakarta.servlet.http.HttpServletResponse;
 public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 	
 	private final JwtUtil jwtUtil;
+	private final IBankMemberDao dao;
 	
-	public MemberLoginSuccessHandler(JwtUtil jwtUtil) {
+
+	public MemberLoginSuccessHandler(JwtUtil jwtUtil, IBankMemberDao dao) {
 		this.jwtUtil = jwtUtil;
+		this.dao = dao;
 	}
 
 	@Override
@@ -26,7 +31,10 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		// 로그인에 성공한 사용자 정보 추출
 		MemberDetails memberDetails = (MemberDetails)authentication.getPrincipal();
-				
+		
+		// 마지막 로그인 일시 기록
+		dao.lastLogin(memberDetails.getPk());
+		
 		// JWT 토큰 생성
 		String token = jwtUtil.generateToken(memberDetails.getUsername(), "ROLE_MEMBER");
 		
