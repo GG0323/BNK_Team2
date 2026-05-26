@@ -57,13 +57,11 @@
                     <strong sec:authentication="name">사용자</strong>님
                 </span>
 
-                <a th:href="@{/mypage}" class="mypage-link">마이페이지</a>
+                <a th:href="@{/member/mypage}" class="mypage-link">마이페이지</a>
 
                 <form th:action="@{/member/logout}" method="post" class="logout-form">
                     <th:block th:if="${_csrf != null}">
-                        <input type="hidden"
-                               th:name="${_csrf.parameterName}"
-                               th:value="${_csrf.token}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     </th:block>
 
                     <button type="submit" class="logout-btn">로그아웃</button>

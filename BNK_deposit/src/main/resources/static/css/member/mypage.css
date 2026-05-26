@@ -103,33 +103,9 @@ ul {
     cursor: pointer;
 }
 
-/* 2. 서브 네비게이션 탭 */
-.sub-nav {
-    max-width: 1000px;
-    margin: 30px auto;
-    display: flex;
-    gap: 10px;
-}
 
-.tab-btn {
-    flex: 1;
-    padding: 12px 0;
-    border: none;
-    border-radius: 25px;
-    background-color: var(--bg-light);
-    color: var(--text-gray);
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-}
 
-.tab-btn.active {
-    background-color: var(--primary-red);
-    color: #fff;
-}
-
-/* 3. 메인 컨테이너 */
+/* 2. 메인 컨테이너 */
 .mypage-container {
     max-width: 1000px;
     margin: 0 auto 100px;
