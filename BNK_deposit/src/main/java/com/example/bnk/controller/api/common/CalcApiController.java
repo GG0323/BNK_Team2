@@ -18,7 +18,7 @@ public class CalcApiController {
 
     private final CalcService calcService;
 
-    // 예금/적금 이자 계산 API
+    // 상품 화면 등 서버 계산이 필요한 경우 사용하는 API
     @GetMapping("/interest")
     public Map<String, Object> calculateInterest(
             @RequestParam("amount") Long amount,

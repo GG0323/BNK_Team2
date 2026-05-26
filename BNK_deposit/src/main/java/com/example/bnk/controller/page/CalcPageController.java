@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CalcPageController {
 
-    // 계산기 팝업 화면
+    // 일반 금융계산기 팝업 화면
     @GetMapping("/calc/popup")
     public String showCalcPopup() {
         return "common/calculator";
