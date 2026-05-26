@@ -19,6 +19,7 @@ import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductDetailResponseDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
+import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
 import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.product.ProductForEmployee;
 
@@ -159,9 +160,12 @@ public class EmployeePageController {
 	}
 	
 	// 상품 가입 조건 등록 페이지
-	// /employee/staff/product/write
+	// /employee/staff/product/condition
 	@GetMapping("/staff/product/condition")
-	public String goWriteToCondition() {
+	public String goWriteToCondition(Model model) {
+		
+		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
+		model.addAttribute("approvedSuggestion", approvedSuggestion);
 		
 		return"Employees/staff/productConditionWrite";
 	}
@@ -169,12 +173,9 @@ public class EmployeePageController {
 	// 상품 가입 조건 등록하기
 	// employee/staff/product/condition/save
 	@PostMapping("/staff/product/condition/save")
-	public String saveProductCondition(ProductConditionDto prdCndDto) {
-
-//		System.out.println(prdCndDto);
+	public String saveProductCondition(ProductConditionDto prdCndDto, @RequestParam("suggestion_no") long suggestion_no) {
 		
-		
-		if(prdForEmpService.insertAllCondition(prdCndDto) == 1) {
+		if(prdForEmpService.insertAllCondition(prdCndDto, suggestion_no) == 1) {
 			System.out.println("성공");
 		}else {
 			System.out.println("실패");

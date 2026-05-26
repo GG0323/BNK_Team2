@@ -4,9 +4,13 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductConditionDao">
 	
-	<insert id="insertAllCondition">
+	<insert id="insertAllCondition"
+			parameterType="com.example.bnk.dto.product.ProductConditionDto"
+	        useGeneratedKeys="true" 
+	        keyProperty="condition_no"
+	        keyColumn="condition_no">
+
 		INSERT INTO TB_PRODUCT_CONDITION(
-			product_no,
 			min_age,
 			max_age,
 			foreigner_available_yn,
@@ -27,7 +31,6 @@
 			fixed_term_values,
 			condition_note)
 		VALUES(
-			#{product_no},
 			#{min_age, jdbcType=NUMERIC},
 			#{max_age, jdbcType=NUMERIC},
 			#{foreigner_available_yn},
@@ -45,9 +48,10 @@
 			#{term_unit_type},
 			#{term_unit_value, jdbcType=NUMERIC},
 			#{fixed_term_yn},
-			#{fixed_term_values, jdbcType=NUMERIC},
+			#{fixed_term_values, jdbcType=VARCHAR},
 			#{condition_note, jdbcType=VARCHAR})
 	</insert>
+	
 	<update id="updateProductCondition" parameterType="com.example.bnk.dto.product.ProductConditionDto">
 		UPDATE TB_PRODUCT_CONDITION
 		SET min_age = #{min_age, jdbcType=NUMERIC},

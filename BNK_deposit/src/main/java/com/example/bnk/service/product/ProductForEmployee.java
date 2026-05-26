@@ -9,8 +9,10 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.bnk.dao.product.IApporvedSuggestionDao;
 import com.example.bnk.dao.product.IProductConditionDao;
 import com.example.bnk.dao.product.IProductDao;
 import com.example.bnk.dao.product.IProductDescriptionDao;
@@ -21,12 +23,15 @@ import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductDetailResponseDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
+import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ProductForEmployee {
+	
+	private final IApporvedSuggestionDao iAprSuggestionDao;
 	
 	private final IProductDao productDao;
 	private final IProductConditionDao iProductionDao;
@@ -41,6 +46,13 @@ public class ProductForEmployee {
     private String uploadUrl;  // /upload/
 	
 	
+    // 1차 승인 상품 목록 조회
+    public List<ApprovedSuggestionDetailDto> showAllApprovedSuggestionList(){
+    	System.out.println("1차 제안에서 승인된 상품들을 불러오겠습니다.");
+    	
+    	return iAprSuggestionDao.approvedSuggestionList();
+    }
+    
 	// 상품 목록 조회
 	public List<ProductDto> showProduct(){
 		return productDao.showProduct();
@@ -56,23 +68,45 @@ public class ProductForEmployee {
 		return iProductDetailResponseDao.selectProductDetail(Product_no);
 	}
 	
-	// 상품 조건 등록 서비스!
-	public int insertAllCondition(ProductConditionDto prdCndDto) {
-		if(prdCndDto != null) {
-			if("ALL".equals(prdCndDto.getGender())) {
-				prdCndDto.setGender(null);
+	// ⭕ 상품 조건 등록 서비스 수정!
+		@Transactional // 두 개 이상의 CUD 작업이 일어나므로 트랜잭션 보장 필수!
+		public int insertAllCondition(ProductConditionDto prdCndDto,
+									  @RequestParam("suggestion_no") long suggestion_no) {
+			if(prdCndDto != null) {
+				if("ALL".equals(prdCndDto.getGender())) {
+					prdCndDto.setGender(null);
+				}
+				
+				
+				
+				// 1단계: TB_PRODUCT_CONDITION 테이블에 인서트 시도
+				// (위 1번 작업 덕분에 이 쿼리가 성공하면 prdCndDto 안에 condition_no가 자동으로 채워집니다!)
+				int insertResult = iProductionDao.insertAllCondition(prdCndDto);
+				
+				if(insertResult == 1) {
+					// 2단계: 자동 채워진 가입조건 PK와 화면에서 넘어온 제안서 번호 추출
+					long condition_no = prdCndDto.getCondition_no();
+					
+					System.out.println("condition_no: " + condition_no);
+					System.out.println("목표 suggestion_no: " + suggestion_no);
+					// 3단계: 중간 테이블(TB_APPROVED_SUGGESTION)에 condition_no 업데이트하기
+					int updateResult = iAprSuggestionDao.updateAprToCondition(suggestion_no, condition_no);
+					
+					if(updateResult == 1) {
+						return 1; // 인서트와 중간 테이블 업데이트 모두 성공!
+					} else {
+						System.out.println("가입조건은 등록되었으나 중간 테이블 업데이트에 실패했습니다.");
+						return 0;
+					}
+					
+				} else {
+					System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
+					return 0;
+				}
 			}
 			
-			if(iProductionDao.insertAllCondition(prdCndDto) == 1) {
-				return 1;
-			}else {
-				System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
-				return 0;
-			}
+			return 0;
 		}
-		
-		return 0;
-	}
 	
 	// 상품 금리 등록 서비스1
 	public int insertAllRate(ProductRateDto prdRateDto) {
