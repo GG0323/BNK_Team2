@@ -25,7 +25,7 @@ function accountCard(a) {
       </div>
       <div class="card-footer">
         <button type="button" class="btn-red"
-                onclick="location.href='/myhistory?accountNo=${a.account_no}'">
+                onclick="location.href='/member/myhistory?accountNo=${a.account_no}'">
           상세 및 거래내역 조회
         </button>
       </div>

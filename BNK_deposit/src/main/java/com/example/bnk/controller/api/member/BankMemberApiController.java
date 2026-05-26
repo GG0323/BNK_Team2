@@ -43,15 +43,6 @@ public class BankMemberApiController {
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
 	
-//	private BankMemberDto getLoginMember(Principal principal) {
-//	    if (principal == null) {
-//	        return null;
-//	    }
-//
-//	    String currentLoginId = principal.getName();
-//	    return bankMemberService.getMemberInfo(currentLoginId);
-//	}
-
 	// ===================== 조회(GET) =====================
 
 	
@@ -128,12 +119,6 @@ public class BankMemberApiController {
 	    }
 
 	    String currentLoginId = principal.getName();
-//	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-//
-//	    if (memberInfo == null) {
-//	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
-//	    }
 
 	    List<AccountDto> accountList = accountService.getAccounts(currentLoginId);
 
@@ -192,12 +177,7 @@ public class BankMemberApiController {
 	    }
 
 	    String currentLoginId = principal.getName();
-//	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-//
-//	    if (memberInfo == null) {
-//	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
-//	    }
+
 	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentLoginId);
 
 	    return ResponseEntity.ok(ApiResponse.ok(productList));
