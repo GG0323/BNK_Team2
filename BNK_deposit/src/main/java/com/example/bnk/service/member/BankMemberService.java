@@ -50,4 +50,27 @@ public class BankMemberService {
         // 일치하지 않으면 바로 실패(false) 반환
         return false;
     }
+    
+    // 마지막 로그인 시간 갱신
+    public void updateLastLoginAt(String loginId) {
+        bankMemberDao.updateLastLoginAt(loginId);
+    }
+    
+    public boolean updateMemberStatus(String loginId, String memberStatus) {
+        int result = bankMemberDao.updateMemberStatus(loginId, memberStatus);
+        return result > 0;
+    }
+
+    public boolean makeDormant(String loginId) {
+        return updateMemberStatus(loginId, "DORMANT");
+    }
+
+    public boolean releaseDormant(String loginId) {
+        return updateMemberStatus(loginId, "REGULAR");
+    }
+
+    // 회원 탈퇴
+    public boolean withdrawMember(String loginId) {
+        return updateMemberStatus(loginId, "WITHDRAWN");
+    }
 }

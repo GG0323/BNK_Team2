@@ -148,7 +148,12 @@ ul { list-style: none; }
 .btn-black { background-color: #222; color: #fff; width: 180px; }
 .btn-black-small { background-color: #000; color: #fff; border: none; padding: 0 25px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; white-space: nowrap; }
 .btn-black-outline { background-color: #000; color: #fff; border: 1px solid #000; padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; }
-
+.btn-withdraw {
+    background-color: #fff;
+    color: var(--primary-red);
+    border: 1px solid var(--primary-red) !important;
+    width: 150px;
+}
 
 /**
  * ==========================================
