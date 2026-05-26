@@ -185,7 +185,7 @@ async function submitInfo(e) {
       body: params.toString(),
     });
     alert(body.message || "수정되었습니다.");
-    location.href = "/myinfo";
+    location.href = "/member/myinfo";
   } catch (err) {
     alert(err.message || "수정에 실패했습니다.");
   }
@@ -208,7 +208,7 @@ async function submitPassword(e) {
     });
     alert(body.message || "비밀번호가 변경되었습니다.");
     closePasswordModal();
-    location.href = "/myinfo";
+    location.href = "/member/myinfo";
   } catch (err) {
     const errSpan = document.getElementById("current_pw_error");
     if (errSpan) {
@@ -241,7 +241,7 @@ async function withdrawMember() {
     });
 
     alert(body.message || "회원 탈퇴가 완료되었습니다.");
-    location.href = "/loginPage";
+    location.href = "/member/loginPage";
   } catch (err) {
     alert(err.message || "회원 탈퇴에 실패했습니다.");
   }
