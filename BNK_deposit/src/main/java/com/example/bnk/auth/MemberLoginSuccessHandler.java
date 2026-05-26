@@ -80,7 +80,7 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		response.addCookie(cookie);
 
 		// 로그인 성공 후 이동
-		response.sendRedirect("/mypage");
+		response.sendRedirect("/member/mypage");
 		
 	}
 

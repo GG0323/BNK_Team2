@@ -171,7 +171,7 @@ function renderDetail(p) {
       </div>
 
       <div class="detail-btn-area">
-        <button type="button" class="btn-black" onclick="location.href='/myproducts'">
+        <button type="button" class="btn-black" onclick="location.href='/member/myproducts'">
           목록으로 돌아가기
         </button>
       </div>

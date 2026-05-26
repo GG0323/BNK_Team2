@@ -52,7 +52,7 @@ function productCard(p) {
 
   return `
     <div class="product-card" style="cursor: pointer;"
-         onclick="location.href='/myproducts/detail?subNo=${p.subscription_no}'">
+         onclick="location.href='/member/myproducts/detail?subNo=${p.subscription_no}'">
 
       <div class="prod-info-sec">
         <span class="type-badge ${typeClass}">${escapeHtml(typeText)}</span>

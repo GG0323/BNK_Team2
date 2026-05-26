@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,16 +26,10 @@
                     <p>회원 연락처 및 주소 정보 변경</p>
                 </div>
             </div>
-            <nav class="breadcrumb">
-                <a href="/">메인</a> |
-                <a href="/member/mypage">마이페이지</a> |
-                <a href="/member/myinfo">내 정보 조회</a>
-                <span class="current-page">개인정보 수정</span>
-            </nav>
-			<div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
         </div>
     </header>
-
+	<div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
     <main class="edit-container">
 
         <section class="page-header">
