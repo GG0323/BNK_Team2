@@ -3,36 +3,285 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<style>
+
+/* ===== 공통 ===== */
+*{
+	box-sizing:border-box;
+	margin:0;
+	padding:0;
+}
+
+body{
+	font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
+	background:#F5F5F5;
+	display:flex;
+	min-height:100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar{
+	width:190px;
+	background:#111111;
+	position:fixed;
+	top:0;
+	left:0;
+	min-height:100vh;
+}
+
+.sidebar .logo{
+	font-size:14px;
+	font-weight:700;
+	color:#ffffff;
+	padding:1.5rem 1.25rem;
+	border-bottom:1px solid #2a2a2a;
+}
+
+.sidebar .logo span{
+	color:#E8282F;
+}
+
+.nav-item{
+	display:flex;
+	align-items:center;
+	padding:11px 1.25rem;
+	font-size:13px;
+	color:#888888;
+	text-decoration:none;
+	border-left:3px solid transparent;
+	transition:all 0.15s;
+}
+
+.nav-item:hover{
+	background:#1c1c1c;
+	color:#ffffff;
+}
+
+.nav-item.active{
+	background:#1c1c1c;
+	color:#ffffff;
+	border-left-color:#E8282F;
+}
+
+/* ===== 메인 ===== */
+.main{
+	flex:1;
+	margin-left:190px;
+	padding:2rem;
+}
+
+/* ===== 상단 ===== */
+.topbar{
+	display:flex;
+	justify-content:flex-end;
+	margin-bottom:1.5rem;
+}
+
+.logout-btn{
+	font-size:12px;
+	color:#555555;
+	background:#ffffff;
+	border:1px solid #E0E0E0;
+	padding:6px 16px;
+	border-radius:6px;
+	cursor:pointer;
+	font-weight:500;
+	transition:all 0.15s;
+}
+
+.logout-btn:hover{
+	border-color:#111111;
+	color:#111111;
+}
+
+/* ===== breadcrumb ===== */
+.breadcrumb{
+	display:flex;
+	align-items:center;
+	gap:6px;
+	font-size:12px;
+	color:#AAAAAA;
+	margin-bottom:1rem;
+}
+
+.breadcrumb a{
+	color:#888888;
+	text-decoration:none;
+}
+
+.breadcrumb .current{
+	color:#111111;
+	font-weight:600;
+}
+
+/* ===== 제목 ===== */
+.page-title{
+	font-size:20px;
+	font-weight:700;
+	color:#111111;
+	margin-bottom:1.5rem;
+}
+
+/* ===== 카드 ===== */
+.table-card{
+	background:#ffffff;
+	border:1px solid #E8E8E8;
+	border-radius:12px;
+	overflow:hidden;
+	box-shadow:0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* ===== 테이블 ===== */
+.table-wrap{
+	overflow-x:auto;
+}
+
+table{
+	width:100%;
+	border-collapse:collapse;
+	min-width:1100px;
+}
+
+thead tr{
+	background:#111111;
+}
+
+thead th{
+	padding:13px 16px;
+	font-size:12px;
+	font-weight:600;
+	color:#ffffff;
+	text-align:left;
+	white-space:nowrap;
+}
+
+tbody tr{
+	border-bottom:1px solid #F0F0F0;
+	transition:background 0.12s;
+}
+
+tbody tr:hover{
+	background:#FFF5F5;
+}
+
+tbody td{
+	padding:13px 16px;
+	font-size:13px;
+	color:#444444;
+	white-space:nowrap;
+}
+
+tbody tr:last-child{
+	border-bottom:none;
+}
+
+/* ===== 상태 뱃지 ===== */
+.badge{
+	display:inline-block;
+	padding:4px 10px;
+	border-radius:999px;
+	font-size:11px;
+	font-weight:600;
+}
+
+.badge-pending{
+	background:#FFF8E1;
+	color:#B8860B;
+}
+
+.badge-approved{
+	background:#F0FFF4;
+	color:#22863A;
+}
+
+.badge-rejected{
+	background:#FFF0F0;
+	color:#E8282F;
+}
+
+/* ===== 버튼 ===== */
+.btn-detail{
+	background:#111111;
+	color:#ffffff;
+	border:none;
+	border-radius:8px;
+	padding:7px 14px;
+	font-size:12px;
+	font-weight:600;
+	cursor:pointer;
+	transition:all 0.15s;
+}
+
+.btn-detail:hover{
+	background:#E8282F;
+}
+
+</style>
 </head>
 <body>
+	<!-- 사이드바 -->
+	<aside class="sidebar">
+    	<div class="logo">BNK <span>관리자</span> 페이지</div>
+    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+   		<a class="nav-item active" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+	</aside>
 	
-	
-	<h1>나에게 온 제안서를 검토하는 페이지(list)</h1>	
-	
-	<div>
-		<table border="1">
-			<thead>
-				<tr>
-					<th>제안서 번호</th>
-					<th>제안자</th>
-					<th>직급</th>
 
-					<th>product_name</th>
-					<th>최저 금리 제안</th>
-					<th>최고 금리 제안</th>
-					<th>approval_status</th> 
-					<th>suggested_at</th> 
-					<th>processed_at</th>
-				</tr>
-			</thead>
-			<tbody id="suggestionListTable">		
-			
-			</tbody>		
-		
-		</table>	
-		
-	</div>
-	
+	<!-- 메인 -->
+		<div class="main">
+
+			<div class="topbar">
+				<button class="logout-btn">
+					로그아웃
+				</button>
+			</div>
+
+			<div class="breadcrumb">
+				관리자 페이지 ›
+				<span class="current">제안서 리스트</span>
+			</div>
+
+			<div class="page-title">
+				나에게 온 제안서 검토
+			</div>
+
+			<div class="table-card">
+
+				<div class="table-wrap">
+
+					<table>
+
+						<thead>
+							<tr>
+								<th>제안서 번호</th>
+								<th>제안자</th>
+								<th>직급</th>
+								<th>상품명</th>
+								<th>최저 금리</th>
+								<th>최고 금리</th>
+								<th>승인 상태</th>
+								<th>제안일</th>
+								<th>처리일</th>
+								<th>상세조회</th>
+							</tr>
+						</thead>
+
+						<tbody id="suggestionListTable">
+
+						</tbody>
+
+					</table>
+
+				</div>
+
+			</div>
+
+		</div>
 	
 	
 	
@@ -67,7 +316,7 @@
 						<td>${sug.suggested_at}</td>
 						<td>${sug.processed_at ?? "-"}</td>
 						<td>
-							<button onclick="reviewPage(${sug.suggestion_no})">조회</button>
+							<button class="btn-detail" onclick="reviewPage(${sug.suggestion_no})">조회</button>
 						</td>
 					</tr>
 				`;
