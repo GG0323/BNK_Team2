@@ -3,11 +3,222 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+	<style>
+	* { box-sizing: border-box; margin: 0; padding: 0; }
+	body { font-family: var(--font-sans); }
+	
+	.login-wrap {
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  min-height: 100vh;
+	  background: #F5F0E8;
+	  padding: 2rem;
+	}
+	
+	.login-card {
+	  background: #ffffff;
+	  border: 0.5px solid #ddd8ce;
+	  border-radius: 24px; 
+	  width: 100%;
+	  max-width: 420px;
+	  overflow: hidden;
+	}
+	
+	.login-header {
+	  background: #C0392B;        /* 빨간 헤더 */
+	  padding: 1.5rem 2rem;
+	  display: flex;
+	  align-items: center;
+	  gap: 12px;
+	}
+	
+	.login-header .logo-box {
+	  background: white;
+	  color: #C0392B;             /* 흰 배경에 빨간 글자 */
+	  font-weight: 500;
+	  font-size: 18px;
+	  padding: 4px 10px;
+	  border-radius: 50px;        /* 로고 완전 pill형 */
+	  letter-spacing: 1px;
+	}
+	
+	.login-header .header-text p {
+	  font-size: 16px;
+	  font-weight: 500;
+	  color: #ffffff;
+	}
+	
+	.login-header .header-text span {
+	  font-size: 12px;
+	  color: rgba(255,255,255,0.75);
+	}
+	
+	.login-body {
+	  padding: 2rem;
+	  text-align: center;
+	}
+	
+	/* BNK 뱃지 */
+	.bnk-badge {
+	  display: inline-block;
+	  background: #fde8e6;
+	  color: #C0392B;
+	  font-size: 12px;
+	  font-weight: 500;
+	  padding: 3px 12px;
+	  border-radius: 50px;        /* pill 뱃지 */
+	  margin-bottom: 0.75rem;
+	}
+	
+	.login-body h2 {
+	  font-size: 26px;
+	  font-weight: 500;
+	  color: #1a1a1a;
+	  margin-bottom: 0.5rem;
+	  text-align: center;
+	}
+	
+	.login-body .desc {
+	  font-size: 13px;
+	  color: #888;
+	  margin-bottom: 1.75rem;
+	  line-height: 1.6;
+	}
+	
+	.field {
+	  margin-bottom: 1rem;
+	  text-align: left;
+	}
+	
+	.field label {
+	  display: block;
+	  font-size: 13px;
+	  color: #444;
+	  margin-bottom: 6px;
+	  font-weight: 500;
+	}
+	
+	.field input {
+	  width: 100%;
+	  padding: 12px 14px;
+	  font-size: 14px;
+	  border: 1px solid #ddd8ce;
+	  border-radius: 50px;        /* 입력창 pill형 */
+	  background: #F5F0E8;        /* 아이보리 입력창 */
+	  color: #1a1a1a;
+	  outline: none;
+	  transition: border-color 0.15s;
+	}
+	
+	.field input::placeholder { color: #b0a898; }
+	
+	.field input:focus {
+	  border-color: #C0392B;
+	  box-shadow: 0 0 0 2px rgba(192,57,43,0.10);
+	}
+	
+	.login-btn {
+	  width: 100%;
+	  padding: 13px;
+	  margin-top: 0.5rem;
+	  background: #C0392B;
+	  color: white;
+	  border: none;
+	  border-radius: 50px;        /* 버튼 pill형 */
+	  font-size: 15px;
+	  font-weight: 500;
+	  cursor: pointer;
+	  transition: opacity 0.15s;
+	}
+	
+	.login-btn:hover { opacity: 0.88; }
+	.login-btn:active { transform: scale(0.98); }
+	
+	.error-msg {
+	  font-size: 13px;
+	  color: #C0392B;
+	  margin-top: 0.75rem;
+	  min-height: 18px;
+	  text-align: center;
+	}
+	
+	/* 하단 링크 영역 */
+	.login-links {
+	  display: flex;
+	  justify-content: center;
+	  gap: 1rem;
+	  margin-top: 1.25rem;
+	  font-size: 13px;
+	  color: #888;
+	}
+	
+	.login-links span { cursor: pointer; }
+	.login-links span:hover { color: #1a1a1a; }
+	.login-links .divider { color: #ddd; }
+	
+	.login-footer {
+	  border-top: 0.5px solid #ede8de;
+	  padding: 1rem 2rem;
+	  background: #1a1a1a;        /* 검정 푸터 */
+	}
+	
+	.login-footer p {
+	  font-size: 11px;
+	  color: rgba(255,255,255,0.4);
+	  line-height: 1.9;
+	}
+	
+	.login-footer p::before { content: "※ "; }
+	</style>
+
+
+
+
 </head>
 <body>
+	<div class="login-wrap">
+		<div class="login-card">
 	
+	    	<div class="login-header">
+	      		<div class="logo-box">BNK</div>
+				<div class="header-text">
+					<p>직원 로그인</p>
+        			<span>BNK 업무 시스템</span>
+      			</div>
+			</div>
 	
-	<h1>로그인, 타임리프 형식으로 요청하기</h1>
+			<div class="login-body">
+				<h2>아이디와 비밀번호를 입력하세요</h2>
+	
+				<form id="employeeLoginForm">
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+	
+					<div class="field">
+						<label for="login_id">아이디</label>
+						<input type="text" id="login_id" name="login_id" placeholder="아이디 입력" required>
+					</div>
+	
+	        		<div class="field">
+	          			<label for="password_hash">비밀번호</label>
+	         		 	<input type="password" id="password_hash" name="password_hash" placeholder="비밀번호 입력" required>
+	        		</div>
+	
+	        		<button type="submit" class="login-btn">로그인</button>
+	
+					<div class="error-msg" th:text="${msg}"></div>
+				</form>
+			</div>
+	
+			<div class="login-footer">
+				<p>본 시스템은 BNK 임직원 전용입니다.</p>
+				<p>로그인 문제 발생 시 시스템 관리자에게 문의하세요.</p>
+			</div>
+	
+		</div>
+	</div>
+	
+<!-- 	<h1>로그인, 타임리프 형식으로 요청하기</h1>
 	<form id="employeeLoginForm">
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
@@ -19,7 +230,7 @@
 	
 	<div>
 		<p style="color:red" th:text="${msg}"></p>
-	</div>
+	</div> -->
 	
 	<script th:inline="javascript">
 		//if([[${msg}]] != null) alert([[${msg}]])
@@ -41,7 +252,10 @@
 				console.log(data.result);
 				console.log(data.role);
 				
-				if(data.result === "fail") alert("로그인 실패"); 
+				if (data.result === "fail") {
+			        document.querySelector(".error-msg").textContent = "아이디 또는 비밀번호가 올바르지 않습니다.";
+			        return;
+			      }
 				
 				if(data.role === "ADMIN") location.href="/employee/manager/managerPage";
 				if(data.role === "MANAGER") location.href="/employee/manager/managerPage";
