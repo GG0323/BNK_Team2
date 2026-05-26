@@ -11,7 +11,7 @@ import com.example.bnk.dto.member.AccountDto;
 public interface IAccountDao {
 
 	 // 회원 번호로 보유 계좌 목록 조회
-    List<AccountDto> findAccountsByMemberNo(@Param("memberNo") long memberNo);
+    List<AccountDto> findAccountsByMemberNo(@Param("username") String username);
 
     // 특정 계좌 번호로 계좌 상세 정보 1건 조회
     AccountDto findAccountByAccountNo(@Param("accountNo") long accountNo);

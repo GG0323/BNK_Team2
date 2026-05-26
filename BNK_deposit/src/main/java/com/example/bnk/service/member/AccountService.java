@@ -16,8 +16,8 @@ public class AccountService {
 	private final IAccountDao accountDao;
 
 	// 계좌 목록 조회
-    public List<AccountDto> getAccounts(long memberNo) {
-        return accountDao.findAccountsByMemberNo(memberNo);
+    public List<AccountDto> getAccounts(String username) {
+        return accountDao.findAccountsByMemberNo(username);
     }
 
     // 계좌 상세 정보 조회

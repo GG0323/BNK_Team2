@@ -17,6 +17,11 @@ public class BankMemberService {
 	private final BCryptPasswordEncoder pwEncoder;
 	private final AesCryptoUtil aesUtil;
 	
+	// 마지막 로그인 저장
+	public void updateLastLogin(long mamber_no) {
+		bankMemberDao.lastLogin(mamber_no);
+	}
+	
 	// 회원 정보 검색
     public BankMemberDto getMemberInfo(String loginId) {
     	BankMemberDto dto = bankMemberDao.findMemberById(loginId);

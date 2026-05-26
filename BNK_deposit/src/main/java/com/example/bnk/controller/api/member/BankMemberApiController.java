@@ -3,8 +3,10 @@ package com.example.bnk.controller.api.member;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,7 @@ import com.example.bnk.dto.member.MypageSummaryDto;
 import com.example.bnk.service.member.AccountService;
 import com.example.bnk.service.member.AccountTransactionService;
 import com.example.bnk.service.member.BankMemberService;
+import com.example.bnk.service.member.MemberService;
 import com.example.bnk.service.member.MemberTrackingLogService;
 import com.example.bnk.service.product.ProductSalesService;
 
@@ -32,34 +35,40 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class BankMemberApiController {
-
+	
+	private final MemberService service;
 	private final BankMemberService bankMemberService;
 	private final AccountService accountService;
 	private final ProductSalesService productSalesService;
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
 	
-	private BankMemberDto getLoginMember(Principal principal) {
-	    if (principal == null) {
-	        return null;
-	    }
-
-	    String currentLoginId = principal.getName();
-	    return bankMemberService.getMemberInfo(currentLoginId);
-	}
+//	private BankMemberDto getLoginMember(Principal principal) {
+//	    if (principal == null) {
+//	        return null;
+//	    }
+//
+//	    String currentLoginId = principal.getName();
+//	    return bankMemberService.getMemberInfo(currentLoginId);
+//	}
 
 	// ===================== 조회(GET) =====================
 
+	
+	@GetMapping("/1/{id}")
+	public ResponseEntity<Boolean> idCheck(@PathVariable("id")String id){
+		return ResponseEntity.ok(service.idCheck(id));
+	}
+	
 	// 마이페이지 요약 데이터
 	@GetMapping("/mypage")
-	public ResponseEntity<ApiResponse<?>> getMypageSummary(Principal principal) {
-
-	    if (principal == null) {
+	public ResponseEntity<ApiResponse<?>> getMypageSummary(SecurityContextHolder secu) {
+		String currentLoginId = secu.getContext().getAuthentication().getName();
+	    if (currentLoginId == null) {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	                .body(ApiResponse.fail("로그인이 필요합니다."));
 	    }
 
-	    String currentLoginId = principal.getName();
 	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
 
 	    if (memberInfo == null) {
@@ -69,7 +78,7 @@ public class BankMemberApiController {
 
 	    long currentMemberNo = memberInfo.getMember_no();
 
-	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
+	    List<AccountDto> accountList = accountService.getAccounts(currentLoginId);
 	    int accountCount = accountList.size();
 	    long totalBalance = accountList.stream().mapToLong(AccountDto::getBalance).sum();
 
@@ -119,15 +128,14 @@ public class BankMemberApiController {
 	    }
 
 	    String currentLoginId = principal.getName();
-	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+//	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+//
+//	    if (memberInfo == null) {
+//	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+//	    }
 
-	    if (memberInfo == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
-	    }
-
-	    long currentMemberNo = memberInfo.getMember_no();
-	    List<AccountDto> accountList = accountService.getAccounts(currentMemberNo);
+	    List<AccountDto> accountList = accountService.getAccounts(currentLoginId);
 
 	    return ResponseEntity.ok(ApiResponse.ok(accountList));
 	}
@@ -184,15 +192,13 @@ public class BankMemberApiController {
 	    }
 
 	    String currentLoginId = principal.getName();
-	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
-
-	    if (memberInfo == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
-	    }
-
-	    long currentMemberNo = memberInfo.getMember_no();
-	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentMemberNo);
+//	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
+//
+//	    if (memberInfo == null) {
+//	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+//	    }
+	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentLoginId);
 
 	    return ResponseEntity.ok(ApiResponse.ok(productList));
 	}
@@ -277,13 +283,9 @@ public class BankMemberApiController {
 		}
 
 		boolean isChanged = bankMemberService.changePassword(currentLoginId, currentPassword, newPassword);
-
-		if (isChanged) {
-			return ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 변경되었습니다."));
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(ApiResponse.fail("현재 비밀번호가 일치하지 않습니다."));
-		}
+		
+		return isChanged? ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 변경되었습니다.")) : ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(ApiResponse.fail("현재 비밀번호가 일치하지 않습니다."));
 	}
 	
 	// 회원 탈퇴

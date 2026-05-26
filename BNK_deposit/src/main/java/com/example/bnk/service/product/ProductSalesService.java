@@ -21,7 +21,7 @@ public class ProductSalesService {
     }
     
     // 사용자가 가입한 상품의 수 출력
-    public List<MemberProductDto> getSubscribedProducts(long memberNo) {
-        return productSalesDao.findSubscribedProductsByMemberNo(memberNo);
+    public List<MemberProductDto> getSubscribedProducts(String username) {
+        return productSalesDao.findSubscribedProductsByMemberNo(username);
     }
 }

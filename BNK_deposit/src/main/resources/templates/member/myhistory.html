@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 계좌 상세 및 거래내역</title>
     <link rel="stylesheet" href="/css/member/myhistory.css">
+    <link rel="stylesheet" href="/css/member/member-nav.css">
+    <script src="/js/members/common.js" defer></script>
+    <script src="/js/members/myhistory.js" defer></script>
 </head>
 <body>
 
@@ -30,13 +33,8 @@
 			</nav>
         </div>
     </header>
-
-    <nav class="sub-nav" id="subNav" data-page="myaccounts">
-        <button class="tab-btn" data-tab="mypage"     onclick="location.href='/mypage'">1. 마이페이지</button>
-        <button class="tab-btn" data-tab="myinfo"     onclick="location.href='/myinfo'">2. 내정보</button>
-        <button class="tab-btn" data-tab="myaccounts" onclick="location.href='/myaccounts'">3. 계좌 및 거래내역</button>
-        <button class="tab-btn" data-tab="myproducts" onclick="location.href='/myproducts'">4. 가입상품</button>
-    </nav>
+    
+	<div th:replace="~{fragments/nav :: member_mypage('myaccounts')}"></div>
 
     <main class="history-container">
 
@@ -103,7 +101,6 @@
 
     </main>
 
-    <script src="/js/members/common.js"></script>
-    <script src="/js/members/myhistory.js"></script>
+    
 </body>
 </html>

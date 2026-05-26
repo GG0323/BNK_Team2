@@ -47,7 +47,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		filterChain.doFilter(request, response);
 	}
 	
-	
+	// 쿠키에서 토큰 찾기
 	private String getTokenFromCookie(HttpServletRequest request) {
 		Cookie[] cookie = request.getCookies();
 		if(cookie == null) return null;
