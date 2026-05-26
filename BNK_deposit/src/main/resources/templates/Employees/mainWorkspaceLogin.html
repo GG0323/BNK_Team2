@@ -22,7 +22,7 @@
 	</div>
 	
 	<script th:inline="javascript">
-		if([[${msg}]] != null) alert([[${msg}]])
+		//if([[${msg}]] != null) alert([[${msg}]])
 		
 		const employeeLoginForm = document.querySelector("#employeeLoginForm");
 		
@@ -37,8 +37,11 @@
 				return response.json();
 			})
 			.then(data => {
+				
 				console.log(data.result);
 				console.log(data.role);
+				
+				if(data.result === "fail") alert("로그인 실패"); 
 				
 				if(data.role === "ADMIN") location.href="/employee/manager/managerPage";
 				if(data.role === "MANAGER") location.href="/employee/manager/managerPage";
