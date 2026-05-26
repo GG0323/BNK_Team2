@@ -39,6 +39,8 @@ public class SuggestionReviewApiController {
 		// 2. 제안서 가져오기 
 		List<SuggestionListDto> list = sugService.mySuggestionList(myInfo.getEmployee_no());
 		
+		
+		
 		return list;
 	}
 	
