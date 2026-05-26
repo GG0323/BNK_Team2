@@ -19,6 +19,7 @@ import com.example.bnk.dto.product.ProductDetailResponseDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.service.employees.EmployeeLogService;
+import com.example.bnk.service.product.ProductForEmployee;
 
 
 @Controller
@@ -28,6 +29,9 @@ public class EmployeePageController {
 	@Autowired
 	EmployeeLogService logService;
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
+	@Autowired
+	ProductForEmployee prdForEmpService;
+	
 	
 	// /employee/toMain
 	@GetMapping("/toMain") 
