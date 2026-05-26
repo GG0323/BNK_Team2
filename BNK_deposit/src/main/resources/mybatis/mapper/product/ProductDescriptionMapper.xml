@@ -68,7 +68,7 @@
 			caution_note = #{caution_note, jdbcType=VARCHAR},
 			disclosure_approval_desc = #{disclosure_approval_desc, jdbcType=VARCHAR},
 			image_url = #{image_url, jdbcType=VARCHAR},
-			update_at = SYSDATE
+			updated_at = SYSDATE
 		WHERE description_no = #{description_no}
 		AND product_no = #{product_no}
 	</update>	

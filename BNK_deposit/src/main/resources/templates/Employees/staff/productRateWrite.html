@@ -15,6 +15,11 @@
     .hidden_group {
         display: none; 
     }
+    /* ⭕ 작성하신 CSS가 동작하려면 본문에 class="form_group"이 반드시 있어야 합니다! */
+    .form_group { margin-bottom: 15px; }
+    .form_group label { display: inline-block; width: 220px; font-weight: bold; vertical-align: top; margin-top: 5px; }
+    .form_group input[type="text"], .form_group input[type="number"], .form_group select, .form_group textarea { width: 450px; padding: 6px; box-sizing: border-box; }
+    .form_group textarea { resize: vertical; }
 </style>
 </head>
 <body>
@@ -23,33 +28,58 @@
 	<hr>
 	
 	<form th:action="@{/employee/staff/product/rate/save}" method="POST">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	
-		<span style="color: red">*</span>상품 FK: <input type="number" name="product_no" required placeholder="상품과 연결"/><br>
+		<div class="form_group">
+			<label><span style="color: red">*</span>상품 FK:</label>
+			<input type="number" name="product_no" required placeholder="상품과 연결"/>
+		</div>
 		
-		<label for="rate_group">금리 구분</label>
-		<select id="rate_group" name="rate_group">
-		    <option value="MATURITY" selected>만기 지급</option>
-		    <option value="AFTER_MATURITY">만기 후</option>
-		    <option value="EARLY_TERMINATION">중도 해지</option>
-		</select><br>
+		<div class="form_group">
+			<label for="rate_group">금리 구분:</label>
+			<select id="rate_group" name="rate_group">
+			    <option value="MATURITY" selected>만기 지급</option>
+			    <option value="AFTER_MATURITY">만기 후</option>
+			    <option value="EARLY_TERMINATION">중도 해지</option>
+			</select>
+		</div>
 		
-		<span style="color: red">*</span>금리 구간/조건명: <input type="text" name="rate_label" required placeholder="예: 1개월 이상 6개월 미만"/><br>
+		<div class="form_group">
+			<label><span style="color: red">*</span>금리 구간/조건명:</label>
+			<input type="text" name="rate_label" required placeholder="예: 1개월 이상 6개월 미만"/>
+		</div>
 		
-		연이율: <input type="text" name="annual_rate" placeholder="예: 2.10 / -"/><br>
+		<div class="form_group">
+			<label>연이율:</label>
+			<input type="text" name="annual_rate" placeholder="예: 2.10 / -"/>
+		</div>
 		
-		연수익률: <input type="text" name="annual_return_rate" placeholder="예: 2.10 / -"/><br>
+		<div class="form_group">
+			<label>연수익률:</label>
+			<input type="text" name="annual_return_rate" placeholder="예: 2.10 / -"/>
+		</div>
 		
-		비고: <textarea id="note" name="note" rows="4" style="width: 250px; padding: 5px;" placeholder="계산식 및 안내 문구"></textarea><br>
+		<div class="form_group">
+			<label for="note">비고:</label>
+			<textarea id="note" name="note" rows="4" placeholder="계산식 및 안내 문구"></textarea>
+		</div>
 		
-		<span style="color: red">*</span>노출 순서: <input type="number" name="display_order" required placeholder="화면 출력 순서"/><br>
+		<div class="form_group">
+			<label><span style="color: red">*</span>노출 순서:</label>
+			<input type="number" name="display_order" required placeholder="화면 출력 순서"/>
+		</div>
 		
-		<label for="use_yn">사용 여부: </label>		
-		<select id="use_yn" name="use_yn">
-			<option value="Y">사용</option>
-			<option value="N">미사용</option>
-		</select><br>
+		<div class="form_group">
+			<label for="use_yn">사용 여부: </label>		
+			<select id="use_yn" name="use_yn">
+				<option value="Y">사용</option>
+				<option value="N">미사용</option>
+			</select>
+		</div>
 		
-		<input type="submit" value="등록 하기"/>
+		<div style="margin-top: 20px;">
+			<input type="submit" value="등록 하기" style="padding: 10px 30px; font-weight: bold; cursor: pointer;"/>
+		</div>
 		
 	</form>
 	
