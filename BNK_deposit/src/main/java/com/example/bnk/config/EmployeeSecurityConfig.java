@@ -33,14 +33,14 @@ public class EmployeeSecurityConfig {
 	SecurityFilterChain employeeFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.securityMatcher("/employee/**, /api/employee")
+		http.securityMatcher("/employee/**", "/api/employee")
 			.userDetailsService(employeeDetailsService)
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
 		
 		// 직원 로그인 설정
 		http.formLogin(employee ->
-			employee.loginPage("/employee/loginPage")
+			employee.loginPage("/employee/toMain")
 			.loginProcessingUrl("/employee/login")
 			.successHandler(new EmployeeLoginSuccessHandler(jwtUtil))
 			.failureHandler(new SecurityLoginFailHandler())
