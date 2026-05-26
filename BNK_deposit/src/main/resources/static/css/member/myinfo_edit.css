@@ -6,85 +6,159 @@
  * ==========================================
  */
 :root {
-    --primary-red: #cc2b35; 
-    --text-dark: #1a1a1a;
-    --text-gray: #777;
-    --border-color: #eee;
+    --primary-red: #e3000f;
+    --text-dark: #222;
+    --text-gray: #666;
+    --border-color: #eaeaea;
     --bg-light: #f8f9fa;
-    --bg-readonly: #f5f5f5;
+    --bg-pink: #fdf5f6;
 }
 
 * {
-    margin: 0; padding: 0; box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
 }
-body { background-color: #ffffff; color: var(--text-dark); }
-a { text-decoration: none; color: inherit; }
-ul { list-style: none; }
 
+body {
+    background-color: #ffffff;
+    color: var(--text-dark);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
 
 /**
  * ==========================================
  * [2] 최상단 헤더 영역 (로고 및 현재 위치)
  * ==========================================
  */
-.top-header { 
+
+.top-header {
+    background-color: #000;
+    color: #fff;
+    padding: 20px 0;
+}
+
+.header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.header-title-group h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.header-title-group p {
+    font-size: 11px;
+    color: #aaa;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-right ul {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #ccc;
+}
+
+.header-right ul li::after {
+    content: '|';
+    margin-left: 15px;
+    color: #555;
+}
+
+.header-right ul li:last-child::after {
+    display: none;
+}
+
+.btn-mypage-header {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+
+/* .top-header { 
     background-color: transparent; 
     padding: 25px 0; 
 }
 
-/* 헤더 전체를 검은색 곡면 캡슐 형태로 바꿉니다 */
+헤더 전체를 검은색 곡면 캡슐 형태로 바꿉니다
 .header-inner {
     max-width: 1000px; 
     margin: 0 auto;
-    background-color: #000;    /* ❌ transparent에서 검은색(#000)으로 변경 */
-    border-radius: 50px;       /* 곡면 형태를 위한 둥근 모서리 */
-    padding: 15px 40px;        /* 내부 요소들이 숨 쉴 수 있는 여백 */
+    background-color: #000;    ❌ transparent에서 검은색(#000)으로 변경
+    border-radius: 50px;       곡면 형태를 위한 둥근 모서리
+    padding: 15px 40px;        내부 요소들이 숨 쉴 수 있는 여백
     display: flex; 
     justify-content: space-between; 
     align-items: center;
-    color: #ffffff;            /* 기본 텍스트 색상을 흰색으로 고정 */
+    color: #ffffff;            기본 텍스트 색상을 흰색으로 고정
 }
 
-/* 왼쪽 로고 및 타이틀 영역 */
+왼쪽 로고 및 타이틀 영역
 .header-left { display: flex; align-items: center; gap: 30px; }
 .header-left h1 { font-size: 24px; font-weight: 800; color: #fff; }
 .header-title-group h2 { font-size: 16px; color: #fff; margin-bottom: 2px; }
-.header-title-group p { font-size: 12px; color: #aaa; } /* 부제목은 옅은 회색 */
+.header-title-group p { font-size: 12px; color: #aaa; } 부제목은 옅은 회색
 
-/* 우측 브레드크럼 경로 (글자색들을 흰색 계열로 변경) */
+우측 브레드크럼 경로 (글자색들을 흰색 계열로 변경)
 .breadcrumb { font-size: 13px; color: #666; }
 .breadcrumb a { color: #aaa; transition: color 0.2s; }
 .breadcrumb a:hover { color: #fff; }
 
-/* 캡슐 알약 형태의 현재 페이지 표시 (흰 배경 + 빨간 글자) */
+캡슐 알약 형태의 현재 페이지 표시 (흰 배경 + 빨간 글자)
 .breadcrumb .current-page { 
-    background-color: #ffffff;    /* 흰색 바탕 박스 */
-    color: var(--primary-red);    /* 뚫고 나오는 시그니처 붉은 글자 */
-    padding: 6px 14px;            /* 감싸는 상하좌우 여백 */
-    border-radius: 20px;          /* 양 끝을 완전히 둥글게 */
+    background-color: #ffffff;    흰색 바탕 박스
+    color: var(--primary-red);    뚫고 나오는 시그니처 붉은 글자
+    padding: 6px 14px;            감싸는 상하좌우 여백
+    border-radius: 20px;          양 끝을 완전히 둥글게
     font-weight: 700; 
-    display: inline-block;        /* 여백(padding) 레이아웃이 깨지지 않게 고정 */
+    display: inline-block;        여백(padding) 레이아웃이 깨지지 않게 고정
     margin-left: 5px;
-}
-
-/**
- * ==========================================
- * [3] 서브 네비게이션 (1~5번 탭 메뉴)
- * ==========================================
- */
-.sub-nav { max-width: 1000px; margin: 30px auto; display: flex; gap: 10px; }
-.tab-btn { 
-    flex: 1; padding: 12px 0; border: none; border-radius: 25px; 
-    background-color: var(--bg-light); color: var(--text-gray); 
-    font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; 
-}
-.tab-btn.active { background-color: var(--primary-red); color: #fff; }
+} */
 
 
 /**
  * ==========================================
- * [4] 정보 수정 폼 영역
+ * [3] 정보 수정 폼 영역
  * ==========================================
  */
 .edit-container { max-width: 800px; margin: 0 auto 100px; }
@@ -117,7 +191,7 @@ ul { list-style: none; }
 
 /**
  * ==========================================
- * [5] 보안 설정 박스 (비밀번호 변경 안내)
+ * [4] 보안 설정 박스 (비밀번호 변경 안내)
  * ==========================================
  */
 .security-section { margin-bottom: 40px; }
@@ -132,7 +206,7 @@ ul { list-style: none; }
 
 /**
  * ==========================================
- * [6] 버튼 공통 스타일
+ * [5] 버튼 공통 스타일
  * ==========================================
  */
 /* 기본 폼 하단 버튼 그룹 */
@@ -157,7 +231,7 @@ ul { list-style: none; }
 
 /**
  * ==========================================
- * [7] 모달(Modal) 팝업창 스타일
+ * [6] 모달(Modal) 팝업창 스타일
  * ==========================================
  */
 .modal-overlay {
@@ -188,7 +262,7 @@ ul { list-style: none; }
 
 /**
  * ==========================================
- * [8] 유틸리티 클래스 (여백 및 알림)
+ * [7] 유틸리티 클래스 (여백 및 알림)
  * ==========================================
  */
 .mb-10 { margin-bottom: 15px; }

@@ -107,33 +107,7 @@ ul {
     cursor: pointer;
 }
 
-/* 3. 서브 네비게이션 탭 (mypage.css와 완벽 동일) */
-.sub-nav {
-    max-width: 1000px;
-    margin: 30px auto;
-    display: flex;
-    gap: 10px;
-}
-
-.tab-btn {
-    flex: 1;
-    padding: 12px 0;
-    border: none;
-    border-radius: 25px;
-    background-color: var(--bg-light);
-    color: var(--text-gray);
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.tab-btn.active {
-    background-color: var(--primary-red);
-    color: #fff;
-}
-
-/* 4. 메인 컨테이너 (mypage 중앙 정렬 및 넓이 1000px 적용) */
+/* 3. 메인 컨테이너 (mypage 중앙 정렬 및 넓이 1000px 적용) */
 .accounts-container {
     max-width: 1000px;
     margin: 0 auto 100px;
@@ -153,7 +127,7 @@ ul {
     color: var(--text-gray);
 }
 
-/* 5. 계좌 카드 그리드 */
+/* 4. 계좌 카드 그리드 */
 .account-grid {
     display: grid;
     /* 1000px에 맞게 카드를 3열(repeat 3)로 배치 */
