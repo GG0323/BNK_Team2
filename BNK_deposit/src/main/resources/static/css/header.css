@@ -1,0 +1,388 @@
+.header {
+    border-bottom: 2px solid #d71920;
+    background-color: #fff;
+}
+
+.header-inner {
+    width: 1120px;
+    height: 96px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.logo-red {
+    color: #d71920;
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo-text {
+    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 42px;
+}
+
+.nav a {
+    color: #222;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.nav a:hover {
+    color: #d71920;
+}
+
+.header-utils {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.guest-menu,
+.member-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.guest-menu a,
+.member-menu a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.guest-menu a:hover,
+.member-menu a:hover {
+    color: #d71920;
+}
+
+.divider {
+    color: #ccc;
+}
+
+.welcome-text {
+    color: #444;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.welcome-text strong {
+    color: #d71920;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.logout-btn {
+    height: 34px;
+    padding: 0 14px;
+    border: 1px solid #d71920;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #d71920;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #d71920;
+    color: #fff;
+}
+
+.header-product img {
+    height: 42px;
+}
+
+/* Header Search Icon */
+.nav-search-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #e5e5e5;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
+}
+
+.nav-search-btn:hover {
+    border-color: #d71920;
+    background-color: #fff0f0;
+    transform: translateY(-2px);
+}
+
+.nav-search-icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #222;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+}
+
+.nav-search-btn:hover .nav-search-icon {
+    stroke: #d71920;
+}
+
+/* Search Modal */
+.search-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+.search-modal.active {
+    display: block;
+}
+
+.search-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 20, 35, 0.42);
+}
+
+.search-modal-content {
+    position: relative;
+    width: 100%;
+    min-height: 330px;
+    background: linear-gradient(180deg, #ffffff 0 112px, #f6f7fb 112px 100%);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    animation: modalDown 0.25s ease;
+}
+
+.search-modal-top {
+    height: 112px;
+    border-bottom: 2px solid #d71920;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 72px;
+}
+
+.search-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-brand-red {
+    color: #d71920;
+    font-size: 29px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.search-brand-text {
+    color: #222;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.search-close-btn {
+    width: 46px;
+    height: 46px;
+    border: none;
+    background-color: transparent;
+    color: #222;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.search-close-btn:hover {
+    color: #d71920;
+    transform: rotate(90deg);
+}
+
+.search-modal-box {
+    width: 1120px;
+    margin: -28px auto 0;
+    padding: 36px 42px 30px;
+    border-radius: 18px;
+    background-color: #fff;
+    border: 1px solid #eeeeee;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.13);
+}
+
+.search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #222;
+}
+
+.search-input-wrap input {
+    flex: 1;
+    height: 54px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #222;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.search-input-wrap input::placeholder {
+    color: #aaa;
+    font-weight: 500;
+}
+
+.search-submit-btn {
+    width: 92px;
+    height: 44px;
+    border-radius: 8px;
+    background-color: #d71920;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.search-submit-btn:hover {
+    background-color: #b8141a;
+    transform: translateY(-2px);
+}
+
+.recommend-keywords {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+.recommend-keywords strong {
+    color: #111;
+    font-size: 17px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.keyword-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.keyword-chips button {
+    min-width: 74px;
+    height: 38px;
+    padding: 0 18px;
+    border: 1px solid #eeeeee;
+    border-radius: 999px;
+    background-color: #f4f5f8;
+    color: #555;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.keyword-chips button:hover {
+    border-color: #d71920;
+    background-color: #fff0f0;
+    color: #d71920;
+    transform: translateY(-2px);
+}
+
+@keyframes modalDown {
+    from {
+        opacity: 0;
+        transform: translateY(-18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1180px) {
+    .search-modal-box {
+        width: calc(100% - 40px);
+    }
+
+    .search-modal-top {
+        padding: 0 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-modal-content {
+        min-height: 360px;
+    }
+
+    .search-modal-top {
+        height: 90px;
+        padding: 0 20px;
+    }
+
+    .search-brand-red {
+        font-size: 24px;
+    }
+
+    .search-brand-text {
+        font-size: 19px;
+    }
+
+    .search-close-btn {
+        font-size: 28px;
+    }
+
+    .search-modal-box {
+        margin-top: -18px;
+        padding: 28px 24px 26px;
+        border-radius: 16px;
+    }
+
+    .search-input-wrap {
+        gap: 10px;
+    }
+
+    .search-input-wrap input {
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .search-submit-btn {
+        width: 72px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .recommend-keywords {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+}

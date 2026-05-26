@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>BNK 상품 목록</title>
+	
+	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
     <link rel="stylesheet" th:href="@{/css/productView.css}">
+	
+	<script th:src="@{/js/productView.js}" defer></script>
 </head>
 <body>
+	<div th:replace="~{fragments/header :: header_default}"></div>
 
 <div class="page-wrap">
 
@@ -29,10 +35,35 @@
 
     <section class="product-section">
 
-        <div class="section-title">
-            <h2>판매중인 상품</h2>
-            <span th:text="${#lists.size(productList)} + '개 상품'">0개 상품</span>
-        </div>
+		<div class="section-title">
+
+		    <div class="title-left">
+		        <h2>판매중인 상품</h2>
+		        <span th:text="${#lists.size(productList)} + '개 상품 조회됨'">0개 상품 조회됨</span>
+		    </div>
+
+		    <form th:action="@{/products}" method="get" class="sort-form">
+		        <label for="sort">정렬</label>
+
+		        <select name="sort" id="sort" onchange="this.form.submit()">
+		            <option value="baseRateDesc"
+		                    th:selected="${sort == null or sort == 'baseRateDesc'}">
+		                기본금리 높은 순
+		            </option>
+
+		            <option value="maxRateDesc"
+		                    th:selected="${sort == 'maxRateDesc'}">
+		                최대금리 높은 순
+		            </option>
+
+		            <option value="nameAsc"
+		                    th:selected="${sort == 'nameAsc'}">
+		                상품명 순
+		            </option>
+		        </select>
+		    </form>
+
+		</div>
 
         <div class="empty-box" th:if="${#lists.isEmpty(productList)}">
             조회된 상품이 없습니다.
@@ -152,6 +183,7 @@
 
 </div>
 
-<script th:src="@{/js/productView.js}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
 </html>

@@ -22,11 +22,4 @@ public class MemberApiController {
 	public ResponseEntity<Boolean> idCheck(@PathVariable("id")String id){
 		return ResponseEntity.ok(service.idCheck(id));
 	}
-	
-	@PostMapping("/2/member")
-	public ResponseEntity<Boolean> signup(BankMemberDto dto){
-		System.out.println(dto);
-		return ResponseEntity.ok(service.regist(dto));
-	}
-	
 }

@@ -3,10 +3,13 @@ package com.example.bnk.controller.page;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.bnk.service.employees.EmployeeLogService;
+
 
 @Controller
 @RequestMapping("/employee")
@@ -18,7 +21,12 @@ public class EmployeePageController {
 	
 	// /employee/toMain
 	@GetMapping("/toMain") 
-	public String mainWorkSpace() {
+	public String mainWorkSpace(Model model,
+			@RequestParam(value = "message", required = false)String msg) {
+		if(msg != null) {
+			model.addAttribute("msg", msg);
+		}
+		
 		return "Employees/mainWorkspaceLogin";
 	}
 	
@@ -48,5 +56,28 @@ public class EmployeePageController {
 	public String hrmEmployeeDetailList() {
 		return "Employees/manager/HRM/hrmEmployeeDetailList";
 	}
+
+	// !! 제안서 리스트 페이지    /employee/manager/SUG/suggestionList
+	@GetMapping("/manager/SUG/suggestionList")
+	public String suggestionList() {
+		return "Employees/manager/SUG/suggestionListPage";
+	}
+	// !! 제안서 상세 페이지
+	@GetMapping("/manager/SUG/suggestionReview")
+	public String suggestionReview() {
+		return "Employees/manager/SUG/suggestionReviewPage";
+	}
+	// !! 승인된 제안서 리스트 (중간 테이블)  /employee/manager/SUG/approvedList
+	@GetMapping("/manager/SUG/approvedList")
+	public String approvedList() {
+		return "Employees/manager/SUG/approvedSuggestionList";
+	}
+	// !! 승인된 제안서 상세 (중간 테이블)
+	@GetMapping("/manager/SUG/approvedDetail")
+	public String approvedDetail() {
+		return "Employees/manager/SUG/approvedSuggestionDetail";
+	}
+	
+
 	
 }
