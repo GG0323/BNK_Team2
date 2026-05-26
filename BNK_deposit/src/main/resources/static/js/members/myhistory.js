@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const body = await fetchApi(`/api/accounts/${accountNo}/history`);
+    const body = await fetchApi(`/api/member/accounts/${accountNo}/history`);
     renderDetail(body.data.account);
     renderTransactions(body.data.transactionList);
   } catch (e) {

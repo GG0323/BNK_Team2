@@ -287,4 +287,25 @@ public class BankMemberApiController {
 		return isChanged? ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 변경되었습니다.")) : ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(ApiResponse.fail("현재 비밀번호가 일치하지 않습니다."));
 	}
+	
+	// 회원 탈퇴
+	@PostMapping("/myinfo/withdraw")
+	public ResponseEntity<ApiResponse<Void>> withdrawMember(Principal principal) {
+
+	    if (principal == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.fail("로그인이 필요합니다."));
+	    }
+
+	    String currentLoginId = principal.getName();
+
+	    boolean isWithdrawn = bankMemberService.withdrawMember(currentLoginId);
+
+	    if (!isWithdrawn) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                .body(ApiResponse.fail("회원 정보를 찾을 수 없습니다."));
+	    }
+
+	    return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 완료되었습니다."));
+	}
 }

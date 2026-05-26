@@ -40,5 +40,17 @@ public interface IBankMemberDao {
 	
 	// 회원 id 중복 확인
 	public int idCheck(String id);
+	
+	// 마지막 로그인 시간 갱신
+	void updateLastLoginAt(@Param("loginId") String loginId);
+	
+	// 회원 탈퇴 처리
+	int withdrawMember(@Param("loginId") String loginId);
+	
+	// 회원 상태 변경
+	int updateMemberStatus(
+	        @Param("loginId") String loginId,
+	        @Param("memberStatus") String memberStatus
+	);
 
 }

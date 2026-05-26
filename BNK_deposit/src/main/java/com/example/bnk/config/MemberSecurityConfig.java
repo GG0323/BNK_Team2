@@ -1,20 +1,17 @@
 package com.example.bnk.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberDetailsService;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.auth.SecurityLoginFailHandler;
-import com.example.bnk.dao.member.IBankMemberDao;
+import com.example.bnk.service.member.BankMemberService;
+
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
@@ -24,15 +21,17 @@ import jakarta.servlet.http.Cookie;
 public class MemberSecurityConfig {
 	
 	private final MemberDetailsService memberDetailsService;
+	private final BankMemberService bankMemberService;
 	private final JwtUtil jwtUtil;
 	
-	@Autowired
-	private IBankMemberDao dao;
-	
-	
-	public MemberSecurityConfig(MemberDetailsService memberDetailsService, JwtUtil jwtUtil) {
-		this.memberDetailsService = memberDetailsService;
-		this.jwtUtil = jwtUtil;
+	public MemberSecurityConfig(
+	        MemberDetailsService memberDetailsService,
+	        JwtUtil jwtUtil,
+	        BankMemberService bankMemberService
+	) {
+	    this.memberDetailsService = memberDetailsService;
+	    this.jwtUtil = jwtUtil;
+	    this.bankMemberService = bankMemberService;
 	}
 	
 	@Bean	@Order(1)
@@ -40,16 +39,15 @@ public class MemberSecurityConfig {
 		
 		// 권한별 제어
 		http.userDetailsService(memberDetailsService)
-			.securityMatcher("/member/**", "/api/member/**")
+			.securityMatcher("/member/**", "/loginPage", "/signupPage", "/api/member/**", "/dormant/**", "/api/dormant/**")
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
-		
 
 		// 회원 로그인 설정
 		http.formLogin(member ->
 			member.loginPage("/loginPage")
 			.loginProcessingUrl("/member/login")
-			.successHandler(new MemberLoginSuccessHandler(jwtUtil, dao))
+			.successHandler(new MemberLoginSuccessHandler(jwtUtil, bankMemberService))
 			.failureHandler(new SecurityLoginFailHandler())
 		);
 		

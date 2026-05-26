@@ -179,7 +179,7 @@ async function submitInfo(e) {
   params.append("address_detail", document.getElementById("address_detail").value.trim());
 
   try {
-    const body = await fetchApi("/api/myinfo/update", {
+    const body = await fetchApi("/api/member/myinfo/update", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
@@ -201,7 +201,7 @@ async function submitPassword(e) {
   params.append("new_password", document.getElementById("new_password").value);
 
   try {
-    const body = await fetchApi("/api/myinfo/update-password", {
+    const body = await fetchApi("/api/member/myinfo/update-password", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
@@ -220,6 +220,33 @@ async function submitPassword(e) {
   }
 }
 
+/* ========== [7] 회원 탈퇴 (POST /api/myinfo/withdraw) ========== */
+async function withdrawMember() {
+  const firstConfirm = confirm(
+    "회원 탈퇴 시 계정 상태가 탈퇴 처리됩니다.\n정말 회원 탈퇴를 진행하시겠습니까?"
+  );
+
+  if (!firstConfirm) return;
+
+  const input = prompt("정말 탈퇴하려면 '탈퇴합니다'를 입력해 주세요.");
+
+  if (input !== "탈퇴합니다") {
+    alert("입력 문구가 일치하지 않아 회원 탈퇴를 취소했습니다.");
+    return;
+  }
+
+  try {
+    const body = await fetchApi("/api/member/myinfo/withdraw", {
+      method: "POST",
+    });
+
+    alert(body.message || "회원 탈퇴가 완료되었습니다.");
+    location.href = "/loginPage";
+  } catch (err) {
+    alert(err.message || "회원 탈퇴에 실패했습니다.");
+  }
+}
+
 /* ========== 진입점 ========== */
 document.addEventListener("DOMContentLoaded", async () => {
   activateTab();
@@ -227,7 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("passwordForm").addEventListener("submit", submitPassword);
 
   try {
-    const body = await fetchApi("/api/myinfo");
+    const body = await fetchApi("/api/member/myinfo");
     fillForm(body.data);
   } catch (e) {
     console.error(e);

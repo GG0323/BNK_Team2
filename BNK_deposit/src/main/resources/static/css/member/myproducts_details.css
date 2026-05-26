@@ -1,0 +1,135 @@
+@charset "UTF-8";
+
+.detail-card {
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 36px 40px;
+    background-color: #fff;
+}
+
+.detail-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.detail-title-area h4 {
+    font-size: 26px;
+    margin: 12px 0 8px;
+}
+
+.detail-title-area p {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.detail-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.dday-badge {
+    background-color: var(--guide-bg);
+    color: var(--guide-text);
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.summary-box {
+    background-color: var(--bg-light);
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.summary-box span {
+    display: block;
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 10px;
+}
+
+.summary-box strong {
+    display: block;
+    font-size: 18px;
+    color: #000;
+}
+
+.expected-box {
+    background-color: #111;
+    color: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.expected-box span {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.expected-box strong {
+    font-size: 28px;
+}
+
+.info-table {
+    width: 100%;
+    border-top: 1px solid #111;
+    border-collapse: collapse;
+    margin-bottom: 28px;
+}
+
+.info-table th,
+.info-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 14px;
+    text-align: left;
+}
+
+.info-table th {
+    width: 180px;
+    color: var(--text-gray);
+    background-color: var(--bg-light);
+}
+
+.notice-box {
+    background-color: var(--guide-bg);
+    color: var(--guide-text);
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.detail-btn-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-black {
+    border: none;
+    background-color: #111;
+    color: #fff;
+    padding: 13px 28px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}

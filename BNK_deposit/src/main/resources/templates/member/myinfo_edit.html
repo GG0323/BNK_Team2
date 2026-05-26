@@ -32,10 +32,9 @@
                 <a href="/member/myinfo">내 정보 조회</a>
                 <span class="current-page">개인정보 수정</span>
             </nav>
+			<div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
         </div>
     </header>
-
-    <div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
 
     <main class="edit-container">
 
@@ -124,10 +123,10 @@
             </section>
 
             <div class="bottom-btn-group">
-                <button type="button" class="btn-gray" onclick="history.back()">취소</button>
-                <button type="submit" class="btn-red">저장</button>
-                <button type="button" class="btn-black" onclick="location.href='/myinfo'">내 정보로 돌아가기</button>
-            </div>
+			    <button type="submit" class="btn-red">저장</button>
+			    <button type="button" class="btn-black" onclick="location.href='/myinfo'">내 정보로 돌아가기</button>
+			    <button type="button" class="btn-withdraw" onclick="withdrawMember()">회원탈퇴하기</button>
+			</div>
         </form>
 
     </main>

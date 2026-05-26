@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 가입상품 상세</title>
+    <link rel="stylesheet" href="/css/member/myproducts.css">
+    <link rel="stylesheet" href="/css/member/myproducts_details.css">
+</head>
+<body>
+
+<header class="top-header">
+    <div class="header-inner">
+        <div class="header-left">
+            <h1>BNK</h1>
+            <div class="header-title-group">
+                <h2>가입상품 상세</h2>
+                <p>내가 가입한 상품의 현재 상태 확인</p>
+            </div>
+        </div>
+        <nav class="header-right">
+		    <ul>
+		        <li><a href="/">메인</a></li>
+		        <li><a href="/myaccounts">계좌조회</a></li>
+		        <li><a href="/myaccounts">거래내역</a></li>
+		        <li><a href="/myproducts">가입상품</a></li>
+		    </ul>
+		    <button type="button" class="btn-mypage-header" onclick="location.href='/mypage'">
+		        마이페이지
+		    </button>
+		</nav>
+    </div>
+</header>
+
+<nav class="sub-nav" id="subNav" data-page="myproducts">
+    <button class="tab-btn" data-tab="mypage" onclick="location.href='/mypage'">1. 마이페이지</button>
+    <button class="tab-btn" data-tab="myinfo" onclick="location.href='/myinfo'">2. 내정보</button>
+    <button class="tab-btn" data-tab="myaccounts" onclick="location.href='/myaccounts'">3. 계좌 및 거래내역</button>
+    <button class="tab-btn" data-tab="myproducts" onclick="location.href='/myproducts'">4. 가입상품</button>
+</nav>
+
+<main class="products-container">
+
+    <section class="page-header">
+        <h3>가입상품 상세</h3>
+        <p>가입 상품의 만기일, 남은 기간, 예상 수령액을 확인합니다.</p>
+    </section>
+
+    <section id="productDetail">
+        <div class="empty-state">불러오는 중...</div>
+    </section>
+
+</main>
+
+<script src="/js/members/common.js"></script>
+<script src="/js/members/myproducts_details.js"></script>
+</body>
+</html>
