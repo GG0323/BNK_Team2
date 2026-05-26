@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
+import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.utils.JwtUtil;
 
 @Configuration
@@ -16,9 +17,11 @@ import com.example.bnk.utils.JwtUtil;
 public class SecurityConfig {
 	
 	private final JwtUtil jwtUtil;
+	private final BankMemberService bankMemberService;
 	
-	public SecurityConfig(JwtUtil jwtUtil) {
+	public SecurityConfig(JwtUtil jwtUtil, BankMemberService bankMemberService) {
 		this.jwtUtil = jwtUtil;
+		this.bankMemberService = bankMemberService;
 	}
 	
 	@Bean
@@ -46,7 +49,7 @@ public class SecurityConfig {
 		http.formLogin(member ->
 			member.loginPage("/loginPage")
 			.loginProcessingUrl("/member/login")
-			.successHandler(new MemberLoginSuccessHandler(jwtUtil))
+			.successHandler(new MemberLoginSuccessHandler(jwtUtil, bankMemberService))
 			.failureUrl("/loginPage?message=fail")
 			.passwordParameter("password_hash")
 			.usernameParameter("login_id")
@@ -54,12 +57,5 @@ public class SecurityConfig {
 		
 		return http.build();
 	}
-	
-	@Bean
-	BCryptPasswordEncoder passwordEncode() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	
 	
 }

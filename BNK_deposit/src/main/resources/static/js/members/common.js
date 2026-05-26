@@ -71,7 +71,7 @@ async function fetchApi(url, options = {}) {
     ...options,
   });
   if (res.status === 401 || res.status === 403) {
-    location.href = "/login";
+    location.href = "/loginPage";
     throw new Error("인증이 필요합니다.");
   }
   const body = await res.json();

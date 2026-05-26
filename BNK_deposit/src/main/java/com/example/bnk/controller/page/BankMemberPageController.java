@@ -55,4 +55,10 @@ public class BankMemberPageController {
 	public String myproducts() {
 		return "member/myproducts";
 	}
+	
+	// 휴면 계정 해제 화면
+	@GetMapping("/dormant/release")
+	public String dormantRelease() {
+	    return "member/dormant_release";
+	}
 }
