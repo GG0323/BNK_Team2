@@ -27,17 +27,7 @@
                     <p>회원 정보 · 계좌 · 상품 가입 내역</p>
                 </div>
             </div>
-            <nav class="header-right">
-			    <ul>
-			        <li><a href="/">메인</a></li>
-			        <li><a href="/myaccounts">계좌조회</a></li>
-			        <li><a href="/myaccounts">거래내역</a></li>
-			        <li><a href="/myproducts">가입상품</a></li>
-			    </ul>
-			    <button type="button" class="btn-mypage-header" onclick="location.href='/mypage'">
-			        마이페이지
-			    </button>
-			</nav>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
         </div>
     </header>
 
