@@ -74,6 +74,7 @@
     	
     	WHERE suggestion_no = #{suggestion_no}
 	</update>
+	<!-- 상품 승인테이블 인서트 -->
 	<insert id="insertApprovedProduct">
 		INSERT INTO TB_APPROVED_PRODUCTS
         	(suggestion_no, rate_no, terms_no, description_no, condition_no)
