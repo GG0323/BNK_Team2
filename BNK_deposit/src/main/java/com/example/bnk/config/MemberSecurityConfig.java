@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.bnk.auth.MemberDetailsService;
@@ -39,15 +37,11 @@ public class MemberSecurityConfig {
 	@Bean	@Order(1)
 	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
-		http.csrf(csrf -> csrf.disable());
-		
 		// 권한별 제어
 		http.userDetailsService(memberDetailsService)
-			.securityMatcher("/loginPage", "/signupPage", "/api/dormant/**", "/dormant/**")
-			.securityMatcher("/member/**", "/api/member/**")
+			.securityMatcher("/member/**", "/loginPage", "/signupPage", "/api/member/**", "/dormant/**", "/api/dormant/**")
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);
-		
 
 		// 회원 로그인 설정
 		http.formLogin(member ->

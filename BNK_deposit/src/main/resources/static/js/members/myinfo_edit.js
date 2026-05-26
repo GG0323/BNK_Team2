@@ -179,7 +179,7 @@ async function submitInfo(e) {
   params.append("address_detail", document.getElementById("address_detail").value.trim());
 
   try {
-    const body = await fetchApi("/api/myinfo/update", {
+    const body = await fetchApi("/api/member/myinfo/update", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
@@ -201,7 +201,7 @@ async function submitPassword(e) {
   params.append("new_password", document.getElementById("new_password").value);
 
   try {
-    const body = await fetchApi("/api/myinfo/update-password", {
+    const body = await fetchApi("/api/member/myinfo/update-password", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
@@ -236,7 +236,7 @@ async function withdrawMember() {
   }
 
   try {
-    const body = await fetchApi("/api/myinfo/withdraw", {
+    const body = await fetchApi("/api/member/myinfo/withdraw", {
       method: "POST",
     });
 
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("passwordForm").addEventListener("submit", submitPassword);
 
   try {
-    const body = await fetchApi("/api/myinfo");
+    const body = await fetchApi("/api/member/myinfo");
     fillForm(body.data);
   } catch (e) {
     console.error(e);

@@ -37,7 +37,7 @@ function renderMypage(data) {
 document.addEventListener("DOMContentLoaded", async () => {
   activateTab();
   try {
-    const body = await fetchApi("/api/mypage");
+    const body = await fetchApi("/api/member/mypage");
     renderMypage(body.data);
   } catch (e) {
     document.getElementById("welcomeName").textContent = "정보를 불러오지 못했습니다.";

@@ -73,7 +73,6 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		// Cookie에 토큰 저장
 		Cookie cookie = new Cookie("bnk_token", token);
 		cookie.setPath("/");
-		cookie.setHttpOnly(true);		// 자바스크립트에서 쿠키를 못 읽게하는 옵션
 		response.addCookie(cookie);
 
 		// 로그인 성공 후 이동

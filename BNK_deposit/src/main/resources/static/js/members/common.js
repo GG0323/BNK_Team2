@@ -65,20 +65,39 @@ function activateTab() {
 
 // fetch + ApiResponse 언랩. 실패 시 throw.
 async function fetchApi(url, options = {}) {
+  // HTML meta 태그에서 CSRF 토큰과 헤더 이름을 가져옴
+  const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content");
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute("content");
+
+  // 기본 header + 호출하는 쪽에서 넘긴 header 합치기
+  const headers = {
+    Accept: "application/json",
+    ...(options.headers || {}),
+  };
+
+  // CSRF 토큰이 있으면 header에 추가
+  if (csrfToken && csrfHeader) {
+    headers[csrfHeader] = csrfToken;
+  }
+
   const res = await fetch(url, {
-    headers: { Accept: "application/json", ...(options.headers || {}) },
-    credentials: "same-origin", // 세션 쿠키 (앱 전환 시 Authorization 헤더로 교체)
     ...options,
+    headers: headers,
+    credentials: "same-origin",
   });
+
   if (res.status === 401 || res.status === 403) {
     location.href = "/loginPage";
     throw new Error("인증이 필요합니다.");
   }
+
   const body = await res.json();
+
   if (!res.ok || body.success === false) {
     throw new Error(body.message || "요청에 실패했습니다.");
   }
-  return body; // 호출측에서 body.data 사용
+
+  return body;
 }
 
 // 거래 유형 코드 → 한글
