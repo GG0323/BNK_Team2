@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 계좌 상세 및 거래내역</title>
+    
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+    
     <link rel="stylesheet" href="/css/member/myhistory.css">
     <link rel="stylesheet" href="/css/member/member-nav.css">
+    
     <script src="/js/members/common.js" defer></script>
     <script src="/js/members/myhistory.js" defer></script>
 </head>
 <body>
-
+	<div th:replace="~{fragments/header :: header_default}"></div>
     <header class="top-header">
         <div class="header-inner">
             <div class="header-left">
@@ -20,17 +25,7 @@
                     <p>선택 계좌 상세 정보 및 최근 거래내역</p>
                 </div>
             </div>
-            <nav class="header-right">
-			    <ul>
-			        <li><a href="/">메인</a></li>
-			        <li><a href="/myaccounts">계좌조회</a></li>
-			        <li><a href="/myaccounts">거래내역</a></li>
-			        <li><a href="/myproducts">가입상품</a></li>
-			    </ul>
-			    <button type="button" class="btn-mypage-header" onclick="location.href='/mypage'">
-			        마이페이지
-			    </button>
-			</nav>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
         </div>
     </header>
     
@@ -100,7 +95,6 @@
         </section>
 
     </main>
-
-    
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

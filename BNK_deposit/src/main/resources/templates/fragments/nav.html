@@ -7,6 +7,20 @@
 </head>
 
 <body>
+
+<nav th:fragment="member_top_mypage" class="header-right">
+	<ul>
+        <li><a href="/">메인</a></li>
+        <li><a href="/member/myaccounts">계좌조회</a></li>
+        <li><a href="/member/myaccounts">거래내역</a></li>
+        <li><a href="/member/myproducts">가입상품</a></li>
+    </ul>
+    <button type="button" class="btn-mypage-header" onclick="location.href='/member/mypage'">
+        마이페이지
+    </button>
+</nav>
+
+
 <nav th:fragment="member_mypage(currentTab)"
      class="sub-nav"
      id="subNav"
