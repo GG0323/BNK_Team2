@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>BNK 상품 상세</title>
     <link rel="stylesheet" th:href="@{/css/productView.css}">
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 </head>
 <body>
-
+<div th:replace="~{fragments/header :: header_default}"></div>
 <div class="page-wrap">
 
     <header class="product-header">
@@ -225,12 +227,11 @@
 				        가입하기
 				    </a>
 				</div>
-
         </div>
-
     </section>
-
 </div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

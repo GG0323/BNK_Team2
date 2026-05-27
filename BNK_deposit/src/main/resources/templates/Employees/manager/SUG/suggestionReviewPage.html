@@ -3,104 +3,648 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<style>
+
+/* ===== 공통 ===== */
+*{
+	box-sizing:border-box;
+	margin:0;
+	padding:0;
+}
+
+body{
+	font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
+	background:#F5F5F5;
+	display:flex;
+	min-height:100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar{
+	width:190px;
+	background:#111111;
+	position:fixed;
+	top:0;
+	left:0;
+	min-height:100vh;
+}
+
+.sidebar .logo{
+	font-size:14px;
+	font-weight:700;
+	color:#ffffff;
+	padding:1.5rem 1.25rem;
+	border-bottom:1px solid #2a2a2a;
+}
+
+.sidebar .logo span{
+	color:#E8282F;
+}
+
+.nav-item{
+	display:flex;
+	align-items:center;
+	padding:11px 1.25rem;
+	font-size:13px;
+	color:#888888;
+	text-decoration:none;
+	border-left:3px solid transparent;
+	transition:all 0.15s;
+}
+
+.nav-item:hover{
+	background:#1c1c1c;
+	color:#ffffff;
+}
+
+.nav-item.active{
+	background:#1c1c1c;
+	color:#ffffff;
+	border-left-color:#E8282F;
+}
+
+/* ===== 메인 ===== */
+.main{
+	flex:1;
+	margin-left:190px;
+	padding:2rem;
+	min-width:0;
+}
+
+/* ===== 상단 ===== */
+.topbar{
+	display:flex;
+	justify-content:flex-end;
+	margin-bottom:2rem;
+}
+
+.logout-btn{
+	font-size:12px;
+	color:#555555;
+	background:#ffffff;
+	border:1px solid #E0E0E0;
+	padding:6px 16px;
+	border-radius:6px;
+	cursor:pointer;
+	font-weight:500;
+	transition:all 0.15s;
+}
+
+.logout-btn:hover{
+	border-color:#111111;
+	color:#111111;
+}
+
+/* ===== breadcrumb ===== */
+.breadcrumb{
+	display:flex;
+	align-items:center;
+	gap:6px;
+	font-size:12px;
+	color:#AAAAAA;
+	margin-bottom:1.5rem;
+}
+
+.breadcrumb a{
+	color:#AAAAAA;
+	text-decoration:none;
+}
+
+.breadcrumb a:hover{
+	color:#111111;
+}
+
+.breadcrumb .current{
+	color:#111111;
+	font-weight:600;
+}
+
+/* ===== 제목 ===== */
+.page-title{
+	font-size:20px;
+	font-weight:700;
+	color:#111111;
+	margin-bottom:1.5rem;
+}
+
+/* ===== 상세 카드 ===== */
+.detail-card{
+	background:#ffffff;
+	border:1px solid #E8E8E8;
+	border-radius:14px;
+	padding:2rem;
+	max-width:950px;
+	box-shadow:0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* ===== 상단 정보 ===== */
+.top-info{
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+	margin-bottom:1.5rem;
+	padding-bottom:1rem;
+	border-bottom:1px solid #F0F0F0;
+}
+
+.suggestion-no{
+	font-size:14px;
+	font-weight:700;
+	color:#111111;
+}
+
+.status-badge{
+	display:inline-flex;
+	align-items:center;
+	padding:5px 14px;
+	border-radius:999px;
+	font-size:12px;
+	font-weight:700;
+}
+
+.badge-PENDING{
+	background:#FFF8E1;
+	color:#B8860B;
+}
+
+.badge-APPROVED{
+	background:#F0FFF4;
+	color:#22863A;
+}
+
+.badge-REJECTED{
+	background:#FFF0F0;
+	color:#E8282F;
+}
+
+/* ===== 작성자 정보 ===== */
+.meta-grid{
+	display:grid;
+	grid-template-columns:repeat(2,1fr);
+	gap:14px;
+	margin-bottom:2rem;
+}
+
+.meta-item{
+	background:#FAFAFA;
+	border:1px solid #F0F0F0;
+	border-radius:10px;
+	padding:14px;
+}
+
+.meta-label{
+	font-size:11px;
+	font-weight:700;
+	color:#999999;
+	margin-bottom:6px;
+	text-transform:uppercase;
+}
+
+.meta-value{
+	font-size:14px;
+	font-weight:500;
+	color:#111111;
+}
+
+/* ===== 상품 영역 ===== */
+.product-section{
+	margin-bottom:2rem;
+}
+
+.product-title{
+	font-size:24px;
+	font-weight:700;
+	color:#111111;
+	margin-bottom:1rem;
+}
+
+.rate-box{
+	display:flex;
+	align-items:center;
+	gap:12px;
+	margin-top:1rem;
+	padding:14px 18px;
+	background:#FFF5F5;
+	border-radius:10px;
+	border:1px solid #FFE0E0;
+	width:fit-content;
+}
+
+.rate-label{
+	font-size:12px;
+	font-weight:700;
+	color:#999999;
+}
+
+.rate-value{
+	font-size:15px;
+	font-weight:700;
+	color:#E8282F;
+}
+
+/* ===== 제안 내용 ===== */
+.content-box{
+	background:#FAFAFA;
+	border:1px solid #F0F0F0;
+	border-radius:12px;
+	padding:1.5rem;
+	line-height:1.7;
+	font-size:14px;
+	color:#333333;
+	min-height:180px;
+	white-space:pre-wrap;
+	margin-bottom:2rem;
+}
+
+/* ===== 거부 사유 ===== */
+.reject-box{
+	margin-top:1rem;
+	padding:1rem;
+	border-radius:10px;
+	background:#FFF5F5;
+	border:1px solid #FFD8D8;
+}
+
+.reject-title{
+	font-size:12px;
+	font-weight:700;
+	color:#E8282F;
+	margin-bottom:8px;
+}
+
+.reject-content{
+	font-size:13px;
+	color:#444444;
+	line-height:1.6;
+}
+
+/* ===== 버튼 ===== */
+.action-row{
+	display:flex;
+	justify-content:flex-end;
+	gap:10px;
+	margin-top:2rem;
+}
+
+.btn{
+	border:none;
+	border-radius:8px;
+	padding:10px 22px;
+	font-size:13px;
+	font-weight:600;
+	cursor:pointer;
+	transition:all 0.15s;
+}
+
+.btn-outline{
+	background:#ffffff;
+	border:1px solid #E0E0E0;
+	color:#555555;
+}
+
+.btn-outline:hover{
+	border-color:#111111;
+	color:#111111;
+}
+
+.btn-approve{
+	background:#111111;
+	color:#ffffff;
+}
+
+.btn-approve:hover{
+	background:#333333;
+}
+
+.btn-reject{
+	background:#E8282F;
+	color:#ffffff;
+}
+
+.btn-reject:hover{
+	background:#C5202A;
+}
+
+/* ===== 팝업 ===== */
+.popup-overlay{
+	position:fixed;
+	inset:0;
+	background:rgba(0,0,0,0.35);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	z-index:999;
+}
+
+.popup{
+	width:420px;
+	background:#ffffff;
+	border-radius:14px;
+	padding:1.75rem;
+	box-shadow:0 10px 30px rgba(0,0,0,0.18);
+}
+
+.popup-title{
+	font-size:18px;
+	font-weight:700;
+	color:#111111;
+	margin-bottom:1rem;
+}
+
+.popup textarea{
+	width:100%;
+	border:1px solid #E0E0E0;
+	border-radius:10px;
+	padding:12px;
+	font-size:13px;
+	resize:none;
+	outline:none;
+	min-height:120px;
+	margin-bottom:1rem;
+}
+
+.popup textarea:focus{
+	border-color:#111111;
+}
+
+.popup-btns{
+	display:flex;
+	justify-content:flex-end;
+	gap:10px;
+}
+
+/* ===== 토스트 ===== */
+.toast{
+	position:fixed;
+	bottom:2rem;
+	right:2rem;
+	padding:12px 20px;
+	border-radius:10px;
+	font-size:13px;
+	font-weight:500;
+	color:#ffffff;
+	box-shadow:0 4px 20px rgba(0,0,0,0.15);
+	opacity:0;
+	transform:translateY(10px);
+	transition:all 0.25s;
+	pointer-events:none;
+	z-index:1000;
+}
+
+.toast.show{
+	opacity:1;
+	transform:translateY(0);
+}
+
+.toast.success{
+	background:#111111;
+}
+
+.toast.error{
+	background:#E8282F;
+}
+
+</style>
+
 </head>
 <body>
 	
-	<h1>제안서 상세</h1>
-
-	<div id="suggestionDetail">
-		<div>
-	        <span>제안서 번호 : </span>
-	        <span id="suggestion_no"></span>
-	    </div>
-		<hr>
-		
-		<div>
-	       <span>작성자 : </span>
-	       <span id="employee_name"></span>
-	       &nbsp;
-	       <span id="job_title"></span>
-	   	</div>
-	   	
-	   	
-	   	<div>
-	       <span>승인 책임자 : </span>
-	       <span id="manager_name"></span>
-	   	</div>
-	   	<div>
-	       <span>제안일 : </span>
-	       <span id="suggested_at"></span>
-	   	</div>
+	<!-- 사이드바 -->
+	<aside class="sidebar">
+    	<div class="logo">BNK <span>관리자</span> 페이지</div>
+    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+   		<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    	<a class="nav-item active" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+	</aside>
 	
-	   	<hr>	   
-	   
-	   	<div>
-			<h2 id="product_name"></h2>  <!-- 상품명  -->
-	  	</div>
-		
-		<div>
-			<p id="suggestion_content"></p>  <!-- 제안 내용 -->
+	
+
+	<!-- 메인 -->
+	<div class="main">
+
+		<div class="topbar">
+			<button class="logout-btn">
+				로그아웃
+			</button>
 		</div>
-		
-		<div>
-			<span>최저 금리 : </span>
-			<span id="proposed_min_interest_rate"></span>
-            &nbsp; ~ &nbsp;	
-			<span>최고 금리 : </span>
-            <span id="proposed_max_interest_rate"></span>
+
+		<div class="breadcrumb">
+			관리자 페이지 ›
+			<a th:href="@{/employee/manager/SUG/suggestionList}">
+				제안서 리스트
+			</a>
+			›
+			<span class="current">
+				제안서 상세
+			</span>
 		</div>
-		
-		<hr>
-		
-		<div>
-            <span>승인 상태 : </span>
-            <span id="approval_status"></span>
-        </div>
-			
-		<!-- 거부된 경우에만 표시 -->
-        <div id="rejectReasonArea" style="display:none;">
-            <span>거부 사유 : </span>
-            <span id="reject_reason"></span>
-        </div>
 
-        <div>
-            <span>처리일 : </span>
-            <span id="processed_at"></span>
-        </div>
+		<div class="page-title">
+			제안서 상세
+		</div>
 
-        <hr>
 
-        <!-- 승인상태가 PENDING일 때만 표시 -->
-        <div id="actionButtons" style="display:none;">
-            <button onclick="openApprovePopup()"> 승인 </button>
-            <button onclick="openRejectPopup()"> 거부 </button>
-        </div>
-			
+
+
+
+		<div class="detail-card">
+
+			<!-- 상단 -->
+			<div class="top-info">
+
+				<div class="suggestion-no">
+					제안서 No.
+					<span id="suggestion_no"></span>
+				</div>
+
+				<div id="approval_status" class="status-badge">
+					-
+				</div>
+
+			</div>
+
+
+
+
+
+			<!-- 메타 정보 -->
+			<div class="meta-grid">
+
+				<div class="meta-item">
+					<div class="meta-label">작성자</div>
+					<div class="meta-value">
+						<span id="employee_name"></span>
+						&nbsp;
+						<span id="job_title"></span>
+					</div>
+				</div>
+
+				<div class="meta-item">
+					<div class="meta-label">승인 책임자</div>
+					<div class="meta-value" id="manager_name"></div>
+				</div>
+
+				<div class="meta-item">
+					<div class="meta-label">제안일</div>
+					<div class="meta-value" id="suggested_at"></div>
+				</div>
+
+				<div class="meta-item">
+					<div class="meta-label">처리일</div>
+					<div class="meta-value" id="processed_at"></div>
+				</div>
+
+			</div>
+
+
+
+
+
+			<!-- 상품 -->
+			<div class="product-section">
+
+				<div class="product-title" id="product_name">
+				</div>
+
+				<div class="content-box" id="suggestion_content">
+				</div>
+
+				<div class="rate-box">
+
+					<div>
+						<div class="rate-label">
+							최저 금리
+						</div>
+
+						<div class="rate-value" id="proposed_min_interest_rate">
+						</div>
+					</div>
+
+					<div class="rate-value">~</div>
+
+					<div>
+						<div class="rate-label">
+							최고 금리
+						</div>
+
+						<div class="rate-value" id="proposed_max_interest_rate">
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+
+
+
+
+			<!-- 거부 사유 -->
+			<div id="rejectReasonArea" class="reject-box" style="display:none;">
+
+				<div class="reject-title">
+					거부 사유
+				</div>
+
+				<div class="reject-content" id="reject_reason">
+				</div>
+
+			</div>
+
+
+
+
+
+			<!-- 버튼 -->
+			<div class="action-row" id="actionButtons" style="display:none;">
+
+				<button class="btn btn-outline" onclick="history.back()">
+					목록으로
+				</button>
+
+				<button class="btn btn-reject" onclick="openRejectPopup()">
+					거부
+				</button>
+
+				<button class="btn btn-approve" onclick="openApprovePopup()">
+					승인
+				</button>
+
+			</div>
+
+		</div>
+
 	</div>
-		
+
+
+
+
+
 	<!-- 거부 팝업 -->
-    <div id="rejectPopup" style="display:none;">
-        <h3>거부 사유 입력</h3>
-        <textarea id="reject_reason_input" placeholder="거부 사유를 입력하세요" rows="4" cols="40"></textarea>
-        <br>
-        <button onclick="reject()">확인</button>
-        <button onclick="closeRejectPopup()">취소</button>
-    </div>
-	
+	<div id="rejectPopup"
+		 class="popup-overlay"
+		 style="display:none;">
+
+		<div class="popup">
+
+			<div class="popup-title">
+				거부 사유 입력
+			</div>
+
+			<textarea id="reject_reason_input" placeholder="거부 사유를 입력하세요"></textarea>
+
+			<div class="popup-btns">
+
+				<button class="btn btn-outline" onclick="closeRejectPopup()">
+					취소
+				</button>
+
+				<button class="btn btn-reject" onclick="reject()">
+					확인
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+
+
 	<!-- 승인 팝업 -->
-    <div id="approvePopup" style="display:none;">
-        <h3>승인하시겠습니까?</h3>
-        
-        <br>
-        <button onclick="approve()">확인</button>
-        <button onclick="closeApprovePopup()">취소</button>
-    </div>
-		
-		보내야하는 파라미터 
-		승인시 =>  suggestion_no
-		
-		거부시 => 팝업 등장해서 거부이유 작성 => reject_reason, suggestion_no
-		
+	<div id="approvePopup" class="popup-overlay" style="display:none;">
+
+		<div class="popup">
+
+			<div class="popup-title">승인하시겠습니까?</div>
+
+			<div class="popup-btns">
+
+				<button class="btn btn-outline" onclick="closeApprovePopup()">
+					취소
+				</button>
+
+				<button class="btn btn-approve" onclick="approve()">
+					확인
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+
+
+	<div class="toast" id="toast"></div>
 		
 		
 	<script>
@@ -130,26 +674,53 @@
 			document.getElementById("suggested_at").textContent               = data.suggested_at;
 			document.getElementById("processed_at").textContent               = data.processed_at ?? "-";
 			
-			// PENDING이면 승인/거부 버튼 표시
-            if (data.approval_status === "PENDING") {
-                document.getElementById("actionButtons").style.display = "block";
-            }
-			// REJECTED면 거부 사유 표시
-            if (data.approval_status === "REJECTED") {
-                document.getElementById("rejectReasonArea").style.display = "block";
-                document.getElementById("reject_reason").textContent = data.reject_reason ?? "-";
-            }
+
+
+			
+			//	상태 뱃지 CSS 클래스 연결 핵심
+			const statusEl =
+				document.getElementById("approval_status");
+
+			const labelMap = {
+				PENDING: "대기중",
+				APPROVED: "승인",
+				REJECTED: "거부"
+			};
+
+			statusEl.textContent = labelMap[data.approval_status] ?? data.approval_status;
+
+			//	badge-PENDING	badge-APPROVED	badge-REJECTED
+			statusEl.className = `status-badge badge-${data.approval_status}`;
+
+			
+			// 승인 대기 상태일 경우 버튼 표시
+			if (data.approval_status === "PENDING") {
+				document.getElementById("actionButtons").style.display = "flex";
+			}
+			// 거부 상태일 경우 거부 사유 표시
+			if (data.approval_status === "REJECTED") {
+
+				document.getElementById("rejectReasonArea").style.display = "block";
+
+				document.getElementById("reject_reason").textContent = data.reject_reason ?? "-";
+			}
 		
 		
 		})
-		.catch(e => console.log(e));
+		.catch(e => {
+			console.error(e);
+			showToast("데이터를 불러오지 못했습니다.", "error");
+		});
 		
 		// 팝업 컨트롤러
-		function openApprovePopup() {document.getElementById("approvePopup").style.display = "block";}
+		function openApprovePopup() {document.getElementById("approvePopup").style.display = "flex";}
 		function closeApprovePopup() {document.getElementById("approvePopup").style.display = "none";}
 		
-		function openRejectPopup() {document.getElementById("rejectPopup").style.display = "block";}
-        function closeRejectPopup() {document.getElementById("rejectPopup").style.display = "none";}
+		function openRejectPopup() {document.getElementById("rejectPopup").style.display = "flex";}
+        function closeRejectPopup() {
+			document.getElementById("rejectPopup").style.display = "none";
+			document.getElementById("reject_reason_input").value = "";
+		}
 		
 		
 		//승인
@@ -163,17 +734,24 @@
             .then(data => {
                 if (data === 1) {
                     alert("승인 완료");
+					showToast("승인 완료", "success");
                     location.href = "/employee/manager/SUG/suggestionList";
-                }
+                }else {
+					showToast("승인 처리 실패", "error");
+				}
             })
-            .catch(e => console.log(e));
+			.catch(e => {
+				console.error(e);
+				showToast("오류가 발생했습니다.", "error");
+			});
         }
-		
+		// 거부처리
 		function reject() {
             const reject_reason = document.getElementById("reject_reason_input").value.trim();
 
             if (!reject_reason) {
                 alert("거부 사유를 입력해주세요.");
+				showToast("거부 사유를 입력해주세요.", "error");
                 return;
             }
 
@@ -189,12 +767,37 @@
             .then(data => {
                 if (data === 1) {
                     alert("거부 처리 완료");
+					showToast("거부 처리 완료", "success");
                     location.href = "/employee/manager/SUG/suggestionList";
-                }
+        		}else {
+					showToast("승인 처리 실패", "error");
+				}
             })
-            .catch(e => console.log(e));
+			.catch(e => {
+				console.error(e);
+				showToast("오류가 발생했습니다.", "error");
+			});
         }
-		
+		// 토스트머신
+		function showToast(msg, type = "success") {
+
+			const toast =
+				document.getElementById("toast");
+
+			toast.textContent = msg;
+
+			/*
+				success / error 클래스 연결
+			*/
+			toast.className =
+				`toast ${type} show`;
+
+			setTimeout(() => {
+
+				toast.className = "toast";
+
+			}, 3000);
+		}
 		
 	
 	</script>

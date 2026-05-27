@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 개인정보 수정</title>
     
-    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
-    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
-    
     <link rel="stylesheet" href="/css/member/myinfo_edit.css">
     <link rel="stylesheet" href="/css/member/member-nav.css">
+    
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
     
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" defer></script>
     <script src="/js/members/common.js" defer></script>
@@ -118,7 +118,7 @@
 
             <div class="bottom-btn-group">
 			    <button type="submit" class="btn-red">저장</button>
-			    <button type="button" class="btn-black" onclick="location.href='/myinfo'">내 정보로 돌아가기</button>
+			    <button type="button" class="btn-black" onclick="location.href='/member/myinfo'">내 정보로 돌아가기</button>
 			    <button type="button" class="btn-withdraw" onclick="withdrawMember()">회원탈퇴하기</button>
 			</div>
         </form>
