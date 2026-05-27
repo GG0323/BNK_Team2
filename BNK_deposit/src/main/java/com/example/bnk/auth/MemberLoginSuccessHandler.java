@@ -47,8 +47,8 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		}
 
 		if ("DORMANT".equals(member.getMember_status())) {
-			request.getSession().setAttribute("DORMANT_LOGIN_ID", loginId);
-		    response.sendRedirect("/dormant/release");
+		    request.getSession().setAttribute("DORMANT_LOGIN_ID", loginId);
+		    response.sendRedirect("/member/dormant/release");
 		    return;
 		}
 		
@@ -57,7 +57,7 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		if (lastLoginAt != null && lastLoginAt.isBefore(LocalDateTime.now().minusDays(7))) {
 		    bankMemberService.makeDormant(loginId);
 		    request.getSession().setAttribute("DORMANT_LOGIN_ID", loginId);
-		    response.sendRedirect("/dormant/release");
+		    response.sendRedirect("/member/dormant/release");
 		    return;
 		}
 		
