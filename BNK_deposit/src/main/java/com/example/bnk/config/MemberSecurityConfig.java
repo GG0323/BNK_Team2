@@ -11,6 +11,7 @@ import com.example.bnk.auth.MemberDetailsService;
 import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.auth.SecurityLoginFailHandler;
 import com.example.bnk.service.member.BankMemberService;
+
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
@@ -22,7 +23,6 @@ public class MemberSecurityConfig {
 	private final MemberDetailsService memberDetailsService;
 	private final BankMemberService bankMemberService;
 	private final JwtUtil jwtUtil;
-	
 	
 	public MemberSecurityConfig(
 	        MemberDetailsService memberDetailsService,

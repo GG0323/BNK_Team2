@@ -176,28 +176,15 @@ tbody tr:last-child{
 	border-bottom:none;
 }
 
-/* ===== 상태 뱃지 ===== */
-.badge{
-	display:inline-block;
-	padding:4px 10px;
-	border-radius:999px;
-	font-size:11px;
+/* ===== 등록 상태 ===== */
+.status-registered{
+	color:#22863A;
 	font-weight:600;
 }
 
-.badge-pending{
-	background:#FFF8E1;
-	color:#B8860B;
-}
-
-.badge-approved{
-	background:#F0FFF4;
-	color:#22863A;
-}
-
-.badge-rejected{
-	background:#FFF0F0;
+.status-notregistered{
 	color:#E8282F;
+	font-weight:600;
 }
 
 /* ===== 버튼 ===== */
@@ -218,6 +205,8 @@ tbody tr:last-child{
 }
 
 </style>
+
+
 </head>
 <body>
 	<!-- 사이드바 -->
@@ -226,114 +215,119 @@ tbody tr:last-child{
     	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
     	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
     	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
-   		<a class="nav-item active" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+   		<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
     	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
-    	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+    	<a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
 	</aside>
 	
-
 	<!-- 메인 -->
-		<div class="main">
+	<div class="main">
 
-			<div class="topbar">
-				<button class="logout-btn">
-					로그아웃
-				</button>
-			</div>
+		<div class="topbar">
+			<button class="logout-btn">
+				로그아웃
+			</button>
+		</div>
 
-			<div class="breadcrumb">
-				관리자 페이지 ›
-				<span class="current">제안서 리스트</span>
-			</div>
+		<div class="breadcrumb">
+			관리자 페이지 ›
+			<span class="current">승인된 제안서</span>
+		</div>
 
-			<div class="page-title">
-				나에게 온 제안서 검토
-			</div>
+		<div class="page-title">
+			승인된 제안서 목록
+		</div>
 
-			<div class="table-card">
+		<div class="table-card">
 
-				<div class="table-wrap">
+			<div class="table-wrap">
 
-					<table>
+				<table>
 
-						<thead>
-							<tr>
-								<th>제안서 번호</th>
-								<th>제안자</th>
-								<th>직급</th>
-								<th>상품명</th>
-								<th>최저 금리</th>
-								<th>최고 금리</th>
-								<th>승인 상태</th>
-								<th>제안일</th>
-								<th>처리일</th>
-								<th>상세조회</th>
-							</tr>
-						</thead>
+					<thead>
+						<tr>
+							<th>제안서 번호</th>
+							<th>상품명</th>
+							<th>최저금리</th>
+							<th>최고금리</th>
+							<th>금리번호</th>
+							<th>약관번호</th>
+							<th>설명번호</th>
+							<th>조건번호</th>
+							<th>상세보기</th>
+						</tr>
+					</thead>
 
-						<tbody id="suggestionListTable">
+					<tbody id="approvedListTable">
 
-						</tbody>
+					</tbody>
 
-					</table>
-
-				</div>
+				</table>
 
 			</div>
 
 		</div>
+
+	</div>
 	
 	
 	
 	<script>
 		
-		// 
-		fetch("/api/employee/suggestion/suggestionList" , {
-			method: "GET"
-		})
-		.then(response => {
-			return response.json();
-		})
-		.then(data => {
-			console.log(data);
-			
-			const suggestionListTable = document.querySelector("#suggestionListTable");
-			
-			let html = "";
-			
-			data.forEach(sug => {
-				
-				html += `
-					<tr>
-						<td>${sug.suggestion_no}</td>
-						<td>${sug.employee_name}</td>  
-						<td>${sug.job_title}</td> 
-						
-						<td>${sug.product_name}</td>
-						<td>${sug.proposed_min_interest_rate}</td>
-						<td>${sug.proposed_max_interest_rate}</td>
-						<td>${sug.approval_status}</td>
-						<td>${sug.suggested_at}</td>
-						<td>${sug.processed_at ?? "-"}</td>
-						<td>
-							<button class="btn-detail" onclick="reviewPage(${sug.suggestion_no})">조회</button>
+		fetch("/api/employee/approved/approvedList", {
+	        method: "GET"
+	    })
+	    .then(response => response.json())
+	    .then(data => {
+	        console.log(data);
+
+	        const tbody = document.getElementById("approvedListTable");
+
+	        let html = "";
+
+	        data.forEach(ap => {
+	            html += `
+	                <tr>
+	                    <td>${ap.suggestion_no}</td>
+	                    <td>${ap.product_name}</td>
+	                    <td>${ap.proposed_min_interest_rate}%</td>
+	                    <td>${ap.proposed_max_interest_rate}%</td>
+	                    <td class="${ap.rate_no ? 'status-registered' : 'status-notregistered'}">
+							${ap.rate_no ?? "미등록"}
 						</td>
-					</tr>
-				`;
-				
-				suggestionListTable.innerHTML = html;
-			});
-			
-		})
-		.catch(e => console.log(e));
+	                    <td class="${ap.terms_no ? 'status-registered' : 'status-notregistered'}">
+							${ap.terms_no ?? "미등록"}
+						</td>
+	                    <td class="${ap.description_no ? 'status-registered' : 'status-notregistered'}">
+							${ap.description_no ?? "미등록"}
+						</td>
+	                    <td class="${ap.condition_no ? 'status-registered' : 'status-notregistered'}">
+							${ap.condition_no ?? "미등록"}
+						</td>
+	                    <td>
+	                        <button class="btn-detail" onclick="goDetail(${ap.suggestion_no})">상세보기</button>
+	                    </td>
+	                </tr>
+	            `;
+	        });
+
+	        tbody.innerHTML = html;
+	    })
+	    .catch(e => console.log(e));
+
+		// 상세 페이지로 이동
+		function goDetail(suggestion_no) {
+	         location.href = "/employee/manager/SUG/approvedDetail?suggestion_no=" + suggestion_no;
+	    }
 		
-		// 함수
-		function reviewPage( suggestion_no ){
-			location.href = "/employee/manager/SUG/suggestionReview?suggestion_no=" + suggestion_no;
-		}
-	
-	
+		
+		
+		
+		
 	</script>
+	
+	
+	
 	
 	
 	

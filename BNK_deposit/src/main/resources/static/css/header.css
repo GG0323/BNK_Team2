@@ -1,6 +1,34 @@
+/* fixed header 공간 확보 */
+body {
+    padding-top: 98px;
+}
+
+/* Header */
 .header {
-    border-bottom: 2px solid #d71920;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
     background-color: #fff;
+    border-bottom: none;
+
+    z-index: 9000;
+    transform: translateY(0);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 일정 시간 후 접힌 상태 */
+.header.header-collapsed {
+    transform: translateY(calc(-100% + 10px));
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* 마우스 올리면 다시 나타남 */
+.header.header-collapsed:hover {
+    transform: translateY(0);
 }
 
 .header-inner {
@@ -328,6 +356,10 @@
 }
 
 @media (max-width: 1180px) {
+    .header-inner {
+        width: calc(100% - 40px);
+    }
+
     .search-modal-box {
         width: calc(100% - 40px);
     }
@@ -338,6 +370,31 @@
 }
 
 @media (max-width: 768px) {
+    body {
+        padding-top: 98px;
+    }
+
+    .header-inner {
+        width: calc(100% - 32px);
+        height: 96px;
+    }
+
+    .nav {
+        gap: 20px;
+    }
+
+    .nav a {
+        font-size: 15px;
+    }
+
+    .logo-red {
+        font-size: 23px;
+    }
+
+    .logo-text {
+        font-size: 17px;
+    }
+
     .search-modal-content {
         min-height: 360px;
     }

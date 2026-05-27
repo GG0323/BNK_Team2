@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.service.member.BankMemberService;
+
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.ServletException;
@@ -66,7 +67,10 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		// 로그인에 성공한 사용자 정보 추출
 		MemberDetails memberDetails = (MemberDetails)authentication.getPrincipal();
-				
+		
+		// 마지막 로그인 일시 기록
+		bankMemberService.updateLastLogin(memberDetails.getPk());
+		
 		// JWT 토큰 생성
 		String token = jwtUtil.generateToken(memberDetails.getUsername(), "ROLE_MEMBER");
 		
@@ -76,7 +80,7 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		response.addCookie(cookie);
 
 		// 로그인 성공 후 이동
-		response.sendRedirect("/mypage");
+		response.sendRedirect("/member/mypage");
 		
 	}
 

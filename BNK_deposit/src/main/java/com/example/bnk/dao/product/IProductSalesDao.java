@@ -13,6 +13,6 @@ public interface IProductSalesDao {
     int countProductSalesByMemberNo(long memberNo);
 
     // ✨ 특정 회원이 가입한 상품 목록 조회 (JOIN 쿼리 호출용)
-    List<MemberProductDto> findSubscribedProductsByMemberNo(long memberNo);
+    List<MemberProductDto> findSubscribedProductsByMemberNo(String username);
 
 }

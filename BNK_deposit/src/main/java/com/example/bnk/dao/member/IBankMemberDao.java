@@ -10,6 +10,9 @@ import com.example.bnk.dto.member.BankMemberDto;
 @Mapper
 public interface IBankMemberDao {
 	
+	// 회원 로그인 시 기록
+	public void lastLogin(long pk);
+	
 	// 회원 id로 조회
 	public BankMemberDto findByUsername(@Param("id") String id);
 	

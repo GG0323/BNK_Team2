@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    
+</head>
+
+<body>
+
+<nav th:fragment="member_top_mypage" class="header-right">
+	<ul>
+        <li><a href="/">메인</a></li>
+        <li><a href="/member/myaccounts">계좌조회</a></li>
+        <li><a href="/member/myaccounts">거래내역</a></li>
+        <li><a href="/member/myproducts">가입상품</a></li>
+    </ul>
+    <button type="button" class="btn-mypage-header" onclick="location.href='/member/mypage'">
+        마이페이지
+    </button>
+</nav>
+
+
+<nav th:fragment="member_mypage(currentTab)"
+     class="sub-nav"
+     id="subNav"
+     th:attr="data-page=${currentTab}">
+
+    <button th:class="${currentTab == 'mypage'} ? 'tab-btn active' : 'tab-btn'"
+            data-tab="mypage"
+            onclick="location.href='/member/mypage'">
+        1. 마이페이지
+    </button>
+
+    <button th:class="${currentTab == 'myinfo'} ? 'tab-btn active' : 'tab-btn'"
+            data-tab="myinfo"
+            onclick="location.href='/member/myinfo'">
+        2. 내 정보
+    </button>
+
+    <button th:class="${currentTab == 'myaccounts'} ? 'tab-btn active' : 'tab-btn'"
+            data-tab="myaccounts"
+            onclick="location.href='/member/myaccounts'">
+        3. 계좌 및 거래내역
+    </button>
+
+    <button th:class="${currentTab == 'myproducts'} ? 'tab-btn active' : 'tab-btn'"
+            data-tab="myproducts"
+            onclick="location.href='/member/myproducts'">
+        4. 가입 상품
+    </button>
+
+</nav>
+
+</body>
+</html>

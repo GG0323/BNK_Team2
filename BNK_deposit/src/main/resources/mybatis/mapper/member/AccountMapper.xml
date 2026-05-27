@@ -5,10 +5,10 @@
 <mapper namespace="com.example.bnk.dao.member.IAccountDao">
 
 	<!-- 사용자의 계좌 정보 출력 -->
-	<select id="findAccountsByMemberNo" parameterType="long" resultType="com.example.bnk.dto.member.AccountDto">
+	<select id="findAccountsByMemberNo" parameterType="String" resultType="com.example.bnk.dto.member.AccountDto">
         SELECT
             ACCOUNT_NO AS account_no,
-            MEMBER_NO AS member_no,
+            a.MEMBER_NO AS member_no,
             ACCOUNT_NUMBER AS account_number,
             ACCOUNT_ALIAS AS account_alias,
             BALANCE AS balance,
@@ -16,8 +16,8 @@
             OPENED_AT AS opened_at,
             CLOSED_AT AS closed_at,
             UPDATED_AT AS updated_at
-        FROM tb_account
-        WHERE MEMBER_NO = #{memberNo}
+        FROM tb_account a join tb_bank_member m on a.member_no = m.member_no
+        WHERE m.LOGIN_ID = #{username}
         ORDER BY OPENED_AT DESC
     </select>
     
