@@ -4,12 +4,7 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductConditionDao">
 	
-	<insert id="insertAllCondition"
-			parameterType="com.example.bnk.dto.product.ProductConditionDto"
-	        useGeneratedKeys="true" 
-	        keyProperty="condition_no"
-	        keyColumn="condition_no">
-
+	<insert id="insertAllCondition" parameterType="com.example.bnk.dto.product.ProductConditionDto">
 		INSERT INTO TB_PRODUCT_CONDITION(
 			min_age,
 			max_age,
@@ -50,6 +45,8 @@
 			#{fixed_term_yn},
 			#{fixed_term_values, jdbcType=VARCHAR},
 			#{condition_note, jdbcType=VARCHAR})
+		RETURNING condition_no
+		INTO #{condition_no, mode=OUT, jdbcType=NUMERIC}
 	</insert>
 	
 	<update id="updateProductCondition" parameterType="com.example.bnk.dto.product.ProductConditionDto">
