@@ -1,22 +1,24 @@
 @charset "UTF-8";
  
 /* =============================================
-   전체 기본 세팅
+   전체 기본 세팅 및 2컬럼 레이아웃
    ============================================= */
 body {
     background-color: #f4f5f7;
     margin: 0;
-    padding: 0; /* ⭕ 기존 padding 제거: 구조 꼬임 방지 */
+    padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
     color: #333333;
     display: flex; 
     min-height: 100vh;
 }
-a{
-	color: inherit;
-	text-decoration: none;
+
+a {
+    color: inherit;
+    text-decoration: none;
 }
-/* ⭕ 우측 메인 콘텐츠 영역 화면 정렬 설정 */
+
+/* 우측 메인 콘텐츠 영역 (사이드바 고정을 고려한 스크롤 설정) */
 section {
     flex-grow: 1;           /* 남은 화면 가로폭을 전부 채움 */
     padding: 40px 50px;     /* 본문 안쪽 여백 설정 */
@@ -24,13 +26,7 @@ section {
     box-sizing: border-box;
 }
  
-/* =============================================
-   브레드크럼 / 페이지 타이틀 영역
-   ============================================= */
-
-	
-   
-   
+/* 타이틀 및 서브 타이틀 라벨 */
 h2 {
     font-size: 1.4rem;
     font-weight: 700;
@@ -51,50 +47,22 @@ hr {
 }
  
 /* =============================================
-   폼 전체 컨테이너 (흰색 카드)
+   폼 전체 컨테이너 (흰색 카드 스타일)
    ============================================= */
 form {
     background: #ffffff;
     border: 1px solid #e2e5e9;
     border-radius: 10px;
     padding: 36px 40px 40px;
-    max-width: 700px;
+    max-width: 700px; /* 금리 등록 항목에 딱 알맞은 정돈된 가로폭 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
  
 /* =============================================
-   섹션 그룹 (이미지의 "계정 정보 / 기본 정보 / 인사 정보" 블록)
-   HTML에서 <div class="section_group"> 으로 감싸주세요
-   ============================================= */
-.section_group {
-    margin-bottom: 32px;
-}
- 
-/* 섹션 헤더 타이틀 (빨간색 텍스트 라벨) */
-.section_title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #e5001c;
-    margin-bottom: 18px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
-}
- 
-/* =============================================
-   2컬럼 그리드 레이아웃
-   HTML에서 <div class="form_row"> 로 두 개의 form_group 묶기
-   ============================================= */
-.form_row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 28px;
-}
- 
-/* =============================================
-   개별 폼 그룹 (라벨 + 인풋)
+   개별 폼 그룹 (라벨 + 인풋 세로 배치)
    ============================================= */
 .form_group {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
     gap: 7px;
@@ -106,20 +74,14 @@ form {
     color: #555555;
 }
  
-/* 필수 표시 빨간 별 */
+/* 필수 표시 빨간 별 스타일 통합 */
 .form_group label span[style*="red"] {
     color: #e5001c !important;
     margin-right: 2px;
 }
 
-/* 비슷한 애들끼리 모으는 용도 */
-.flex_grouping{
-	display: flex;
-	gap: 20px;
-}
-
 /* =============================================
-   인풋 / 셀렉트 / 텍스트에리어 통일 스타일
+   인풋 / 셀렉트 / 텍스트에리어 통합 수트 스타일
    ============================================= */
 input[type="text"],
 input[type="number"],
@@ -138,7 +100,16 @@ textarea {
     font-family: 'Noto Sans KR', sans-serif;
     appearance: auto;
 }
+
+/* 파일 업로드 스타일 예외 보정 */
+input[type="file"] {
+    width: 100% !important;
+    font-size: 0.875rem;
+    padding: 6px 0;
+    color: #555555;
+}
  
+/* 포커스 되었을 때 트렌디한 BNK 레드 라인 및 네온 효과 */
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus,
@@ -161,48 +132,27 @@ textarea:hover {
     font-size: 0.83rem;
 }
  
-/* 텍스트에리어 */
+/* 비고란 텍스트에리어 높이 조절 */
 textarea {
     height: auto !important;
-    min-height: 90px;
+    min-height: 95px;
     resize: vertical;
     line-height: 1.6;
 }
  
 /* =============================================
-   기간 단위 인풋 + 텍스트 나란히
-   ============================================= */
-.term_val_group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
- 
-.term_val_group input {
-    flex: 1;
-}
- 
-.term_val_group span {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #555555;
-    white-space: nowrap;
-    min-width: 28px;
-}
- 
-/* =============================================
-   하단 버튼 영역
+   하단 버튼 그룹 정렬 (우측 하단 배치)
    ============================================= */
 .button_group {
     margin-top: 32px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-end; /* 오른쪽으로 깔끔하게 밀착 */
     gap: 10px;
     padding-top: 24px;
     border-top: 1px solid #f0f0f0;
 }
  
-/* 취소 버튼 */
+/* 취소 버튼 스타일 */
 .btn_cancel {
     background-color: #ffffff;
     color: #6c757d;
@@ -221,7 +171,7 @@ textarea {
     color: #495057;
 }
  
-/* 등록 버튼 (BNK 레드) */
+/* 등록 버튼 스타일 (BNK 시그니처 레드) */
 input[type="submit"] {
     background-color: #e5001c;
     color: #ffffff;
@@ -245,10 +195,7 @@ input[type="submit"]:active {
     transform: scale(0.97);
     background-color: #b00016;
 }
- 
-/* =============================================
-   동적 히든
-   ============================================= */
+
 .hidden_group {
     display: none !important;
 }

@@ -192,7 +192,11 @@ public class EmployeePageController {
 	// 상품 금리 등록 페이지
 	// /employee/staff/product/rate
 	@GetMapping("/staff/product/rate")
-	public String goWriteToRate() {
+	public String goWriteToRate(Model model) {
+		
+		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
+		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		
 		return "Employees/staff/productRateWrite";
 	}
 	
@@ -214,7 +218,11 @@ public class EmployeePageController {
 	// 상품 설명 관리 페이지
 	// /employee/staff/product/description
 	@GetMapping("/staff/product/description")
-	public String goWriteToDescription() {
+	public String goWriteToDescription(Model model) {
+		
+		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
+		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		
 		return "Employees/staff/productDescriptionWrite";
 	}
 	
