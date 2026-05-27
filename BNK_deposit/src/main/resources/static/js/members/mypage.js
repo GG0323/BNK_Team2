@@ -13,7 +13,7 @@ function renderMypage(data) {
   document.getElementById("badgeMemberStatus").textContent =
     member.member_status || "-";
   document.getElementById("badgeLastLogin").textContent =
-    `마지막 로그인 : ${formatDate(member.last_login_at)}`;
+    `마지막 로그인 : ${formatDateTime(member.last_login_at)}`;
 
   document.getElementById("statAccountCount").textContent = `${data.accountCount}개`;
   document.getElementById("statTotalBalance").textContent = `${formatNumber(data.totalBalance)}원`;

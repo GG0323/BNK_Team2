@@ -53,4 +53,18 @@ public class FinanceDictionaryService {
 	public void removeDictionary(long dictionary_no) {
 		financeDictionaryDao.deleteDictionary(dictionary_no);
 	}
+	
+	// 검색 분류
+	public List<FinanceDictionaryDto> searchDictionaryByType(String searchType, String keyword) {
+
+	    if (keyword == null || keyword.trim().isEmpty()) {
+	        return getAllDictionarys();
+	    }
+
+	    if (searchType == null || searchType.trim().isEmpty()) {
+	        searchType = "all";
+	    }
+
+	    return financeDictionaryDao.searchDictionaryByType(searchType, keyword.trim());
+	}
 }

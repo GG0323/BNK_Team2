@@ -18,16 +18,16 @@
 <body>
 	<div th:replace="~{fragments/header :: header_default}"></div>
     <header class="top-header">
-        <div class="header-inner">
-            <div class="header-left">
-                <h1>BNK</h1>
-                <div class="header-title-group">
-                    <h2>개인정보 수정</h2>
-                    <p>회원 연락처 및 주소 정보 변경</p>
-                </div>
+    <div class="header-inner">
+        <div class="header-left">
+            <h1>BNK</h1>
+            <div class="header-title-group">
+                <h2>개인정보 수정</h2>
+                <p>회원 연락처 및 주소 정보 변경</p>
             </div>
-            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
         </div>
+        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+    </div>
     </header>
 	<div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
     <main class="edit-container">

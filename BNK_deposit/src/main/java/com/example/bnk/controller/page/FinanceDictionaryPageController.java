@@ -18,6 +18,12 @@ public class FinanceDictionaryPageController {
     public String dictionaryDetailPage(@PathVariable("dictionary_no") long dictionaryNo) {
         return "common/financedictionarydetail";
     }
+    
+    // 직원용 금융용어 사전 관리 화면
+    @GetMapping("/employee/financedictionary")
+    public String employeeDictionaryManagePage() {
+        return "common/employee_financedictionary";
+    }
 
     // 금융용어 등록 화면
     @GetMapping("/financedictionary/write")

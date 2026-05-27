@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       alert(body.message || "금융용어가 등록되었습니다.");
-      location.href = "/financedictionary";
+      location.href = "/employee/financedictionary";
     } catch (err) {
       alert(err.message || "등록에 실패했습니다.");
     }

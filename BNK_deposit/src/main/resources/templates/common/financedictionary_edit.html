@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <title>금융 용어 수정</title>
 
-<meta name="_csrf" th:content="${_csrf.token}">
-<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}">
 
 <style>
     body { font-family: sans-serif; }
@@ -28,10 +28,12 @@
                 <th>카테고리</th>
                 <td>
                     <select name="dictionary_category" id="dictionary_category" required>
-                        <option value="예적금">예적금</option>
-                        <option value="대출">대출</option>
-                        <option value="경제/금융">경제/금융</option>
-                    </select>
+					    <option value="예적금">예적금</option>
+					    <option value="대출">대출</option>
+					    <option value="보험">보험</option>
+					    <option value="카드">카드</option>
+					    <option value="청약">청약</option>
+					</select>
                 </td>
             </tr>
             <tr>
@@ -44,9 +46,17 @@
             </tr>
         </table>
         <div class="btn-wrap">
-            <button type="submit" class="submit-btn">수정완료</button>
-            <a href="/financedictionary" id="cancelBtn" style="margin-left: 10px; color: #666; text-decoration: none;">취소</a>
-        </div>
+		    <button type="submit" class="submit-btn">수정완료</button>
+		
+		    <button type="button" id="deleteBtn" class="delete-btn">
+		        삭제하기
+		    </button>
+		
+		    <a href="/employee/financedictionary" id="cancelBtn"
+		       style="margin-left: 10px; color: #666; text-decoration: none;">
+		        취소
+		    </a>
+		</div>
     </form>
 
     <script src="/js/members/common.js"></script>

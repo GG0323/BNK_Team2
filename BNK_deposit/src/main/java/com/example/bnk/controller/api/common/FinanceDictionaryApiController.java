@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.dao.DuplicateKeyException;
 
 import com.example.bnk.dto.common.ApiResponse;
 import com.example.bnk.dto.common.FinanceDictionaryDto;
@@ -25,12 +27,14 @@ public class FinanceDictionaryApiController {
 
     // 금융용어 목록 조회 + 검색
     @GetMapping("/api/financedictionary")
-    public ResponseEntity<ApiResponse<?>> getDictionaryList(String keyword) {
+    public ResponseEntity<ApiResponse<?>> getDictionaryList(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "searchType", required = false, defaultValue = "all") String searchType) {
 
         List<FinanceDictionaryDto> list;
 
         if (keyword != null && !keyword.trim().isEmpty()) {
-            list = dictionaryService.searchDictionary(keyword);
+            list = dictionaryService.searchDictionaryByType(searchType, keyword);
         } else {
             list = dictionaryService.getAllDictionarys();
         }
@@ -73,9 +77,17 @@ public class FinanceDictionaryApiController {
     public ResponseEntity<ApiResponse<Void>> addDictionary(
             @ModelAttribute FinanceDictionaryDto dto) {
 
-        dictionaryService.addDictionary(dto);
+        try {
+            dictionaryService.addDictionary(dto);
 
-        return ResponseEntity.ok(ApiResponse.success("금융용어가 등록되었습니다."));
+            return ResponseEntity.ok(
+                    ApiResponse.success("금융용어가 등록되었습니다.")
+            );
+
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ApiResponse.fail("이미 등록된 금융용어입니다."));
+        }
     }
 
     // 금융용어 수정
