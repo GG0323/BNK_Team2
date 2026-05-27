@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>상품 비교</title>
     <link rel="stylesheet" th:href="@{/css/productView.css}">
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 </head>
 <body class="compare-page-body">
+<div th:replace="~{fragments/header :: header_default}"></div>
 
 <div class="compare-page-wrap">
 
@@ -176,6 +179,8 @@
     </section>
 
 </div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

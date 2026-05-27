@@ -47,12 +47,9 @@ public class EmployeeLogService {
 		
 		List<EmployeeLogDto> list = logDao.allLog();
 		
-		for(EmployeeLogDto log : list) {
-			System.out.println(log.toString());
-		}
-		
 		return list;
 	}
+	
 	// 검색 조건 로그 리스트
 	public List<EmployeeLogDto> conditionList(EmployeeLogSelectDto selectDto) {
 		

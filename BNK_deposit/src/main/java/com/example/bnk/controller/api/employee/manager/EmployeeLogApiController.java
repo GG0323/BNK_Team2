@@ -37,7 +37,13 @@ public class EmployeeLogApiController {
 			EmployeeLogSelectDto selectDto 
 			){
 		System.out.println(selectDto.toString());
-		logService.build("SELECT", "TB_EMPLOYEE_LOG", selectDto.toString() , " 사원 활동기록을 조회한다. ", "GET", "/api/log/employee/conditionList");
+		
+		String selectKey =
+			    "empNo=" + selectDto.getEmployee_no()
+			    + ", action=" + selectDto.getAction_type()
+			    + ", table=" + selectDto.getTarget_table();
+		
+		logService.build("SELECT", "TB_EMPLOYEE_LOG", selectKey , " 사원 활동기록을 조회한다. ", "GET", "/api/log/employee/conditionList");
 		
 		List<EmployeeLogDto> list  = logService.conditionList(selectDto);
 		

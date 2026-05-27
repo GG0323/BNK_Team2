@@ -3,79 +3,513 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+ 
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+ 
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+ 
+.sidebar .logo span { color: #E8282F; }
+ 
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+ 
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+ 
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+ 
+/* ===== 메인 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+ 
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+ 
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+ 
+.logout-btn:hover { border-color: #111; color: #111; }
+ 
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+ 
+.breadcrumb .current { color: #111; font-weight: 600; }
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+ 
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+ 
+/* ===== 카드 레이아웃 ===== */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+  max-width: 900px;
+  align-items: start;
+}
+ 
+/* 왼쪽: 프로필 카드 */
+.profile-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+ 
+.profile-photo {
+  width: 120px;
+  height: 150px;
+  border-radius: 10px;
+  border: 1px solid #E0E0E0;
+  background: #F5F5F5;
+  object-fit: cover;
+  display: block;
+}
+ 
+.profile-photo-placeholder {
+  width: 120px;
+  height: 150px;
+  border-radius: 10px;
+  border: 1px dashed #D0D0D0;
+  background: #F8F8F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #ccc;
+}
+ 
+.profile-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  text-align: center;
+}
+ 
+.profile-no {
+  font-size: 12px;
+  color: #aaa;
+  text-align: center;
+}
+ 
+/* 상태 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+ 
+.badge-ACTIVE   { background: #F0FFF4; color: #22863a; }
+.badge-LEAVE    { background: #FFF8E1; color: #B8860B; }
+.badge-RESIGNED { background: #FFF0F0; color: #E8282F; }
+ 
+/* 오른쪽: 정보 카드들 */
+.info-cards { display: flex; flex-direction: column; gap: 1.25rem; }
+ 
+.info-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.5rem;
+}
+ 
+.info-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #E8282F;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F0F0F0;
+}
+ 
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+ 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+ 
+.form-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+ 
+.form-group input,
+.form-group select {
+  padding: 9px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111;
+  background: #F8F8F8;
+  outline: none;
+  transition: all 0.15s;
+  width: 100%;
+}
+ 
+/* readonly 상태 */
+.form-group input[readonly],
+.form-group select:disabled {
+  background: #F8F8F8;
+  color: #444;
+  cursor: default;
+  border-color: #EEEEEE;
+}
+ 
+/* 수정 활성 상태 */
+.form-group input:not([readonly]):focus,
+.form-group select:not(:disabled):focus {
+  border-color: #111;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+ 
+.form-group input.editable,
+.form-group select.editable {
+  background: #fff;
+  border-color: #111;
+}
+ 
+/* 재직상태 select */
+.form-group select {
+  appearance: auto;
+}
+ 
+/* ===== 버튼 영역 ===== */
+.btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1.5rem;
+  max-width: 900px;
+}
+ 
+.btn {
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+ 
+.btn-outline {
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  color: #555;
+}
+ 
+.btn-outline:hover { border-color: #111; color: #111; }
+ 
+.btn-primary {
+  background: #111;
+  color: #fff;
+}
+ 
+.btn-primary:hover { background: #333; }
+ 
+.btn-danger {
+  background: #E8282F;
+  color: #fff;
+}
+ 
+.btn-danger:hover { background: #C5202A; }
+ 
+/* ===== 토스트 ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 999;
+}
+ 
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #111; }
+.toast.error   { background: #E8282F; }
+</style>
+
 </head>
 <body>
 	
-	// 여기서 상세 정보를 조회하고, 상세정보의 일부를 수정한다.
+	<!-- 사이드바 -->
+	<aside class="sidebar">
+    	<div class="logo">BNK <span>관리자</span> 페이지</div>
+    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+   		<a class="nav-item active" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+	</aside>
 	
-	<form id="updateEmployeeDetale">
-	
-		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"> <!-- POST 전송을 가능케 해주는 키값 -->
-	
-		<div>
-	        <label>직원번호</label>
-	        <input type="text" id="employee_no" name="employee_no" readonly>  <!-- PK는 항상 readonly -->
-	    </div>
-	    <div>
-	        <label>이름</label>
-	        <input type="text" id="employee_name"  name="employee_name" readonly>
-	    </div>
-	    <div>
-    		<label>생년월일</label>
-  			<input type="text" id="birth_date" readonly>
-		</div>
-	    <div>
-	    	<img id="img_url" alt="img_url">
-	    </div>
-	    
-	    <hr>
-	    <div>
-	        <label>부서</label>
-	        <input type="text" id="dept_name"  readonly>
-	    </div>
-	    <hr>
-	    
-	    <div>
-	        <label>부서 대표번호</label>
-	        <input type="text" id="dept_phone" readonly>
-	    </div>
-	    <div>
-	        <label>부서 위치</label>
-	        <input type="text" id="dept_location" readonly>
-	    </div>
-	    <hr>
-	    <div>
-	        <label>직급</label>
-	        <input type="text" id="job_title"  name="job_title" readonly>
-	    </div>
-	    <div>
-		    <label>입사일</label>
-		    <input type="text" id="hire_date" readonly>
-		</div>
-	    
-	    <div>
-	        <label>전화번호</label>
-	        <input type="text" id="phone_number"  name="phone_number" readonly>
-	    </div>
-	   
-	    <div>
-	        <label>이메일</label>
-	        <input type="text" id="email"  name="email" readonly>
-	    </div>
-	    <div>
-	        <label>재직상태</label>
-	        <select id="status"  name="status" disabled>
-	            <option value="ACTIVE">재직</option>
-	            <option value="LEAVE">휴직</option>
-	            <option value="RESIGNED">퇴직</option>
-	        </select>
-	    </div>
+	<!-- 메인 -->
+	<div class="main">
 
-	    <button type="button" id="editBtn"  onclick="enableEdit()">수정</button>
-	    <button type="button" id="saveBtn" style="display:none;" onclick="updateDetail()" >저장</button>
-	    <button type="button" id="cancelBtn" onclick="cancelEdit()" style="display:none;">취소</button>
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+
+		<div class="breadcrumb">
+			관리자가 할 일 ›
+			<a th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a> ›
+			<span class="current">직원 상세정보</span>
+		</div>
+
+		<div class="page-title">직원 상세정보</div>
+
+		<form id="updateEmployeeDetale">
+
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+			<div class="detail-layout">
+
+				<!-- 왼쪽: 프로필 카드 -->
+				<div class="profile-card">
+
+					<img id="img_url" class="profile-photo" alt="프로필 사진"
+						 onerror="this.style.display='none'; document.getElementById('photoPlaceholder').style.display='flex';">
+
+					<div class="profile-photo-placeholder" id="photoPlaceholder" style="display:none;">
+						사진 없음
+					</div>
+
+					<div class="profile-name" id="profile-name-display">
+						-
+					</div>
+
+					<div class="profile-no" id="profile-no-display">
+						No. -
+					</div>
+
+					<span class="badge" id="status-badge">
+						-
+					</span>
+
+				</div>
+
+				<!-- 오른쪽: 정보 카드들 -->
+				<div class="info-cards">
+
+					<!-- 기본 정보 -->
+					<div class="info-card">
+
+						<div class="info-card-title">
+							기본 정보
+						</div>
+
+						<div class="info-grid">
+
+							<div class="form-group">
+								<label>직원번호</label>
+								<input type="text" id="employee_no" name="employee_no" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>이름</label>
+								<input type="text" id="employee_name" name="employee_name"									   readonly>
+							</div>
+
+							<div class="form-group">
+								<label>생년월일</label>
+								<input type="text" id="birth_date" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>전화번호</label>
+								<input type="text" id="phone_number" name="phone_number" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>이메일</label>
+								<input type="text" id="email" name="email" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>재직상태</label>
+
+								<select id="status" name="status" disabled>
+									<option value="ACTIVE">재직</option>
+									<option value="LEAVE">휴직</option>
+									<option value="RESIGNED">퇴직</option>
+								</select>
+							</div>
+
+						</div>
+
+					</div>
+
+					<!-- 인사 정보 -->
+					<div class="info-card">
+
+						<div class="info-card-title">
+							인사 정보
+						</div>
+
+						<div class="info-grid">
+
+							<div class="form-group">
+								<label>부서</label>
+								<input type="text" id="dept_name" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>직급</label>
+								<input type="text" id="job_title" name="job_title" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>입사일</label>
+								<input type="text" id="hire_date" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>부서 대표번호</label>
+								<input type="text" id="dept_phone" readonly>
+							</div>
+
+							<div class="form-group">
+								<label>부서 위치</label>
+								<input type="text" id="dept_location" readonly>
+							</div>
+
+						</div>
+
+					</div>
+
+				</div><!-- /.info-cards -->
+
+			</div><!-- /.detail-layout -->
+
+			<!-- 버튼 -->
+			<div class="btn-row">
+
+				<button type="button" class="btn btn-outline" onclick="history.back()">
+					목록으로
+				</button>
+
+				<button type="button"
+						class="btn btn-outline"
+						id="cancelBtn"
+						style="display:none;"
+						onclick="cancelEdit()">
+					취소
+				</button>
+
+				<button type="button"
+						class="btn btn-primary"
+						id="editBtn"
+						onclick="enableEdit()">
+					수정
+				</button>
+
+				<button type="button"
+						class="btn btn-danger"
+						id="saveBtn"
+						style="display:none;"
+						onclick="updateDetail()">
+					저장
+				</button>
+				
+			</div>
+
+		</form>
+
+	</div><!-- /.main -->
+
+	<div class="toast" id="toast"></div>
 	
-	</form>
+	
 	
 	
 	<script>
@@ -87,16 +521,21 @@
 		fetch("/api/employeeList/detail?employee_no=" + employee_no, {
 			method: "GET",
 			
-		}).then(response => {
+		})
+		.then(response => {
 			return response.json();
-		}).then(data => {
+		})
+		.then(data => {
 			console.log(data);
 			// 수정 전 DB값 저장
 			originalData = data;
 			detailForm(data);
 			
-		}).
-		catch(e => console.log(e));
+		})
+		.catch(e => {
+        	console.error(e);
+        	showToast('데이터를 불러오지 못했습니다.', 'error');
+        });
 		// DB값 폼에 채우기 read only
 		function detailForm(data) {
 		    document.getElementById("employee_no").value  = data.employee_no;
@@ -108,38 +547,59 @@
 		    document.getElementById("phone_number").value = data.phone_number;
 		    document.getElementById("email").value        = data.email;
 		    document.getElementById("status").value       = data.status;
-		    document.getElementById("img_url").src       = "C:/"+data.img_url;
 		    document.getElementById("birth_date").value = data.birth_date;
 		    document.getElementById("hire_date").value  = data.hire_date;
+			
+			const img = document.getElementById("img_url");
+	        img.src = data.img_url ? ('C:/' + data.img_url) : '';
+	 
+	        // 프로필 카드 상단 표시
+	        document.getElementById('profile-name-display').textContent = data.employee_name ?? '-';
+	        document.getElementById('profile-no-display').textContent   = 'No. ' + (data.employee_no ?? '-');
+	        updateStatusBadge(data.status);
 		}
 		
-		// 수정 버튼 → read only 삭제 input 활성화
+		// 수정 버튼 
 		function enableEdit() {
-		    ["employee_name", "job_title", "phone_number", "email"]
-		        .forEach(id => document.getElementById(id).removeAttribute("readonly"));
-		    document.getElementById("status").disabled = false;
-
-		    document.getElementById("editBtn").style.display   = "none";
-		    document.getElementById("saveBtn").style.display   = "inline";
-		    document.getElementById("cancelBtn").style.display = "inline";
-		}
+		      ["employee_name", "job_title", "phone_number", "email"]
+		        .forEach(id => {
+		          const el = document.getElementById(id);
+		          el.removeAttribute("readonly");
+		          el.classList.add("editable");
+		        });
+		      document.getElementById("status").disabled = false;
+		      document.getElementById("status").classList.add("editable");
+		 
+		      document.getElementById("editBtn").style.display   = "none";
+		      document.getElementById("saveBtn").style.display   = "inline-block";
+		      document.getElementById("cancelBtn").style.display = "inline-block";
+		    }
 		
-		// 취소 버튼 → originalData를 이용해 원래 값으로 복구
+		// 취소 버튼 
 		function cancelEdit() {
-			detailForm(originalData);
-		    
-		    // read only 재 활성화
-		    ["employee_name", "job_title", "phone_number", "email"]
-	        .forEach(id => document.getElementById(id).setAttribute("readonly", true));
-		    document.getElementById("status").disabled = true;
-	
-		    document.getElementById("editBtn").style.display   = "inline";
-		    document.getElementById("saveBtn").style.display   = "none";
-		    document.getElementById("cancelBtn").style.display = "none";
-		}
+		      detailForm(originalData);
+		 
+		      ["employee_name", "job_title", "phone_number", "email"]
+		        .forEach(id => {
+		          const el = document.getElementById(id);
+		          el.setAttribute("readonly", true);
+		          el.classList.remove("editable");
+		        });
+		      const statusEl = document.getElementById("status");
+		      statusEl.disabled = true;
+		      statusEl.classList.remove("editable");
+		 
+		      document.getElementById("editBtn").style.display   = "inline-block";
+		      document.getElementById("saveBtn").style.display   = "none";
+		      document.getElementById("cancelBtn").style.display = "none";
+		    }
 		
 		// submit 버튼
 		function updateDetail(){
+			const saveBtn = document.getElementById("saveBtn");
+		    saveBtn.disabled = true;
+			saveBtn.textContent = "저장 중...";
+			
 			
 			fetch("/api/employeeList/updateEmployeeDetale",{
 				method:"POST",
@@ -156,10 +616,34 @@
 		        cancelEdit();
 
 		        alert("수정이 완료되었습니다.");
+				showToast('수정이 완료되었습니다.', 'success');
 				
 			})
-			.catch(e => console.log(e));
+			.catch(e => {
+			        console.error(e);
+			        showToast('저장 중 오류가 발생했습니다.', 'error');
+	        })
+	        .finally(() => {
+	        	saveBtn.disabled = false;
+	        	saveBtn.textContent = "저장";
+	        });
 		}
+		
+		/* ── 메세지 출력용 (토스트) ── */
+	    function showToast(msg, type = 'success') {
+	    	const t = document.getElementById('toast');
+	      	t.textContent = msg;
+	      	t.className = `toast ${type} show`;
+	      	setTimeout(() => { t.className = 'toast'; }, 3000);
+	    }
+		
+		/* ── 상태 뱃지 업데이트 ── */
+	    function updateStatusBadge(status) {
+	        const badge = document.getElementById('status-badge');
+	      	const labelMap = { ACTIVE: '재직', LEAVE: '휴직', RESIGNED: '퇴직' };
+	      	badge.textContent = labelMap[status] ?? status;
+			badge.className = `badge badge-${status}`;
+	    }
 		
 		
 	</script>
