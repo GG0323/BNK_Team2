@@ -2,201 +2,623 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>승인된 제안서 상세</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
 
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
 
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== 레이아웃: 좌우 2단 ===== */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.25rem;
+  align-items: start;
+  max-width: 1000px;
+}
+
+/* ===== 공통 카드 ===== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #E8282F;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+/* ===== 제안서 정보 (왼쪽) ===== */
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.meta-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  min-width: 80px;
+}
+
+.meta-value {
+  font-size: 13px;
+  color: #222;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #F0F0F0;
+  margin: 1.25rem 0;
+}
+
+.product-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.suggestion-content {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.7;
+  background: #F8F8F8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 1.25rem;
+  white-space: pre-wrap;
+}
+
+.rate-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rate-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #F8F8F8;
+  border-radius: 8px;
+  padding: 10px 20px;
+  flex: 1;
+}
+
+.rate-chip .chip-label {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.rate-chip .chip-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: #E8282F;
+}
+
+.rate-sep { font-size: 16px; color: #ddd; font-weight: 300; }
+
+/* 승인 상태 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-APPROVED { background: #F0FFF4; color: #22863a; }
+.badge-PENDING  { background: #FFF8E1; color: #B8860B; }
+.badge-REJECTED { background: #FFF0F0; color: #E8282F; }
+
+/* ===== 오른쪽 패널 ===== */
+.right-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* 상품 구성 현황 */
+.component-list { display: flex; flex-direction: column; gap: 10px; }
+
+.component-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #F8F8F8;
+  border: 1px solid #F0F0F0;
+}
+
+.component-item .comp-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
+.status-ok {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #F0FFF4;
+  color: #22863a;
+}
+
+.status-no {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #F5F5F5;
+  color: #aaa;
+}
+
+/* 등록 버튼 카드 */
+.register-card { background: #fff; border-radius: 12px; border: 1px solid #E8E8E8; padding: 1.25rem; }
+
+.btn-register {
+  width: 100%;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-register:hover:not(:disabled) { background: #E8282F; }
+
+.btn-register:disabled {
+  background: #E0E0E0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.register-notice {
+  font-size: 11px;
+  color: #E8282F;
+  margin-top: 8px;
+  line-height: 1.5;
+  display: none;
+}
+
+.register-notice.show { display: block; }
+
+/* 목록 버튼 */
+.btn-back {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.btn-back:hover { border-color: #111; color: #111; }
+
+/* ===== 모달 팝업 ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem;
+  width: 340px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+.modal-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+.modal-btns { display: flex; gap: 10px; }
+
+.modal-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.modal-btn.cancel { background: #F5F5F5; color: #555; }
+.modal-btn.cancel:hover { background: #E8E8E8; }
+.modal-btn.confirm { background: #E8282F; color: #fff; }
+.modal-btn.confirm:hover { background: #C5202A; }
+
+/* ===== 토스트 ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #111; }
+.toast.error   { background: #E8282F; }
+</style>
 </head>
 <body>
-	
-	
-	<!-- 사이드바 -->
-	<aside class="sidebar">
-    	<div class="logo">BNK <span>관리자</span> 페이지</div>
-    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
-    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
-    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
-   		<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
-    	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
-    	<a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
-	</aside>
-	
-	<h1>승인된 제안서 상세</h1>
 
-	<div id="suggestionDetail">
-		<div>
-	        <span>제안서 번호 : </span>
-	        <span id="suggestion_no"></span>
-	    </div>
-		<hr>
-		
-		<div>
-	       <span>작성자 : </span>
-	       <span id="employee_name"></span>
-	       &nbsp;
-	       <span id="job_title"></span>
-	   	</div>
-	   	
-	   	
-	   	<div>
-	       <span>승인 책임자 : </span>
-	       <span id="manager_name"></span>
-	   	</div>
-	   	<div>
-	       <span>제안일 : </span>
-	       <span id="suggested_at"></span>
-	   	</div>
-	
-	   	<hr>	   
-	   
-	   	<div>
-			<h2 id="product_name"></h2>  <!-- 상품명  -->
-	  	</div>
-		
-		<div>
-			<p id="suggestion_content"></p>  <!-- 제안 내용 -->
-		</div>
-		
-		<div>
-			<span>최저 금리 : </span>
-			<span id="proposed_min_interest_rate"></span>
-            &nbsp; ~ &nbsp;	
-			<span>최고 금리 : </span>
-            <span id="proposed_max_interest_rate"></span>
-		</div>
-		
-		<hr>
-		
-		<div>
-            <span>승인 상태 : </span>
-            <span id="approval_status"></span>
-        </div>
+  <aside class="sidebar">
+    <div class="logo">BNK <span>관리자</span> 페이지</div>
+    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    <a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+  </aside>
 
-        <div>
-            <span>처리일 : </span>
-            <span id="processed_at"></span>
-        </div>
+  <div class="main">
 
-        <hr>
-			
-	</div>
-	
-	<div>
-	    <h3>상품 구성 현황</h3>
-
-	    <div>
-	        <span>금리 : </span>
-	        <span id="rate_status"></span>
-	    </div>
-	    <div>
-	        <span>약관 : </span>
-	        <span id="terms_status"></span>
-	    </div>
-	    <div>
-	        <span>설명 : </span>
-	        <span id="description_status"></span>
-	    </div>
-	    <div>
-	        <span>조건 : </span>
-	        <span id="condition_status"></span>
-	    </div>
-	</div>
-	<!-- 상품 등록 버튼 (4개 다 등록됐을 때만 활성화) -->
-	<button id="registerBtn" onclick="openApprovePopup()" disabled>상품으로 등록</button>
-	<span id="registerBtnMsg" style="color:red;">※ 금리/약관/설명/조건이 모두 등록되어야 상품 등록이 가능합니다.</span>
-
-	
-	<!-- 삼품 등록 팝업 -->
-    <div id="approvePopup" style="display:none;">
-        <h3>상품으로 등록 하시겠습니까?</h3>
-        
-        <br>
-        <button onclick="registerProduct()">확인</button>
-        <button onclick="closeApprovePopup()">취소</button>
+    <div class="topbar">
+      <button class="logout-btn">로그아웃</button>
     </div>
-		
-		
-	<script>
-		const suggestion_no = new URLSearchParams(location.search).get("suggestion_no");
-		// 페이지 진입시 작동 제안서 + 중간테이블 조회
-		fetch("/api/employee/approved/approvedDetail?suggestion_no=" + suggestion_no , {
-			method: "GET"
-		})
-		.then(response => {
-			return response.json();
-		})
-		.then(data => {
-			console.log(data);
-			// 데이터 채우기
-			document.getElementById("suggestion_no").textContent              = data.suggestion_no;
-	        document.getElementById("employee_name").textContent              = data.employee_name;
-	        document.getElementById("job_title").textContent                  = data.job_title;
-	        document.getElementById("manager_name").textContent               = data.manager_name;
-	        document.getElementById("product_name").textContent               = data.product_name;
-	        document.getElementById("suggestion_content").textContent         = data.suggestion_content;
-	        document.getElementById("proposed_min_interest_rate").textContent = data.proposed_min_interest_rate + "%";
-	        document.getElementById("proposed_max_interest_rate").textContent = data.proposed_max_interest_rate + "%";
-	        document.getElementById("approval_status").textContent            = data.approval_status;
-	        document.getElementById("suggested_at").textContent               = data.suggested_at;
-	        document.getElementById("processed_at").textContent               = data.processed_at;
 
-	        // 날개 등록 현황
-	        document.getElementById("rate_status").textContent        = data.rate_no        ? "등록됨" : "미등록";
-	        document.getElementById("terms_status").textContent       = data.terms_no       ? "등록됨" : "미등록";
-	        document.getElementById("description_status").textContent = data.description_no ? "등록됨" : "미등록";
-	        document.getElementById("condition_status").textContent   = data.condition_no   ? "등록됨" : "미등록";
-	    
-			// 날개 4장 체크 -> 버튼 
-			checkRegisterBtn(data);
-		})
-		.catch(e => console.log(e));
-		
-		// 날개 체크 -> 등록 버튼
-		function checkRegisterBtn(data){
-			if (data.rate_no && data.terms_no && data.description_no && data.condition_no) {
-	            document.getElementById("registerBtn").disabled = false;
-	            document.getElementById("registerBtnMsg").style.display = "none";
-	        }
-		}
-		
-		
-		
-		
-		
-		
-		// 팝업 컨트롤러
-		function openApprovePopup() {document.getElementById("approvePopup").style.display = "block";}
-		function closeApprovePopup() {document.getElementById("approvePopup").style.display = "none";}
-		
-		// 상품 등록
-		function registerProduct() {
-			
-            fetch("---------------------------------------", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                // 파라미터? body: JSON.stringify({ suggestion_no: suggestion_no })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data === 1) {
-                    alert("상품 등록 완료");
-                    location.href = "==================";
-                }
-            })
-            .catch(e => console.log(e));
+    <div class="breadcrumb">
+      관리자 페이지 ›
+      <a th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a> ›
+      <span class="current">상세보기</span>
+    </div>
+
+    <div class="page-title">승인된 제안서 상세</div>
+
+    <div class="detail-layout">
+
+      <!-- 왼쪽: 제안서 내용 -->
+      <div class="card">
+        <div class="card-title">제안서 정보</div>
+
+        <div class="meta-row">
+          <span class="meta-label">제안서 번호</span>
+          <span class="meta-value" id="suggestion_no">-</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">작성자</span>
+          <span class="meta-value"><span id="employee_name">-</span>&nbsp;<span id="job_title" style="color:#aaa;font-size:12px;"></span></span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">승인 책임자</span>
+          <span class="meta-value" id="manager_name">-</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">제안일</span>
+          <span class="meta-value" id="suggested_at">-</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">처리일</span>
+          <span class="meta-value" id="processed_at">-</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">승인 상태</span>
+          <span id="approval_status_badge">-</span>
+        </div>
+
+        <hr class="divider">
+
+        <div class="product-name" id="product_name">-</div>
+        <div class="suggestion-content" id="suggestion_content">-</div>
+
+        <div class="rate-row">
+          <div class="rate-chip">
+            <span class="chip-label">최저 금리</span>
+            <span class="chip-val" id="proposed_min_interest_rate">-</span>
+          </div>
+          <span class="rate-sep">~</span>
+          <div class="rate-chip">
+            <span class="chip-label">최고 금리</span>
+            <span class="chip-val" id="proposed_max_interest_rate">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 오른쪽 패널 -->
+      <div class="right-panel">
+
+        <!-- 상품 구성 현황 -->
+        <div class="card">
+          <div class="card-title">상품 구성 현황</div>
+          <div class="component-list">
+            <div class="component-item">
+              <span class="comp-name">금리</span>
+              <span id="rate_status" class="status-no">미등록</span>
+            </div>
+            <div class="component-item">
+              <span class="comp-name">약관</span>
+              <span id="terms_status" class="status-no">미등록</span>
+            </div>
+            <div class="component-item">
+              <span class="comp-name">설명</span>
+              <span id="description_status" class="status-no">미등록</span>
+            </div>
+            <div class="component-item">
+              <span class="comp-name">조건</span>
+              <span id="condition_status" class="status-no">미등록</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 상품 등록 버튼 -->
+        <div class="register-card">
+          <button class="btn-register" id="registerBtn" onclick="openApprovePopup()" disabled>
+            상품으로 등록
+          </button>
+          <div class="register-notice show" id="registerBtnMsg">
+            ※ 금리 / 약관 / 설명 / 조건이 모두 등록되어야 상품 등록이 가능합니다.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <a class="btn-back" th:href="@{/employee/manager/SUG/approvedList}">← 목록으로</a>
+
+  </div><!-- /.main -->
+
+  <!-- 등록 확인 모달 -->
+  <div class="modal-overlay" id="approvePopup">
+    <div class="modal">
+      <div class="modal-icon">📋</div>
+      <div class="modal-title">상품으로 등록하시겠습니까?</div>
+      <div class="modal-desc">승인된 제안서를 기반으로 신규 상품이 등록됩니다.</div>
+      <div class="modal-btns">
+        <button class="modal-btn cancel" onclick="closeApprovePopup()">취소</button>
+        <button class="modal-btn confirm" onclick="registerProduct()">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const suggestion_no = new URLSearchParams(location.search).get("suggestion_no");
+
+    /* ── 토스트 ── */
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => { t.className = 'toast'; }, 3000);
+    }
+
+    /* ── 상태 뱃지 ── */
+    function statusBadge(status) {
+      const labelMap = { APPROVED: '승인', PENDING: '검토 중', REJECTED: '반려' };
+      return `<span class="badge badge-${status}">${labelMap[status] ?? status}</span>`;
+    }
+
+    /* ── 구성 현황 셀 ── */
+    function setComponentStatus(id, val) {
+      const el = document.getElementById(id);
+      if (val) {
+        el.textContent = '등록됨';
+        el.className = 'status-ok';
+      } else {
+        el.textContent = '미등록';
+        el.className = 'status-no';
+      }
+    }
+
+    /* ── 버튼 활성화 체크 ── */
+    function checkRegisterBtn(data) {
+      if (data.rate_no && data.terms_no && data.description_no && data.condition_no) {
+        document.getElementById("registerBtn").disabled = false;
+        document.getElementById("registerBtnMsg").classList.remove('show');
+      }
+    }
+
+    /* ── 데이터 로드 ── */
+    fetch("/api/employee/approved/approvedDetail?suggestion_no=" + suggestion_no, { method: "GET" })
+      .then(r => r.json())
+      .then(data => {
+        console.log(data);
+
+        document.getElementById("suggestion_no").textContent              = data.suggestion_no;
+        document.getElementById("employee_name").textContent              = data.employee_name;
+        document.getElementById("job_title").textContent                  = data.job_title;
+        document.getElementById("manager_name").textContent               = data.manager_name;
+        document.getElementById("product_name").textContent               = data.product_name;
+        document.getElementById("suggestion_content").textContent         = data.suggestion_content;
+        document.getElementById("proposed_min_interest_rate").textContent = data.proposed_min_interest_rate + "%";
+        document.getElementById("proposed_max_interest_rate").textContent = data.proposed_max_interest_rate + "%";
+        document.getElementById("suggested_at").textContent               = data.suggested_at;
+        document.getElementById("processed_at").textContent               = data.processed_at ?? '-';
+        document.getElementById("approval_status_badge").innerHTML        = statusBadge(data.approval_status);
+
+        setComponentStatus("rate_status",        data.rate_no);
+        setComponentStatus("terms_status",       data.terms_no);
+        setComponentStatus("description_status", data.description_no);
+        setComponentStatus("condition_status",   data.condition_no);
+
+        checkRegisterBtn(data);
+      })
+      .catch(e => {
+        console.error(e);
+        showToast('데이터를 불러오지 못했습니다.', 'error');
+      });
+
+    /* ── 모달 ── */
+    function openApprovePopup()  { document.getElementById("approvePopup").classList.add('show'); }
+    function closeApprovePopup() { document.getElementById("approvePopup").classList.remove('show'); }
+
+    /* ── 상품 등록 ── */
+    function registerProduct() {
+      closeApprovePopup();
+
+      fetch("---------------------------------------", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ suggestion_no: suggestion_no })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data === 1) {
+          showToast('상품 등록이 완료되었습니다.', 'success');
+          setTimeout(() => {
+            location.href = "==================";
+          }, 1500);
         }
-		
-		
-	
-	</script>
-	
-	
-	
-	
-	
-	
-	
-	
-	
+      })
+      .catch(e => {
+        console.error(e);
+        showToast('상품 등록 중 오류가 발생했습니다.', 'error');
+      });
+    }
+  </script>
+
 </body>
 </html>
