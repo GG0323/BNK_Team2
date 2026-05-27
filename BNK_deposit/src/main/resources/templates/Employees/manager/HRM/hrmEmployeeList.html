@@ -1,220 +1,290 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-
+<title>직원 리스트</title>
 <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ===== 공통 ===== */
-*{
-	box-sizing:border-box;
-	margin:0;
-	padding:0;
-}
-
-body{
-	font-family:'Pretendard','Apple SD Gothic Neo',sans-serif;
-	background:#F5F5F5;
-	display:flex;
-	min-height:100vh;
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
 }
 
 /* ===== 사이드바 ===== */
-.sidebar{
-	width:190px;
-	background:#111111;
-	position:fixed;
-	top:0;
-	left:0;
-	min-height:100vh;
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
 }
 
-.sidebar .logo{
-	font-size:14px;
-	font-weight:700;
-	color:#ffffff;
-	padding:1.5rem 1.25rem;
-	border-bottom:1px solid #2a2a2a;
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
 }
 
-.sidebar .logo span{
-	color:#E8282F;
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
 }
 
-.nav-item{
-	display:flex;
-	align-items:center;
-	padding:11px 1.25rem;
-	font-size:13px;
-	color:#888888;
-	text-decoration:none;
-	border-left:3px solid transparent;
-	transition:all 0.15s;
-}
+.nav-item:hover { color: #fff; background: #1c1c1c; }
 
-.nav-item:hover{
-	background:#1c1c1c;
-	color:#ffffff;
-}
-
-.nav-item.active{
-	background:#1c1c1c;
-	color:#ffffff;
-	border-left-color:#E8282F;
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
 }
 
 /* ===== 메인 ===== */
-.main{
-	flex:1;
-	margin-left:190px;
-	padding:2rem;
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
 }
 
-/* ===== 제목 ===== */
-.page-title{
-	font-size:20px;
-	font-weight:700;
-	color:#111111;
-	margin-bottom:1.5rem;
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
 }
 
-/* ===== 테이블 카드 ===== */
-.table-card{
-	background:#ffffff;
-	border:1px solid #E8E8E8;
-	border-radius:12px;
-	overflow:hidden;
-	box-shadow:0 2px 8px rgba(0,0,0,0.03);
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.total-count {
+  font-size: 12px;
+  color: #888;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #E8E8E8;
 }
 
 /* ===== 테이블 ===== */
-table{
-	width:100%;
-	border-collapse:collapse;
+.table-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
 }
 
-thead tr{
-	background:#111111;
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
 }
 
-thead th{
-	padding:13px 16px;
-	font-size:12px;
-	font-weight:600;
-	color:#ffffff;
-	text-align:left;
+thead tr { background: #111; }
+
+thead th {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
 }
 
-tbody tr{
-	border-bottom:1px solid #F0F0F0;
-	transition:background 0.12s;
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
 }
 
-tbody tr:hover{
-	background:#FFF5F5;
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFF5F5; }
+
+tbody td {
+  padding: 13px 16px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
 }
 
-tbody td{
-	padding:13px 16px;
-	font-size:13px;
-	color:#444444;
+/* 상태 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-tbody tr:last-child{
-	border-bottom:none;
+.badge-ACTIVE   { background: #F0FFF4; color: #22863a; }
+.badge-LEAVE    { background: #FFF8E1; color: #B8860B; }
+.badge-RESIGNED { background: #FFF0F0; color: #E8282F; }
+
+/* 조회 버튼 */
+.btn-detail {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
+.btn-detail:hover { background: #111; color: #fff; border-color: #111; }
+
+/* 빈 상태 */
+.empty-row td {
+  text-align: center;
+  color: #bbb;
+  padding: 3rem;
+  font-size: 13px;
+}
 </style>
-
 </head>
 <body>
-	
-	<!-- 사이드바 -->
-	<aside class="sidebar">
-    	<div class="logo">BNK <span>관리자</span> 페이지</div>
-    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
-    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
-    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
-   		<a class="nav-item active" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
-    	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
-    	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
-	</aside>
-	
-	
-	<div class="main">
-		<div class="page-title">직원 리스트</div>
-		<div class="table-card">
-			
-			<table border="1">
-				<thead>
-					<tr>
-						<th>employee_no</th>
-						<th>dept_no</th>
-						<th>dept_name</th>
-						<th>employee_name</th>
-						<th>job_title</th>
-						<th>status</th>
-					</tr>
-				</thead>
-				<tbody id="employeeListtablebody">
-					
-				</tbody>
-			
-			</table>
-			
-		</div>
-		
-	</div>
-	
-	
-	
-	
-	<script>
-		
-		fetch("/api/employeeList/allList", {
-			method: "GET",
-			
-		})
-		.then(response => {
-			
-			return response.json();
-		})
-		.then(data => {
-			console.log(data);
-			
-			const logtablebody = document.querySelector("#employeeListtablebody");
-			
-			let html = "";
-			
-			data.forEach(employee => {
 
-		        html += `
-		            <tr>
-		                <td>${employee.employee_no}</td>
-		                <td>${employee.dept_no}</td>
-		                <td>${employee.dept_name}</td>
-		                <td>${employee.employee_name}</td>
-		                <td>${employee.job_title}</td>
-		                <td>${employee.status}</td>
-		                <td><button onclick="toDetailPage(${employee.employee_no})">조회</button> </td>
-		            </tr>
-		        `;
-		    });
+  <aside class="sidebar">
+    <div class="logo">BNK <span>관리자</span> 페이지</div>
+    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    <a class="nav-item active" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+  </aside>
 
-		    logtablebody.innerHTML = html;
-			
-		})
-		.catch(e => console.log(e));
-		
-		// 사원 tr 클릭시 해당 사원의 상세 페이지로 이동
-		function toDetailPage(employee_no){
-			location.href = "/employee/manager/HRM/hrmEmployeeDetail?employee_no=" + employee_no;
-		}
-		
-	</script>
-	
-	
-	
+  <div class="main">
+
+    <div class="topbar">
+      <button class="logout-btn">로그아웃</button>
+    </div>
+
+    <div class="breadcrumb">
+      관리자 페이지 › <span class="current">직원 리스트</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">직원 리스트</div>
+      <span class="total-count" id="totalCount">전체 0명</span>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>employee_no</th>
+              <th>dept_no</th>
+              <th>dept_name</th>
+              <th>employee_name</th>
+              <th>job_title</th>
+              <th>status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="employeeListtablebody">
+            <tr class="empty-row"><td colspan="7">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const statusLabel = { ACTIVE: '재직', LEAVE: '휴직', RESIGNED: '퇴직' };
+
+    function statusBadge(status) {
+      const cls = `badge-${status ?? 'ACTIVE'}`;
+      return `<span class="badge ${cls}">${statusLabel[status] ?? status ?? '-'}</span>`;
+    }
+
+    fetch("/api/employeeList/allList", { method: "GET" })
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.querySelector("#employeeListtablebody");
+        document.getElementById('totalCount').textContent = `전체 ${data.length}명`;
+
+        if (!data.length) {
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="7">등록된 직원이 없습니다.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.map(emp => `
+          <tr>
+            <td>${emp.employee_no}</td>
+            <td>${emp.dept_no}</td>
+            <td>${emp.dept_name}</td>
+            <td>${emp.employee_name}</td>
+            <td>${emp.job_title}</td>
+            <td>${statusBadge(emp.status)}</td>
+            <td><button class="btn-detail" onclick="toDetailPage(${emp.employee_no})">조회</button></td>
+          </tr>
+        `).join('');
+      })
+      .catch(e => {
+        console.error(e);
+        document.querySelector("#employeeListtablebody").innerHTML =
+          '<tr class="empty-row"><td colspan="7">데이터를 불러오지 못했습니다.</td></tr>';
+      });
+
+    function toDetailPage(employee_no) {
+      location.href = "/employee/manager/HRM/hrmEmployeeDetail?employee_no=" + employee_no;
+    }
+  </script>
+
 </body>
 </html>

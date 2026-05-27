@@ -111,7 +111,11 @@ public class EmployeePageController {
 	public String staffPage() {
 		return "Employees/staff/staffPage";
 	}
-	
+	// 약관 등록 페이지   /employee/staff/productTerm
+	@GetMapping("/staff/productTerm")
+	public String productTermForm() {
+		return "Employees/staff/term/productTermForm";
+	}
 	// 제안서 작성 페이지 이동  /employee/staff/writeSuggestionPage
 	@GetMapping("/staff/writeSuggestionPage")
 	public String writeSuggestionPage(
