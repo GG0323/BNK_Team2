@@ -3,35 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>상품 가입 조건 등록</title>
-<style>
-	body{
-		padding: 20px;
-		font-family: sans-serif;
-	}
-	.table_name{
-		color: gray;
-		font-size: 0.9rem;
-	}
-	/* 선택에 따라서 입력 공간이 나왔다 안나왔다 하게 하는 거! */
-    .hidden_group {
-        display: none !important; 
-    }
-    .form_group { margin-bottom: 15px; }
-    .form_group label { display: inline-block; width: 220px; font-weight: bold; vertical-align: top; margin-top: 5px; }
-    
-    /* ⭕ input[type="number"]와 select 태그도 가로폭 450px이 먹히도록 스타일 추가 */
-    .form_group input[type="text"], 
-    .form_group input[type="number"], 
-    .form_group select, 
-    .form_group textarea { width: 450px; padding: 6px; box-sizing: border-box; }
-    .form_group textarea { resize: vertical; }
-    
-    /* 기간 단위 값의 '개월' 글자가 인풋창 밑으로 떨어지지 않게 정렬 */
-    .term_val_group { display: inline-block; width: 450px; }
-    .term_val_group input { width: 390px !important; display: inline-block; }
-    .term_val_group span { display: inline-block; width: 50px; text-align: right; }
-</style>
-
+<link rel="stylesheet" th:href="@{/css/employee/product_condition_write.css}">
 </head>
 <body>
 	
@@ -181,10 +153,11 @@
 		</div>
 
     	<hr>
-    	<div style="margin-top: 20px;">
-        	<input type="submit" value="등록하기" style="padding: 10px 30px; font-weight: bold; cursor: pointer;">
-    	</div>
-	</form>
+    	<div class="button_group">
+        <button type="button" class="btn_cancel" onclick="history.back();">취소</button>
+        <input type="submit" value="신규 조건 등록">
+    </div>
+</form>
 
 	<script>
 	function toggleFixedTermInput() {
