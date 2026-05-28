@@ -73,4 +73,35 @@
         WHERE dictionary_no = #{dictionary_no}
     </delete>
     
+    <!-- 검색 주제 -->
+    <select id="searchDictionaryByType" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+	    SELECT
+	        DICTIONARY_NO,
+	        DICTIONARY_NM,
+	        DICTIONARY_CONTENT,
+	        DICTIONARY_CATEGORY,
+	        VIEW_COUNT,
+	        CREATED_AT,
+	        UPDATED_AT
+	    FROM TB_FINANCE_DICTIONARY
+	    WHERE
+	        (
+	            #{searchType} = 'all'
+	            AND (
+	                DICTIONARY_NM LIKE '%' || #{keyword} || '%'
+	                OR DICTIONARY_CONTENT LIKE '%' || #{keyword} || '%'
+	                OR DICTIONARY_CATEGORY LIKE '%' || #{keyword} || '%'
+	            )
+	        )
+	        OR (
+	            #{searchType} = 'name'
+	            AND DICTIONARY_NM LIKE '%' || #{keyword} || '%'
+	        )
+	        OR (
+	            #{searchType} = 'category'
+	            AND DICTIONARY_CATEGORY LIKE '%' || #{keyword} || '%'
+	        )
+	    ORDER BY DICTIONARY_NO DESC
+	</select>
+    
 </mapper>

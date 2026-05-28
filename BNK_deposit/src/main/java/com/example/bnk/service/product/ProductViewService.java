@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.product.IProductViewDao;
+import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.dto.product.ProductCompareViewDto;
 import com.example.bnk.dto.product.ProductDetailViewDto;
 import com.example.bnk.dto.product.ProductListViewDto;
@@ -171,4 +172,39 @@ public class ProductViewService {
 
         return productViewDao.selectCompareProducts(productNoList);
     }
+    
+	// 로그인 회원 유형별 상품 목록 조회
+    public List<ProductListViewDto> getProductListForMember(String memberType, String sort) {
+
+        List<ProductListViewDto> list = productViewDao.selectProductListForMember(memberType);
+
+        if ("maxRateDesc".equals(sort)) {
+            list.sort(Comparator
+                    .comparingDouble(ProductListViewDto::getMax_interest_rate)
+                    .reversed());
+
+        } else if ("nameAsc".equals(sort)) {
+            list.sort(Comparator
+                    .comparing(ProductListViewDto::getProduct_name,
+                            Comparator.nullsLast(String::compareTo)));
+
+        } else {
+            list.sort(Comparator
+                    .comparingDouble(ProductListViewDto::getMin_interest_rate)
+                    .reversed());
+        }
+
+        return list;
+    }
+    
+    // 로그인 회원 유형별 상품 검색
+    public List<ProductListViewDto> searchProductListForMember(String memberType, String keyword) {
+
+        if (keyword == null || keyword.trim().equals("")) {
+            return productViewDao.selectProductListForMember(memberType);
+        }
+
+        return productViewDao.searchProductListForMember(memberType, keyword.trim());
+    }
 }
+

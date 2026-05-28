@@ -25,7 +25,9 @@
 		SELECT * FROM TB_MEMBER_TRACKING_LOG
 	</select>
 
+
 	<select id="findByUserID" resultType="long">
 		SELECT member_no FROM TB_BANK_MEMBER WHERE login_id = #{userid}
 	</select>
+
 </mapper>

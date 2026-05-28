@@ -261,5 +261,96 @@
         ORDER BY p.product_no
 
     </select>
+    
+    <!--
+    로그인 회원 유형별 상품 목록 조회
+    PERSONAL 회원: ALL + PERSONAL 상품
+    BUSINESS 회원: ALL + BUSINESS 상품
+	-->
+	<select id="selectProductListForMember"
+	        resultType="com.example.bnk.dto.product.ProductListViewDto">
+	
+	    SELECT
+	        p.product_no,
+	        p.product_name,
+	        p.product_type,
+	        p.min_interest_rate,
+	        p.max_interest_rate,
+	        p.interest_payment_type,
+	        p.interest_calc_type,
+	        p.product_status,
+	        p.branch_join_yn,
+	        p.internet_join_yn,
+	        p.mobile_join_yn,
+	        p.sale_start_date,
+	        p.sale_end_date,
+	        d.subtitle,
+	        d.content,
+	        d.image_url
+	    FROM TB_PRODUCT p
+	    LEFT JOIN TB_PRODUCT_DESCRIPTION d
+	        ON p.product_no = d.product_no
+	    JOIN TB_PRODUCT_CONDITION c
+	        ON p.product_no = c.product_no
+	    WHERE p.product_status = 'SALE'
+	      AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+	      AND (
+	            c.customer_type = 'ALL'
+	            OR c.customer_type = #{memberType}
+	          )
+	    ORDER BY p.product_no DESC
+	
+	</select>
+	
+	<!--
+    로그인 회원 유형별 상품 검색
+	-->
+	<select id="searchProductListForMember"
+	        resultType="com.example.bnk.dto.product.ProductListViewDto">
+	
+	    SELECT DISTINCT
+	        p.product_no,
+	        p.product_name,
+	        p.product_type,
+	        p.min_interest_rate,
+	        p.max_interest_rate,
+	        p.interest_payment_type,
+	        p.interest_calc_type,
+	        p.product_status,
+	        p.branch_join_yn,
+	        p.internet_join_yn,
+	        p.mobile_join_yn,
+	        p.sale_start_date,
+	        p.sale_end_date,
+	        d.subtitle,
+	        d.content,
+	        d.image_url
+	    FROM TB_PRODUCT p
+	    LEFT JOIN TB_PRODUCT_DESCRIPTION d
+	        ON p.product_no = d.product_no
+	    JOIN TB_PRODUCT_CONDITION c
+	        ON p.product_no = c.product_no
+	    LEFT JOIN TB_KEYWORD k
+	        ON (
+	            p.product_name LIKE '%' || k.normalized_keyword || '%'
+	            OR d.content LIKE '%' || k.normalized_keyword || '%'
+	            OR d.subtitle LIKE '%' || k.normalized_keyword || '%'
+	        )
+	    WHERE p.product_status = 'SALE'
+	      AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+	      AND (
+	            c.customer_type = 'ALL'
+	            OR c.customer_type = #{memberType}
+	          )
+	      AND (
+	            p.product_name LIKE '%' || #{keyword} || '%'
+	            OR d.content LIKE '%' || #{keyword} || '%'
+	            OR d.subtitle LIKE '%' || #{keyword} || '%'
+	            OR k.input_keyword LIKE '%' || #{keyword} || '%'
+	            OR k.normalized_keyword LIKE '%' || #{keyword} || '%'
+	      )
+	    ORDER BY p.product_no DESC
+	
+	</select>
 
 </mapper>
