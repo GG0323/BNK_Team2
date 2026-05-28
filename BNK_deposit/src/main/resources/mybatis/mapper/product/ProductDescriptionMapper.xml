@@ -80,6 +80,6 @@
 	</update>
 	
 	<select id="selectDescriptionPrd" resultType="com.example.bnk.dto.product.ProductDescriptionDto">
-		
+		SELECT * FROM TB_PRODUCT_DESCRIPTION WHERE description_no = #{description_no}
 	</select>
 </mapper>
