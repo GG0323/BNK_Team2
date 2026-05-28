@@ -123,10 +123,13 @@ public class EmployeePageController {
 	public String approvedDetail(
 			@AuthenticationPrincipal String username
 			) {
-		
 		return "Employees/manager/SUG/approvedSuggestionDetail";
 	}
-	
+	// 고객 추적 LOG
+	@GetMapping("/manager/LOG/bankMemberLog")
+	public String bankMemberLog() {
+		return "Employees/manager/LOG/bankMemberLogList";
+	}
 	
 	
 
