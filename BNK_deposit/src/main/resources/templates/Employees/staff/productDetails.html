@@ -8,57 +8,57 @@
 <style>
 /* ===== 리스트 보관용 폼 카드 크기 맞춤 ===== */
 .form-card {
-background: #fff;
-border-radius: 12px;
-border: 1px solid #E8E8E8;
-padding: 2rem;
-max-width: 1100px;
-margin-bottom: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 2rem;
+  max-width: 1100px;
+  margin-bottom: 2rem;
 }
 
 .section-title {
-font-size: 11px;
-font-weight: 700;
-color: #E8282F;
-letter-spacing: 0.5px;
-text-transform: uppercase;
-margin-bottom: 1.5rem;
-padding-bottom: 8px;
-border-bottom: 1px solid #F0F0F0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #E8282F;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F0F0F0;
 }
 
 /* ===== 테이블 고급화 서식 ===== */
 .table-responsive {
-width: 100%;
-overflow-x: auto;
-margin-bottom: 2rem;
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 2rem;
 }
 
 table {
-width: 100%;
-border-collapse: collapse;
-text-align: left;
-font-size: 13px;
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
 }
 
 th {
-color: #555;
-font-weight: 600;
-font-size: 12px;
-padding: 12px 10px;
-border-bottom: 2px solid #E0E0E0;
-background: #fff;
+  color: #555;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 12px 10px;
+  border-bottom: 2px solid #E0E0E0;
+  background: #fff;
 }
 
 td {
-padding: 14px 10px;
-color: #333;
-border-bottom: 1px solid #EEEEEE;
-vertical-align: middle;
+  padding: 14px 10px;
+  color: #333;
+  border-bottom: 1px solid #EEEEEE;
+  vertical-align: middle;
 }
 
 tr:last-child td {
-border-bottom: none;
+  border-bottom: none;
 }
 
 .text-id { font-size: 12px; font-weight: 500; color: #888; }
@@ -67,11 +67,11 @@ border-bottom: none;
 
 /* ===== 관제탑 전용 한 행 정렬 컴포넌트 서식 ===== */
 .comp-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1rem 10px;
-border-bottom: 1px solid #EEEEEE;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 10px;
+  border-bottom: 1px solid #EEEEEE;
 }
 .comp-row:last-child { border-bottom: none; }
 
@@ -80,12 +80,12 @@ border-bottom: 1px solid #EEEEEE;
 
 /* ===== 컴포넌트 상태 뱃지 ===== */
 .comp-status {
-display: inline-block;
-padding: 4px 10px;
-border-radius: 6px;
-font-size: 11px;
-font-weight: 600;
-text-align: center;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
 }
 .status-assigned { background: #EAF7EE; color: #1E7E34; }
 .status-empty { background: #FDF2F2; color: #E8282F; }
@@ -93,19 +93,19 @@ text-align: center;
 
 /* ===== 상세보기 및 액션 버튼 가이드 ===== */
 .btn-action {
-display: inline-block;
-padding: 6px 14px;
-font-size: 12px;
-font-weight: 600;
-border: 1px solid #E0E0E0;
-border-radius: 6px;
-background: #fff;
-color: #555;
-cursor: pointer;
-transition: all 0.15s;
-text-decoration: none;
-text-align: center;
-white-space: nowrap;
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
 }
 .btn-action:hover { border-color: #111; color: #111; background: #FAFAFA; }
 
@@ -113,6 +113,33 @@ white-space: nowrap;
 .btn-action.assign-trigger:hover { background: #E8282F; color: #fff; }
 
 .btn-row-bottom { display: flex; justify-content: flex-end; max-width: 1100px; margin-top: 1.5rem; }
+
+/* ===== 하단 수정 인라인 섹션 서식 보정 ===== */
+.modify-box {
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+.form-inline-group {
+  margin-bottom: 12px;
+}
+.form-inline-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+.form-inline-group input, .form-inline-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid #D0D0D0;
+  border-radius: 6px;
+  margin-top: 4px;
+}
 </style>
 </head>
 <body>
@@ -223,7 +250,67 @@ white-space: nowrap;
 				</div>
 			</div>
 		</div>
-		
+
+		<th:block th:if="${prdDtResDto != null}">
+			
+			<div class="modify-box" style="border: 1px solid #43a047;">
+				<form th:action="@{/employee/staff/product/update/description}" method="POST">		
+					<h3 style="color: #43a047; margin-top: 0;">상품 설명 정보 변경</h3>
+					
+					<input type="hidden" name="product_no" th:value="${prdDtResDto.product != null ? prdDtResDto.product.product_no : ''}"/>
+					
+					<div class="form-inline-group">
+						<label>상품 설명 PK</label>
+						<input type="text" name="description_no" th:value="${prdDtResDto.description != null ? prdDtResDto.description.description_no : ''}" readonly style="background-color: #f5f5f5;"/>
+					</div>
+					
+					<div class="form-inline-group" th:if="${prdDtResDto.description != null && prdDtResDto.description.image_url != null}">
+						<label>상품 대표 이미지:</label><br>
+						<img th:src="${prdDtResDto.description.image_url}" alt="상품 이미지" style="max-width: 200px; height: auto; margin-top: 5px; border: 1px solid #ccc;"/>
+						<input type="hidden" name="image_url" th:value="${prdDtResDto.description.image_url}"/>
+					</div>
+					
+					<div class="form-inline-group">
+						<label>부제목:</label>
+						<input type="text" name="subtitle" th:value="${prdDtResDto.description != null ? prdDtResDto.description.subtitle : ''}"/>
+					</div>
+					<div class="form-inline-group">
+						<label>홍보 문구:</label>
+						<textarea rows="2" name="content" th:text="${prdDtResDto.description != null ? prdDtResDto.description.content : ''}" style="resize: none;"></textarea>
+					</div>
+					<div class="form-inline-group">
+						<label>가입 자격 설명:</label>
+						<textarea rows="2" name="eligibility_desc" th:text="${prdDtResDto.description != null ? prdDtResDto.description.eligibility_desc : ''}" style="resize: none;"></textarea>
+					</div>
+					<div class="form-inline-group">
+						<label>우대 금리 요약:</label>
+						<input type="text" name="preferential_rate_summary" th:value="${prdDtResDto.description != null ? prdDtResDto.description.preferential_rate_summary : ''}"/>
+					</div>
+					
+					<div style="margin-top: 15px;">
+						<button type="submit" class="btn-action" style="border-color: #43a047; color: #43a047;">상품 설명 변경하기</button>
+					</div>
+				</form>
+			</div>
+
+			<div class="modify-box" style="border: 1px solid #e65100;">
+				<form th:action="@{/employee/staff/product/update/condition}" method="POST">
+					<h3 style="color: #e65100; margin-top: 0;">상품 가입 조건 정보 변경</h3>
+					
+					<input type="hidden" name="product_no" th:value="${prdDtResDto.product != null ? prdDtResDto.product.product_no : ''}"/>
+					
+					<div class="form-inline-group">
+						<label>상품 가입조건 PK: </label>
+						<input type="text" name="condition_no" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.condition_no : ''}" readonly style="background-color: #f5f5f5;"/>
+					</div>
+					
+					<div style="margin-top: 15px;">
+						<button type="submit" class="btn-action" style="border-color: #e65100; color: #e65100;">가입 조건 변경하기</button>
+					</div>
+				</form>
+			</div>
+		</th:block>
+
 		<div class="btn-row-bottom">
 			<a class="btn-action" style="padding: 10px 24px;" th:href="@{/employee/staff/product/approved/list}">승인된 제안서 목록으로 돌아가기</a>
 		</div>
@@ -232,19 +319,14 @@ white-space: nowrap;
 
 	<script th:inline="javascript">
 	/*<![CDATA[*/
-		// 상위 제안서 번호 (공통으로 사용됨)
-		const suggestionNo = /*[[${aprSugDto.suggestion_no}]]*/ 0;
+		const suggestionNo = /*[[${aprSugDto != null ? aprSugDto.suggestion_no : 0}]]*/ 0;
 		
-		// --- [작성하기 동선] ---
-		// 새 스펙 생성 페이지로 갈 때는 항상 상위 제안서 번호(?suggestion_no=X)를 달고 가야 매핑이 됩니다.
 		function rateWrite(){
 			location.href = '/employee/staff/product/rate?suggestion_no=' + suggestionNo;
 		}
 		function termsWrite(){
 			location.href = '/employee/staff/productTerm?suggestion_no=' + suggestionNo;
 		}
-		
-		// --- [조건 조회 및 등록 연계] ---
 		function descWrite(){
 			location.href = '/employee/staff/product/description?suggestion_no=' + suggestionNo;
 		}
@@ -252,9 +334,6 @@ white-space: nowrap;
 			location.href = '/employee/staff/product/condition?suggestion_no=' + suggestionNo;
 		}
 		
-		// --- [자세히 보기 동선] ---
-		// 타임리프가 동적으로 태그에 심어준 각 고유 시퀀스 번호(no)를 받아서 전송하며,
-		// 돌아올 관제탑 번호 지정을 위해 뒤에 suggestion_no를 함께 파라미터로 붙여 보냅니다.
 		function ratePage(no){
 			location.href = '/employee/staff/product/rate/detail/' + no + '?suggestion_no=' + suggestionNo;
 		}
@@ -267,7 +346,6 @@ white-space: nowrap;
 			location.href = '/employee/staff/product/description/detail/' + no + '?suggestion_no=' + suggestionNo;
 		}
 		
-		// 조건 상세 페이지 바인딩 연계 주소 수정 완료
 		function condPage(no){
 			location.href = '/employee/staff/product/condition/detail/' + no + '?suggestion_no=' + suggestionNo;
 		}

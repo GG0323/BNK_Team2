@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CalcService {
 
     // 금융 공통 상수: 일반과세 15.4% (이자소득세 14% + 지방소득세 1.4%)

@@ -3,11 +3,13 @@ package com.example.bnk.service.employees;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.employee.IEmployeeDao;
 import com.example.bnk.dto.employee.EmployeeDto;
 
 @Service
+@Transactional
 public class EmployeesLoginService {
 	
 	@Autowired
@@ -35,16 +37,7 @@ public class EmployeesLoginService {
 			
 			return true;	
 		}
-	}
-	
-	
-	
-	// 회원 등록 을 먼저 해야한다.....
-	
-	
-	
-	
-	
+	}	
 }
 
 

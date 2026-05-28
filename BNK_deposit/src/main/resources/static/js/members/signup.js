@@ -48,7 +48,7 @@ function mergeIdentifier() {
         const id1 = document.getElementById("personalId1").value;
         const id2 = document.getElementById("personalId2").value;
 
-        if (!/^[0-9]{6}$/.test(id1) || !/^[0-9]{7}$/.test(id2)) {
+        if (!/^[0-9]{6}$/.test(id1) || !/^[0-9]{7}$/.test(id2) || !['1', '2', '3', '4'].includes(id2[0])) {
             alert("주민등록번호 형식이 올바르지 않습니다.");
             return false;
         }
