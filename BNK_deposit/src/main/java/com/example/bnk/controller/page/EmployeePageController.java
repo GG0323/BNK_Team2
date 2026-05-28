@@ -144,7 +144,8 @@ public class EmployeePageController {
         
         if ("rate".equals(type)) {
             // 금리 등록/상세 페이지로 이동
-        	
+        	ProductRateDto rateDto = prdForEmpService.selectRatePrd(aprDto.getRate_no());
+        	model.addAttribute("rateDto", rateDto);
         	
             return "Employees/manager/SUG/composition/productRateDetail"; 
         } else if ("terms".equals(type)) {

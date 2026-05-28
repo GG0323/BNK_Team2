@@ -80,6 +80,11 @@ public class ProductForEmployee {
 		return iProductCondDao.selectConditionPrd(condition_no);
 	}
 	
+	// rate
+	public ProductRateDto selectRatePrd(@Param("rate_no") long rate_no) {
+		return iProductRateDao.selectRatePrd(rate_no);
+	}
+	
 	// des
 	public ProductDescriptionDto selectDescriptionPrd(@Param("description_no") long description_no) {
 		return iProductDescDao.selectDescriptionPrd(description_no);

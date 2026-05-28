@@ -21,6 +21,7 @@ body {
   min-height: 100vh;
   position: fixed;
   top: 0; left: 0;
+  z-index: 10;
 }
 
 .sidebar .logo {
@@ -50,11 +51,11 @@ body {
   border-left-color: #E8282F;
 }
 
-/* ===== 메인 본문 ===== */
+/* ===== 메인 본문 (버튼 짤림 해결을 위해 패딩 하단 보정) ===== */
 .main {
   margin-left: 190px;
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 2rem 5rem 2rem; /* 하단 여백을 5rem으로 늘려 버튼 공간 확보 */
   min-width: 0;
 }
 
@@ -190,12 +191,13 @@ input:disabled, select:disabled, textarea:disabled {
   accent-color: #E8282F;
 }
 
-/* ===== 하단 버튼단 ===== */
+/* ===== 하단 버튼단 (위치 고정 해제 및 정렬 보정) ===== */
 .btn-group {
   margin-top: 2rem;
   display: flex;
   gap: 10px;
   max-width: 900px;
+  padding-bottom: 2rem; /* 스크롤 끝에서도 여유있게 보이도록 설정 */
 }
 .btn {
   padding: 11px 24px;
@@ -353,7 +355,7 @@ input:disabled, select:disabled, textarea:disabled {
             <div class="range-container">
               <select id="fixed_term_yn" name="fixed_term_yn" style="flex: 1;" th:disabled="${conDto != null}">
                 <option value="N" th:selected="${conDto != null && conDto.fixed_term_yn == 'N'}">N (범위식 선택)</option>
-                <option value="Y" th:selected="${conDto != null && th:conDto.fixed_term_yn == 'Y'}">Y (고정치 지정)</option>
+                <option value="Y" th:selected="${conDto != null && conDto.fixed_term_yn == 'Y'}">Y (고정치 지정)</option>
               </select>
               <input type="text" id="fixed_term_values" name="fixed_term_values" placeholder="예: 3,6,12" style="flex: 2;"
                      th:value="${conDto != null ? conDto.fixed_term_values : ''}" 
@@ -402,7 +404,7 @@ input:disabled, select:disabled, textarea:disabled {
           </div>
           
           <div class="form-group">
-            </div>
+          </div>
 
           <div class="form-group full-width">
             <label>가입 조건 부가 설명 및 특이 비고 사항</label>
@@ -449,7 +451,6 @@ input:disabled, select:disabled, textarea:disabled {
     function submitCondition() {
       const form = document.getElementById("conditionForm");
       
-      // 필수 입력 검증 활성화 체크
       if(!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -458,18 +459,15 @@ input:disabled, select:disabled, textarea:disabled {
       const formData = new FormData(form);
       const jsonObject = {};
       
-      // FormData를 Plain Object 체계로 파싱
       formData.forEach((value, key) => {
         jsonObject[key] = value;
       });
 
-      // 공백 값 검증 보정 연산 처리
       if(!jsonObject['max_age']) jsonObject['max_age'] = null;
       if(!jsonObject['max_join_amount']) jsonObject['max_join_amount'] = null;
 
       console.log("전송할 조건 구성 데이터 구조:", jsonObject);
 
-      // 백엔드 비동기 통신 요청 처리
       fetch("/api/employee/approved/registerCondition", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
