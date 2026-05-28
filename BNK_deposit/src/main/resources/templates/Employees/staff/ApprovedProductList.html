@@ -4,62 +4,8 @@
 <meta charset="UTF-8">
 <title>승인된 상품 리스트</title>
 <link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
-
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}"/>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  background: #F5F5F5;
-  display: flex;
-  min-height: 100vh;
-}
-
-/* ===== 메인 본문 컨테이너 ===== */
-.main {
-  flex: 1;
-  padding: 2rem;
-  min-width: 0;
-}
-
-.topbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2rem;
-}
-
-.logout-btn {
-  font-size: 12px;
-  color: #555;
-  background: #fff;
-  border: 1px solid #E0E0E0;
-  padding: 6px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.15s;
-}
-.logout-btn:hover { border-color: #111; color: #111; }
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 1.5rem;
-}
-.breadcrumb a { color: #aaa; text-decoration: none; }
-.breadcrumb a:hover { color: #111; }
-.breadcrumb .current { color: #111; font-weight: 600; }
-
-.page-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-  letter-spacing: -0.5px;
-  margin-bottom: 1.5rem;
-}
 
 /* ===== 리스트 보관용 폼 카드 크기 맞춤 ===== */
 .form-card {
@@ -197,106 +143,94 @@ tr:hover td {
 </style>
 </head>
 <body>
-
-  <div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
-
-  <div class="main">
-
-    <div class="topbar">
-      <button class="logout-btn">로그아웃</button>
-    </div>
-
-    <div class="breadcrumb">
-      직원 페이지 › <span class="current">승인된 상품 리스트</span>
-    </div>
-
-    <div class="page-title">승인된 상품 리스트</div>
-
-    <div class="form-card">
-      
-      <div class="section-title">상품 컴포넌트 구성 현황</div>
-
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 80px;">제안 FK</th>
-              <th>제안 상품명</th>
-              <th style="width: 120px;">최저 금리</th>
-              <th style="width: 120px;">최고 금리</th>
-              <th style="width: 120px;">금리 번호</th>
-              <th style="width: 120px;">약관 번호</th>
-              <th style="width: 120px;">설명 번호</th>
-              <th style="width: 120px;">조건 번호</th>
-              <th style="width: 100px; text-align: center;">상세보기</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="aprsug : ${approvedSuggestion}">
-              
-              <td class="text-id" th:text="${aprsug.suggestion_no}">1</td>
-              
-              <td class="text-name" th:text="${aprsug.product_name}">기본 상품 제안명</td>
-              
-              <td class="text-rate" th:text="|${aprsug.proposed_min_interest_rate}%|">0.00%</td>
-              <td class="text-rate" th:text="|${aprsug.proposed_max_interest_rate}%|">0.00%</td>
-              
-              <td>
-				  <div th:if="${aprsug.rate_no != null and aprsug.rate_no != 0}">
-				    <span class="comp-status status-assigned">구성 완료</span>
-				    <span class="sub-no" th:text="|No. ${aprsug.rate_no}|"></span>
-				  </div>
-				  <div th:if="${aprsug.rate_no == null or aprsug.rate_no == 0}">
-				    <span class="comp-status status-empty">미등록</span>
-				  </div>
-				</td>
-				
-				<td>
-				  <div th:if="${aprsug.terms_no != null and aprsug.terms_no != 0}">
-				    <span class="comp-status status-assigned">구성 완료</span>
-				    <span class="sub-no" th:text="|No. ${aprsug.terms_no}|"></span>
-				  </div>
-				  <div th:if="${aprsug.terms_no == null or aprsug.terms_no == 0}">
-				    <span class="comp-status status-empty">미등록</span>
-				  </div>
-				</td>
-				
-				<td>
-				  <div th:if="${aprsug.description_no != null and aprsug.description_no != 0}">
-				    <span class="comp-status status-assigned">구성 완료</span>
-				    <span class="sub-no" th:text="|No. ${aprsug.description_no}|"></span>
-				  </div>
-				  <div th:if="${aprsug.description_no == null or aprsug.description_no == 0}">
-				    <span class="comp-status status-empty">미등록</span>
-				  </div>
-				</td>
-				
-				<td>
-				  <div th:if="${aprsug.condition_no != null and aprsug.condition_no != 0}">
-				    <span class="comp-status status-assigned">구성 완료</span>
-				    <span class="sub-no" th:text="|No. ${aprsug.condition_no}|"></span>
-				  </div>
-				  <div th:if="${aprsug.condition_no == null or aprsug.condition_no == 0}">
-				    <span class="comp-status status-empty">미등록</span>
-				  </div>
-				</td>
-              
-              <td style="text-align: center;">
-                <a class="btn-action" th:href="@{/employee/prdPage/detail/{product_no}(product_no=${aprsug.suggestion_no})}">상세보기</a>
-              </td>
-            </tr>
-            
-            <tr th:if="${#lists.isEmpty(approvedSuggestion)}">
-              <td colspan="9" class="empty-row">
-                현재 등록 처리할 승인된 상품 내역이 존재하지 않습니다.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-  </div>
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+	
+	<div class="main">
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+		
+		<div class="breadcrumb">
+			직원 페이지 › <span class="current">승인된 제안서 리스트</span>
+		</div>
+		
+		<div class="page-title">승인된 제안서 리스트</div>
+		<div class="form-card">
+			<div class="section-title">상품 컴포넌트 구성 현황</div>
+			<div class="table-responsive">
+				<table>
+					<thead>
+					<tr>
+						<th style="width: 80px;">제안 FK</th>
+						<th>제안 상품명</th>
+						<th style="width: 120px;">최저 금리</th>
+						<th style="width: 120px;">최고 금리</th>
+						<th style="width: 120px;">금리 번호</th>
+						<th style="width: 120px;">약관 번호</th>
+						<th style="width: 120px;">설명 번호</th>
+						<th style="width: 120px;">조건 번호</th>
+						<th style="width: 100px; text-align: center;">상세보기</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr th:each="aprsug : ${approvedSuggestion}">
+							
+							<td class="text-id" th:text="${aprsug.suggestion_no}">1</td>
+							<td class="text-name" th:text="${aprsug.product_name}">기본 상품 제안명</td>
+							<td class="text-rate" th:text="|${aprsug.proposed_min_interest_rate}%|">0.00%</td>
+							<td class="text-rate" th:text="|${aprsug.proposed_max_interest_rate}%|">0.00%</td>
+							<td>
+								<div th:if="${aprsug.rate_no != null and aprsug.rate_no != 0}">
+									<span class="comp-status status-assigned">구성 완료</span>
+									<span class="sub-no" th:text="|No. ${aprsug.rate_no}|"></span>
+								</div>
+								<div th:if="${aprsug.rate_no == null or aprsug.rate_no == 0}">
+									<span class="comp-status status-empty">미등록</span>
+								</div>
+							</td>
+							<td>
+								<div th:if="${aprsug.terms_no != null and aprsug.terms_no != 0}">
+									<span class="comp-status status-assigned">구성 완료</span>
+									<span class="sub-no" th:text="|No. ${aprsug.terms_no}|"></span>
+								</div>
+								<div th:if="${aprsug.terms_no == null or aprsug.terms_no == 0}">
+									<span class="comp-status status-empty">미등록</span>
+								</div>
+							</td>
+							<td>
+								<div th:if="${aprsug.description_no != null and aprsug.description_no != 0}">
+									<span class="comp-status status-assigned">구성 완료</span>
+									<span class="sub-no" th:text="|No. ${aprsug.description_no}|"></span>
+								</div>
+								<div th:if="${aprsug.description_no == null or aprsug.description_no == 0}">
+									<span class="comp-status status-empty">미등록</span>
+								</div>
+							</td>
+							<td>
+								<div th:if="${aprsug.condition_no != null and aprsug.condition_no != 0}">
+									<span class="comp-status status-assigned">구성 완료</span>
+									<span class="sub-no" th:text="|No. ${aprsug.condition_no}|"></span>
+								</div>
+								<div th:if="${aprsug.condition_no == null or aprsug.condition_no == 0}">
+									<span class="comp-status status-empty">미등록</span>
+								</div>
+							</td>      
+							<td style="text-align: center;">
+								<a class="btn-action" th:href="@{|/employee/staff/product/approved/details/${aprsug.suggestion_no}|}">
+									상세보기
+								</a>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(approvedSuggestion)}">
+							<td colspan="9" class="empty-row">
+								현재 등록 처리할 승인된 상품 내역이 존재하지 않습니다.
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

@@ -4,65 +4,8 @@
 <meta charset="UTF-8">
 <title>제안서 작성</title>
 <link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
-
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}"/>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  background: #F5F5F5;
-  display: flex;
-  min-height: 100vh;
-}
-
-
-/* ===== 메인 ===== */
-.main {
-  flex: 1;
-  padding: 2rem;
-  min-width: 0;
-}
-
-.topbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2rem;
-}
-
-.logout-btn {
-  font-size: 12px;
-  color: #555;
-  background: #fff;
-  border: 1px solid #E0E0E0;
-  padding: 6px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.15s;
-}
-
-.logout-btn:hover { border-color: #111; color: #111; }
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 1.5rem;
-}
-
-.breadcrumb a { color: #aaa; text-decoration: none; }
-.breadcrumb a:hover { color: #111; }
-.breadcrumb .current { color: #111; font-weight: 600; }
-
-.page-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-  letter-spacing: -0.5px;
-  margin-bottom: 1.5rem;
-}
 
 /* ===== 폼 카드 ===== */
 .form-card {
