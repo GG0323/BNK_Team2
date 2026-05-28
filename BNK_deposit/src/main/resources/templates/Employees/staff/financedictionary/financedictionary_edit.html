@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>금융 용어 수정</title>
+
+<meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}">
+
+<link rel="stylesheet" th:href="@{/css/common/employee_financedictionary.css}">
+<script src="/js/members/common.js" defer></script>
+<script src="/js/common/financedictionary_edit.js" defer></script>
+</head>
+
+<body>
+<div class="admin-wrap">
+
+    <div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+    <!-- 우측 본문 -->
+    <main class="main">
+
+	    <div class="topbar">
+		    <form th:action="@{/employee/logout}" method="post">
+		        <input type="hidden"
+		               th:name="${_csrf.parameterName}"
+		               th:value="${_csrf.token}">
+		        <button type="submit" class="logout-btn">
+		            로그아웃
+		        </button>
+		    </form>
+		</div>
+
+        <div class="breadcrumb">
+		    로그인 &gt; 금융 사전 관리 &gt; <span class="current">금융 용어 수정</span>
+		</div>
+		
+		<div class="page-header">
+		    <h1 class="page-title">금융 용어 수정</h1>
+		    <p class="page-desc">등록된 금융 용어의 카테고리, 용어명, 설명을 수정하거나 삭제합니다.</p>
+		</div>
+		
+		<section class="content-box form-content-box">
+            <form id="editForm" class="dictionary-form">
+                <input type="hidden" name="dictionary_no" id="dictionary_no">
+
+                <table class="detail-table">
+                    <tr>
+                        <th>카테고리</th>
+                        <td>
+                            <select name="dictionary_category" id="dictionary_category" required>
+                                <option value="예적금">예적금</option>
+                                <option value="대출">대출</option>
+                                <option value="보험">보험</option>
+                                <option value="카드">카드</option>
+                                <option value="청약">청약</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>용어명</th>
+                        <td>
+                            <input type="text" name="dictionary_nm" id="dictionary_nm" required>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>용어 설명</th>
+                        <td>
+                            <textarea name="dictionary_content" id="dictionary_content" rows="10" required></textarea>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="btn-wrap">
+                    <button type="submit" class="submit-btn">수정완료</button>
+                    <button type="button" id="deleteBtn" class="delete-btn">삭제하기</button>
+                    <a href="/employee/financedictionary" id="cancelBtn" class="cancel-btn">취소</a>
+                </div>
+            </form>
+        </section>
+
+    </main>
+</div>
+</body>
+</html>

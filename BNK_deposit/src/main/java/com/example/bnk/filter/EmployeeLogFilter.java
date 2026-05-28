@@ -4,11 +4,14 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.bnk.dao.employee.IEmployeeLogDao;
+import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.employee.EmployeeLogInsertDto;
+import com.example.bnk.service.employees.EmployeeListService;
 import com.example.bnk.service.employees.EmployeeLogService;
 
 import jakarta.servlet.Filter;
@@ -48,8 +51,13 @@ public class EmployeeLogFilter extends OncePerRequestFilter{
 			insertDto.setResponse_status(servletResponse.getStatus()); 
 			// 요청 IP 저장
 			insertDto.setRequest_ip(servletRequest.getRemoteAddr()); // 또는 servletRequest.getHeader("X-Forwarded-For")
-			// 직원 pk 저장
-			insertDto.setEmployee_no(4);
+			// 직원 pk 저장 -> @AuthenticationPrincipal String username
+			// empService.findByUsername(username);로 정보 받아오기 @Autowired
+			// private EmployeeListService empService
+			//EmployeeDto pk = empService.findByUsername(username);
+			//pk.getEmployee_no()
+			
+			//insertDto.setEmployee_no(4);
 			
 			LogService.log(insertDto);
 			

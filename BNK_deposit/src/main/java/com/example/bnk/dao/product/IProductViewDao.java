@@ -28,4 +28,15 @@ public interface IProductViewDao {
     // 상품 비교 조회
     // 선택한 상품 번호 여러 개를 기준으로 비교 데이터 조회
     public List<ProductCompareViewDto> selectCompareProducts(@Param("product_no_list") List<Long> product_no_list);
+    
+    // 회원 유형별 상품 목록 조회
+    List<ProductListViewDto> selectProductListForMember(
+            @Param("memberType") String memberType
+    );
+
+    // 회원 유형별 상품 목록 검색
+    List<ProductListViewDto> searchProductListForMember(
+            @Param("memberType") String memberType,
+            @Param("keyword") String keyword
+    );
 }

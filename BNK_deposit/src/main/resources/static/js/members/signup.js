@@ -67,11 +67,13 @@ function mergeIdentifier() {
         }
 
         memberIdentifier.value = id1 + "-" + id2 + "-" + id3;
-		console.log(identifier);
+		console.log(memberIdentifier.value);
     }
 
     return true;
 }
+
+
 
 function signup(){
 	const pw_first = document.querySelector("input[name='password_hash']");
@@ -114,6 +116,16 @@ function signup(){
 	if(!mergeIdentifier()){
 		alert(member_type === "PERSONAL" ? '주민등록번호를 입력해주세요.' : '사업자등록번호를 입력해주세요.');
 		return;
+	}
+	
+	if (member_type === "BUSINESS") {
+	    const businessOpenDate = document.getElementById("businessOpenDate");
+
+	    if (!businessOpenDate.value) {
+	        alert("개업일자를 입력해주세요.");
+	        businessOpenDate.focus();
+	        return;
+	    }
 	}
 	
 	if(phone.value == ""){

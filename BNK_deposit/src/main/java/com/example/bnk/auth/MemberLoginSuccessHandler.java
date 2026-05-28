@@ -2,6 +2,7 @@ package com.example.bnk.auth;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,7 +10,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.service.member.BankMemberService;
-
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.ServletException;
@@ -47,17 +47,17 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		}
 
 		if ("DORMANT".equals(member.getMember_status())) {
-			request.getSession().setAttribute("DORMANT_LOGIN_ID", loginId);
-		    response.sendRedirect("/dormant/release");
+		    request.getSession().setAttribute("DORMANT_LOGIN_ID", loginId);
+		    response.sendRedirect("/member/dormant/release");
 		    return;
 		}
 		
-		LocalDate lastLoginAt = member.getLast_login_at();
+		LocalDateTime lastLoginAt = member.getLast_login_at();
 		
-		if (lastLoginAt != null && lastLoginAt.isBefore(LocalDate.now().minusDays(7))) {
+		if (lastLoginAt != null && lastLoginAt.isBefore(LocalDateTime.now().minusDays(7))) {
 		    bankMemberService.makeDormant(loginId);
 		    request.getSession().setAttribute("DORMANT_LOGIN_ID", loginId);
-		    response.sendRedirect("/dormant/release");
+		    response.sendRedirect("/member/dormant/release");
 		    return;
 		}
 		

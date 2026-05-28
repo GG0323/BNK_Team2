@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>고객 활동 로그</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.total-count {
+  font-size: 12px;
+  color: #888;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #E8E8E8;
+}
+
+/* ===== 검색 카드 ===== */
+.search-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 1.25rem;
+}
+
+.search-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus { border-color: #111; }
+
+.divider { border: none; border-top: 1px solid #F0F0F0; margin: 1.25rem 0; }
+
+.btn-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.btn-search {
+  background: #E8282F;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 28px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-search:hover { background: #C5202A; }
+
+/* ===== 테이블 ===== */
+.table-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+thead tr { background: #111; }
+
+thead th {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFF5F5; }
+
+tbody td {
+  padding: 12px 16px;
+  font-size: 12.5px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* 메소드 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-GET    { background: #EFF6FF; color: #1D4ED8; }
+.badge-POST   { background: #F0FFF4; color: #22863a; }
+.badge-PUT    { background: #FFF8E1; color: #B8860B; }
+.badge-DELETE { background: #FFF0F0; color: #E8282F; }
+.badge-PATCH  { background: #F3E8FF; color: #6B21A8; }
+
+.empty-row td {
+  text-align: center;
+  color: #bbb;
+  padding: 3rem;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">BNK <span>관리자</span> 페이지</div>
+    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+    <a class="nav-item active" th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a>
+    <a class="nav-item" th:href="@{/employee/manager/PRD/productList}">상품 리스트</a>
+  </aside>
+
+  <div class="main">
+
+    <div class="topbar">
+      <button class="logout-btn">로그아웃</button>
+    </div>
+
+    <div class="breadcrumb">
+      관리자 페이지 › <span class="current">고객 활동 로그</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">고객 활동 로그</div>
+      <span class="total-count" id="totalCount">전체 0건</span>
+    </div>
+
+    <!-- 검색 조건 -->
+    <div class="search-card">
+      <div class="search-grid">
+        <div class="form-group">
+          <label>회원 번호</label>
+          <input type="number" id="cond-member_no" placeholder="회원 번호">
+        </div>
+        <div class="form-group">
+          <label>요청 메소드</label>
+          <select id="cond-request_method">
+            <option value="">전체</option>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+            <option value="PATCH">PATCH</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>요청 페이지</label>
+          <input type="text" id="cond-requested_page" placeholder="예: /product">
+        </div>
+        <div class="form-group">
+          <label>요청 IP</label>
+          <input type="text" id="cond-request_ip" placeholder="예: 192.168.0">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="search-grid-3">
+        <div class="form-group">
+          <label>시작일</label>
+          <input type="date" id="cond-fromDate">
+        </div>
+        <div class="form-group">
+          <label>종료일</label>
+          <input type="date" id="cond-toDate">
+        </div>
+        <div class="form-group">
+          <label>요청 URL</label>
+          <input type="text" id="cond-request_url" placeholder="예: /api/product">
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-search" onclick="searchLog()">검색</button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>log_no</th>
+              <th>member_no</th>
+              <th>requested_page</th>
+              <th>request_method</th>
+              <th>request_url</th>
+              <th>request_ip</th>
+              <th>accessed_at</th>
+            </tr>
+          </thead>
+          <tbody id="memberLogTable">
+            <tr class="empty-row"><td colspan="7">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function methodBadge(method) {
+      if (!method) return '-';
+      return `<span class="badge badge-${method}">${method}</span>`;
+    }
+
+    function renderRows(data) {
+      const tbody = document.getElementById('memberLogTable');
+      document.getElementById('totalCount').textContent = `전체 ${data.length}건`;
+
+      if (!data.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="7">조회된 로그가 없습니다.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(log => `
+        <tr>
+          <td>${log.member_tracking_log_no}</td>
+          <td>${log.member_no ?? '-'}</td>
+          <td>${log.requested_page}</td>
+          <td>${methodBadge(log.request_method)}</td>
+          <td>${log.request_url ?? '-'}</td>
+          <td>${log.request_ip ?? '-'}</td>
+          <td>${log.accessed_at}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 최초 전체 목록 로드
+    fetch('/api/log/member/allList', { method: 'GET' })
+      .then(r => r.json())
+      .then(data => renderRows(data))
+      .catch(e => {
+        console.error(e);
+        document.getElementById('memberLogTable').innerHTML =
+          '<tr class="empty-row"><td colspan="7">데이터를 불러오지 못했습니다.</td></tr>';
+      });
+
+    // 검색
+    function searchLog() {
+      const params = {};
+      const memberNo   = document.getElementById('cond-member_no').value;
+      const method     = document.getElementById('cond-request_method').value;
+      const page       = document.getElementById('cond-requested_page').value;
+      const ip         = document.getElementById('cond-request_ip').value;
+      const fromDate   = document.getElementById('cond-fromDate').value;
+      const toDate     = document.getElementById('cond-toDate').value;
+      const url        = document.getElementById('cond-request_url').value;
+
+      if (memberNo)  params.member_no       = memberNo;
+      if (method)    params.request_method  = method;
+      if (page)      params.requested_page  = page;
+      if (ip)        params.request_ip      = ip;
+      if (fromDate)  params.from_date       = fromDate;
+      if (toDate)    params.to_date         = toDate;
+      if (url)       params.request_url     = url;
+
+      fetch('/api/log/member/conditionList?' + new URLSearchParams(params).toString())
+        .then(r => r.json())
+        .then(data => renderRows(data))
+        .catch(e => console.error(e));
+    }
+  </script>
+
+</body>
+</html>

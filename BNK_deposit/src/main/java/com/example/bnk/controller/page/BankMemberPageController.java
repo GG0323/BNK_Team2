@@ -2,6 +2,7 @@ package com.example.bnk.controller.page;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountTransactionDto;
 import com.example.bnk.dto.member.BankMemberDto;
@@ -17,6 +19,7 @@ import com.example.bnk.dto.member.MemberProductDto;
 import com.example.bnk.dto.member.MemberTrackingLogDto;
 import com.example.bnk.service.member.AccountService;
 import com.example.bnk.service.member.AccountTransactionService;
+import com.example.bnk.service.member.BankMemberLogService;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.member.MemberTrackingLogService;
 import com.example.bnk.service.product.ProductSalesService;
@@ -46,11 +49,20 @@ public class BankMemberPageController {
 	private final ProductSalesService productSalesService;
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
+	
+	private final BankMemberLogService logService;
+	// logService.build(logService.findByUserID(username), "member/mypage"); @AuthenticationPrincipal String username
 
 	// 마이페이지
 	@GetMapping("/mypage")
-    public String rootMembersMypage(Model model, SecurityContextHolder secu) {
-	
+    public String rootMembersMypage(
+    		Model model, 
+    		SecurityContextHolder secu,
+    		@AuthenticationPrincipal String username
+    		) {
+		// 로그 
+		logService.build(logService.findByUserID(username), "member/mypage");
+		
         // 회원 정보 조회
         String currentLoginId = secu.getContext().getAuthentication().getName(); 
         BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
@@ -81,7 +93,14 @@ public class BankMemberPageController {
 	
 	// 고객의 내 정보 페이지
 	@GetMapping("/myinfo")
-	public String rootMembersMyinfo(Model model, SecurityContextHolder secu) {
+	public String rootMembersMyinfo(
+			Model model, 
+			SecurityContextHolder secu,
+			@AuthenticationPrincipal String username
+			) {
+		//로그
+		logService.build(logService.findByUserID(username), "member/myinfo");
+		
 		String currentLoginId = secu.getContext().getAuthentication().getName();
 		BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
 		model.addAttribute("member", memberInfo);
@@ -98,7 +117,14 @@ public class BankMemberPageController {
 
 	// 내 정보 수정
 	@GetMapping("/myinfo/edit")
-	public String rootMembersMyinfoEdit(Model model, SecurityContextHolder secu) {
+	public String rootMembersMyinfoEdit(
+			Model model, 
+			SecurityContextHolder secu,
+			@AuthenticationPrincipal String username
+			) {
+		//로그
+		logService.build(logService.findByUserID(username), "member/myinfo_edit");
+		
 		String currentLoginId = secu.getContext().getAuthentication().getName();
 	    BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);
 	    
@@ -115,8 +141,12 @@ public class BankMemberPageController {
 	        @RequestParam(value = "email", defaultValue = "") String email,
 	        @RequestParam(value = "address_main", defaultValue = "") String addressMain,
 	        @RequestParam(value = "address_detail", defaultValue = "") String addressDetail,
-	        RedirectAttributes rttr, SecurityContextHolder secu) {
-	    
+	        RedirectAttributes rttr, SecurityContextHolder secu,
+	        @AuthenticationPrincipal String username
+			) {
+	    //로그
+		logService.build(logService.findByUserID(username), "redirect:/myinfo/edit");
+		
 		String currentLoginId = secu.getContext().getAuthentication().getName(); 
 	    
 	    // 입력 데이터가 아예 없으면 DB 접근 차단 (Early Return)
@@ -160,8 +190,9 @@ public class BankMemberPageController {
 	public String updatePassword(
 	        @RequestParam(value = "current_password", defaultValue = "") String currentPassword,
 	        @RequestParam(value = "new_password", defaultValue = "") String newPassword,
-	        RedirectAttributes rttr, SecurityContextHolder secu) 
-	{
+	        RedirectAttributes rttr, SecurityContextHolder secu,
+	        @AuthenticationPrincipal String username
+			) {
 		String currentLoginId = secu.getContext().getAuthentication().getName();
 	    
 	    // 비밀번호 입력값이 비어있으면 DB 접근 차단
@@ -175,16 +206,27 @@ public class BankMemberPageController {
 	    
 	    if (isChanged) {
 	        rttr.addFlashAttribute("msg", "비밀번호가 성공적으로 변경되었습니다.");
+	        //로그
+	        logService.build(logService.findByUserID(username), "member/myinfo");
+	        
 	        return "redirect:/myinfo"; 
 	    } else {
 	        rttr.addFlashAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
+	        //로그
+	        logService.build(logService.findByUserID(username), "member/myinfo/edit");
 	        return "redirect:/myinfo/edit";
 	    }
 	}
 	
 	// 고객의 내 계좌 정보 보기
 	@GetMapping("/myaccounts")
-	public String rootMembersAccounts(Model model, SecurityContextHolder secu) {
+	public String rootMembersAccounts(
+			Model model, 
+			SecurityContextHolder secu,
+			@AuthenticationPrincipal String userID
+			) {
+		//로그
+		logService.build(logService.findByUserID(userID), "member/myaccounts");
 		
 		// 현재 로그인된 회원 번호
 	    String username = secu.getContext().getAuthentication().getName();
@@ -209,7 +251,11 @@ public class BankMemberPageController {
     public String rootMembersHistory(
     		@RequestParam(value = "accountNo", required = false) Long accountNo, // 필수 여부를 false로 변경
             RedirectAttributes rttr, 
-            Model model) {
+            Model model,
+            @AuthenticationPrincipal String username
+    		) {
+		//로그
+		logService.build(logService.findByUserID(username), "member/myhistory");
 		
 		// 만약 상단 네비게이션 탭을 통해 파라미터 없이 들어왔다면 계좌 목록으로 튕겨냄
 	    if (accountNo == null) {
@@ -232,7 +278,14 @@ public class BankMemberPageController {
 	
 	// 고객의 가입 상품 내역 페이지 조회
 	@GetMapping("/myproducts")
-	public String rootMembersProducts(Model model, SecurityContextHolder secu) {
+	public String rootMembersProducts(
+			Model model, 
+			SecurityContextHolder secu,
+			@AuthenticationPrincipal String userID
+			) {
+		//로그
+		logService.build(logService.findByUserID(userID), "member/myproducts");
+		
 	    //  현재 로그인한 회원 번호 세팅 (테스트용 1번 회원)
 	    String username = secu.getContext().getAuthentication().getName();
 	    // 서비스 호출하여 JOIN된 가입 상품 리스트 가져오기
@@ -247,13 +300,21 @@ public class BankMemberPageController {
 	
 	// 휴면 계정 해제 화면
 	@GetMapping("/dormant/release")
-	public String dormantRelease() {
+	public String dormantRelease(
+			@AuthenticationPrincipal String username
+			) {
+		//로그
+		logService.build(logService.findByUserID(username), "member/dormant_release");
 	    return "member/dormant_release";
 	}
 
 	// 가입상품 상세 화면
 	@GetMapping("/myproducts/detail")
-	public String myProductsDetail() {
+	public String myProductsDetail(
+			@AuthenticationPrincipal String username
+			) {
+		//로그
+		logService.build(logService.findByUserID(username), "member/myproducts_details");
 		return "member/myproducts_details";
 	}
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,8 @@
 <h2 th:text="|상품명: ${prdDtResDto.product.product_name}|"></h2>
 <hr>
 <div style="border: 1px solid black; width: 450px; margin-top: 20px; padding: 15px; border-radius: 5px;">
-	<form th:action="@{/employee/staff/product/status/update}" method="POST">
+	상품 정보 수정
+	<form th:action="@{/employee/staff/product/update/product}" method="POST">
 	    <h3 style="color: black; margin-top: 0;">상품 기본 정보</h3>
 	    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />	
 		<div class="form_group">
@@ -76,149 +77,183 @@
 		    <input type="text" th:value="${prdDtResDto.product.updated_at}" disabled="disabled" style="background-color: #eee;"/><br>
 	    </div>
 	    <div style="margin: 0 auto; margin-top: 15px;">
-	        <button type="submit" style="padding: 5px 20px; font-weight: bold; cursor: pointer; margin: 0 auto;">상품 상태 변경하기</button>
+	        <button type="submit" style="padding: 5px 20px; font-weight: bold; cursor: pointer; margin: 0 auto;">상품 정보 변경하기</button>
 	    </div>
 	</form>
 </div>
 
 
 <div style="border: 1px solid #1e88e5; width: 450px; margin-top: 20px; padding: 15px; border-radius: 5px;">
-	<form th:action="@{/employee/staff/product/status/update}" method="POST">
-	    <h3 style="color: #1e88e5; margin-top: 0;">상품 금리 정보 (수정 불가)</h3>
+	상품 금리  변경
+	<form th:action="@{/employee/staff/product/update/rate}" method="POST">
+	    <h3 style="color: #1e88e5; margin-top: 0;">상품 금리 정보</h3>
+		
+		<input type="hidden" name="product_no" th:value="${prdDtResDto.product.product_no}"/>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />	
+
 	    <div class="form_group">
-	        <label>금리 번호 PK:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.rate_no : '등록 정보 없음'}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>금리 번호 PK (수정 불가):</label>
+			<input type="text" name="rate_no" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.rate_no : ''}" readonly="readonly" style="background-color: #eee;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>금리 구분:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.rate_group : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="rate_group" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.rate_group : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>금리 구간/조건명:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.rate_label : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="rate_label" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.rate_label : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>연이율:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.annual_rate : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="annual_rate" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.annual_rate : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>연수익률:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.annual_return_rate : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="annual_return_rate" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.annual_return_rate : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>비고:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.note : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="note" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.note : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>노출 순서:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.display_order : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="display_order" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.display_order : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>사용 여부:</label>
-	        <input type="text" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.use_yn : ''}" disabled="disabled" style="background-color: #eee;"/>
+			<input type="text" name="use_yn" th:value="${prdDtResDto.rate != null ? prdDtResDto.rate.use_yn : ''}" style="background-color: #fff;"/>
 	    </div>
+		<div style="margin: 0 auto; margin-top: 15px;">
+			<button type="submit" style="padding: 5px 20px; font-weight: bold; cursor: pointer; margin: 0 auto;">상품 금리 변경하기</button>
+		</div>
     </form>
 </div>
 
 
 <div style="border: 1px solid #43a047; width: 450px; margin-top: 20px; padding: 15px; border-radius: 5px;">
-	<form th:action="@{/employee/staff/product/status/update}" method="POST">
-	    <h3 style="color: #43a047; margin-top: 0;">상품 설명 정보 (수정 불가)</h3>
+	상품 설명 변경
+	<form th:action="@{/employee/staff/product/update/description}" method="POST">		
+	    <h3 style="color: #43a047; margin-top: 0;">상품 설명 정보</h3>
+		
+		<input type="hidden" name="product_no" th:value="${prdDtResDto.product.product_no}"/>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />	
+		
+		<div>
+			<label>상품 설명 PK</label><br>
+			<input type="text" name="description_no" th:value="${prdDtResDto.description != null ? prdDtResDto.description.description_no : ''}" style="background-color: #fff; width: 100%;"/>
+		</div>
 	    
 	    <div class="form_group" th:if="${prdDtResDto.description != null && prdDtResDto.description.image_url != null}">
 	        <label>상품 대표 이미지:</label><br>
 	        <img th:src="${prdDtResDto.description.image_url}" alt="상품 이미지" style="max-width: 100%; height: auto; margin-top: 5px; border: 1px solid #ccc;"/>
+			<input type="hidden" name="image_url" th:value="${prdDtResDto.description.image_url}"/>
 	    </div>
 	    
 	    <div class="form_group">
 	        <label>부제목:</label>
-	        <input type="text" th:value="${prdDtResDto.description != null ? prdDtResDto.description.subtitle : ''}" disabled="disabled" style="background-color: #eee; width: 100%;"/>
+	        <input type="text" name="subtitle" th:value="${prdDtResDto.description != null ? prdDtResDto.description.subtitle : ''}" style="background-color: #fff; width: 100%;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>홍보 문구:</label>
-	        <textarea rows="2" th:text="${prdDtResDto.description != null ? prdDtResDto.description.content : ''}" disabled="disabled" style="background-color: #eee; width: 100%; resize: none;"></textarea>
+	        <textarea rows="2" name="content" th:text="${prdDtResDto.description != null ? prdDtResDto.description.content : ''}" style="background-color: #fff; width: 100%; resize: none;"></textarea>
 	    </div>
 	    <div class="form_group">
 	        <label>가입 자격 설명:</label>
-	        <textarea rows="2" th:text="${prdDtResDto.description != null ? prdDtResDto.description.eligibility_desc : ''}" disabled="disabled" style="background-color: #eee; width: 100%; resize: none;"></textarea>
+	        <textarea rows="2" name="eligibility_desc" th:text="${prdDtResDto.description != null ? prdDtResDto.description.eligibility_desc : ''}" style="background-color: #fff; width: 100%; resize: none;"></textarea>
 	    </div>
 	    <div class="form_group">
 	        <label>우대 금리 요약:</label>
-	        <input type="text" th:value="${prdDtResDto.description != null ? prdDtResDto.description.preferential_rate_summary : ''}" disabled="disabled" style="background-color: #eee; width: 100%;"/>
+	        <input type="text" name="preferential_rate_summary" th:value="${prdDtResDto.description != null ? prdDtResDto.description.preferential_rate_summary : ''}" style="background-color: #fff; width: 100%;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>상품 특징 설명:</label>
-	        <textarea rows="2" th:text="${prdDtResDto.description != null ? prdDtResDto.description.product_feature_desc : ''}" disabled="disabled" style="background-color: #eee; width: 100%; resize: none;"></textarea>
+	        <textarea rows="2" name="product_feature_desc" th:text="${prdDtResDto.description != null ? prdDtResDto.description.product_feature_desc : ''}" style="background-color: #fff; width: 100%; resize: none;"></textarea>
 	    </div>
 	    <div class="form_group">
 	        <label>가입 방법 설명:</label>
-	        <input type="text" th:value="${prdDtResDto.description != null ? prdDtResDto.description.join_method_desc : ''}" disabled="disabled" style="background-color: #eee; width: 100%;"/>
+	        <input type="text" name="join_method_desc" th:value="${prdDtResDto.description != null ? prdDtResDto.description.join_method_desc : ''}" style="background-color: #fff; width: 100%;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>세제 혜택 설명:</label>
-	        <input type="text" th:value="${prdDtResDto.description != null ? prdDtResDto.description.tax_benefit_desc : ''}" disabled="disabled" style="background-color: #eee; width: 100%;"/>
+	        <a href="" input type="text" name="tax_benefit_desc" th:value="${prdDtResDto.description != null ? prdDtResDto.description.tax_benefit_desc : ''}" style="background-color: #fff; width: 100%;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>유의 사항 안내:</label>
-	        <textarea rows="2" th:text="${prdDtResDto.description != null ? prdDtResDto.description.caution_note : ''}" disabled="disabled" style="background-color: #eee; width: 100%; resize: none;"></textarea>
+	        <textarea rows="2" name="caution_note" th:text="${prdDtResDto.description != null ? prdDtResDto.description.caution_note : ''}" style="background-color: #fff; width: 100%; resize: none;"></textarea>
 	    </div>
 	    <div class="form_group">
 	        <label>공시 승인 번호:</label>
-	        <input type="text" th:value="${prdDtResDto.description != null ? prdDtResDto.description.disclosure_approval_desc : ''}" disabled="disabled" style="background-color: #eee; width: 100%;"/>
+	        <input type="text" name="disclosure_approval_desc" th:value="${prdDtResDto.description != null ? prdDtResDto.description.disclosure_approval_desc : ''}" style="background-color: #fff; width: 100%;"/>
 	    </div>
+		<div style="margin: 0 auto; margin-top: 15px;">
+			<button type="submit" style="padding: 5px 20px; font-weight: bold; cursor: pointer; margin: 0 auto;">상품 설명 변경하기</button>
+		</div>
     </form>
 </div>
 
 
 <div style="border: 1px solid #e65100; width: 450px; margin-top: 20px; padding: 15px; border-radius: 5px;">
-	<form th:action="@{/employee/staff/product/status/update}" method="POST">
-	    <h3 style="color: #e65100; margin-top: 0;">상품 가입 조건 정보 (수정 불가)</h3>
+	상품 가입 조건 변경
+	<form th:action="@{/employee/staff/product/update/condition}" method="POST">
+	    <h3 style="color: #e65100; margin-top: 0;">상품 가입 조건 정보</h3>
+		
+		<input type="hidden" name="product_no" th:value="${prdDtResDto.product.product_no}"/>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />	
+		
+		<div>
+			<label>상품 가입조건 PK: </label><br>
+			<input type="text" name="condition_no" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.condition_no : ''}" style="background-color: #fff;"/>
+		</div>
+		
 	    <div class="form_group">
-	        <label>최소 가입 나이:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.min_age + ' 세' : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>최소 가입 나이(세):</label>
+	        <input type="text" name="min_age" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.min_age : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
-	        <label>최대 가입 나이:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null && prdDtResDto.condition.max_age != null ? prdDtResDto.condition.max_age + ' 세' : '제한 없음'}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>최대 가입 나이(세 / 빈값은 제한없음):</label>
+	        <input type="text" name="max_age" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.max_age : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>성별 제한:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null && prdDtResDto.condition.gender != null ? prdDtResDto.condition.gender : '제한 없음(ALL)'}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="gender" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.gender : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>고객 유형:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.customer_type : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="customer_type" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.customer_type : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>외국인 가입 가능 여부:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.foreigner_available_yn : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="foreigner_available_yn" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.foreigner_available_yn : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
-	        <label>최소 가입 금액:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null ? #numbers.formatInteger(prdDtResDto.condition.min_join_amount, 0, 'COMMA') + ' 원' : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>최소 가입 금액(원):</label>
+	        <input type="text" name="min_join_amount" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.min_join_amount : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
-	        <label>최대 가입 금액:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null && prdDtResDto.condition.max_join_amount != null ? #numbers.formatInteger(prdDtResDto.condition.max_join_amount, 0, 'COMMA') + ' 원' : '제한 없음'}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>최대 가입 금액(원 / 빈값은 제한없음):</label>
+	        <input type="text" name="max_join_amount" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.max_join_amount : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
-	        <label>최소 가입 기간:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.min_term_months + ' 개월' : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>최소 가입 기간(개월):</label>
+	        <input type="text" name="min_term_months" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.min_term_months : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
-	        <label>최대 가입 기간:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null && prdDtResDto.condition.max_term_months != null ? prdDtResDto.condition.max_term_months + ' 개월' : '제한 없음'}" disabled="disabled" style="background-color: #eee;"/>
+	        <label>최대 가입 기간(개월 / 빈값은 제한없음):</label>
+	        <input type="text" name="max_term_months" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.max_term_months : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>예금자 보호 여부:</label>
-	        <input type="text" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.depositor_protection_yn : ''}" disabled="disabled" style="background-color: #eee;"/>
+	        <input type="text" name="depositor_protection_yn" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.depositor_protection_yn : ''}" style="background-color: #fff;"/>
 	    </div>
 	    <div class="form_group">
 	        <label>조건 관련 비고:</label>
-	        <textarea rows="2" th:text="${prdDtResDto.condition != null ? prdDtResDto.condition.condition_note : ''}" disabled="disabled" style="background-color: #eee; width: 100%; resize: none;"></textarea>
+	        <textarea rows="2" name="condition_note" th:text="${prdDtResDto.condition != null ? prdDtResDto.condition.condition_note : ''}" style="background-color: #fff; width: 100%; resize: none;"></textarea>
 	    </div>
+		<div style="margin: 0 auto; margin-top: 15px;">
+			<button type="submit" style="padding: 5px 20px; font-weight: bold; cursor: pointer; margin: 0 auto;">상품 가입 조건 변경하기</button>
+		</div>
     </form>
 </div>
 
 </body>
-</html>
+</html> -->

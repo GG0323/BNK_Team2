@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>금융 용어 사전</title>
 <link rel="stylesheet" href="/css/productView.css">
 <style>
-	.dict-card { background: white; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 26px rgba(0,0,0,0.07); border: 1px solid #eeeeee; transition: 0.2s; }
-	.dict-card:hover { border-color: #d71920; transform: translateY(-2px); }
-	.dict-title { font-size: 18px; font-weight: 700; color: #111; display: block; margin-bottom: 8px; }
+    .dict-card { background: white; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 26px rgba(0,0,0,0.07); border: 1px solid #eeeeee; transition: 0.2s; }
+    .dict-card:hover { border-color: #d71920; transform: translateY(-2px); }
+    .dict-title { font-size: 18px; font-weight: 700; color: #111; display: block; margin-bottom: 8px; }
+    .empty-state { text-align:center; padding:40px; color:#777; background:#f8f8f8; border-radius:14px; }
 </style>
 </head>
 <body>
@@ -17,25 +18,19 @@
             <p>궁금한 금융 용어를 확인해보세요.</p>
         </div>
         
-        <div style="text-align: right; margin-bottom: 20px;">
-            <a href="/financedictionary/write" style="padding: 10px 20px; background-color: #111; color: white; text-decoration: none; border-radius: 5px;">+ 용어 등록</a>
-        </div>
-        
         <div style="text-align: center; margin-bottom: 20px;">
-            <form action="/financedictionary" method="get">
-                <input type="text" name="keyword" th:value="${keyword}" placeholder="검색할 금융 용어를 입력하세요" style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;">
+            <form id="searchForm">
+                <input type="text" id="keyword" name="keyword" placeholder="검색할 금융 용어를 입력하세요" style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;">
                 <button type="submit" style="padding: 10px 20px; background-color: #d71920; color: white; border: none; border-radius: 5px; cursor: pointer;">검색</button>
             </form>
         </div>
 
-        <div class="product-section">
-            <div class="dict-card" th:each="item : ${dictionaryList}">
-                <a class="term-title" th:href="@{/financedictionary/{no}(no=${item.dictionary_no})}">
-                    <strong class="dict-title" th:text="${item.dictionary_no} + '. ' + ${item.dictionary_nm}">용어명</strong>
-                </a>
-                <p class="term-desc-preview" th:text="${item.dictionary_content}">내용...</p>
-            </div>
-        </div>
+        <div class="product-section" id="dictionaryList">
+		    <div class="empty-state">불러오는 중...</div>
+		</div>
     </div>
+
+    <script src="/js/members/common.js"></script>
+    <script src="/js/common/financedictionary.js"></script>
 </body>
 </html>

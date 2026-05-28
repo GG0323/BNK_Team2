@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+// 메모
+
+인덱스
+<br>
+[구현목록: 폼, pdf 등록 >> pdf 를 jpg로 출력 ]
+<br>
+// implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.31'
+<br>
+
+어플리케이션 프로포티즈
+//spring.web.resources.static-locations=file:///C:/upload/
+<br>
+WebConfiguration 폴더에서 이미지 crossOrigine설정도 열어준다.
+
+
+// 컨트롤러 1. 조건 static에 있는 pdf를 보여주는 조건
+@RestController
+@RequestMapping("/api")
+@CrossOrigin("*")
+
+@GetMapping("/pdf")
+	public List<String> pdf() throws IOException {
+		
+		
+		File file = new File("src/main/resources/static/pdf/적립식 예금 약관.pdf"); // pdf 가져오기
+		PDDocument document = PDDocument.load(file); // 의존성 주입해야함
+		
+		PDFRenderer pdfRenderer = new PDFRenderer(document); 
+		
+		File dir = new File("C:/upload/images");// img 저장할 장소
+		if (!dir.exists()) {
+            dir.mkdirs();
+        }
+		
+		
+		//반환할 자료
+		List<String> pdfImages = new ArrayList<>();
+		
+		// pdf 페이지 수
+		int pageCount = document.getNumberOfPages();
+		// 페이지를 jpg로 저장
+		for(int i=0 ; i< pageCount; i++) {
+			BufferedImage bi = pdfRenderer.renderImageWithDPI( i, 100, ImageType.RGB);
+			
+			String fileName = "page" + i + ".jpg";
+			
+			File savefile = new File(dir, fileName);
+			
+			System.out.println(savefile.getAbsolutePath());
+			
+			if(savefile.exists()) { // 중복 삭제
+			    savefile.delete();
+			}
+			
+			ImageIO.write(bi, "jpg", savefile);
+			
+			// Base64 변환코드
+			Path path = Paths.get("C:/upload/images/"+ fileName); // 이미지 주소 c드라이브까지 써야한다.
+			byte[] bytes = Files.readAllBytes(path);
+			String base64 = Base64.getEncoder().encodeToString(bytes);
+			System.out.println(base64);
+			
+			pdfImages.add(base64); // 반환할 자료 저장
+		}
+		
+		if(document != null) {
+			document.close();
+		}
+		
+		System.out.println("요청들어옴");
+		
+		return pdfImages;
+	}
+// base64를 아용해 자료를 뿌린다.
+ fetch("/api/pdf")
+ .then(response => response.json())
+ .then(data => {
+	console.log(data);
+	 
+	const imagesPDF = document.querySelector("#imagesPDF");	 
+	const list = data;
+	
+	let html = "";
+	
+	data.forEach(pdf => {
+		
+		html += `
+			<img src="data:image/jpg;base64,${pdf}" alt="약관 pdf to jpg">
+		`;
+	});
+	
+	imagesPDF.innerHTML = html;
+	
+	
+	 
+	 
+ })
+ .catch(error => console.error(error));
+
+// 넘어온 자료를 화면에 뿌리는 fetch문...
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

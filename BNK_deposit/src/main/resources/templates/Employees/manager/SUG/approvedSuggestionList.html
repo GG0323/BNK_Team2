@@ -2,86 +2,308 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>승인된 제안서</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.total-count {
+  font-size: 12px;
+  color: #888;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #E8E8E8;
+}
+
+/* ===== 테이블 ===== */
+.table-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+thead tr { background: #111; }
+
+thead th {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFF5F5; }
+
+tbody td {
+  padding: 13px 16px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.rate-val { font-weight: 600; color: #E8282F; }
+
+/* 등록 상태 */
+.status-registered {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #F0FFF4;
+  color: #22863a;
+}
+
+.status-notregistered {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #F5F5F5;
+  color: #aaa;
+}
+
+/* ===== 버튼 ===== */
+.btn-detail {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-detail:hover { background: #111; color: #fff; border-color: #111; }
+
+/* ===== 빈 상태 ===== */
+.empty-row td {
+  text-align: center;
+  color: #bbb;
+  padding: 3rem;
+  font-size: 13px;
+}
+</style>
 </head>
 <body>
-	
-	
-	<table border="1">
-		<thead>
-			<tr>
-				<th>suggestion_no</th>
-				<th>상품명</th>
-	            <th>최저금리</th>
-	            <th>최고금리</th>
-				
-				<th>rate_no</th>
-				<th>terms_no</th>
-				<th>description_no</th>
-				<th>condition_no</th>
-			</tr>
-			
-		</thead>
-		
-		<tbody id="approvedListTable">
-			
-		</tbody>
-		
-	</table>
 
-	
-	
-	
-	<script>
-		
-		fetch("/api/employee/approved/approvedList", {
-	        method: "GET"
-	    })
-	    .then(response => response.json())
-	    .then(data => {
-	        console.log(data);
+  <aside class="sidebar">
+    	<div class="logo">BNK <span>관리자</span> 페이지</div>
+    	<!-- nav 항목들 -->	
+    	
+    	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    	<a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a>
+    	<a class="nav-item" th:href="@{/employee/manager/PRD/productList}">상품 리스트</a>
+  	</aside>
 
-	        const tbody = document.getElementById("approvedListTable");
+  <div class="main">
 
-	        let html = "";
+    <div class="topbar">
+      <button class="logout-btn">로그아웃</button>
+    </div>
 
-	        data.forEach(ap => {
-	            html += `
-	                <tr>
-	                    <td>${ap.suggestion_no}</td>
-	                    <td>${ap.product_name}</td>
-	                    <td>${ap.proposed_min_interest_rate}%</td>
-	                    <td>${ap.proposed_max_interest_rate}%</td>
-	                    <td>${ap.rate_no ?? "미등록"}</td>
-	                    <td>${ap.terms_no ?? "미등록"}</td>
-	                    <td>${ap.description_no ?? "미등록"}</td>
-	                    <td>${ap.condition_no ?? "미등록"}</td>
-	                    <td>
-	                        <button onclick="goDetail(${ap.suggestion_no})">상세보기</button>
-	                    </td>
-	                </tr>
-	            `;
-	        });
+    <div class="breadcrumb">
+      관리자 페이지 › <span class="current">승인된 제안서</span>
+    </div>
 
-	        tbody.innerHTML = html;
-	    })
-	    .catch(e => console.log(e));
+    <div class="page-header">
+      <div class="page-title">승인된 제안서 목록</div>
+      <span class="total-count" id="totalCount">전체 0건</span>
+    </div>
 
-		// 상세 페이지로 이동
-		function goDetail(suggestion_no) {
-	         location.href = "/employee/manager/SUG/approvedDetail?suggestion_no=" + suggestion_no;
-	    }
-		
-		
-		
-		
-		
-	</script>
-	
-	
-	
-	
-	
-	
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>제안서 번호</th>
+              <th>상품명</th>
+              <th>최저금리</th>
+              <th>최고금리</th>
+              <th>금리번호</th>
+              <th>약관번호</th>
+              <th>설명번호</th>
+              <th>조건번호</th>
+              <th>상세보기</th>
+            </tr>
+          </thead>
+          <tbody id="approvedListTable">
+            <tr class="empty-row"><td colspan="9">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function regCell(val) {
+      return val
+        ? `<span class="status-registered">${val}</span>`
+        : `<span class="status-notregistered">미등록</span>`;
+    }
+
+    fetch("/api/employee/approved/approvedList", { method: "GET" })
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.getElementById("approvedListTable");
+        document.getElementById('totalCount').textContent = `전체 ${data.length}건`;
+
+        if (!data.length) {
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="9">승인된 제안서가 없습니다.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.map(ap => `
+          <tr>
+            <td>${ap.suggestion_no}</td>
+            <td>${ap.product_name}</td>
+            <td class="rate-val">${ap.proposed_min_interest_rate}%</td>
+            <td class="rate-val">${ap.proposed_max_interest_rate}%</td>
+            <td>${regCell(ap.rate_no)}</td>
+            <td>${regCell(ap.terms_no)}</td>
+            <td>${regCell(ap.description_no)}</td>
+            <td>${regCell(ap.condition_no)}</td>
+            <td><button class="btn-detail" onclick="goDetail(${ap.suggestion_no})">상세보기</button></td>
+          </tr>
+        `).join('');
+      })
+      .catch(e => {
+        console.error(e);
+        document.getElementById("approvedListTable").innerHTML =
+          '<tr class="empty-row"><td colspan="9">데이터를 불러오지 못했습니다.</td></tr>';
+      });
+
+    function goDetail(suggestion_no) {
+      location.href = "/employee/manager/SUG/approvedDetail?suggestion_no=" + suggestion_no;
+    }
+  </script>
+
 </body>
 </html>

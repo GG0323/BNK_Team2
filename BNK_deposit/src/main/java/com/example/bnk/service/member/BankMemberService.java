@@ -17,6 +17,7 @@ public class BankMemberService {
 	private final IBankMemberDao bankMemberDao;
 	private final BCryptPasswordEncoder pwEncoder;
 	private final AesCryptoUtil aesUtil;
+	private final AccountService accountService;
 	
 	// 마지막 로그인 저장
 	public void updateLastLogin(long mamber_no) {
@@ -67,12 +68,25 @@ public class BankMemberService {
         return result > 0;
     }
 
+    // 휴면으로 전환
     public boolean makeDormant(String loginId) {
         return updateMemberStatus(loginId, "DORMANT");
     }
 
+    // 휴면 계정 인증 후 활성화
     public boolean releaseDormant(String loginId) {
-        return updateMemberStatus(loginId, "REGULAR");
+
+        BankMemberDto member = bankMemberDao.findMemberById(loginId);
+
+        if (member == null) {
+            return false;
+        }
+
+        boolean hasAccount = !accountService.getAccounts(loginId).isEmpty();
+
+        String nextStatus = hasAccount ? "REGULAR" : "ASSOCIATE";
+
+        return updateMemberStatus(loginId, nextStatus);
     }
 
     // 회원 탈퇴

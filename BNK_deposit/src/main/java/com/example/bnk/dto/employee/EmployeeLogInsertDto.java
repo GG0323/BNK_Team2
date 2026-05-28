@@ -19,10 +19,10 @@ public class EmployeeLogInsertDto {
 	private int response_status;		// 응답 상태 코드
 
 	public EmployeeLogInsertDto (
-			String action_type, String target_table, String select_key, 
+			long employee_no, String action_type, String target_table, String select_key, 
 			String action_detail,String request_method, String request_url 
 			){
-		//this.employee_no = 4; // 하드코딩 임시 4번 >> auth에서 가져오기
+		this.employee_no = employee_no; // 하드코딩 임시 4번 >> auth에서 가져오기
 		this.action_type = action_type;
 		this.target_table = target_table;
 		this.select_key = select_key;
@@ -30,6 +30,6 @@ public class EmployeeLogInsertDto {
 		this.request_method = request_method;
 		this.request_url = request_url;
 		//this.request_ip = request_ip; 필터 단에서 구현
-		//this.response_status = response_status; 이건 나중에
+		//this.response_status = response_status; 필터 구현
 	}
 }

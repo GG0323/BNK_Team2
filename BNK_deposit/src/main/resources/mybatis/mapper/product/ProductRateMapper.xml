@@ -3,25 +3,49 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductRateDao">
-	<insert id="insertAllRate">
-		INSERT INTO TB_PRODUCT_RATE(
-		    product_no,
-		    rate_group,
-		    rate_label,
-		    annual_rate,
-		    annual_return_rate,
-		    note,
-		    display_order,
-		    use_yn)
-		VALUES(
-		    #{product_no},
-		    #{rate_group},
-		    #{rate_label},
-		    #{annual_rate, jdbcType=VARCHAR},
-		    #{annual_return_rate, jdbcType=VARCHAR},
-		    #{note, jdbcType=VARCHAR},
-		    #{display_order},
-		    #{use_yn})
+	<insert id="insertAllRate"
+			parameterType="com.example.bnk.dto.product.ProductRateDto"
+			statementType="CALLABLE">
+		BEGIN
+		
+			INSERT INTO TB_PRODUCT_RATE(
+			    rate_group,
+			    rate_label,
+			    annual_rate,
+			    annual_return_rate,
+			    note,
+			    display_order,
+			    use_yn)
+			VALUES(
+			    #{rate_group},
+			    #{rate_label},
+			    #{annual_rate, jdbcType=VARCHAR},
+			    #{annual_return_rate, jdbcType=VARCHAR},
+			    #{note, jdbcType=VARCHAR},
+			    #{display_order},
+			    #{use_yn})
+			RETURNING rate_no
+			INTO #{rate_no, mode=OUT, jdbcType=NUMERIC};
+			
+		END;
 	</insert>
-
+	
+	<update id="updateProductRate" parameterType="com.example.bnk.dto.product.ProductRateDto">
+		UPDATE TB_PRODUCT_RATE
+		SET rate_group = #{rate_group},
+			rate_label = #{rate_label},
+			annual_rate = #{annual_rate, jdbcType=VARCHAR},
+			annual_return_rate = #{annual_return_rate, jdbcType=VARCHAR},
+			note = #{note, jdbcType=VARCHAR},
+			display_order = #{display_order},
+			use_yn = #{use_yn},
+			updated_at = SYSDATE
+		WHERE rate_no = #{rate_no}
+		AND product_no = #{product_no}
+	</update>
+	
+	<select id="selectRatePrd" resultType="com.example.bnk.dto.product.ProductRateDto">
+		SELECT * FROM TB_PRODUCT_RATE WHERE rate_no = #{rate_no}
+	</select>
+	
 </mapper>

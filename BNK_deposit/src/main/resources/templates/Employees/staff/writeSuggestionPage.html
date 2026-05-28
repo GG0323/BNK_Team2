@@ -2,99 +2,426 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>제안서 작성</title>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+
+/* ===== 메인 ===== */
+.main {
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== 폼 카드 ===== */
+.form-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 2rem;
+  max-width: 700px;
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #E8282F;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.divider { border: none; border-top: 1px solid #F0F0F0; margin: 1.5rem 0; }
+
+/* 폼 그리드 */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full { grid-column: 1 / -1; }
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 9px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: #111; }
+
+/* 작성자 표시 (readonly 느낌) */
+.author-box {
+  padding: 9px 12px;
+  border: 1px solid #EEEEEE;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #444;
+  background: #F8F8F8;
+  font-weight: 500;
+}
+
+/* textarea */
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* 금리 입력 행 */
+.rate-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1 / -1;
+}
+
+.rate-sep {
+  font-size: 14px;
+  color: #ccc;
+  text-align: center;
+  font-weight: 600;
+  padding-top: 22px; /* label 높이 보정 */
+}
+
+/* 유효성 에러 */
+.field-error {
+  font-size: 11px;
+  color: #E8282F;
+  display: none;
+}
+
+.field-error.show { display: block; }
+
+/* ===== 버튼 행 ===== */
+.btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1.75rem;
+}
+
+.btn-cancel {
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.btn-cancel:hover { border-color: #111; color: #111; }
+
+.btn-submit {
+  padding: 10px 28px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: #E8282F;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-submit:hover { background: #C5202A; }
+.btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+/* ===== 토스트 ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #111; }
+.toast.error   { background: #E8282F; }
+</style>
 </head>
 <body>
-	
-	<h1>상품 제안서 작성 페이지</h1>
-	
-	여기에서 직원 로그인id를 히든으로 같이 보내고 그거로 db 조회때려서 fk를 넣어주자.
-	
-	<form id="suggestionForm">
-		
-		
-		<div>
-	        <label>작성자</label>
-			<input type="hidden" name="employee_no" id="employee_no">
-	        <div id="my_name"></div>
-		</div>
-		
-		<div>
-			<label>승인 책임자</label>
-	        <select name="manager_employee_no" id="manager_select">
-	        	<option value="">-- 책임자 선택 --</option>
-	        </select>
-	    </div>
-		
-		<input type="text" name="product_name" placeholder="제안 상품명">
-		<input type="text" name="suggestion_content" placeholder="제안 내용">
-		<input type="text" name="proposed_min_interest_rate" placeholder="제안 최저 금리">
-		<input type="text" name="proposed_max_interest_rate" placeholder="제안 최고 금리">
-		
-		
-		<input type="submit" value="등록">
-	</form>
-	
-	<script>
-		const suggestionForm = document.querySelector("#suggestionForm");
-	
-		// 페이지 들어오자마자 시작함수
-		// 1. 시큐리티에서 로그인한 직원의 id로 직원의 정보를 반환하고
-		// 2. 현재 특정 권한 이상인 사람들을 찾아서 반환 
-		fetch("/api/staff/suggestion/managers",{
-			method: "GET"
-		})
-		.then(response => {
-			return response.json();
-		})
-		.then(data => {
-			console.log(data);
-			
-			// 내 id로 찾아온 내 정보
-			document.querySelector("#my_name").textContent = data.myInfo.employee_name;
-			document.querySelector("#employee_no").value = data.myInfo.employee_no;
-			// 관리자 권한을 가진 사람들 정보
-			
-			const select = document.querySelector("#manager_select");
-			
-			data.managers.forEach(m => {
-	            const option = document.createElement("option"); // 옵션 생성
-	            option.value = m.employee_no;         // 넘어갈 값 (no)
-	            option.textContent = m.employee_name; // 화면에 보일 값 (이름)
-	            select.appendChild(option);           // 자식으로 넣어주기
-			});
-		})
-		.catch(e=> console.log(e));
-		
-		// 폼 등록 함수
-		suggestionForm.addEventListener("submit", (e)=> {
-			e.preventDefault();
-			
-			fetch("/api/staff/suggestion/writeSuggestion",{
-				method: "POST",
-				body: new FormData(suggestionForm)
-			})
-			.then(response => {
-			
-				
-					return response.json();
-			})
-			.then(data => {
-				console.log(data);
-				
-				// 릉록한 제안서 리스트로 location.href="페이지 컨트롤러 주소"
-				if (data === 1) { 
-					//location.href = "/staff/suggestion/list"; 
-					// 일단 staffPage로
-					location.href = "/employee/staff/staffPage"; 
-		        }
-			})
-			.catch(e=> console.log(e));
-			
-		});
-		
-	
-	</script>
-	
+
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+
+  <div class="main">
+
+    <div class="topbar">
+      <button class="logout-btn">로그아웃</button>
+    </div>
+
+    <div class="breadcrumb">
+      직원 페이지 › <span class="current">제안서 작성</span>
+    </div>
+
+    <div class="page-title">상품 제안서 작성</div>
+
+    <div class="form-card">
+
+      <form id="suggestionForm">
+
+        <!-- 작성자 / 책임자 -->
+        <div class="section-title">작성 정보</div>
+        <div class="form-grid-2">
+
+          <div class="form-group">
+            <label>작성자</label>
+            <input type="hidden" name="employee_no" id="employee_no">
+            <div class="author-box" id="my_name">불러오는 중...</div>
+          </div>
+
+          <div class="form-group">
+            <label>승인 책임자 *</label>
+            <select name="manager_employee_no" id="manager_select">
+              <option value="">-- 책임자 선택 --</option>
+            </select>
+            <span class="field-error" id="err-manager">책임자를 선택해주세요.</span>
+          </div>
+
+        </div>
+
+        <hr class="divider">
+
+        <!-- 제안 내용 -->
+        <div class="section-title">제안 내용</div>
+        <div class="form-grid-2">
+
+          <div class="form-group full">
+            <label>제안 상품명 *</label>
+            <input type="text" name="product_name" id="product_name" placeholder="상품명을 입력해주세요">
+            <span class="field-error" id="err-product_name">상품명을 입력해주세요.</span>
+          </div>
+
+          <div class="form-group full">
+            <label>제안 내용 *</label>
+            <textarea name="suggestion_content" id="suggestion_content" placeholder="제안 내용을 상세히 작성해주세요."></textarea>
+            <span class="field-error" id="err-suggestion_content">제안 내용을 입력해주세요.</span>
+          </div>
+
+          <!-- 금리 입력 (2컬럼 span) -->
+          <div class="rate-row">
+            <div class="form-group">
+              <label>제안 최저 금리 (%) *</label>
+              <input type="number" name="proposed_min_interest_rate" id="proposed_min_interest_rate"
+                     placeholder="예: 2.5" step="0.01" min="0">
+              <span class="field-error" id="err-min">최저 금리를 입력해주세요.</span>
+            </div>
+            <div class="rate-sep">~</div>
+            <div class="form-group">
+              <label>제안 최고 금리 (%) *</label>
+              <input type="number" name="proposed_max_interest_rate" id="proposed_max_interest_rate"
+                     placeholder="예: 4.0" step="0.01" min="0">
+              <span class="field-error" id="err-max">최고 금리를 입력해주세요.</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="btn-row">
+          <a class="btn-cancel" th:href="@{/employee/staff/staffPage}">취소</a>
+          <button type="submit" class="btn-submit" id="submitBtn">제안서 등록</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── 토스트 ── */
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => { t.className = 'toast'; }, 3000);
+    }
+
+    /* ── 페이지 진입 시: 내 정보 + 매니저 목록 로드 ── */
+    fetch("/api/staff/suggestion/managers", { method: "GET" })
+      .then(r => r.json())
+      .then(data => {
+        console.log(data);
+
+        document.querySelector("#my_name").textContent    = data.myInfo.employee_name;
+        document.querySelector("#employee_no").value      = data.myInfo.employee_no;
+
+        const select = document.querySelector("#manager_select");
+        data.managers.forEach(m => {
+          const opt = document.createElement("option");
+          opt.value       = m.employee_no;
+          opt.textContent = `${m.employee_name} (${m.job_title})`;
+          select.appendChild(opt);
+        });
+      })
+      .catch(e => {
+        console.error(e);
+        showToast('책임자 목록을 불러오지 못했습니다.', 'error');
+      });
+
+    /* ── 유효성 검사 ── */
+    function validate() {
+      const checks = [
+        { id: 'manager_select',             errId: 'err-manager',         msg: '책임자를 선택해주세요.' },
+        { id: 'product_name',               errId: 'err-product_name',    msg: '상품명을 입력해주세요.' },
+        { id: 'suggestion_content',         errId: 'err-suggestion_content', msg: '제안 내용을 입력해주세요.' },
+        { id: 'proposed_min_interest_rate', errId: 'err-min',             msg: '최저 금리를 입력해주세요.' },
+        { id: 'proposed_max_interest_rate', errId: 'err-max',             msg: '최고 금리를 입력해주세요.' },
+      ];
+
+      let valid = true;
+      checks.forEach(({ id, errId }) => {
+        const val = document.getElementById(id).value.trim();
+        const err = document.getElementById(errId);
+        if (!val) { err.classList.add('show'); valid = false; }
+        else       { err.classList.remove('show'); }
+      });
+
+      // 최저 <= 최고 체크
+      const minVal = parseFloat(document.getElementById('proposed_min_interest_rate').value);
+      const maxVal = parseFloat(document.getElementById('proposed_max_interest_rate').value);
+      if (minVal && maxVal && minVal > maxVal) {
+        document.getElementById('err-max').textContent = '최고 금리는 최저 금리보다 커야 합니다.';
+        document.getElementById('err-max').classList.add('show');
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    /* ── 폼 제출 ── */
+    const suggestionForm = document.querySelector("#suggestionForm");
+
+    suggestionForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (!validate()) {
+        showToast('필수 항목을 확인해주세요.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '등록 중...';
+
+      fetch("/api/staff/suggestion/writeSuggestion", {
+        method: "POST",
+        body: new FormData(suggestionForm)
+      })
+      .then(r => r.json())
+      .then(data => {
+        console.log(data);
+        if (data === 1) {
+          showToast('제안서가 등록되었습니다.', 'success');
+          setTimeout(() => {
+            location.href = "/employee/staff/staffPage";
+          }, 1500);
+        } else {
+          showToast('등록에 실패했습니다.', 'error');
+          btn.disabled = false;
+          btn.textContent = '제안서 등록';
+        }
+      })
+      .catch(e => {
+        console.error(e);
+        showToast('등록 중 오류가 발생했습니다.', 'error');
+        btn.disabled = false;
+        btn.textContent = '제안서 등록';
+      });
+    });
+  </script>
+
 </body>
 </html>
