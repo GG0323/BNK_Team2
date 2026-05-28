@@ -165,7 +165,7 @@ public class ProductForEmployee {
 		return 0;
 	}
 	
-	// 상품 금리 등록 서비스1
+	// 상품 금리 등록 서비스
 	public int insertAllRate(ProductRateDto prdRateDto, @RequestParam("suggestion_no") long suggestion_no) {
 		if(prdRateDto != null) {
 			
