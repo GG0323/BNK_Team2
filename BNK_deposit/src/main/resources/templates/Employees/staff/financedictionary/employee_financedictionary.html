@@ -10,35 +10,34 @@
 
 <div class="admin-wrap">
 
-    <aside class="sidebar">
-    	<div class="logo">BNK <span>일반 사원</span> 페이지</div>
-    	<!-- nav 항목들 -->	
-    	
-    	<a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
-    	<a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
-    	<a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
-    	<a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
-   		<a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
-		<a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
-		<a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>
-    	
-  	</aside>
+    <div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
     <!-- 우측 본문 -->
-    <main class="content-area">
+    <main class="main">
 
-        <header class="page-header">
-            <div class="header-left">
-                <h1>BNK 직원 페이지</h1>
-            </div>
-            <div class="header-right">
-                <button type="button" class="logout-btn" onclick="location.href='/employee/logout'">로그아웃</button>
-            </div>
-        </header>
+	    <div class="topbar">
+		    <form th:action="@{/employee/logout}" method="post">
+		        <input type="hidden"
+		               th:name="${_csrf.parameterName}"
+		               th:value="${_csrf.token}">
+		        <button type="submit" class="logout-btn">
+		            로그아웃
+		        </button>
+		    </form>
+		</div>
+	
+	    <div class="breadcrumb">
+	        로그인 &gt; <span class="current">금융 사전 관리</span>
+	    </div>
+	
+	    <div class="page-header">
+	        <h1 class="page-title">금융 사전 관리</h1>
+	        <p class="page-desc">등록된 금융용어를 조회, 수정, 등록합니다.</p>
+	    </div>
 
         <section class="content-box">
             <div class="top-bar">
-                <button type="button" class="register-btn" onclick="location.href='/financedictionary/write'">
+                <button type="button" class="register-btn" onclick="location.href='/finance/financedictionary/write'">
                     신규용어 등록
                 </button>
 
