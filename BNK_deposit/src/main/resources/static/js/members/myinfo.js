@@ -14,8 +14,8 @@ function renderMyInfo(m) {
   set("f_adress", m.adress || "-");
   set("f_credit_score", (m.credit_score ?? "-") + "점");
   set("f_member_status", m.member_status || "-");
-  set("f_created_at", formatDate(m.created_at));
-  set("f_last_login_at", formatDate(m.last_login_at));
+  set("f_created_at", formatDateTime(m.created_at));
+  set("f_last_login_at", formatDateTime(m.last_login_at));
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

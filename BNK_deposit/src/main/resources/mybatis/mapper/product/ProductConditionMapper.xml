@@ -4,49 +4,72 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductConditionDao">
 	
-	<insert id="insertAllCondition">
-		INSERT INTO TB_PRODUCT_CONDITION(
-			product_no,
-			min_age,
-			max_age,
-			foreigner_available_yn,
-			overseas_tax_yn,
-			gender,
-			customer_type,
-			tax_benefit_yn,
-			non_taxable_savings_yn,
-			depositor_protection_yn,
-			min_join_amount,
-			max_join_amount,
-			deposit_unit,
-			min_term_months,
-			max_term_months,
-			term_unit_type,
-			term_unit_value,
-			fixed_term_yn,
-			fixed_term_values,
-			condition_note)
-		VALUES(
-			#{product_no},
-			#{min_age, jdbcType=NUMERIC},
-			#{max_age, jdbcType=NUMERIC},
-			#{foreigner_available_yn},
-			#{overseas_tax_yn},
-			#{gender, jdbcType=VARCHAR},
-			#{customer_type, jdbcType=VARCHAR},
-			#{tax_benefit_yn},
-			#{non_taxable_savings_yn},
-			#{depositor_protection_yn},
-			#{min_join_amount, jdbcType=NUMERIC},
-			#{max_join_amount, jdbcType=NUMERIC},
-			#{deposit_unit, jdbcType=NUMERIC},
-			#{min_term_months, jdbcType=NUMERIC},
-			#{max_term_months, jdbcType=NUMERIC},
-			#{term_unit_type},
-			#{term_unit_value, jdbcType=NUMERIC},
-			#{fixed_term_yn},
-			#{fixed_term_values, jdbcType=NUMERIC},
-			#{condition_note, jdbcType=VARCHAR})
+	<insert id="insertAllCondition" 
+	        parameterType="com.example.bnk.dto.product.ProductConditionDto"
+	        statementType="CALLABLE">
+	    BEGIN
+	    
+		    INSERT INTO TB_PRODUCT_CONDITION(
+		        min_age,
+		        max_age,
+		        foreigner_available_yn,
+		        overseas_tax_yn,
+		        gender,
+		        customer_type,
+		        tax_benefit_yn,
+		        non_taxable_savings_yn,
+		        depositor_protection_yn,
+		        min_join_amount,
+		        max_join_amount,
+		        deposit_unit,
+		        min_term_months,
+		        max_term_months,
+		        term_unit_type,
+		        term_unit_value,
+		        fixed_term_yn,
+		        fixed_term_values,
+		        condition_note)
+		    VALUES(
+		        #{min_age, jdbcType=NUMERIC},
+		        #{max_age, jdbcType=NUMERIC},
+		        #{foreigner_available_yn},
+		        #{overseas_tax_yn},
+		        #{gender, jdbcType=VARCHAR},
+		        #{customer_type, jdbcType=VARCHAR},
+		        #{tax_benefit_yn},
+		        #{non_taxable_savings_yn},
+		        #{depositor_protection_yn},
+		        #{min_join_amount, jdbcType=NUMERIC},
+		        #{max_join_amount, jdbcType=NUMERIC},
+		        #{deposit_unit, jdbcType=NUMERIC},
+		        #{min_term_months, jdbcType=NUMERIC},
+		        #{max_term_months, jdbcType=NUMERIC},
+		        #{term_unit_type},
+		        #{term_unit_value, jdbcType=NUMERIC},
+		        #{fixed_term_yn},
+		        #{fixed_term_values, jdbcType=VARCHAR},
+		        #{condition_note, jdbcType=VARCHAR})
+		    RETURNING condition_no
+		    INTO #{condition_no, mode=OUT, jdbcType=NUMERIC};
+		    
+	    END;
 	</insert>
 	
+	<update id="updateProductCondition" parameterType="com.example.bnk.dto.product.ProductConditionDto">
+		UPDATE TB_PRODUCT_CONDITION
+		SET min_age = #{min_age, jdbcType=NUMERIC},
+			max_age = #{max_age, jdbcType=NUMERIC},
+			gender = #{gender, jdbcType=VARCHAR},
+			customer_type = #{customer_type, jdbcType=VARCHAR},
+			foreigner_available_yn  = #{foreigner_available_yn},
+			min_join_amount = #{min_join_amount, jdbcType=NUMERIC},
+			max_join_amount = #{max_join_amount, jdbcType=NUMERIC},
+			min_term_months = #{min_term_months, jdbcType=NUMERIC},
+			max_term_months = #{max_term_months, jdbcType=NUMERIC},
+			depositor_protection_yn = #{depositor_protection_yn},
+			condition_note = #{condition_note, jdbcType=VARCHAR},
+			updated_at = SYSDATE 
+		WHERE condition_no = #{condition_no}
+		AND product_no = #{product_no}
+	</update>
 </mapper>

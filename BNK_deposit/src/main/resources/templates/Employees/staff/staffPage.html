@@ -3,13 +3,265 @@
 <head>
 <meta>
 <title>Insert title here</title>
+
+	<style>
+	* {
+	  box-sizing: border-box;
+	  margin: 0;
+	  padding: 0;
+	}
+	
+	body {
+	  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	  background: #F5F5F5;
+	  display: flex;
+	  min-height: 100vh;
+	}
+	
+	/* ===== 사이드바 ===== */
+	.sidebar {
+	  width: 190px;
+	  background: #111111;
+	  flex-shrink: 0;
+	  min-height: 100vh;
+	}
+	
+	.sidebar .logo {
+	  font-size: 14px;
+	  font-weight: 700;
+	  color: #ffffff;
+	  padding: 1.5rem 1.25rem;
+	  letter-spacing: -0.3px;
+	  border-bottom: 1px solid #2a2a2a;
+	}
+	
+	.sidebar .logo span {
+	  color: #E8282F;
+	}
+	
+	.nav-item {
+	  display: flex;
+	  align-items: center;
+	  gap: 10px;
+	  padding: 11px 1.25rem;
+	  font-size: 13px;
+	  color: #888888;
+	  text-decoration: none;
+	  border-left: 3px solid transparent;
+	  transition: all 0.15s;
+	}
+	
+	.nav-item:hover {
+	  color: #ffffff;
+	  background: #1c1c1c;
+	}
+	
+	.nav-item.active {
+	  color: #ffffff;
+	  background: #1c1c1c;
+	  border-left-color: #E8282F;
+	}
+	
+	/* ===== 메인 콘텐츠 ===== */
+	.main {
+	  flex: 1;
+	  padding: 2rem;
+	  min-width: 0;
+	}
+	
+	/* 상단 바 */
+	.topbar {
+	  display: flex;
+	  justify-content: flex-end;
+	  margin-bottom: 2rem;
+	}
+	
+	.logout-btn {
+	  font-size: 12px;
+	  color: #555555;
+	  background: #ffffff;
+	  border: 1px solid #E0E0E0;
+	  padding: 6px 16px;
+	  border-radius: 6px;
+	  cursor: pointer;
+	  font-weight: 500;
+	  transition: all 0.15s;
+	  text-decoration: none;
+	}
+	
+	.logout-btn:hover {
+	  border-color: #111111;
+	  color: #111111;
+	}
+	
+	/* 브레드크럼 */
+	.breadcrumb {
+	  display: flex;
+	  align-items: center;
+	  gap: 6px;
+	  font-size: 12px;
+	  color: #aaaaaa;
+	  margin-bottom: 1.5rem;
+	}
+	
+	.breadcrumb .current {
+	  color: #111111;
+	  font-weight: 600;
+	}
+	
+	/* 페이지 헤더 */
+	.page-header {
+	  margin-bottom: 2rem;
+	}
+	
+	.page-title {
+	  font-size: 18px;
+	  font-weight: 700;
+	  color: #111111;
+	  letter-spacing: -0.5px;
+	  margin-bottom: 4px;
+	}
+	
+	.page-desc {
+	  font-size: 12.5px;
+	  color: #999999;
+	}
+	
+	/* ===== 메뉴 카드 그리드 ===== */
+	.menu-grid {
+	  display: grid;
+	  grid-template-columns: repeat(2, 1fr);
+	  gap: 14px;
+	}
+	
+	.menu-card {
+	  background: #ffffff;
+	  border-radius: 12px;
+	  border: 1px solid #E8E8E8;
+	  padding: 1.5rem 1.25rem;
+	  cursor: pointer;
+	  transition: all 0.15s;
+	  text-decoration: none;
+	  display: flex;
+	  align-items: center;
+	  gap: 16px;
+	}
+	
+	.menu-card:hover {
+	  border-color: #111111;
+	  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+	}
+	
+	/* 첫 번째 카드(신규사원 등록) 강조 */
+	.menu-card.primary:hover {
+	  border-color: #E8282F;
+	}
+	
+	.menu-card.primary .card-icon {
+	  background: #FFF0F0;
+	}
+	
+	.menu-card.primary .card-icon i,
+	.menu-card.primary .card-icon .icon {
+	  color: #E8282F;
+	}
+	
+	/* 카드 아이콘 */
+	.card-icon {
+	  width: 44px;
+	  height: 44px;
+	  border-radius: 10px;
+	  background: #F0F0F0;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  flex-shrink: 0;
+	}
+	
+	.card-icon i,
+	.card-icon .icon {
+	  font-size: 20px;
+	  color: #555555;
+	}
+	
+	/* 카드 텍스트 */
+	.card-title {
+	  font-size: 14px;
+	  font-weight: 600;
+	  color: #111111;
+	  margin-bottom: 3px;
+	}
+	
+	.card-sub {
+	  font-size: 12px;
+	  color: #aaaaaa;
+	}
+	
+	
+	
+	</style>
+
 </head>
 <body>
+
+	<aside class="sidebar">
+    	<div class="logo">BNK <span>일반 사원</span> 페이지</div>
+    	<!-- nav 항목들 -->	
+    	
+    	<a class="nav-item active" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
+    	<a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
+   		<a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
+		<a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
+		<a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>
+    	
+  	</aside>
+  	
+  	
+	<main class="main">
+		<div class="topbar">
+			<a class="logout-btn" href="#">로그아웃</a>
+	    </div>
 	
-	<h1>staff page</h1>
-	
-	<a th:href="@{/employee/staff/writeSuggestionPage}">제안서 등록 페이지로</a>
-	
+		<div class="breadcrumb">
+			로그인 &gt; <span class="current">메인 페이지</span>
+   		</div>
+		
+		<div class="page-header">
+      		<h1 class="page-title">메인 페이지</h1>
+      		<p class="page-desc">좋은 하루입니다. 업무를 선택해 주세요</p>
+    	</div>
+		<div class="menu-grid">
+      	<!-- 업무 활동 카드 -->
+      	
+      		<a class="menu-card primary" th:href="@{/employee/staff/writeSuggestionPage}">
+        		<div class="card-icon"><!-- 아이콘 --></div>
+        		<div>
+        			<p class="card-title">제안서 작성 페이지</p>
+        			<p class="card-sub">신규 상품 제안서를 작성합니다.</p>
+       			</div>
+      		</a>
+      		<a class="menu-card primary" th:href="@{/employee/staff/productTerm}">
+        		<div class="card-icon"><!-- 아이콘 --></div>
+        		<div>
+        			<p class="card-title">약관 등록 페이지</p>
+        			<p class="card-sub">상품 약관을 등록합니다.</p>
+       			</div>
+      		</a>
+      		<a class="menu-card primary" th:href="@{/employee/financedictionary}">
+        		<div class="card-icon"><!-- 아이콘 --></div>
+        		<div>
+        			<p class="card-title">금융 용어 사전 관리</p>
+        			<p class="card-sub">등록된 금융용어를 조회, 수정, 등록 합니다.</p>
+       			</div>
+      		</a>
+      		
+      		
+      		
+    	</div>
+		
+	</main>
 				
 </body>
 </html>

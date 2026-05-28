@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BNK 직원 금융 용어 사전 관리</title>
+    <link rel="stylesheet" th:href="@{/css/common/employee_financedictionary.css}">
+    <script th:src="@{/js/common/employee_financedictionary.js}" defer></script>
+</head>
+<body>
+
+<div class="admin-wrap">
+
+    <aside class="sidebar">
+    	<div class="logo">BNK <span>일반 사원</span> 페이지</div>
+    	<!-- nav 항목들 -->	
+    	
+    	<a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
+    	<a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
+    	<a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
+   		<a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
+		<a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
+		<a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>
+    	
+  	</aside>
+
+    <!-- 우측 본문 -->
+    <main class="content-area">
+
+        <header class="page-header">
+            <div class="header-left">
+                <h1>BNK 직원 페이지</h1>
+            </div>
+            <div class="header-right">
+                <button type="button" class="logout-btn" onclick="location.href='/employee/logout'">로그아웃</button>
+            </div>
+        </header>
+
+        <section class="content-box">
+            <div class="top-bar">
+                <button type="button" class="register-btn" onclick="location.href='/financedictionary/write'">
+                    신규용어 등록
+                </button>
+
+                <div class="search-box">
+                    <select id="searchType">
+                        <option value="all">전체</option>
+                        <option value="name">용어명</option>
+                        <option value="category">카테고리</option>
+                    </select>
+
+                    <input type="text" id="keyword" placeholder="검색어를 입력하세요">
+                    <button type="button" class="search-btn" onclick="searchDictionary()">검색</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="dictionary-table">
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>용어명</th>
+                            <th>카테고리</th>
+                            <th>조회수</th>
+                            <th>등록일</th>
+                            <th>수정일</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dictionaryTbody">
+                        <tr>
+                            <td colspan="7" class="empty-row">불러오는 중...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>

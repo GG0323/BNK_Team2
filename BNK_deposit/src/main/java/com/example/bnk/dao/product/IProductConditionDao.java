@@ -6,5 +6,6 @@ import com.example.bnk.dto.product.ProductConditionDto;
 
 @Mapper
 public interface IProductConditionDao {
-	int insertAllCondition(ProductConditionDto prdCndDto);
+	public int insertAllCondition(ProductConditionDto prdCndDto);
+	public int updateProductCondition(ProductConditionDto prdCndDto);
 }

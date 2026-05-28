@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>금융 용어 등록</title>
+
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+
 <style>
     body { font-family: sans-serif; }
     .detail-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-top: 2px solid #111; }
@@ -12,20 +16,24 @@
     .btn-wrap { text-align: center; margin-top: 30px; }
     .submit-btn { padding: 10px 30px; background: #d71920; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;}
 </style>
+
+
 </head>
 <body>
     <h1 style="background-color: #111; color: white; padding: 15px; border-radius: 10px;">금융 용어 등록</h1>
     
-    <form action="/financedictionary/write" method="post">
+    <form id="writeForm">
         <table class="detail-table">
             <tr>
                 <th>카테고리</th>
                 <td>
-                    <select name="dictionary_category" required>
-                        <option value="예적금">예적금</option>
-                        <option value="대출">대출</option>
-                        <option value="경제/금융">경제/금융</option>
-                    </select>
+                    <select name="dictionary_category" id="dictionary_category" required>
+					    <option value="예적금">예적금</option>
+					    <option value="대출">대출</option>
+					    <option value="보험">보험</option>
+					    <option value="카드">카드</option>
+					    <option value="청약">청약</option>
+					</select>
                 </td>
             </tr>
             <tr>
@@ -42,5 +50,8 @@
             <a href="/financedictionary" style="margin-left: 10px; color: #666; text-decoration: none;">취소</a>
         </div>
     </form>
+
+    <script src="/js/members/common.js"></script>
+    <script src="/js/common/financedictionary_write.js"></script>
 </body>
 </html>

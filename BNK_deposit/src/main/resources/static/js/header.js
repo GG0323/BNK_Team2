@@ -1,82 +1,3 @@
-function productSearch() {
-    const modal = document.getElementById("searchModal");
-    const input = document.getElementById("modalSearchInput");
-    const header = document.querySelector(".header");
-
-    if (!modal) {
-        return;
-    }
-
-    // 검색 모달 열 때는 헤더 펼치기
-    if (header) {
-        header.classList.remove("header-collapsed");
-    }
-
-    modal.classList.add("active");
-    document.body.style.overflow = "hidden";
-
-    setTimeout(() => {
-        if (input) {
-            input.focus();
-        }
-    }, 100);
-}
-
-function closeSearchModal() {
-    const modal = document.getElementById("searchModal");
-
-    if (!modal) {
-        return;
-    }
-
-    modal.classList.remove("active");
-    document.body.style.overflow = "";
-}
-
-function setKeyword(keyword) {
-    const input = document.getElementById("modalSearchInput");
-
-    if (input) {
-        input.value = keyword;
-        input.focus();
-    }
-}
-
-function submitSearch() {
-    const input = document.getElementById("modalSearchInput");
-
-    if (!input) {
-        return;
-    }
-
-    const keyword = input.value.trim();
-
-    if (!keyword) {
-        alert("검색어를 입력해주세요.");
-        input.focus();
-        return;
-    }
-
-    location.href = "/products?keyword=" + encodeURIComponent(keyword);
-}
-
-document.addEventListener("keydown", function (e) {
-    const modal = document.getElementById("searchModal");
-
-    if (!modal || !modal.classList.contains("active")) {
-        return;
-    }
-
-    if (e.key === "Escape") {
-        closeSearchModal();
-    }
-
-    if (e.key === "Enter") {
-        submitSearch();
-    }
-});
-
-
 /* 헤더 자동 접힘 */
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.querySelector(".header");
@@ -86,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let headerTimer;
+    let lastScrollY = window.scrollY;
 
     function isSearchModalOpen() {
         const modal = document.getElementById("searchModal");
@@ -119,6 +41,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
     header.addEventListener("mouseleave", function () {
         startHeaderTimer();
+    });
+
+    window.addEventListener("scroll", function () {
+        if (isSearchModalOpen()) {
+            return;
+        }
+
+        const currentScrollY = window.scrollY;
+
+        // 페이지 최상단에서는 항상 헤더 보이기
+        if (currentScrollY <= 0) {
+            expandHeader();
+            clearTimeout(headerTimer);
+            lastScrollY = currentScrollY;
+            return;
+        }
+
+        // 위로 스크롤하면 헤더 펼치기
+        if (currentScrollY < lastScrollY) {
+            expandHeader();
+            startHeaderTimer();
+        }
+
+        // 아래로 스크롤하면 타이머 후 접힘
+        if (currentScrollY > lastScrollY) {
+            startHeaderTimer();
+        }
+
+        lastScrollY = currentScrollY;
+    });
+
+    // 휠을 위로 올릴 때도 즉시 헤더 펼치기
+    window.addEventListener("wheel", function (e) {
+        if (isSearchModalOpen()) {
+            return;
+        }
+
+        // deltaY < 0 이면 마우스 휠 위 방향
+        if (e.deltaY < 0) {
+            expandHeader();
+            startHeaderTimer();
+        }
     });
 
     // 페이지 진입 후 2.5초 뒤 자동 접힘

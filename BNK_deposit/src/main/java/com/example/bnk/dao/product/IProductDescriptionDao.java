@@ -7,4 +7,5 @@ import com.example.bnk.dto.product.ProductDescriptionDto;
 @Mapper
 public interface IProductDescriptionDao {
 	public int insertAllDescription(ProductDescriptionDto prdDescDto);
+	public int updateProductDescription(ProductDescriptionDto prdDescDto);
 }

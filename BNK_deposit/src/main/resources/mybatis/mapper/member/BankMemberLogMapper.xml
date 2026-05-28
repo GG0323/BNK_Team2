@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.member.IMemberLogDao">
+
+	<insert id="insertLog">
+		INSERT INTO TB_MEMBER_TRACKING_LOG (
+	        member_no,
+	        requested_page,
+	        request_method,
+	        request_url,
+	        request_ip
+    		)
+	    VALUES (
+	        #{dto.member_no},
+	        #{dto.requested_page},
+	        #{dto.request_method},
+	        #{dto.request_url},
+	        #{dto.request_ip}
+	    )
+	</insert>
+	
+	<select id="allLog" resultType="com.example.bnk.dto.member.BankMemberLogDto">
+		SELECT * FROM TB_MEMBER_TRACKING_LOG
+	</select>
+
+
+	<select id="findByUserID" resultType="long">
+		SELECT member_no FROM TB_BANK_MEMBER WHERE login_id = #{userid}
+	</select>
+
+</mapper>

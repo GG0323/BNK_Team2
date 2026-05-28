@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title></title></head>
+
+<body>
+	<div th:fragment="staffSideBar">
+    	<aside class="sidebar">
+	    	<div class="logo"><a th:href="@{/employee/staff/staffPage}">BNK <span>일반 사원</span> 페이지</a></div>
+	    	
+	    	<a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
+	    	<a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
+	    	<a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
+	   		<a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
+			<a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
+			<a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>
+	  	</aside>
+
+	  	<script>
+	  		document.addEventListener("DOMContentLoaded", function() {
+	  			// 현재 브라우저 주소창의 주소를 가져옴
+	  			const currentPath = window.location.pathname; 
+	  			
+	  			// 사이드바의 모든 메뉴들을 가져(?) 불러옴(?)
+	  			const navItems = document.querySelectorAll('.sidebar .nav-item');
+	  			
+	  			// 반복문을 돌며 현재 주소와 일치하는 메뉴를 찾기!
+	  			navItems.forEach(item => {
+	  				// 타임리프가 생성한 실제 href 주소 추출.
+	  				const itemPath = item.getAttribute('href'); 
+	  				
+	  				if (currentPath === itemPath) {
+	  					item.classList.add('active'); // 일치하면 CSS .nav-item.active 가 발동되도록 active 추가!
+	  				} else {
+	  					item.classList.remove('active'); // 다른 곳은 지우기!!
+	  				}
+	  			});
+	  		});
+	  	</script>
+	</div>
+</body>
+</html>

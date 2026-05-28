@@ -7,4 +7,5 @@ import com.example.bnk.dto.product.ProductRateDto;
 @Mapper
 public interface IProductRateDao {
 	public int insertAllRate(ProductRateDto prdRateDto);
+	public int updateProductRate(ProductRateDto prdRateDto);
 }
