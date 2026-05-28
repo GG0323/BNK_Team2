@@ -75,14 +75,19 @@
 				</div>
 
 				<div id="businessIdentifier" class="identifier-box" style="display:none;">
-					<label>사업자등록번호</label>
-					<div class="identifier-row business">
-						<input type="password" id="businessId1" maxlength="3" pattern="[0-9]{3}" placeholder="000">
-						<span>-</span>
-						<input type="password" id="businessId2" maxlength="2" pattern="[0-9]{2}" placeholder="00">
-						<span>-</span>
-						<input type="password" id="businessId3" maxlength="5" pattern="[0-9]{5}" placeholder="00000">
-					</div>
+				    <label>사업자등록번호</label>
+				    <div class="identifier-row business">
+				        <input type="password" id="businessId1" maxlength="3" pattern="[0-9]{3}" placeholder="000">
+				        <span>-</span>
+				        <input type="password" id="businessId2" maxlength="2" pattern="[0-9]{2}" placeholder="00">
+				        <span>-</span>
+				        <input type="password" id="businessId3" maxlength="5" pattern="[0-9]{5}" placeholder="00000">
+				    </div>
+				
+				    <div class="input-group">
+				        <label for="businessOpenDate">개업일자</label>
+				        <input type="date" id="businessOpenDate" name="birth_date">
+				    </div>
 				</div>
 
 				<input type="hidden" name="member_identifier" id="memberIdentifier">

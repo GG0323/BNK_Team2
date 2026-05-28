@@ -1,6 +1,7 @@
 package com.example.bnk.controller.page;
 
 import java.io.ByteArrayOutputStream;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -10,10 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.dto.product.ProductCompareViewDto;
 import com.example.bnk.dto.product.ProductDetailViewDto;
 import com.example.bnk.dto.product.ProductListViewDto;
+import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.product.ProductViewService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductPageController {
 
     private final ProductViewService productViewService;
+    private final BankMemberService bankMemberService;
 
     // 상품 목록 조회
     // 비회원도 접근 가능
@@ -59,9 +64,35 @@ public class ProductPageController {
     // TB_PRODUCT + TB_PRODUCT_DESCRIPTION + TB_PRODUCT_RATE + TB_PRODUCT_CONDITION
     @GetMapping("/detail")
     public String productDetail(@RequestParam("product_no") long product_no,
-                                Model model) {
+                                Model model,
+                                Principal principal,
+                                RedirectAttributes rttr) {
 
         ProductDetailViewDto product = productViewService.getProductDetail(product_no);
+
+        if (product == null) {
+            rttr.addFlashAttribute("msg", "상품 정보를 찾을 수 없습니다.");
+            return "redirect:/products";
+        }
+
+        // 로그인한 회원이면 회원 유형과 상품 고객 유형 비교
+        if (principal != null) {
+            BankMemberDto member = bankMemberService.getMemberInfo(principal.getName());
+
+            if (member != null) {
+                String memberType = member.getMember_type();
+                String customerType = product.getCustomer_type();
+
+                boolean available =
+                        "ALL".equals(customerType)
+                        || memberType.equals(customerType);
+
+                if (!available) {
+                    rttr.addFlashAttribute("msg", "해당 회원 유형은 이 상품에 접근할 수 없습니다.");
+                    return "redirect:/products";
+                }
+            }
+        }
 
         model.addAttribute("product", product);
 

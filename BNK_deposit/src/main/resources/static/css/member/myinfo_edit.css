@@ -37,10 +37,10 @@ ul {
 
 /**
  * ==========================================
- * [2] 최상단 헤더 영역 (로고 및 현재 위치)
+ * [2] 최상단 회원 헤더 영역
+ * mypage.css 기준으로 통일
  * ==========================================
  */
-
 .top-header {
     background-color: #000;
     color: #fff;
@@ -112,49 +112,61 @@ ul {
     cursor: pointer;
 }
 
-
-
-
-/* .top-header { 
-    background-color: transparent; 
-    padding: 25px 0; 
+.header-title-group h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #fff;
 }
 
-헤더 전체를 검은색 곡면 캡슐 형태로 바꿉니다
-.header-inner {
-    max-width: 1000px; 
-    margin: 0 auto;
-    background-color: #000;    ❌ transparent에서 검은색(#000)으로 변경
-    border-radius: 50px;       곡면 형태를 위한 둥근 모서리
-    padding: 15px 40px;        내부 요소들이 숨 쉴 수 있는 여백
-    display: flex; 
-    justify-content: space-between; 
+.header-title-group p {
+    font-size: 11px;
+    color: #aaa;
+}
+
+/* fragments/nav :: member_top_mypage 에서 출력되는 오른쪽 메뉴 */
+.header-right {
+    display: flex;
     align-items: center;
-    color: #ffffff;            기본 텍스트 색상을 흰색으로 고정
+    gap: 20px;
 }
 
-왼쪽 로고 및 타이틀 영역
-.header-left { display: flex; align-items: center; gap: 30px; }
-.header-left h1 { font-size: 24px; font-weight: 800; color: #fff; }
-.header-title-group h2 { font-size: 16px; color: #fff; margin-bottom: 2px; }
-.header-title-group p { font-size: 12px; color: #aaa; } 부제목은 옅은 회색
+.header-right ul {
+    display: flex;
+    gap: 15px;
+    font-size: 13px;
+    color: #ccc;
+}
 
-우측 브레드크럼 경로 (글자색들을 흰색 계열로 변경)
-.breadcrumb { font-size: 13px; color: #666; }
-.breadcrumb a { color: #aaa; transition: color 0.2s; }
-.breadcrumb a:hover { color: #fff; }
+.header-right ul li::after {
+    content: '|';
+    margin-left: 15px;
+    color: #555;
+}
 
-캡슐 알약 형태의 현재 페이지 표시 (흰 배경 + 빨간 글자)
-.breadcrumb .current-page { 
-    background-color: #ffffff;    흰색 바탕 박스
-    color: var(--primary-red);    뚫고 나오는 시그니처 붉은 글자
-    padding: 6px 14px;            감싸는 상하좌우 여백
-    border-radius: 20px;          양 끝을 완전히 둥글게
-    font-weight: 700; 
-    display: inline-block;        여백(padding) 레이아웃이 깨지지 않게 고정
-    margin-left: 5px;
-} */
+.header-right ul li:last-child::after {
+    display: none;
+}
 
+.header-right a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.header-right a:hover {
+    color: #fff;
+}
+
+.btn-mypage-header {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
 /**
  * ==========================================
