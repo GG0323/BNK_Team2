@@ -410,16 +410,19 @@ body{
 </head>
 <body>
 	
-	<!-- 사이드바 -->
 	<aside class="sidebar">
     	<div class="logo">BNK <span>관리자</span> 페이지</div>
+    	<!-- nav 항목들 -->	
+    	
     	<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
     	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
     	<a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
-   		<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
     	<a class="nav-item active" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
     	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
-	</aside>
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a>
+    	<a class="nav-item" th:href="@{/employee/manager/PRD/productList}">상품 리스트</a>
+  	</aside>
 	
 	
 
