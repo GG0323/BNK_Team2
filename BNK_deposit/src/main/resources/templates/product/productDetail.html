@@ -8,6 +8,47 @@
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
     <script th:src="@{/js/productDetailMember.js}" defer></script>
     <script th:src="@{/js/productDetailTabs.js}" defer></script>
+    <script>
+	    function openTaxBenefitDictionaryPopup() {
+	        window.open(
+	            "/finance/financedictionary/17",
+	            "taxBenefitDictionaryPopup",
+	            "width=700,height=750,left=300,top=100,resizable=yes,scrollbars=yes"
+	        );
+	    }
+	</script>	
+<style>
+/* 금융용어 팝업 링크: 평소에는 일반 글자처럼, hover 때만 강조 */
+.dictionary-soft-link {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 1px 2px;
+    transition: all 0.15s ease;
+}
+
+.dictionary-soft-link:hover {
+    color: #d71920;
+    background-color: #fff1f2;
+}
+
+/* 세제 혜택 항목만 강제로 간격 줄이기 */
+.tax-benefit-compact {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+.tax-benefit-compact h3 {
+    margin-bottom: 4px !important;
+}
+
+.tax-benefit-compact p {
+    margin: 0 !important;
+    line-height: 1.45 !important;
+}
+</style>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header_default}"></div>
@@ -140,12 +181,19 @@
                     </p>
                 </div>
 
-                <div class="info-block">
-                    <h3>세제 혜택</h3>
-                    <p th:text="${product.tax_benefit_desc != null ? product.tax_benefit_desc : '-'}">
-                        세제 혜택 설명
-                    </p>
-                </div>
+                <div class="info-block tax-benefit-compact">
+				    <h3>세제 혜택</h3>
+				
+				    <p th:if="${product.tax_benefit_desc != null}">
+				        <a href="#"
+				           class="dictionary-soft-link"
+				           onclick="openTaxBenefitDictionaryPopup(); return false;">비과세종합저축</a><span th:text="${#strings.replace(product.tax_benefit_desc, '비과세종합저축', '')}"> 가능</span>
+				    </p>
+				
+				    <p th:if="${product.tax_benefit_desc == null}">
+				        -
+				    </p>
+				</div>
 
                 <div class="info-block">
                     <h3>유의사항</h3>
@@ -349,11 +397,27 @@
                 </tr>
 
                 <tr>
-                    <th>조건 비고</th>
-                    <td th:text="${product.condition_note != null ? product.condition_note : '-'}">
-                        조건 비고
-                    </td>
-                </tr>
+				    <th>조건 비고</th>
+				    <td>
+				        <!-- 조건 비고가 없을 때 -->
+				        <span th:if="${product.condition_note == null}">
+				            -
+				        </span>
+				
+				        <!-- 조건 비고에 '비과세종합저축'이 포함되어 있을 때 -->
+				        <span th:if="${product.condition_note != null && #strings.contains(product.condition_note, '비과세종합저축')}">
+				            <span th:text="${#strings.substringBefore(product.condition_note, '비과세종합저축')}"></span><a href="#"
+				               class="dictionary-soft-link"
+				               onclick="openTaxBenefitDictionaryPopup(); return false;">비과세종합저축</a><span th:text="${#strings.substringAfter(product.condition_note, '비과세종합저축')}"></span>
+				        </span>
+				
+				        <!-- 조건 비고는 있지만 '비과세종합저축'이 없을 때 -->
+				        <span th:if="${product.condition_note != null && !#strings.contains(product.condition_note, '비과세종합저축')}"
+				              th:text="${product.condition_note}">
+				            조건 비고
+				        </span>
+				    </td>
+				</tr>
             </table>
 
             <div class="mobile-guide detail-mobile-guide"
