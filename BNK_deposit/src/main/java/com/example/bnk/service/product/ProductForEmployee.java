@@ -34,7 +34,7 @@ public class ProductForEmployee {
 	private final IApporvedSuggestionDao iAprSuggestionDao;
 	
 	private final IProductDao productDao;
-	private final IProductConditionDao iProductionDao;
+	private final IProductConditionDao iProductCondDao;
 	private final IProductRateDao iProductRateDao;
 	private final IProductDescriptionDao iProductDescDao;
 	private final IProductDetailResponseDao iProductDetailResponseDao;
@@ -68,52 +68,38 @@ public class ProductForEmployee {
 		return iProductDetailResponseDao.selectProductDetail(Product_no);
 	}
 	
-	// ⭕ 상품 조건 등록 서비스 수정!
-		@Transactional // 두 개 이상의 CUD 작업이 일어나므로 트랜잭션 보장 필수!
-		public int insertAllCondition(ProductConditionDto prdCndDto,
-									  @RequestParam("suggestion_no") long suggestion_no) {
-			if(prdCndDto != null) {
-				if("ALL".equals(prdCndDto.getGender())) {
-					prdCndDto.setGender(null);
-				}
+	// 상품 조건 등록 서비스
+	@Transactional // 두 개 이상의 CUD 작업이 일어나므로 트랜잭션 보장 필수!
+	public int insertAllCondition(ProductConditionDto prdCndDto,
+								  @RequestParam("suggestion_no") long suggestion_no) {
+		if(prdCndDto != null) {
+			if("ALL".equals(prdCndDto.getGender())) {
+				prdCndDto.setGender(null);
+			}else {
+				System.out.println("All 변환 실패!");					
+			}
+			// 1단계: TB_PRODUCT_CONDITION 테이블에 인서트 시도
+			// (위 1번 작업 덕분에 이 쿼리가 성공하면 prdCndDto 안에 condition_no가 자동으로 채워짐요!)
+			int insertResult = iProductCondDao.insertAllCondition(prdCndDto);
+			
+			// BEGIN / END 사용하면 성공 시 -1 반환되용
+			if(insertResult == -1) {
+				// condition_no 추출!(리턴 받음)
+				long condition_no = prdCndDto.getCondition_no();
 				
+				System.out.println("condition_no: " + condition_no);
+				System.out.println("목표 suggestion_no: " + suggestion_no);
+				// 3단계: 중간 테이블(TB_APPROVED_SUGGESTION)에 condition_no 업데이트하기
+				int updateResult = iAprSuggestionDao.updateAprToCondition(suggestion_no, condition_no);
 				
-				
-				// 1단계: TB_PRODUCT_CONDITION 테이블에 인서트 시도
-				// (위 1번 작업 덕분에 이 쿼리가 성공하면 prdCndDto 안에 condition_no가 자동으로 채워집니다!)
-				int insertResult = iProductionDao.insertAllCondition(prdCndDto);
-				
-				if(insertResult == 1) {
-					// 2단계: 자동 채워진 가입조건 PK와 화면에서 넘어온 제안서 번호 추출
-					long condition_no = prdCndDto.getCondition_no();
-					
-					System.out.println("condition_no: " + condition_no);
-					System.out.println("목표 suggestion_no: " + suggestion_no);
-					// 3단계: 중간 테이블(TB_APPROVED_SUGGESTION)에 condition_no 업데이트하기
-					int updateResult = iAprSuggestionDao.updateAprToCondition(suggestion_no, condition_no);
-					
-					if(updateResult == 1) {
-						return 1; // 인서트와 중간 테이블 업데이트 모두 성공!
-					} else {
-						System.out.println("가입조건은 등록되었으나 중간 테이블 업데이트에 실패했습니다.");
-						return 0;
-					}
-					
+				if(updateResult == 1) {
+					return 1; // 인서트와 중간 테이블 업데이트 모두 성공!
 				} else {
-					System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
+					System.out.println("가입조건은 등록되었으나 중간 테이블 업데이트에 실패했습니다.");
 					return 0;
 				}
-			}
-			
-			return 0;
-		}
-	
-	// 상품 금리 등록 서비스1
-	public int insertAllRate(ProductRateDto prdRateDto) {
-		if(prdRateDto != null) {
-			if(iProductRateDao.insertAllRate(prdRateDto) == 1) {
-				return 1;
-			}else {
+				
+			} else {
 				System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
 				return 0;
 			}
@@ -123,24 +109,79 @@ public class ProductForEmployee {
 	}
 	
 	// 상품 설명 등록 서비스!
-	public int insertAllDescription(ProductDescriptionDto prdDescDto) {
+	public int insertAllDescription(ProductDescriptionDto prdDescDto,
+									@RequestParam("suggestion_no")long suggestion_no) {
 		if(prdDescDto != null) {
-			if(iProductDescDao.insertAllDescription(prdDescDto) == 1) {
-				return 1;
+			
+			int insertResult = iProductDescDao.insertAllDescription(prdDescDto);
+			System.out.println("insertResult: " + insertResult);
+			if(insertResult == -1) {
+				long description_no = prdDescDto.getDescription_no();
+				
+				System.out.println("descriptoin_no: " + description_no);
+				System.out.println("목표 suggestion_no: " + suggestion_no);
+				
+				int updateResult = iAprSuggestionDao.updateAprToDescription(suggestion_no, description_no);
+				
+				if(updateResult == 1) {
+					return 1;
+				}else {
+					System.out.println("가입 조건은 등록되었으나 중간 테이블 업데이트에 실패했습니다.");
+					return 0;
+				}
+				
+			}else {
+				System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
+				return 0;
+			}
+			
+			
+			
+		}
+		System.out.println("그냥 Dto가 안들어있음 ㅇㅇ...");
+		return 0;
+	}
+	
+	// 상품 금리 등록 서비스1
+	public int insertAllRate(ProductRateDto prdRateDto, @RequestParam("suggestion_no") long suggestion_no) {
+		if(prdRateDto != null) {
+			
+			int insertResult = iProductRateDao.insertAllRate(prdRateDto);
+			
+			if(insertResult == -1) {
+				long rate_no = prdRateDto.getRate_no();
+				
+				System.out.println("Rate_no: " + rate_no);
+				System.out.println("목표suggestion_no: " + suggestion_no);
+				
+				int updateResult = iAprSuggestionDao.updateAprToRate(suggestion_no, rate_no);
+				
+				if(updateResult == 1) {
+					System.out.println("APPROVED 테이블 업데이트 성공");
+					return 1;
+				}else {
+					System.out.println("UPDATE 'APPROVED TABLE' FAILED...");
+					return 0;
+				}
+				
 			}else {
 				System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
 				return 0;
 			}
 			
 		}
+		System.out.println("그냥 DTO가 안들어있는데?");
 		return 0;
 	}
+	
+
 	
 	
 
 
     @Transactional
-    public int saveDescription(ProductDescriptionDto prdDescDto) throws IOException {
+    public int saveDescription(ProductDescriptionDto prdDescDto,
+    		 @RequestParam("suggestion_no") long suggestion_no	) throws IOException {
         
         MultipartFile file = prdDescDto.getImage_file();
         
@@ -152,6 +193,7 @@ public class ProductForEmployee {
             File folder = new File(uploadPath);
             if (!folder.exists()) {
                 folder.mkdirs();
+                System.out.println("파일 업로드 성공");
             }
             
             File destination = new File(folder, savedFileName);
@@ -163,7 +205,7 @@ public class ProductForEmployee {
             System.out.println(uploadUrl + savedFileName);
         }
         
-        if(iProductDescDao.insertAllDescription(prdDescDto) == 1) {
+        if(insertAllDescription(prdDescDto, suggestion_no) == 1) {
         	return 1;
         }
         
@@ -206,7 +248,7 @@ public class ProductForEmployee {
     // 상품 가입 조건 업데이트
     public int updateProductCondition(ProductConditionDto prdCndDto){
     	if(prdCndDto != null) {
-    		iProductionDao.updateProductCondition(prdCndDto);
+    		iProductCondDao.updateProductCondition(prdCndDto);
     		System.out.println("상품 가입 조건 업데이트 완료!");
     		return 1;
     	}

@@ -180,13 +180,12 @@ public class EmployeePageController {
 	public String saveProductCondition(ProductConditionDto prdCndDto, @RequestParam("suggestion_no") long suggestion_no) {
 		
 		if(prdForEmpService.insertAllCondition(prdCndDto, suggestion_no) == 1) {
-			System.out.println("성공");
-		}else {
-			System.out.println("실패");
+			System.out.println("1. condition 등록하기 성공");
+			return "redirect:/employee/staff/product/list";
 		}
 		
-		
-		return "redirect:/employee/staff/product/list";
+		System.out.println("1. condition 등록하기 실패");
+		return "redirect:/employee/staff/product/condition";
 	}
 	
 	// 상품 금리 등록 페이지
@@ -203,16 +202,17 @@ public class EmployeePageController {
 	// 상품 금리 등록하기
 	// employee/staff/product/rate/save
 	@PostMapping("/staff/product/rate/save")
-	public String saveProductRate(ProductRateDto prdRateDto) {
+	public String saveProductRate(ProductRateDto prdRateDto,
+			@RequestParam("suggestion_no") long suggestion_no) {
 		
 //		System.out.println(prdRateDto);
 		
-		if(prdForEmpService.insertAllRate(prdRateDto) == 1) {
-			System.out.println("성공");
-		}else {
-			System.out.println("실패");
+		if(prdForEmpService.insertAllRate(prdRateDto, suggestion_no) == 1) {
+			System.out.println("1. rate_no 등록하기 성공");
+			return "redirect:/employee/staff/product/list";
 		}
-		return "redirect:/employee/staff/product/list";
+		System.out.println("1. rate_no 등록하기 실패");
+		return "redirect:/employee/staff/product/descrition";
 	}
 	
 	// 상품 설명 관리 페이지
@@ -228,15 +228,15 @@ public class EmployeePageController {
 	
 	// 상품 설명 관리 등록하기
 	@PostMapping("/staff/product/description/save")
-	public String saveProductDescription(ProductDescriptionDto prdDescDto) throws IOException {
+	public String saveProductDescription(ProductDescriptionDto prdDescDto,
+			 @RequestParam("suggestion_no") long suggestion_no) throws IOException {
 		
-		System.out.println(prdDescDto);
-		
-		if(prdForEmpService.saveDescription(prdDescDto) == 1) {
-			System.out.println("성공");
-		}else {
-			System.out.println("실패");
+		if(prdForEmpService.saveDescription(prdDescDto, suggestion_no) == 1) {
+			System.out.println("1. descriptoin_no 등록하기 성공");
+			return "redirect:/employee/staff/product/list";
 		}
+		System.out.println("1. description_no 등록하기 실패");
+		
 		return "redirect:/employee/staff/product/description";
 	}
 	

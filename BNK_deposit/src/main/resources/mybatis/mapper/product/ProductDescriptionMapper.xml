@@ -3,57 +3,63 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductDescriptionDao">
-	<insert id="insertAllDescription">
-		INSERT INTO TB_PRODUCT_DESCRIPTION(
-		    product_no,
-		    subtitle,
-		    content,
-		    eligibility_desc,
-		    period_desc,
-		    amount_desc,
-		    preferential_rate_summary,
-		    product_feature_desc,
-		    deposit_subject_desc,
-		    payment_method_desc,
-		    join_method_desc,
-		    required_document_desc,
-		    tax_benefit_desc,
-		    principal_interest_limit_desc,
-		    interest_rate_desc,
-		    interest_payment_desc,
-		    preferential_rate_desc,
-		    expected_interest_desc,
-		    caution_note,
-		    reference_note,
-		    sale_period_desc,
-		    non_taxable_savings_desc,
-		    disclosure_approval_desc,
-		    image_url)
-		VALUES(
-		    #{product_no},
-		    #{subtitle, jdbcType=VARCHAR},
-		    #{content, jdbcType=VARCHAR},
-		    #{eligibility_desc, jdbcType=VARCHAR},
-		    #{period_desc, jdbcType=VARCHAR},
-		    #{amount_desc, jdbcType=VARCHAR},
-		    #{preferential_rate_summary, jdbcType=VARCHAR},
-		    #{product_feature_desc, jdbcType=VARCHAR},
-		    #{deposit_subject_desc, jdbcType=VARCHAR},
-		    #{payment_method_desc, jdbcType=VARCHAR},
-		    #{join_method_desc, jdbcType=VARCHAR},
-		    #{required_document_desc, jdbcType=VARCHAR},
-		    #{tax_benefit_desc, jdbcType=VARCHAR},
-		    #{principal_interest_limit_desc, jdbcType=VARCHAR},
-		    #{interest_rate_desc, jdbcType=VARCHAR},
-		    #{interest_payment_desc, jdbcType=VARCHAR},
-		    #{preferential_rate_desc, jdbcType=VARCHAR},
-		    #{expected_interest_desc, jdbcType=VARCHAR},
-		    #{caution_note, jdbcType=VARCHAR},
-		    #{reference_note, jdbcType=VARCHAR},
-		    #{sale_period_desc, jdbcType=VARCHAR},
-		    #{non_taxable_savings_desc, jdbcType=VARCHAR},
-		    #{disclosure_approval_desc, jdbcType=VARCHAR},
-		    #{image_url, jdbcType=VARCHAR})
+	<insert id="insertAllDescription"
+			parameterType="com.example.bnk.dto.product.ProductDescriptionDto"
+			statementType="CALLABLE">
+		BEGIN
+		
+			INSERT INTO TB_PRODUCT_DESCRIPTION(
+			    subtitle,
+			    content,
+			    eligibility_desc,
+			    period_desc,
+			    amount_desc,
+			    preferential_rate_summary,
+			    product_feature_desc,
+			    deposit_subject_desc,
+			    payment_method_desc,
+			    join_method_desc,
+			    required_document_desc,
+			    tax_benefit_desc,
+			    principal_interest_limit_desc,
+			    interest_rate_desc,
+			    interest_payment_desc,
+			    preferential_rate_desc,
+			    expected_interest_desc,
+			    caution_note,
+			    reference_note,
+			    sale_period_desc,
+			    non_taxable_savings_desc,
+			    disclosure_approval_desc,
+			    image_url)
+			VALUES(
+			    #{subtitle, jdbcType=VARCHAR},
+			    #{content, jdbcType=VARCHAR},
+			    #{eligibility_desc, jdbcType=VARCHAR},
+			    #{period_desc, jdbcType=VARCHAR},
+			    #{amount_desc, jdbcType=VARCHAR},
+			    #{preferential_rate_summary, jdbcType=VARCHAR},
+			    #{product_feature_desc, jdbcType=VARCHAR},
+			    #{deposit_subject_desc, jdbcType=VARCHAR},
+			    #{payment_method_desc, jdbcType=VARCHAR},
+			    #{join_method_desc, jdbcType=VARCHAR},
+			    #{required_document_desc, jdbcType=VARCHAR},
+			    #{tax_benefit_desc, jdbcType=VARCHAR},
+			    #{principal_interest_limit_desc, jdbcType=VARCHAR},
+			    #{interest_rate_desc, jdbcType=VARCHAR},
+			    #{interest_payment_desc, jdbcType=VARCHAR},
+			    #{preferential_rate_desc, jdbcType=VARCHAR},
+			    #{expected_interest_desc, jdbcType=VARCHAR},
+			    #{caution_note, jdbcType=VARCHAR},
+			    #{reference_note, jdbcType=VARCHAR},
+			    #{sale_period_desc, jdbcType=VARCHAR},
+			    #{non_taxable_savings_desc, jdbcType=VARCHAR},
+			    #{disclosure_approval_desc, jdbcType=VARCHAR},
+			    #{image_url, jdbcType=VARCHAR})
+			RETURNING description_no
+			INTO #{description_no, mode=OUT, jdbcType=NUMERIC};
+			    
+		END;
 	</insert>
 	
 	<update id="updateProductDescription" parameterType="com.example.bnk.dto.product.ProductDescriptionDto">
