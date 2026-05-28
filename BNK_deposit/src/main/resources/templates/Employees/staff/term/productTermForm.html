@@ -394,8 +394,17 @@ body {
             </select>
             <!-- <span class="field-error" id="err-product_no">상품을 선택해주세요.</span> -->
           </div>
-
+		  <!-- 연결할 승인된 제안서 -->
+		  <div class="form-group full">
+            <label>승인된 제안서</label>
+            <select name="suggestion_no" id="suggestion_no">
+              <option value="">-- 제안서 선택 --</option>
+              <!-- JS로 동적 로드 -->
+            </select>
+            <!-- <span class="field-error" id="err-product_no">상품을 선택해주세요.</span> -->
+          </div>
         </div>
+        
 
         <hr class="divider">
 
@@ -512,6 +521,20 @@ body {
         });
       })
       .catch(e => console.error('상품 목록 로드 실패:', e));
+    
+    // 승인된 제안서 리스트
+    fetch("/api/employee/approved/chooseApprovedList", { method: "GET" })
+    .then(r => r.json())
+    .then(data => {
+      const select = document.getElementById('suggestion_no');
+      data.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value       = p.suggestion_no;
+        opt.textContent = p.product_name;
+        select.appendChild(opt);
+      });
+    })
+    .catch(e => console.error('상품 목록 로드 실패:', e));
 
     /* ── 유효성 검사 ── */
     function validate() {
@@ -546,17 +569,17 @@ body {
         showToast('필수 항목을 확인해주세요.', 'error');
         return;
       }
-
+	
+      showToast('약관이 등록되었습니다.', 'success');
+      
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.textContent = '등록 중...';
 
       const formData = new FormData(document.querySelector('#termsRegistForm'));
-      // use_yn 체크박스 → hidden 값으로 대체
-      formData.delete('use_yn');
-      formData.set('use_yn', document.getElementById('use_yn_val').value);
+      
 
-      fetch("=====================================================================================", {
+      /* fetch("=====================================================================================", {
         method: "POST",
         body: formData
       })
@@ -578,7 +601,7 @@ body {
         showToast('등록 중 오류가 발생했습니다.', 'error');
         btn.disabled = false;
         btn.textContent = '약관 등록';
-      });
+      }); */
     }
   </script>
 
