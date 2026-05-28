@@ -7,9 +7,11 @@
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
     <script th:src="@{/js/productDetailMember.js}" defer></script>
+    <script th:src="@{/js/productDetailTabs.js}" defer></script>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header_default}"></div>
+
 <div class="page-wrap">
 
     <header class="product-header">
@@ -23,13 +25,34 @@
 
     <section class="detail-section">
 
+        <!-- 왼쪽 카드 -->
         <div class="detail-card">
 
-            <div class="card-top">
+            <div class="card-top detail-card-top-with-tabs">
                 <span class="type-badge"
                       th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
                     예금
                 </span>
+
+                <div class="detail-tab-menu">
+                    <button type="button"
+                            class="detail-tab-btn active"
+                            data-tab-target="productInfoTab">
+                        상품안내
+                    </button>
+
+                    <button type="button"
+                            class="detail-tab-btn"
+                            data-tab-target="rateInfoTab">
+                        금리안내
+                    </button>
+
+                    <button type="button"
+                            class="detail-tab-btn"
+                            data-tab-target="termsInfoTab">
+                        상품약관
+                    </button>
+                </div>
 
                 <span class="mobile-badge"
                       th:if="${product.mobile_join_yn == 'Y'}">
@@ -65,71 +88,199 @@
                 </div>
             </div>
 
-            <div class="info-block">
-                <h3>상품 설명</h3>
-                <p th:text="${product.content != null ? product.content : '등록된 상품 설명이 없습니다.'}">
-                    상품 설명 내용
-                </p>
+            <!-- 상품안내 탭 -->
+            <div id="productInfoTab" class="detail-tab-panel active">
+
+                <div class="info-block">
+                    <h3>상품 설명</h3>
+                    <p th:text="${product.content != null ? product.content : '등록된 상품 설명이 없습니다.'}">
+                        상품 설명 내용
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>가입 대상</h3>
+                    <p th:text="${product.eligibility_desc != null ? product.eligibility_desc : '-'}">
+                        가입 대상 설명
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>가입 기간</h3>
+                    <p th:text="${product.period_desc != null ? product.period_desc : '-'}">
+                        가입 기간 설명
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>가입 금액</h3>
+                    <p th:text="${product.amount_desc != null ? product.amount_desc : '-'}">
+                        가입 금액 설명
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>우대금리</h3>
+                    <p th:text="${product.preferential_rate_summary != null ? product.preferential_rate_summary : '-'}">
+                        우대금리 요약
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>가입 방법</h3>
+                    <p th:text="${product.join_method_desc != null ? product.join_method_desc : '-'}">
+                        가입 방법 설명
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>필요 서류</h3>
+                    <p th:text="${product.required_document_desc != null ? product.required_document_desc : '-'}">
+                        필요 서류 설명
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>세제 혜택</h3>
+                    <p th:text="${product.tax_benefit_desc != null ? product.tax_benefit_desc : '-'}">
+                        세제 혜택 설명
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>유의사항</h3>
+                    <p th:text="${product.caution_note != null ? product.caution_note : '-'}">
+                        유의사항
+                    </p>
+                </div>
+
             </div>
 
-            <div class="info-block">
-                <h3>가입 대상</h3>
-                <p th:text="${product.eligibility_desc != null ? product.eligibility_desc : '-'}">
-                    가입 대상 설명
-                </p>
+            <!-- 금리안내 탭 : 하드코딩 -->
+            <div id="rateInfoTab" class="detail-tab-panel">
+
+                <div class="info-block">
+                    <div class="rate-title-row">
+                        <h3>우대금리</h3>
+                        <span>금리조회 기준일자 : 2026-05-28 세전</span>
+                    </div>
+
+                    <p>
+                        아래 금리는 상품 안내 화면 구성을 위한 예시이며,
+                        실제 적용 금리는 가입 시점의 고시 금리에 따라 달라질 수 있습니다.
+                    </p>
+                </div>
+
+                <table class="rate-info-table official-rate-table">
+                    <thead>
+                    <tr>
+                        <th>분류</th>
+                        <th>구분</th>
+                        <th>연이율</th>
+                        <th>연수익률</th>
+                        <th>비고</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>만기지급</td>
+                        <td>12개월</td>
+                        <td>2.00</td>
+                        <td>2.00</td>
+                        <td>우대금리 별도</td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="2">만기후</td>
+                        <td>만기 후 1년이내</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>가입기간별 일반정기적금 기본이율의 1/2</td>
+                    </tr>
+
+                    <tr>
+                        <td>만기 후 1년초과</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>가입기간별 일반정기적금 기본이율의 1/5</td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="4">중도해지</td>
+                        <td>6개월미만</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>기본이율 X 40% X 경과일수 / 계약일수</td>
+                    </tr>
+
+                    <tr>
+                        <td>6개월이상 9개월미만</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>기본이율 X 70% X 경과일수 / 계약일수</td>
+                    </tr>
+
+                    <tr>
+                        <td>9개월이상 11개월미만</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>기본이율 X 80% X 경과일수 / 계약일수</td>
+                    </tr>
+
+                    <tr>
+                        <td>11개월이상</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>기본이율 X 90% X 경과일수 / 계약일수</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="rate-note-list">
+                    <p>* 연이율 : 1년 기준으로 적용되는 이자율</p>
+                    <p>* 연수익률 : 연 단위로 환산한 수익률</p>
+                </div>
+
             </div>
 
-            <div class="info-block">
-                <h3>가입 기간</h3>
-                <p th:text="${product.period_desc != null ? product.period_desc : '-'}">
-                    가입 기간 설명
-                </p>
-            </div>
+            <!-- 상품약관 탭 : 하드코딩 -->
+            <div id="termsInfoTab" class="detail-tab-panel">
 
-            <div class="info-block">
-                <h3>가입 금액</h3>
-                <p th:text="${product.amount_desc != null ? product.amount_desc : '-'}">
-                    가입 금액 설명
-                </p>
-            </div>
+                <div class="info-block">
+                    <h3>상품약관</h3>
+                    <p>
+                        상품 가입 전 상품설명서와 약관을 반드시 확인하시기 바랍니다.
+                        상품별 약관 PDF 연동 기능은 2차 프로젝트에서 구현 예정입니다.
+                    </p>
+                </div>
 
-            <div class="info-block">
-                <h3>우대금리</h3>
-                <p th:text="${product.preferential_rate_summary != null ? product.preferential_rate_summary : '-'}">
-                    우대금리 요약
-                </p>
-            </div>
+                <div class="terms-list">
+                    <a href="javascript:void(0);" class="terms-item">
+                        <span>상품설명서</span>
+                        <strong>PDF 보기</strong>
+                    </a>
 
-            <div class="info-block">
-                <h3>가입 방법</h3>
-                <p th:text="${product.join_method_desc != null ? product.join_method_desc : '-'}">
-                    가입 방법 설명
-                </p>
-            </div>
+                    <a href="javascript:void(0);" class="terms-item">
+                        <span>예금거래기본약관</span>
+                        <strong>PDF 보기</strong>
+                    </a>
 
-            <div class="info-block">
-                <h3>필요 서류</h3>
-                <p th:text="${product.required_document_desc != null ? product.required_document_desc : '-'}">
-                    필요 서류 설명
-                </p>
-            </div>
+                    <a href="javascript:void(0);" class="terms-item">
+                        <span>적립식예금약관</span>
+                        <strong>PDF 보기</strong>
+                    </a>
 
-            <div class="info-block">
-                <h3>세제 혜택</h3>
-                <p th:text="${product.tax_benefit_desc != null ? product.tax_benefit_desc : '-'}">
-                    세제 혜택 설명
-                </p>
-            </div>
+                    <a href="javascript:void(0);" class="terms-item">
+                        <span>상품특약</span>
+                        <strong>PDF 보기</strong>
+                    </a>
+                </div>
 
-            <div class="info-block">
-                <h3>유의사항</h3>
-                <p th:text="${product.caution_note != null ? product.caution_note : '-'}">
-                    유의사항
-                </p>
             </div>
 
         </div>
 
+        <!-- 오른쪽 카드 -->
         <div class="detail-card">
 
             <h2>가입 조건</h2>
@@ -210,25 +361,27 @@
                 이 상품은 모바일 가입 가능 상품입니다. 추후 QR을 통해 앱 이동을 지원할 수 있습니다.
             </div>
 
-				<div class="detail-actions">
-				    <a th:href="@{/products}" class="detail-btn">목록으로</a>
-				
-				    <!-- 모바일 가입 가능 상품 -->
-				    <a th:if="${product.mobile_join_yn == 'Y'}"
-				       th:href="@{/products/mobile-qr(product_no=${product.product_no})}"
-				       class="compare-btn">
-				        모바일로 가입하기
-				    </a>
-				
-				    <!-- 일반 웹/영업점 가입 상품 -->
-				    <a th:if="${product.mobile_join_yn != 'Y'}"
-				       href="javascript:void(0);"
-				       onclick="alert('가입 신청 기능은 추후 구현 예정입니다.');"
-				       class="compare-btn">
-				        가입하기
-				    </a>
-				</div>
+            <div class="detail-actions">
+                <a th:href="@{/products}" class="detail-btn">목록으로</a>
+
+                <!-- 모바일 가입 가능 상품 -->
+                <a th:if="${product.mobile_join_yn == 'Y'}"
+                   th:href="@{/products/mobile-qr(product_no=${product.product_no})}"
+                   class="compare-btn">
+                    모바일로 가입하기
+                </a>
+
+                <!-- 일반 웹/영업점 가입 상품 -->
+                <a th:if="${product.mobile_join_yn != 'Y'}"
+                   href="javascript:void(0);"
+                   onclick="alert('가입 신청 기능은 추후 구현 예정입니다.');"
+                   class="compare-btn">
+                    가입하기
+                </a>
+            </div>
+
         </div>
+
     </section>
 </div>
 

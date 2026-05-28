@@ -1052,3 +1052,388 @@ body.compare-page-body {
     font-size: 14px;
     line-height: 1.7;
 }
+
+/* =========================================================
+   상품 상세 탭 메뉴
+   ========================================================= */
+
+.detail-card-top-with-tabs {
+    align-items: center;
+}
+
+.detail-tab-menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 12px;
+}
+
+.detail-tab-btn {
+    height: 40px;
+    padding: 0 22px;
+    border-radius: 999px;
+    border: 1px solid #eeeeee;
+    background: white;
+    color: #777777;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.2s;
+}
+
+.detail-tab-btn:hover {
+    border-color: #d71920;
+    color: #d71920;
+}
+
+.detail-tab-btn.active {
+    background: #111111;
+    border-color: #111111;
+    color: white;
+}
+
+.detail-tab-panel {
+    display: none;
+}
+
+.detail-tab-panel.active {
+    display: block;
+}
+
+/* 금리안내 테이블 */
+.rate-info-table {
+    width: 100%;
+    margin-top: 18px;
+    border-collapse: collapse;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+}
+
+.rate-info-table th,
+.rate-info-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #eeeeee;
+    text-align: center;
+    font-size: 14px;
+}
+
+.rate-info-table th {
+    background: #fafafa;
+    color: #333333;
+    font-weight: 800;
+}
+
+.rate-info-table td {
+    color: #111111;
+}
+
+.rate-info-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.rate-info-table tbody td:last-child {
+    color: #d71920;
+    font-weight: 900;
+}
+
+.rate-notice-box {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #fff1f1;
+    border: 1px solid #ffd6d8;
+    color: #b81218;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* 상품약관 목록 */
+.terms-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.terms-item {
+    min-height: 58px;
+    padding: 0 18px;
+    border: 1px solid #eeeeee;
+    border-radius: 16px;
+    background: #fafafa;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    transition: 0.2s;
+}
+
+.terms-item:hover {
+    border-color: #d71920;
+    background: #fff8f8;
+}
+
+.terms-item span {
+    color: #111111;
+    font-weight: 800;
+}
+
+.terms-item strong {
+    color: #d71920;
+    font-size: 13px;
+}
+
+/* 상세 탭 반응형 */
+@media (max-width: 760px) {
+    .detail-card-top-with-tabs {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .detail-tab-menu {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        margin: 12px 0 0;
+        overflow-x: auto;
+    }
+
+    .detail-tab-btn {
+        flex-shrink: 0;
+        padding: 0 18px;
+    }
+}
+
+/* =========================================================
+   상품 상세 탭 메뉴
+   ========================================================= */
+
+.detail-card-top-with-tabs {
+    align-items: center;
+}
+
+.detail-tab-menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 12px;
+}
+
+.detail-tab-btn {
+    height: 40px;
+    padding: 0 22px;
+    border-radius: 999px;
+    border: 1px solid #eeeeee;
+    background: white;
+    color: #777777;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.2s;
+}
+
+.detail-tab-btn:hover {
+    border-color: #d71920;
+    color: #d71920;
+}
+
+.detail-tab-btn.active {
+    background: #111111;
+    border-color: #111111;
+    color: white;
+}
+
+.detail-tab-panel {
+    display: none;
+}
+
+.detail-tab-panel.active {
+    display: block;
+}
+
+/* 금리안내 테이블 기본 */
+.rate-info-table {
+    width: 100%;
+    margin-top: 18px;
+    border-collapse: collapse;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+}
+
+.rate-info-table th,
+.rate-info-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #eeeeee;
+    text-align: center;
+    font-size: 14px;
+}
+
+.rate-info-table th {
+    background: #fafafa;
+    color: #333333;
+    font-weight: 800;
+}
+
+.rate-info-table td {
+    color: #111111;
+}
+
+.rate-info-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* 공식 홈페이지 느낌의 금리안내 테이블 */
+.rate-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.rate-title-row h3 {
+    margin: 0;
+}
+
+.rate-title-row span {
+    color: #777777;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.official-rate-table {
+    margin-top: 18px;
+    border: 1px solid #eeeeee;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.official-rate-table th,
+.official-rate-table td {
+    padding: 15px 12px;
+    border: 1px solid #eeeeee;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.official-rate-table th {
+    background: #fafafa;
+    color: #111111;
+    font-weight: 900;
+}
+
+.official-rate-table td {
+    color: #1f3b5c;
+    background: white;
+}
+
+.official-rate-table td[rowspan] {
+    font-weight: 800;
+    color: #333333;
+    background: #fcfcfc;
+}
+
+.official-rate-table tbody td:nth-child(3),
+.official-rate-table tbody td:nth-child(4) {
+    font-weight: 800;
+}
+
+.rate-note-list {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #dddddd;
+}
+
+.rate-note-list p {
+    margin: 4px 0;
+    color: #777777;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* 상품약관 목록 */
+.terms-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.terms-item {
+    min-height: 58px;
+    padding: 0 18px;
+    border: 1px solid #eeeeee;
+    border-radius: 16px;
+    background: #fafafa;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    transition: 0.2s;
+}
+
+.terms-item:hover {
+    border-color: #d71920;
+    background: #fff8f8;
+}
+
+.terms-item span {
+    color: #111111;
+    font-weight: 800;
+}
+
+.terms-item strong {
+    color: #d71920;
+    font-size: 13px;
+}
+
+/* 상세 탭 반응형 */
+@media (max-width: 760px) {
+    .detail-card-top-with-tabs {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .detail-tab-menu {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        margin: 12px 0 0;
+        overflow-x: auto;
+    }
+
+    .detail-tab-btn {
+        flex-shrink: 0;
+        padding: 0 18px;
+    }
+
+    .rate-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .official-rate-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+
+.official-rate-table td {
+    color: #111111;
+}
+
+.official-rate-table tbody td:last-child {
+    color: #111111;
+    font-weight: 700;
+}
+
+.official-rate-table tbody td:nth-child(3),
+.official-rate-table tbody td:nth-child(4) {
+    color: #111111;
+    font-weight: 800;
+}
