@@ -42,10 +42,6 @@ ul { list-style: none; }
 .header-right ul li:last-child::after { display: none; }
 .btn-mypage-header { background-color: #fff; color: #000; border: none; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; }
 
-.sub-nav { max-width: 1000px; margin: 30px auto; display: flex; gap: 10px; }
-.tab-btn { flex: 1; padding: 12px 0; border: none; border-radius: 25px; background-color: var(--bg-light); color: var(--text-gray); font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-.tab-btn.active { background-color: var(--primary-red); color: #fff; }
-
 /* 3. 메인 레이아웃 구성 (1000px 중앙 정렬) */
 .history-container {
     max-width: 1000px;
@@ -133,6 +129,17 @@ ul { list-style: none; }
 .filter-buttons {
     display: flex;
     gap: 6px;
+}
+
+.filter-select {
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-gray);
+    background-color: var(--bg-light);
+    outline: none;
 }
 
 .btn-filter {

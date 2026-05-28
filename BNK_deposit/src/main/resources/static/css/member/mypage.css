@@ -176,7 +176,7 @@ ul {
 /* 요약 통계 영역 */
 .summary-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin-bottom: 30px;
 }
@@ -250,39 +250,3 @@ ul {
     color: var(--text-light-gray);
     line-height: 1.4;
 }
-
-/* 최근 접속 기록 */
-.recent-login {
-    margin-bottom: 30px;
-}
-
-.recent-login h4 {
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-.table-wrapper {
-    border-top: 2px solid #222;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.login-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-}
-
-.login-table td {
-    padding: 15px 0;
-    font-size: 14px;
-    color: var(--text-gray);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.login-table tr:last-child td {
-    border-bottom: none;
-}
-
-.login-table td:nth-child(1) { color: var(--text-light-gray); }
-.login-table td:nth-child(2) { color: #333; font-weight: 500; }
-.login-table td:nth-child(3) { color: var(--text-light-gray); }
