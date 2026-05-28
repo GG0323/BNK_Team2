@@ -1,3 +1,5 @@
+const input = document.getElementById("modalSearchInput");
+
 /* 헤더 자동 접힘 */
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.querySelector(".header");
@@ -88,3 +90,38 @@ document.addEventListener("DOMContentLoaded", function () {
     // 페이지 진입 후 2.5초 뒤 자동 접힘
     startHeaderTimer();
 });
+
+function setKeyword(keyword) {
+    if (input) {
+        input.value = keyword;
+        input.focus();
+    }
+}
+
+function productSearch() {
+    const modal = document.getElementById('searchModal');
+
+    if (modal) {
+        modal.classList.add('active');
+        document.body.classList.add('modal-open');
+        return;
+    }
+}
+
+function closeSearchModal() {
+    const modal = document.getElementById('searchModal');
+
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    }
+}
+
+function submitSearch(){
+	if(input.value == ""){
+		alert('검색하실 내용을 입력해주세요.');
+		return;
+	}
+	
+	location.href="/products/search?keyword="+input.value
+}
