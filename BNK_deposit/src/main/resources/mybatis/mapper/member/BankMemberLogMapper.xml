@@ -25,7 +25,7 @@
 		SELECT * FROM TB_MEMBER_TRACKING_LOG
 	</select>
 
-	<select id="findByUserID" resultType="">
+	<!-- <select id="findByUserID" resultType="">
 		SELECT * FROM 
-	</select>
+	</select> -->
 </mapper>
