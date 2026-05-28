@@ -3,5 +3,20 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductTermsDao">
-
+	
+	
+	<select id="detail" resultType="com.example.bnk.dto.product.ProductTermsDto">
+	SELECT t.*
+	FROM TB_PRODUCT_TERMS t
+	JOIN TB_APPROVED_SUGGESTION d 
+	ON d.terms_no = t.terms_no
+	WHERE d.suggestion_no = #{suggestion_no}
+	
+	</select>
+	
+	
+	
+	
+	
+	
 </mapper>
