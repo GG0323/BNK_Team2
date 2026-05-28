@@ -33,7 +33,7 @@ public class EmployeeSecurityConfig {
 	SecurityFilterChain employeeFilterChain(HttpSecurity http) {
 		
 		// 권한별 제어
-		http.securityMatcher("/employee/**", "/api/employee")
+		http.securityMatcher("/employee/**", "/api/employee", "/financedictionary/**", "/api/financedictionary/**")
 			.userDetailsService(employeeDetailsService)
 			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
 		);

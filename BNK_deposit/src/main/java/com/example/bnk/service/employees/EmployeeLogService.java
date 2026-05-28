@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.employee.IEmployeeLogDao;
+import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.employee.EmployeeLogDto;
 import com.example.bnk.dto.employee.EmployeeLogInsertDto;
 import com.example.bnk.dto.employee.EmployeeLogSelectDto;
@@ -19,6 +20,8 @@ public class EmployeeLogService {
 	private HttpServletRequest request; // 스프링이 현재 요청의 객체를 주입한다.
 	@Autowired
 	private IEmployeeLogDao logDao;
+	@Autowired
+	private EmployeeListService empService;
 	
 	// 로그 인서트하기
 	public void log(EmployeeLogInsertDto insertDto) {
@@ -30,12 +33,18 @@ public class EmployeeLogService {
 	}
 	// 컨트롤러 단에서 HttpServletRequest의 어트리뷰트 영역에 Dto 저장하기
 	public EmployeeLogInsertDto build(
-			String action_type, String target_table, String target_pk, 
-			String action_detail,String request_method, String request_url 
+			String username,
+			String action_type, 
+			String target_table, 
+			String target_pk, 
+			String action_detail
 			) {
+		
+		EmployeeDto pk = empService.findByUsername(username);
+		
 		EmployeeLogInsertDto insertDto = new EmployeeLogInsertDto(
-				action_type, target_table, target_pk,
-				action_detail, request_method, request_url);
+				pk.getEmployee_no() ,action_type, target_table, target_pk,
+				action_detail, request.getMethod(), request.getRequestURI());
 		
 		request.setAttribute("insertLogDto", insertDto);
 		

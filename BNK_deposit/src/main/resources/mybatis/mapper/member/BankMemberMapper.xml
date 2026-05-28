@@ -19,24 +19,26 @@
 	<insert id="regist">
 		INSERT INTO TB_BANK_MEMBER(
 	        login_id, password_hash, member_name, member_type, member_identifier,
-	        gender, birth_date, phone_number, email, address, credit_score
+	        gender, birth_date, phone_number, email, adress, credit_score, member_status,
+        	created_at
         )
     	VALUES(
     		#{dto.login_id}, #{dto.password_hash}, #{dto.member_name}, #{dto.member_type},
-	    	#{dto.member_identifier}, #{dto.gender}, #{dto.birth_date}, #{dto.phone_number},
-	    	#{dto.email}, #{dto.adress}, #{dto.credit_score}
+	    	#{dto.member_identifier}, #{dto.gender, jdbcType=VARCHAR}, #{dto.birth_date}, #{dto.phone_number},
+	    	#{dto.email}, #{dto.adress}, #{dto.credit_score}, 'ASSOCIATE', SYSDATE
     	)
 	</insert>
 	
 	<update id="editMember">
-    <set>
-        <if test="dto.password_hash != null">password_hash = #{dto.password_hash},</if>
-        <if test="dto.phone_number != null">phone_number = #{dto.phone_number},</if>
-        <if test="dto.email != null">email = #{dto.email},</if>
-        <if test="dto.adress != null">adress = #{dto.adress},</if>
-        UPDATE_AT = SYSDATE
-    </set>
-    WHERE login_id = #{dto.login_id}
+		UPDATE TB_BANK_MEMBER
+	    <set>
+	        <if test="dto.password_hash != null">password_hash = #{dto.password_hash},</if>
+	        <if test="dto.phone_number != null">phone_number = #{dto.phone_number},</if>
+	        <if test="dto.email != null">email = #{dto.email},</if>
+	        <if test="dto.adress != null">adress = #{dto.adress},</if>
+	        UPDATE_AT = SYSDATE
+	    </set>
+	    WHERE login_id = #{dto.login_id}
     </update>
 
 	<select id="showMember" resultType="com.example.bnk.dto.member.BankMemberDto">
@@ -69,7 +71,7 @@
     </select>
     
     <select id="findByAll" resultType="com.example.bnk.dto.member.BankMemberDto">
-    	SELECT * FROM TB_BANK_MEMBER;
+    	SELECT * FROM TB_BANK_MEMBER
     </select>
 
     <update id="updatePassword">

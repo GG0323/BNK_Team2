@@ -20,6 +20,7 @@ import com.example.bnk.dto.product.ProductDetailResponseDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
+import com.example.bnk.service.employees.EmployeeListService;
 import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.product.ProductForEmployee;
 
@@ -30,10 +31,12 @@ public class EmployeePageController {
 	
 	@Autowired
 	EmployeeLogService logService;
-	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
+	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
 	@Autowired
 	ProductForEmployee prdForEmpService;
-	
+
+	@Autowired
+	private EmployeeListService empService;
 	
 	
 	// /employee/toMain
@@ -49,29 +52,40 @@ public class EmployeePageController {
 	
 	// /Employees/manager/managerPage
 	@GetMapping("/manager/managerPage")
-	public String managerPage() {
+	public String managerPage(
+			@AuthenticationPrincipal String username
+			) {
+		logService.build(username, "INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
+		
 		return "Employees/manager/managerPage";
 	}
 	
 	
 	// /employee/manager/HRM/hrmRegist
 	@GetMapping("/manager/HRM/hrmRegist")  
-	public String hrmRegist() {
-		logService.build("PAGEVIEW", null, null, "페이지간 이동을 실현한다: 인사관리/신규 사원 등록", "GET", "/employee/manager/HRM/hrmRegist");
+	public String hrmRegist(
+			@AuthenticationPrincipal String username
+			) {
+		logService.build(username,"PAGEVIEW", null, null, "페이지간 이동을 실현한다: 인사관리/신규 사원 등록");
 		return "Employees/manager/HRM/hrmRegist";
 	}
 	
 	// 직원 로그 조회 페이지 /employee/manager/LOG/logList
 	@GetMapping("/manager/LOG/logList")
-	public String logList() {
-		logService.build("PAGEVIEW", null, null, "페이지간 이동을 실현한다: 로그/목록 보기", "GET", "/employee/manager/LOG/logList");
+	public String logList(
+			@AuthenticationPrincipal String username
+			) {
+		logService.build(username, "PAGEVIEW", null, null, "페이지간 이동을 실현한다: 로그/목록 보기");
 		return "Employees/manager/LOG/logList";
 	}
 	
 	// 직원 리스트 페이지 
 	// /employee/manager/HRM/hrmEmployeeList
 	@GetMapping("/manager/HRM/hrmEmployeeList")
-	public String hrmEmployeeList() {
+	public String hrmEmployeeList(
+			@AuthenticationPrincipal String username
+			) {
+		logService.build(username, "PAGEVIEW", "TB_EMPLOYEE", null, "직원 목록을 불러온다.");	
 		return "Employees/manager/HRM/hrmEmployeeList";
 	}
 	
@@ -83,22 +97,32 @@ public class EmployeePageController {
 
 	// !! 제안서 리스트 페이지    /employee/manager/SUG/suggestionList
 	@GetMapping("/manager/SUG/suggestionList")
-	public String suggestionList() {
+	public String suggestionList(
+			@AuthenticationPrincipal String username
+			) {
+		logService.build(username, "PAGEVIEW", "TB_PRODUCTS_SUGGESTION", null, " 제안서 목록을 불러온다.");	
 		return "Employees/manager/SUG/suggestionListPage";
 	}
 	// !! 제안서 상세 페이지
 	@GetMapping("/manager/SUG/suggestionReview")
-	public String suggestionReview() {
+	public String suggestionReview(
+			@AuthenticationPrincipal String username
+			) {
 		return "Employees/manager/SUG/suggestionReviewPage";
 	}
 	// !! 승인된 제안서 리스트 (중간 테이블)  /employee/manager/SUG/approvedList
 	@GetMapping("/manager/SUG/approvedList")
-	public String approvedList() {
+	public String approvedList(
+			@AuthenticationPrincipal String username
+			) {
+		logService.build(username, "PAGEVIEW", "TB_APPROVED_SUGGESTION", null, "승인한 제안서 목록을 불러온다.");
 		return "Employees/manager/SUG/approvedSuggestionList";
 	}
 	// !! 승인된 제안서 상세 (중간 테이블)
 	@GetMapping("/manager/SUG/approvedDetail")
-	public String approvedDetail() {
+	public String approvedDetail(
+			@AuthenticationPrincipal String username
+			) {
 		return "Employees/manager/SUG/approvedSuggestionDetail";
 	}
 	
@@ -147,6 +171,14 @@ public class EmployeePageController {
         System.out.println("뭔가 잘못된 클릭입니다.");
         return "redirect:/employee/manager/SUG/approvedList";
     }
+	// 고객 추적 LOG
+	@GetMapping("/manager/LOG/bankMemberLog")
+	public String bankMemberLog() {
+		return "Employees/manager/LOG/bankMemberLogList";
+	}
+	
+	
+
 	
 	// 스테프 페이지,  /employee/staff/staffPage
 	@GetMapping("/staff/staffPage")

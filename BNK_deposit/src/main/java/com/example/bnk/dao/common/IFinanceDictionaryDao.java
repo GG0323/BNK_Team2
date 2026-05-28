@@ -3,6 +3,7 @@ package com.example.bnk.dao.common;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.example.bnk.dto.common.FinanceDictionaryDto;
 
@@ -29,4 +30,10 @@ public interface IFinanceDictionaryDao {
 	
 	// ✨ 용어 삭제 (Delete)
 	int deleteDictionary(long dictionary_no);
+	
+	// 검색 주제
+	List<FinanceDictionaryDto> searchDictionaryByType(
+	        @Param("searchType") String searchType,
+	        @Param("keyword") String keyword
+	);
 }

@@ -9,20 +9,46 @@ function formatNumber(n) {
   return Number(n).toLocaleString("ko-KR");
 }
 
-// LocalDate 배열([yyyy,M,d]) 또는 ISO 문자열 → 'yyyy. M. d'
-function formatDate(value) {
+// LocalDateTime 배열([yyyy,M,d,H,m,s]) 또는 ISO 문자열 → 'yyyy.MM.dd HH:mm'
+function formatDateTime(value) {
   if (!value) return "-";
-  let y, m, d;
+
+  let y, m, d, h = 0, min = 0;
+
   if (Array.isArray(value)) {
-    [y, m, d] = value;
-  } else {
+    [y, m, d, h = 0, min = 0] = value;
+  } else if (typeof value === "string") {
+    // "2026-05-26"처럼 날짜만 있는 경우
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      const parts = value.split("-");
+      y = Number(parts[0]);
+      m = Number(parts[1]);
+      d = Number(parts[2]);
+      return `${y}.${String(m).padStart(2, "0")}.${String(d).padStart(2, "0")}`;
+    }
+
+    // "2026-05-26T11:52:34" 같은 경우
     const dt = new Date(value);
     if (isNaN(dt)) return String(value);
+
     y = dt.getFullYear();
     m = dt.getMonth() + 1;
     d = dt.getDate();
+    h = dt.getHours();
+    min = dt.getMinutes();
+  } else {
+    const dt = new Date(value);
+    if (isNaN(dt)) return String(value);
+
+    y = dt.getFullYear();
+    m = dt.getMonth() + 1;
+    d = dt.getDate();
+    h = dt.getHours();
+    min = dt.getMinutes();
   }
-  return `${y}. ${m}. ${d}`;
+
+  const pad = (x) => String(x).padStart(2, "0");
+  return `${y}.${pad(m)}.${pad(d)} ${pad(h)}:${pad(min)}`;
 }
 
 // 'yyyy.MM.dd' (0 패딩) 형태
