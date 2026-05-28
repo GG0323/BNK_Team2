@@ -260,7 +260,7 @@ public class EmployeePageController {
 		
 		if(prdForEmpService.insertAllCondition(prdCndDto, suggestion_no) == 1) {
 			System.out.println("1. condition 등록하기 성공");
-			return "redirect:/employee/staff/product/list";
+			return "redirect:/employee/staff/product/approved/list";
 		}
 		
 		System.out.println("1. condition 등록하기 실패");
@@ -288,7 +288,7 @@ public class EmployeePageController {
 		
 		if(prdForEmpService.insertAllRate(prdRateDto, suggestion_no) == 1) {
 			System.out.println("1. rate_no 등록하기 성공");
-			return "redirect:/employee/staff/product/list";
+			return "redirect:/employee/staff/product/approved/list";
 		}
 		System.out.println("1. rate_no 등록하기 실패");
 		return "redirect:/employee/staff/product/descrition";
@@ -312,7 +312,7 @@ public class EmployeePageController {
 		
 		if(prdForEmpService.saveDescription(prdDescDto, suggestion_no) == 1) {
 			System.out.println("1. descriptoin_no 등록하기 성공");
-			return "redirect:/employee/staff/product/list";
+			return "redirect:/employee/staff/product/approved/list";
 		}
 		System.out.println("1. description_no 등록하기 실패");
 		
