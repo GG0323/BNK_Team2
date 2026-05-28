@@ -1,124 +1,205 @@
 @charset "UTF-8";
 
+/* ===== staffPage 기준 기본 설정 ===== */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
 }
 
 body {
-    background-color: #f5f5f5;
-    color: #222;
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: #F5F5F5;
+    color: #111111;
+    min-height: 100vh;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+/* ===== 전체 레이아웃 ===== */
 .admin-wrap {
     display: flex;
     min-height: 100vh;
 }
 
-/* 좌측 메뉴 */
+/* ===== 사이드바: staffPage와 동일 ===== */
 .sidebar {
-    width: 250px;
-    background-color: #f7d6da;
-    padding: 30px 20px;
+    width: 190px;
+    background: #111111;
+    flex-shrink: 0;
+    min-height: 100vh;
 }
 
-.sidebar-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    text-align: center;
+.sidebar .logo {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 1.5rem 1.25rem;
+    letter-spacing: -0.3px;
+    border-bottom: 1px solid #2a2a2a;
 }
 
-.menu-btn {
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 14px 10px;
-    border: none;
-    border-radius: 8px;
-    background-color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
+.sidebar .logo span {
+    color: #E8282F;
 }
 
-.menu-btn:hover {
-    background-color: #ffe7ea;
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 1.25rem;
+    font-size: 13px;
+    color: #888888;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
 }
 
-.menu-btn.active {
-    background-color: #ff6b74;
-    color: #fff;
-    font-weight: bold;
+.nav-item:hover {
+    color: #ffffff;
+    background: #1c1c1c;
 }
 
-/* 오른쪽 */
+.nav-item.active {
+    color: #ffffff;
+    background: #1c1c1c;
+    border-left-color: #E8282F;
+}
+
+/* ===== 메인 콘텐츠: staffPage의 .main 기준 ===== */
 .content-area {
     flex: 1;
-    padding: 0;
+    padding: 2rem;
+    min-width: 0;
 }
 
-/* 상단 헤더 */
-.page-header {
-    background-color: #ff6b74;
-    color: white;
-    padding: 25px 35px;
+/* ===== 상단 로그아웃 영역: staffPage topbar 기준 ===== */
+.topbar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.page-header h1 {
-    font-size: 34px;
-    font-weight: bold;
+    justify-content: flex-end;
+    margin-bottom: 2rem;
 }
 
 .logout-btn {
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 18px;
+    font-size: 12px;
+    color: #555555;
+    background: #ffffff;
+    border: 1px solid #E0E0E0;
+    padding: 6px 16px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s;
+    text-decoration: none;
 }
 
-/* 내용 박스 */
+.logout-btn:hover {
+    border-color: #111111;
+    color: #111111;
+}
+
+/* ===== 브레드크럼: staffPage와 동일 ===== */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #aaaaaa;
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current {
+    color: #111111;
+    font-weight: 600;
+}
+
+/* ===== 페이지 헤더: staffPage와 동일 ===== */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111111;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.page-desc {
+    font-size: 12.5px;
+    color: #999999;
+}
+
+/* ===== 공통 콘텐츠 박스 ===== */
 .content-box {
-    padding: 30px;
-    background-color: white;
-    margin: 25px;
-    border: 1px solid #ddd;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #E8E8E8;
+    padding: 1.5rem 1.25rem;
 }
 
-/* 상단 등록 + 검색 */
+/* ===== 목록 상단: 등록 버튼 + 검색 ===== */
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    gap: 16px;
+    margin-bottom: 1.25rem;
 }
 
 .register-btn {
-    padding: 10px 18px;
-    border: 1px solid #888;
-    background-color: #fff;
-    border-radius: 8px;
+    background: #111111;
+    color: #ffffff;
+    border: 1px solid #111111;
+    border-radius: 6px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 14px;
+    transition: all 0.15s;
+}
+
+.register-btn:hover {
+    background: #E8282F;
+    border-color: #E8282F;
 }
 
 .search-box {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .search-box select,
 .search-box input {
     height: 36px;
-    border: 1px solid #aaa;
+    border: 1px solid #E0E0E0;
+    background: #ffffff;
     border-radius: 6px;
     padding: 0 10px;
+    font-size: 13px;
+    color: #333333;
+    outline: none;
+}
+
+.search-box select:focus,
+.search-box input:focus {
+    border-color: #111111;
+}
+
+.search-box select {
+    width: 100px;
 }
 
 .search-box input {
@@ -129,59 +210,248 @@ body {
     height: 36px;
     padding: 0 16px;
     border: none;
-    background-color: #ff6b74;
-    color: white;
     border-radius: 6px;
+    background: #E8282F;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.15s;
 }
 
-/* 테이블 */
+.search-btn:hover {
+    background: #c91f26;
+}
+
+/* ===== 테이블 ===== */
 .table-wrap {
+    width: 100%;
     overflow-x: auto;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
 }
 
 .dictionary-table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
+    background: #ffffff;
 }
 
 .dictionary-table thead th {
-    background-color: #f3f3f3;
-    border: 1px solid #ccc;
-    padding: 12px 8px;
-    font-size: 14px;
+    background: #F7F7F7;
+    color: #333333;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 12px 10px;
+    border-bottom: 1px solid #E8E8E8;
+    white-space: nowrap;
 }
 
 .dictionary-table tbody td {
-    border: 1px solid #ddd;
-    padding: 12px 8px;
-    font-size: 14px;
+    color: #555555;
+    font-size: 13px;
+    padding: 13px 10px;
+    border-bottom: 1px solid #EFEFEF;
+}
+
+.dictionary-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .dictionary-table tbody tr:hover {
-    background-color: #fafafa;
+    background: #FAFAFA;
 }
 
 .term-name {
     text-align: left;
-    padding-left: 14px !important;
+    color: #111111 !important;
+    font-weight: 600;
+    padding-left: 16px !important;
 }
 
 .edit-btn {
-    padding: 6px 12px;
-    border: 1px solid #888;
-    background-color: #fff;
+    background: #ffffff;
+    color: #111111;
+    border: 1px solid #D8D8D8;
     border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 13px;
+    transition: all 0.15s;
 }
 
 .edit-btn:hover {
-    background-color: #f3f3f3;
+    border-color: #E8282F;
+    color: #E8282F;
 }
 
 .empty-row {
-    padding: 30px !important;
-    color: #888;
+    padding: 36px 0 !important;
+    color: #999999 !important;
+    font-size: 13px !important;
+}
+
+/* ===== 등록/수정 폼 ===== */
+.form-content-box {
+    max-width: 900px;
+}
+
+.form-title-area {
+    margin-bottom: 1.5rem;
+}
+
+.form-title-area h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 6px;
+}
+
+.form-title-area p {
+    font-size: 12.5px;
+    color: #999999;
+}
+
+.dictionary-form {
+    width: 100%;
+}
+
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 2px solid #111111;
+    background: #ffffff;
+}
+
+.detail-table th,
+.detail-table td {
+    border-bottom: 1px solid #E8E8E8;
+    padding: 15px 14px;
+    font-size: 13px;
+}
+
+.detail-table th {
+    width: 160px;
+    background: #F7F7F7;
+    color: #333333;
+    font-weight: 700;
+    text-align: center;
+}
+
+.detail-table td {
+    color: #555555;
+}
+
+.detail-table input,
+.detail-table textarea,
+.detail-table select {
+    width: 100%;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: #333333;
+    outline: none;
+    background: #ffffff;
+}
+
+.detail-table textarea {
+    min-height: 220px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.detail-table input:focus,
+.detail-table textarea:focus,
+.detail-table select:focus {
+    border-color: #111111;
+}
+
+/* ===== 하단 버튼 ===== */
+.btn-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.submit-btn,
+.delete-btn,
+.cancel-btn {
+    min-width: 100px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.submit-btn {
+    background: #E8282F;
+    color: #ffffff;
+    border: 1px solid #E8282F;
+}
+
+.submit-btn:hover {
+    background: #c91f26;
+    border-color: #c91f26;
+}
+
+.delete-btn {
+    background: #111111;
+    color: #ffffff;
+    border: 1px solid #111111;
+}
+
+.delete-btn:hover {
+    background: #333333;
+    border-color: #333333;
+}
+
+.cancel-btn {
+    display: inline-block;
+    background: #ffffff;
+    color: #555555;
+    border: 1px solid #D8D8D8;
+    text-decoration: none;
+}
+
+.cancel-btn:hover {
+    border-color: #111111;
+    color: #111111;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 900px) {
+    .admin-wrap {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .content-area {
+        padding: 1.25rem;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .search-box input {
+        flex: 1;
+        width: auto;
+    }
 }

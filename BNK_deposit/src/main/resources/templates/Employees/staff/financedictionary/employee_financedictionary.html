@@ -26,14 +26,18 @@
     <!-- 우측 본문 -->
     <main class="content-area">
 
-        <header class="page-header">
-            <div class="header-left">
-                <h1>BNK 직원 페이지</h1>
-            </div>
-            <div class="header-right">
-                <button type="button" class="logout-btn" onclick="location.href='/employee/logout'">로그아웃</button>
-            </div>
-        </header>
+	    <div class="topbar">
+	        <a class="logout-btn" href="/employee/logout">로그아웃</a>
+	    </div>
+	
+	    <div class="breadcrumb">
+	        로그인 &gt; <span class="current">금융 사전 관리</span>
+	    </div>
+	
+	    <div class="page-header">
+	        <h1 class="page-title">금융 사전 관리</h1>
+	        <p class="page-desc">등록된 금융용어를 조회, 수정, 등록합니다.</p>
+	    </div>
 
         <section class="content-box">
             <div class="top-bar">

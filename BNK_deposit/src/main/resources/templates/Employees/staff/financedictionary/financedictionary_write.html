@@ -7,51 +7,79 @@
 <meta name="_csrf" th:if="${_csrf != null}" th:content="${_csrf.token}">
 <meta name="_csrf_header" th:if="${_csrf != null}" th:content="${_csrf.headerName}">
 
-<style>
-    body { font-family: sans-serif; }
-    .detail-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-top: 2px solid #111; }
-    .detail-table th, .detail-table td { border-bottom: 1px solid #ddd; padding: 15px; }
-    .detail-table th { background-color: #f9f9f9; width: 20%; text-align: center; }
-    .detail-table input, .detail-table textarea, .detail-table select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
-    .btn-wrap { text-align: center; margin-top: 30px; }
-    .submit-btn { padding: 10px 30px; background: #d71920; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold;}
-</style>
-
-
+<link rel="stylesheet" th:href="@{/css/common/employee_financedictionary.css}">
+<script src="/js/members/common.js" defer></script>
+<script src="/js/common/financedictionary_write.js" defer></script>
 </head>
-<body>
-    <h1 style="background-color: #111; color: white; padding: 15px; border-radius: 10px;">금융 용어 등록</h1>
-    
-    <form id="writeForm">
-        <table class="detail-table">
-            <tr>
-                <th>카테고리</th>
-                <td>
-                    <select name="dictionary_category" id="dictionary_category" required>
-					    <option value="예적금">예적금</option>
-					    <option value="대출">대출</option>
-					    <option value="보험">보험</option>
-					    <option value="카드">카드</option>
-					    <option value="청약">청약</option>
-					</select>
-                </td>
-            </tr>
-            <tr>
-                <th>용어명</th>
-                <td><input type="text" name="dictionary_nm" required placeholder="예: 복리"></td>
-            </tr>
-            <tr>
-                <th>용어 설명</th>
-                <td><textarea name="dictionary_content" rows="10" required placeholder="상세 설명을 입력하세요"></textarea></td>
-            </tr>
-        </table>
-        <div class="btn-wrap">
-            <button type="submit" class="submit-btn">저장하기</button>
-            <a href="/financedictionary" style="margin-left: 10px; color: #666; text-decoration: none;">취소</a>
-        </div>
-    </form>
 
-    <script src="/js/members/common.js"></script>
-    <script src="/js/common/financedictionary_write.js"></script>
+<body>
+<div class="admin-wrap">
+
+    <aside class="sidebar">
+        <div class="logo">BNK <span>일반 사원</span> 페이지</div>
+
+        <a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
+        <a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
+        <a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
+        <a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
+        <a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
+        <a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
+        <a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>
+    </aside>
+
+    <main class="content-area">
+    
+    	<div class="topbar">
+	        <a class="logout-btn" href="/employee/logout">로그아웃</a>
+	    </div>
+
+        <div class="breadcrumb">
+		    로그인 &gt; 금융 사전 관리 &gt; <span class="current">신규 용어 등록</span>
+		</div>
+		
+		<div class="page-header">
+		    <h1 class="page-title">신규 용어 등록</h1>
+		    <p class="page-desc">사용자 금융 용어 사전에 노출할 용어와 설명을 등록합니다.</p>
+		</div>
+
+            <form id="writeForm" class="dictionary-form">
+                <table class="detail-table">
+                    <tr>
+                        <th>카테고리</th>
+                        <td>
+                            <select name="dictionary_category" id="dictionary_category" required>
+                                <option value="예적금">예적금</option>
+                                <option value="대출">대출</option>
+                                <option value="보험">보험</option>
+                                <option value="카드">카드</option>
+                                <option value="청약">청약</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>용어명</th>
+                        <td>
+                            <input type="text" name="dictionary_nm" required placeholder="예: 복리">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>용어 설명</th>
+                        <td>
+                            <textarea name="dictionary_content" rows="10" required placeholder="상세 설명을 입력하세요"></textarea>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="btn-wrap">
+                    <button type="submit" class="submit-btn">저장하기</button>
+                    <a href="/employee/financedictionary" class="cancel-btn">취소</a>
+                </div>
+            </form>
+        </section>
+
+    </main>
+</div>
 </body>
 </html>
