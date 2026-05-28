@@ -44,4 +44,8 @@
 		AND product_no = #{product_no}
 	</update>
 	
+	<select id="selectRatePrd" resultType="com.example.bnk.dto.product.ProductRateDto">
+		SELECT * FROM TB_PRODUCT_RATE WHERE rate_no = #{rate_no}
+	</select>
+	
 </mapper>

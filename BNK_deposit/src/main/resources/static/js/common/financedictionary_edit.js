@@ -9,7 +9,7 @@ function fillEditForm(item) {
   document.getElementById("dictionary_nm").value = item.dictionary_nm || "";
   document.getElementById("dictionary_content").value = item.dictionary_content || "";
 
-  document.getElementById("cancelBtn").href = "/employee/financedictionary";
+  document.getElementById("cancelBtn").href = "/finance/employee/financedictionary";
 }
 
 async function deleteDictionary(dictionaryNo) {
@@ -18,9 +18,9 @@ async function deleteDictionary(dictionaryNo) {
   }
 
   try {
-    const body = await fetchApi(`/api/financedictionary/${dictionaryNo}`, {
-      method: "DELETE"
-    });
+	const body = await fetchApi(`/api/finance/financedictionary/${dictionaryNo}`, {
+	  method: "DELETE"
+	});
 
     alert(body.message || "금융용어가 삭제되었습니다.");
     location.href = "/employee/financedictionary";
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dictionaryNo = getDictionaryNo();
 
   try {
-    const body = await fetchApi(`/api/financedictionary/edit/${dictionaryNo}`);
+    const body = await fetchApi(`/api/finance/financedictionary/edit/${dictionaryNo}`);
     fillEditForm(body.data);
   } catch (err) {
     alert(err.message || "수정할 정보를 불러오지 못했습니다.");
@@ -46,13 +46,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
 
     try {
-      const body = await fetchApi("/api/financedictionary/edit", {
-        method: "POST",
-        body: new FormData(e.target),
-      });
+		const body = await fetchApi("/api/finance/financedictionary/edit", {
+		  method: "POST",
+		  body: new FormData(e.target),
+		});
 
       alert(body.message || "금융용어가 수정되었습니다.");
-      location.href = "/employee/financedictionary";
+      location.href = "/finance/employee/financedictionary";
 
     } catch (err) {
       alert(err.message || "수정에 실패했습니다.");

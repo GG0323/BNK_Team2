@@ -112,9 +112,13 @@ async function fetchApi(url, options = {}) {
     credentials: "same-origin",
   });
 
-  if (res.status === 401 || res.status === 403) {
+  if (res.status === 401) {
     location.href = "/loginPage";
-    throw new Error("인증이 필요합니다.");
+    throw new Error("로그인이 필요합니다.");
+  }
+
+  if (res.status === 403) {
+    throw new Error("요청 권한이 없거나 CSRF 토큰이 유효하지 않습니다.");
   }
 
   const body = await res.json();
