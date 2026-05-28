@@ -53,7 +53,7 @@ function renderDictionaryTable(list) {
       <td>${formatDate(item.updated_at)}</td>
       <td>
         <button type="button" class="edit-btn"
-          onclick="location.href='/financedictionary/edit/${item.dictionary_no}'">
+          onclick="location.href='/finance/financedictionary/edit/${item.dictionary_no}'"
           수정
         </button>
       </td>
@@ -73,8 +73,8 @@ async function loadDictionaryList() {
   }
 
   const url = params.toString()
-    ? `/api/financedictionary?${params.toString()}`
-    : "/api/financedictionary";
+    ? `/api/finance/financedictionary?${params.toString()}`
+    : "/api/finance/financedictionary";
 
   try {
     const res = await fetch(url, {

@@ -5,12 +5,10 @@ function getKeywordFromUrl() {
 
 function dictionaryCard(item) {
   return `
-    <div class="dict-card">
-      <a class="term-title" href="/financedictionary/${item.dictionary_no}">
-        <strong class="dict-title">
-          ${escapeHtml(item.dictionary_no)}. ${escapeHtml(item.dictionary_nm)}
-        </strong>
-      </a>
+    <div class="dict-card" onclick="openDictionaryPopup(${item.dictionary_no})">
+      <strong class="dict-title">
+        ${escapeHtml(item.dictionary_no)}. ${escapeHtml(item.dictionary_nm)}
+      </strong>
       <p class="term-desc-preview">${escapeHtml(item.dictionary_content)}</p>
     </div>
   `;
@@ -29,13 +27,24 @@ function renderDictionaryList(list) {
 
 async function loadDictionaryList(keyword = "") {
   const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : "";
-  const body = await fetchApi(`/api/financedictionary${query}`);
+  const body = await fetchApi(`/api/finance/financedictionary${query}`);
   renderDictionaryList(body.data);
+}
+
+function openDictionaryPopup(dictionaryNo) {
+  const url = `/finance/financedictionary/${dictionaryNo}`;
+
+  window.open(
+    url,
+    `financeDictionaryPopup_${dictionaryNo}`,
+    "width=700,height=750,left=300,top=100,resizable=yes,scrollbars=yes"
+  );
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   const keyword = getKeywordFromUrl();
   const keywordInput = document.getElementById("keyword");
+
   keywordInput.value = keyword;
 
   document.getElementById("searchForm").addEventListener("submit", (e) => {
@@ -44,9 +53,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const value = keywordInput.value.trim();
 
     if (value) {
-      location.href = `/financedictionary?keyword=${encodeURIComponent(value)}`;
+      location.href = `/finance/financedictionary?keyword=${encodeURIComponent(value)}`;
     } else {
-      location.href = "/financedictionary";
+      location.href = "/finance/financedictionary";
     }
   });
 

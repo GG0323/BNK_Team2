@@ -18,20 +18,6 @@ function renderMypage(data) {
   document.getElementById("statAccountCount").textContent = `${data.accountCount}개`;
   document.getElementById("statTotalBalance").textContent = `${formatNumber(data.totalBalance)}원`;
   document.getElementById("statProductCount").textContent = `${data.productCount}개`;
-  document.getElementById("statLogCount").textContent = `${data.logCount}건`;
-
-  const tbody = document.getElementById("recentLogsBody");
-  const logs = data.recentLogs || [];
-  if (logs.length === 0) {
-    tbody.innerHTML =
-      `<tr><td colspan="3" style="color: var(--text-light-gray); padding: 20px 0;">최근 접속 기록이 존재하지 않습니다.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = logs
-    .map((log) =>
-      `<tr><td>${formatDateDot(log.accessed_at)}</td><td>${escapeHtml(log.requested_page)}</td><td>${escapeHtml(log.request_ip)}</td></tr>`
-    )
-    .join("");
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
