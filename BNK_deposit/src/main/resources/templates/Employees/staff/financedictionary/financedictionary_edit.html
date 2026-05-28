@@ -16,22 +16,31 @@
 <div class="admin-wrap">
 
     <aside class="sidebar">
-        <div class="logo">BNK <span>일반 사원</span> 페이지</div>
-
-        <a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
-        <a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
-        <a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
-        <a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
-        <a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
-        <a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
-        <a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>
-    </aside>
-
-    <main class="content-area">
+    	<div class="logo">BNK <span>일반 사원</span> 페이지</div>
+    	<!-- nav 항목들 -->	
     	
-    	<div class="topbar">
-	        <a class="logout-btn" href="/employee/logout">로그아웃</a>
-	    </div>
+    	<a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
+    	<a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
+    	<a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
+    	<a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
+   		<a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
+		<a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
+		<a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>   	
+  	</aside>
+
+    <!-- 우측 본문 -->
+    <main class="main">
+
+	    <div class="topbar">
+		    <form th:action="@{/employee/logout}" method="post">
+		        <input type="hidden"
+		               th:name="${_csrf.parameterName}"
+		               th:value="${_csrf.token}">
+		        <button type="submit" class="logout-btn">
+		            로그아웃
+		        </button>
+		    </form>
+		</div>
 
         <div class="breadcrumb">
 		    로그인 &gt; 금융 사전 관리 &gt; <span class="current">금융 용어 수정</span>
@@ -41,7 +50,8 @@
 		    <h1 class="page-title">금융 용어 수정</h1>
 		    <p class="page-desc">등록된 금융 용어의 카테고리, 용어명, 설명을 수정하거나 삭제합니다.</p>
 		</div>
-
+		
+		<section class="content-box form-content-box">
             <form id="editForm" class="dictionary-form">
                 <input type="hidden" name="dictionary_no" id="dictionary_no">
 
