@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 구성 - 가입 조건 설정</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 본문 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== 대시보드 카드 서식 ===== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 2rem;
+  max-width: 900px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.card-title-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #E8282F;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.mode-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.badge-new { background: #FFF8E1; color: #B8860B; }
+.badge-view { background: #F0FFF4; color: #22863a; }
+
+/* ===== 폼 그리드 레이아웃 ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* 입력 필드 공통 서식 */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 13px;
+  border: 1px solid #D0D0D0;
+  border-radius: 6px;
+  background: #fff;
+  color: #222;
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #E8282F;
+  outline: none;
+}
+input:disabled, select:disabled, textarea:disabled {
+  background: #F9F9F9;
+  color: #777;
+  cursor: not-allowed;
+  border-color: #E5E5E5;
+}
+
+/* 범위형 입력 배치 ( ~ ) */
+.range-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.range-sep {
+  font-size: 13px;
+  color: #aaa;
+}
+
+/* 토글/라디오 그룹 서식 */
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  padding: 10px 0;
+}
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+}
+.radio-label input {
+  accent-color: #E8282F;
+}
+
+/* ===== 하단 버튼단 ===== */
+.btn-group {
+  margin-top: 2rem;
+  display: flex;
+  gap: 10px;
+  max-width: 900px;
+}
+.btn {
+  padding: 11px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  text-decoration: none;
+  text-align: center;
+}
+.btn-secondary { background: #fff; border: 1px solid #D0D0D0; color: #555; }
+.btn-secondary:hover { border-color: #111; color: #111; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover { background: #E8282F; }
+
+/* ===== 토스트 ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem; right: 2rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #111; }
+.toast.error { background: #E8282F; }
+</style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">BNK <span>관리자</span> 페이지</div>
+    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    <a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+  </aside>
+
+  <div class="main">
+    <div class="breadcrumb">
+      관리자 페이지 ›
+      <a th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a> ›
+      <span class="current">가입조건 세부설정</span>
+    </div>
+
+    <div class="page-title">상품 구성 컴포넌트 관리</div>
+
+    <div class="card">
+      <div class="card-title-group">
+        <div class="card-title">가입조건 설정 (Condition Info)</div>
+        <div>
+          <span th:if="${conDto != null}" class="mode-badge badge-view">데이터 조회 모드</span>
+          <span th:if="${conDto == null}" class="mode-badge badge-new">신규 구성 등록 모드</span>
+        </div>
+      </div>
+
+      <form id="conditionForm">
+        <input type="hidden" id="suggestion_no" name="suggestion_no" th:value="${suggestion_no}" />
+        <input type="hidden" id="condition_no" name="condition_no" th:value="${conDto != null ? conDto.condition_no : ''}" />
+
+        <div class="form-grid">
+          
+          <div class="form-group">
+            <label>가입 연령 제한 (단위: 세)</label>
+            <div class="range-container">
+              <input type="number" id="min_age" name="min_age" placeholder="최소 나이 (예: 19)" required
+                     th:value="${conDto != null ? conDto.min_age : ''}" 
+                     th:disabled="${conDto != null}" />
+              <span class="range-sep">~</span>
+              <input type="number" id="max_age" name="max_age" placeholder="최대 나이 (공백 시 제한 없음)"
+                     th:value="${conDto != null ? conDto.max_age : ''}" 
+                     th:disabled="${conDto != null}" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>대상 고객 유형</label>
+            <select id="customer_type" name="customer_type" th:disabled="${conDto != null}">
+              <option value="ALL" th:selected="${conDto != null && conDto.customer_type == 'ALL'}">전체 고객 (ALL)</option>
+              <option value="PERSONAL" th:selected="${conDto != null && conDto.customer_type == 'PERSONAL'}">개인 고객 (PERSONAL)</option>
+              <option value="BUSINESS" th:selected="${conDto != null && conDto.customer_type == 'BUSINESS'}">개인사업자/법인 (BUSINESS)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>가입 금액 설정 (단위: 원)</label>
+            <div class="range-container">
+              <input type="number" id="min_join_amount" name="min_join_amount" placeholder="최소 금액" required
+                     th:value="${conDto != null ? conDto.min_join_amount : ''}" 
+                     th:disabled="${conDto != null}" />
+              <span class="range-sep">~</span>
+              <input type="number" id="max_join_amount" name="max_join_amount" placeholder="최대 한도 (공백 시 무제한)"
+                     th:value="${conDto != null ? conDto.max_join_amount : ''}" 
+                     th:disabled="${conDto != null}" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>회차별 최소 입금 단위액 (원)</label>
+            <input type="number" id="deposit_unit" name="deposit_unit" placeholder="예: 10000"
+                   th:value="${conDto != null ? conDto.deposit_unit : ''}" 
+                   th:disabled="${conDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>가입 약정 기간 범위</label>
+            <div class="range-container">
+              <input type="number" id="min_term_months" name="min_term_months" placeholder="최소 기간" required
+                     th:value="${conDto != null ? conDto.min_term_months : ''}" 
+                     th:disabled="${conDto != null}" />
+              <span class="range-sep">~</span>
+              <input type="number" id="max_term_months" name="max_term_months" placeholder="최대 기간" required
+                     th:value="${conDto != null ? conDto.max_term_months : ''}" 
+                     th:disabled="${conDto != null}" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>가입 기간 단위 기준 및 배수 값</label>
+            <div class="range-container">
+              <select id="term_unit_type" name="term_unit_type" style="flex: 2;" th:disabled="${conDto != null}">
+                <option value="MONTH" th:selected="${conDto != null && conDto.term_unit_type == 'MONTH'}">월 단위 (MONTH)</option>
+                <option value="DAY" th:selected="${conDto != null && conDto.term_unit_type == 'DAY'}">일 단위 (DAY)</option>
+                <option value="YEAR" th:selected="${conDto != null && conDto.term_unit_type == 'YEAR'}">연 단위 (YEAR)</option>
+              </select>
+              <input type="number" id="term_unit_value" name="term_unit_value" placeholder="배수단위(예:1)" style="flex: 1;"
+                     th:value="${conDto != null ? conDto.term_unit_value : '1'}" 
+                     th:disabled="${conDto != null}" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>성별 제한 필터</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="gender" value="" th:checked="${conDto == null || conDto.gender == null}" th:disabled="${conDto != null}"> 제한 없음</label>
+              <label class="radio-label"><input type="radio" name="gender" value="M" th:checked="${conDto != null && conDto.gender == 'M'}" th:disabled="${conDto != null}"> 남성 전용</label>
+              <label class="radio-label"><input type="radio" name="gender" value="F" th:checked="${conDto != null && conDto.gender == 'F'}" th:disabled="${conDto != null}"> 여성 전용</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>정형 고정 가입기간 활성화 여부</label>
+            <div class="range-container">
+              <select id="fixed_term_yn" name="fixed_term_yn" style="flex: 1;" th:disabled="${conDto != null}">
+                <option value="N" th:selected="${conDto != null && conDto.fixed_term_yn == 'N'}">N (범위식 선택)</option>
+                <option value="Y" th:selected="${conDto != null && th:conDto.fixed_term_yn == 'Y'}">Y (고정치 지정)</option>
+              </select>
+              <input type="text" id="fixed_term_values" name="fixed_term_values" placeholder="예: 3,6,12" style="flex: 2;"
+                     th:value="${conDto != null ? conDto.fixed_term_values : ''}" 
+                     th:disabled="${conDto != null}" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>외국인 가입 가능 여부</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="foreigner_available_yn" value="Y" th:checked="${conDto != null && conDto.foreigner_available_yn == 'Y'}" th:disabled="${conDto != null}"> Y (가능)</label>
+              <label class="radio-label"><input type="radio" name="foreigner_available_yn" value="N" th:checked="${conDto == null || conDto.foreigner_available_yn == 'N'}" th:disabled="${conDto != null}"> N (불가)</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>해외 납세 의무 여부 검증 필터</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="overseas_tax_yn" value="Y" th:checked="${conDto == null || conDto.overseas_tax_yn == 'Y'}" th:disabled="${conDto != null}"> Y (검증 필요)</label>
+              <label class="radio-label"><input type="radio" name="overseas_tax_yn" value="N" th:checked="${conDto != null && conDto.overseas_tax_yn == 'N'}" th:disabled="${conDto != null}"> N (검증 생략)</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>세제 혜택 가입 대상 해당 여부</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="tax_benefit_yn" value="Y" th:checked="${conDto != null && conDto.tax_benefit_yn == 'Y'}" th:disabled="${conDto != null}"> Y (혜택 대상)</label>
+              <label class="radio-label"><input type="radio" name="tax_benefit_yn" value="N" th:checked="${conDto == null || conDto.tax_benefit_yn == 'N'}" th:disabled="${conDto != null}"> N (일반 과세)</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>비과세 종합 저축 가입 가능 여부</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="non_taxable_savings_yn" value="Y" th:checked="${conDto != null && conDto.non_taxable_savings_yn == 'Y'}" th:disabled="${conDto != null}"> Y (적용 가능)</label>
+              <label class="radio-label"><input type="radio" name="non_taxable_savings_yn" value="N" th:checked="${conDto == null || conDto.non_taxable_savings_yn == 'N'}" th:disabled="${conDto != null}"> N (해당 없음)</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>예금자 보호법 대상 여부</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="depositor_protection_yn" value="Y" th:checked="${conDto == null || conDto.depositor_protection_yn == 'Y'}" th:disabled="${conDto != null}"> Y (보호 대상)</label>
+              <label class="radio-label"><input type="radio" name="depositor_protection_yn" value="N" th:checked="${conDto != null && conDto.depositor_protection_yn == 'N'}" th:disabled="${conDto != null}"> N (비대상)</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            </div>
+
+          <div class="form-group full-width">
+            <label>가입 조건 부가 설명 및 특이 비고 사항</label>
+            <textarea id="condition_note" name="condition_note" rows="3" placeholder="예: 미성년자의 경우 법정대리인 동의서 구비 필수..." 
+                      th:text="${conDto != null ? conDto.condition_note : ''}" 
+                      th:disabled="${conDto != null}"></textarea>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="btn-group">
+      <a th:href="@{/employee/manager/SUG/approvedList}" class="btn btn-secondary">목록으로</a>
+      <button type="button" class="btn btn-secondary" onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
+      
+      <button th:if="${conDto == null}" type="button" class="btn btn-primary" onclick="submitCondition()">가입 조건 등록 완료</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const parentSugNo = document.getElementById("suggestion_no").value;
+
+    /* ── 토스트 알림창 함수 ── */
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => { t.className = 'toast'; }, 3000);
+    }
+
+    /* ── 이전 승인 제안서 상세 컴포넌트 현황 화면으로 리턴하는 백 스페이스 함수 ── */
+    function goBackToParent() {
+      if(parentSugNo) {
+        location.href = `/employee/manager/SUG/approvedDetail?suggestion_no=${parentSugNo}`;
+      } else {
+        location.href = "/employee/manager/SUG/approvedList";
+      }
+    }
+
+    /* ── 가입조건 양식 데이터를 JSON 포맷화 하여 저장 API로 전송하는 함수 ── */
+    function submitCondition() {
+      const form = document.getElementById("conditionForm");
+      
+      // 필수 입력 검증 활성화 체크
+      if(!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+      const jsonObject = {};
+      
+      // FormData를 Plain Object 체계로 파싱
+      formData.forEach((value, key) => {
+        jsonObject[key] = value;
+      });
+
+      // 공백 값 검증 보정 연산 처리
+      if(!jsonObject['max_age']) jsonObject['max_age'] = null;
+      if(!jsonObject['max_join_amount']) jsonObject['max_join_amount'] = null;
+
+      console.log("전송할 조건 구성 데이터 구조:", jsonObject);
+
+      // 백엔드 비동기 통신 요청 처리
+      fetch("/api/employee/approved/registerCondition", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonObject)
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result === 1) {
+          showToast('가입 조건 사양이 성공적으로 조립 등록되었습니다.', 'success');
+          setTimeout(() => {
+            goBackToParent();
+          }, 1500);
+        } else {
+          showToast('데이터 저장 도중 원인 모를 결함이 식별되었습니다.', 'error');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('서버 통신 중 장애가 발생했습니다.', 'error');
+      });
+    }
+  </script>
+</body>
+</html>
