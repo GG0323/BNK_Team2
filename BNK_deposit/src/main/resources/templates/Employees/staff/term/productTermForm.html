@@ -602,7 +602,7 @@ body {
       formData.delete('use_yn');
       formData.set('use_yn', document.getElementById('use_yn_val').value);
 
-      fetch("/api/terms/regist", {
+      fetch("=====================================================================================", {
         method: "POST",
         body: formData
       })
@@ -611,7 +611,7 @@ body {
         if (data === 1) {
           showToast('약관이 등록되었습니다.', 'success');
           setTimeout(() => {
-            location.href = "/employee/manager/managerPage";
+            location.href = "======================================================================";
           }, 1500);
         } else {
           showToast('등록에 실패했습니다.', 'error');

@@ -9,7 +9,7 @@ import com.example.bnk.dto.member.BankMemberLogDto;
 
 @Mapper
 public interface IMemberLogDao {
-
+	
 	int insertLog(@Param("dto") BankMemberLogDto insertDto);
 
 	List<BankMemberLogDto> allLog();

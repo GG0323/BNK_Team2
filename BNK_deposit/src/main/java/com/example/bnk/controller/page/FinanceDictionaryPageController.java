@@ -21,7 +21,7 @@ public class FinanceDictionaryPageController {
         return "common/financedictionarydetail";
     }
     
-    // 직원용 금융용어 사전 관리 화면
+    // 직원용 금융용어 사전 관리 화면 // 직원 쪽에 연결 // 
     @GetMapping("/employee/financedictionary")
     public String employeeDictionaryManagePage() {
         return "Employees/staff/financedictionary/employee_financedictionary";
@@ -38,4 +38,10 @@ public class FinanceDictionaryPageController {
     public String dictionaryEditPage(@PathVariable("dictionary_no") long dictionaryNo) {
         return "Employees/staff/financedictionary/financedictionary_edit";
     }
+    
+    
+    
+    
+    
+    
 }
