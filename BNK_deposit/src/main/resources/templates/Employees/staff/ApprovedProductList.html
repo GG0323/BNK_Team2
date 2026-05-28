@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>승인된 상품 리스트</title>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
+<link rel="stylesheet" th:href="@{/css/employee/apr_product_list}" />
+
+</head>
+<body>
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+	
+	<div >
+		<table>
+			<thead>
+				<tr>
+					<th>승인된 제안서 FK</th>
+					<th>상품명</th>
+					<th>최저금리</th>
+					<th>최고금리</th>
+					<th>금리번호</th>
+					<th>약관번호</th>
+					<th>설명번호</th>
+					<th>조건번호</th>
+					<th>상세보기</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="aprsug : ${approvedSuggestion}">
+					<td th:text="|${aprsug.suggestion_no}|">
+					<td th:text="|${aprsug.product_name}">
+					<td th:text="|${aprsug.proposed_min_interest_rate}|">
+					<td th:text="|${aprsug.proposed_min_interest_rate}|">
+					<td th:text="|${aprsug.rate_no}|">
+					<td th:text="|${aprsug.terms_no}|">
+					<td th:text="|${aprsug.description_no}|">
+					<td th:text="|${aprsug.condition_no}|">
+					<td th:text="|${aprsug.condition_no}|">
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
