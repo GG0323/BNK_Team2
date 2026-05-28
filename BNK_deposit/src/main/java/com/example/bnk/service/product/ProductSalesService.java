@@ -3,6 +3,7 @@ package com.example.bnk.service.product;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.product.IProductSalesDao;
 import com.example.bnk.dto.member.MemberProductDto;
@@ -10,6 +11,7 @@ import com.example.bnk.dto.member.MemberProductDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProductSalesService {
 

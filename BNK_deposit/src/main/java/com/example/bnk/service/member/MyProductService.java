@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.member.IMyProductDao;
 import com.example.bnk.dto.member.MyProductDto;
@@ -18,6 +19,7 @@ public class MyProductService {
     private final IMyProductDao myProductDao;
 
     // 가입상품 목록 조회
+    @Transactional
     public List<MyProductDto> getMyProducts(long memberNo) {
     List<MyProductDto> list = myProductDao.findMyProductsByMemberNo(memberNo);
 
@@ -29,6 +31,7 @@ public class MyProductService {
 }
 
     // 가입상품 상세 조회
+    @Transactional
     public MyProductDto getMyProductDetail(long memberNo, int subscriptionNo) {
         MyProductDto dto = myProductDao.findMyProductDetail(memberNo, subscriptionNo);
 
@@ -42,6 +45,7 @@ public class MyProductService {
     }
 
     // 세전 단순 예상 이자와 예상 수령액 계산
+    @Transactional
     private void fillExpectedAmount(MyProductDto dto) {
         BigDecimal principal = safe(dto.getSubscription_amount());
         BigDecimal rate = safe(dto.getApplied_interest_rate());
@@ -66,6 +70,7 @@ public class MyProductService {
     }
 
     // 예금 단순 이자 계산
+    @Transactional
     private BigDecimal calculateDepositInterest(BigDecimal principal, BigDecimal rate, int months) {
         return principal
                 .multiply(rate)
@@ -75,6 +80,7 @@ public class MyProductService {
     }
 
     // 적금 단순 예상 원금 계산
+    @Transactional
     private BigDecimal calculateSavingsPrincipal(MyProductDto dto, BigDecimal fallbackPrincipal, int months) {
         BigDecimal autoTransferAmount = safe(dto.getAuto_transfer_amount());
 
@@ -86,6 +92,7 @@ public class MyProductService {
     }
 
     // 적금 단순 예상 이자 계산
+    @Transactional
     private BigDecimal calculateSavingsInterest(MyProductDto dto, BigDecimal rate, int months) {
         BigDecimal autoTransferAmount = safe(dto.getAuto_transfer_amount());
 
@@ -101,7 +108,8 @@ public class MyProductService {
                 .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
                 .divide(BigDecimal.valueOf(12), 0, RoundingMode.HALF_UP);
     }
-
+    
+    @Transactional
     private BigDecimal safe(BigDecimal value) {
         return value == null ? BigDecimal.ZERO : value;
     }

@@ -28,6 +28,7 @@ import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProductForEmployee {
 	
@@ -158,15 +159,13 @@ public class ProductForEmployee {
 				System.out.println("DB를 넣는 과정 중 오류가 발생했습니다.");
 				return 0;
 			}
-			
-			
-			
+
 		}
 		System.out.println("그냥 Dto가 안들어있음 ㅇㅇ...");
 		return 0;
 	}
 	
-	// 상품 금리 등록 서비스1
+	// 상품 금리 등록 서비스
 	public int insertAllRate(ProductRateDto prdRateDto, @RequestParam("suggestion_no") long suggestion_no) {
 		if(prdRateDto != null) {
 			
@@ -197,11 +196,12 @@ public class ProductForEmployee {
 		System.out.println("그냥 DTO가 안들어있는데?");
 		return 0;
 	}
-	
+
 	// 상품 설명 등록 서비스
     @Transactional
     public int saveDescription(ProductDescriptionDto prdDescDto,
     		 @RequestParam("suggestion_no") long suggestion_no	) throws IOException {
+
         
         MultipartFile file = prdDescDto.getImage_file();
         

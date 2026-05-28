@@ -11,6 +11,7 @@ import com.example.bnk.dto.product.ProductSuggestionDto;
 import com.example.bnk.dto.product.suggestion.SuggestionListDto;
 
 @Service
+@Transactional
 public class SuggestionService {
 	
 	@Autowired
@@ -39,7 +40,6 @@ public class SuggestionService {
 		return reviewPage;
 	}
 	// 제안서 승인
-	@Transactional
 	public int approveSuggestion(long suggestion_no) {
 		// 제안서 승인
 		int result = suggestionDao.approveSuggestion(suggestion_no);
