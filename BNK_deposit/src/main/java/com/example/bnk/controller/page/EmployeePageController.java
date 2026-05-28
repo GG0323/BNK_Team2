@@ -176,7 +176,11 @@ public class EmployeePageController {
 	public String bankMemberLog() {
 		return "Employees/manager/LOG/bankMemberLogList";
 	}
-	
+	// 상품 리스트     /employee/manager/PRD/productList
+	@GetMapping("/manager/PRD/productList")
+	public String productList() {
+		return "Employees/manager/PRD/productList";
+	}
 	
 
 	

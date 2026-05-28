@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 리스트</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.total-count {
+  font-size: 12px;
+  color: #888;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #E8E8E8;
+}
+
+/* 검색 바 */
+.search-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+
+.search-bar select,
+.search-bar input {
+  padding: 8px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-bar select:focus,
+.search-bar input:focus { border-color: #111; }
+
+.search-bar input { flex: 1; }
+
+.btn-search {
+  background: #E8282F;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-search:hover { background: #C5202A; }
+
+/* 테이블 */
+.table-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 780px;
+}
+
+thead tr { background: #111; }
+
+thead th {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
+  cursor: pointer;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFF5F5; }
+
+tbody td {
+  padding: 13px 16px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.rate-val { font-weight: 600; color: #E8282F; }
+
+/* 뱃지 */
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-DEPOSIT  { background: #EFF6FF; color: #1D4ED8; }
+.badge-SAVINGS  { background: #F3E8FF; color: #6B21A8; }
+.badge-SALE     { background: #F0FFF4; color: #22863a; }
+.badge-NON_SALE { background: #F5F5F5; color: #aaa; }
+
+/* 가입 채널 아이콘 */
+.channel-tags { display: flex; gap: 4px; }
+
+.channel-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #F0F0F0;
+  color: #666;
+}
+
+.channel-tag.on { background: #111; color: #fff; }
+
+.empty-row td {
+  text-align: center;
+  color: #bbb;
+  padding: 3rem;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">BNK <span>관리자</span> 페이지</div>
+    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a>
+    <a class="nav-item active" th:href="@{/employee/manager/PRD/productList}">상품 리스트</a>
+  </aside>
+
+  <div class="main">
+
+    <div class="topbar">
+      <button class="logout-btn">로그아웃</button>
+    </div>
+
+    <div class="breadcrumb">
+      관리자 페이지 › <span class="current">상품 리스트</span>
+    </div>
+
+    <div class="page-header">
+      <div class="page-title">상품 리스트</div>
+      <span class="total-count" id="totalCount">전체 0건</span>
+    </div>
+
+    <!-- 검색 바 -->
+    <div class="search-bar">
+      <select id="cond-product_type">
+        <option value="">전체 유형</option>
+        <option value="DEPOSIT">예금</option>
+        <option value="SAVINGS">적금</option>
+      </select>
+      <select id="cond-product_status">
+        <option value="">전체 상태</option>
+        <option value="SALE">판매중</option>
+        <option value="NON_SALE">판매중지</option>
+      </select>
+      <input type="text" id="cond-product_name" placeholder="상품명 검색">
+      <button class="btn-search" onclick="searchProduct()">검색</button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>상품명</th>
+              <th>구분</th>
+              <th>기본금리</th>
+              <th>최고금리</th>
+              <th>판매상태</th>
+              <th>가입채널</th>
+              <th>판매기간</th>
+            </tr>
+          </thead>
+          <tbody id="productListTable">
+            <tr class="empty-row"><td colspan="8">데이터를 불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function typeBadge(type) {
+      const label = { DEPOSIT: '예금', SAVINGS: '적금' };
+      return `<span class="badge badge-${type}">${label[type] ?? type}</span>`;
+    }
+
+    function statusBadge(status) {
+      const label = { SALE: '판매중', NON_SALE: '판매중지' };
+      return `<span class="badge badge-${status}">${label[status] ?? status}</span>`;
+    }
+
+    function channelTags(p) {
+      return `
+        <div class="channel-tags">
+          <span class="channel-tag ${p.branch_join_yn === 'Y' ? 'on' : ''}">지점</span>
+          <span class="channel-tag ${p.internet_join_yn === 'Y' ? 'on' : ''}">인터넷</span>
+          <span class="channel-tag ${p.mobile_join_yn === 'Y' ? 'on' : ''}">모바일</span>
+        </div>`;
+    }
+
+    function salePeriod(p) {
+      const start = p.sale_start_date ?? '-';
+      const end   = p.sale_end_date   ? p.sale_end_date : '상시';
+      return `${start} ~ ${end}`;
+    }
+
+    function renderRows(data) {
+      const tbody = document.getElementById('productListTable');
+      document.getElementById('totalCount').textContent = `전체 ${data.length}건`;
+
+      if (!data.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="8">등록된 상품이 없습니다.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(p => `
+        <tr onclick="goDetail(${p.product_no})">
+          <td>${p.product_no}</td>
+          <td>${p.product_name}</td>
+          <td>${typeBadge(p.product_type)}</td>
+          <td class="rate-val">${p.min_interest_rate ?? '-'}%</td>
+          <td class="rate-val">${p.max_interest_rate ?? '-'}%</td>
+          <td>${statusBadge(p.product_status)}</td>
+          <td>${channelTags(p)}</td>
+          <td style="font-size:12px;color:#888;">${salePeriod(p)}</td>
+        </tr>
+      `).join('');
+    }
+
+    fetch('/api/product/allList', { method: 'GET' })
+      .then(r => r.json())
+      .then(data => renderRows(data))
+      .catch(e => {
+        console.error(e);
+        document.getElementById('productListTable').innerHTML =
+          '<tr class="empty-row"><td colspan="8">데이터를 불러오지 못했습니다.</td></tr>';
+      });
+
+    function searchProduct() {
+      const params = {};
+      const type   = document.getElementById('cond-product_type').value;
+      const status = document.getElementById('cond-product_status').value;
+      const name   = document.getElementById('cond-product_name').value.trim();
+
+      if (type)   params.product_type   = type;
+      if (status) params.product_status = status;
+      if (name)   params.product_name   = name;
+
+      fetch('/api/product/conditionList?' + new URLSearchParams(params).toString())
+        .then(r => r.json())
+        .then(data => renderRows(data))
+        .catch(e => console.error(e));
+    }
+
+    function goDetail(product_no) {
+      location.href = '/employee/manager/PRD/productDetail?product_no=' + product_no;
+    }
+  </script>
+
+</body>
+</html>
