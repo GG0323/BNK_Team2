@@ -5,12 +5,14 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.member.IBankMemberDao;
 import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.utils.AesCryptoUtil;
 
 @Service
+@Transactional
 public class MemberService {
 
 	@Autowired

@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Login Page</title>
+	<script src="/js/members/login.js" defer></script>
 
 	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
@@ -22,7 +23,7 @@
 			<p class="login-desc">부산은행 금융상품 서비스를 이용하시려면 로그인해 주세요.</p>
 		</div>
 
-		<form id="frm" class="login-form" method="post" action="/member/login">
+		<form id="frm" class="login-form">
 			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
 			<div class="input-group">
@@ -35,7 +36,7 @@
 				<input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
 			</div>
 
-			<button type="submit" class="login-btn">로그인</button>
+			<button type="button" onclick="login()" class="login-btn">로그인</button>
 		</form>
 
 		<div class="login-links">

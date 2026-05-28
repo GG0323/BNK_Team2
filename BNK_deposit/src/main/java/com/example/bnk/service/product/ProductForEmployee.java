@@ -25,6 +25,7 @@ import com.example.bnk.dto.product.ProductRateDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProductForEmployee {
 	
@@ -103,9 +104,6 @@ public class ProductForEmployee {
 	}
 	
 	
-
-
-    @Transactional
     public int saveDescription(ProductDescriptionDto prdDescDto) throws IOException {
         
         MultipartFile file = prdDescDto.getImage_file();

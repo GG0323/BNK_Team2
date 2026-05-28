@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.employee.IEmployeeLogDao;
 import com.example.bnk.dto.employee.EmployeeLogDto;
@@ -13,6 +14,7 @@ import com.example.bnk.dto.employee.EmployeeLogSelectDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
+@Transactional
 public class EmployeeLogService {
 	
 	@Autowired
@@ -64,7 +66,4 @@ public class EmployeeLogService {
 		
 		return conlist;
 	}
-	
-	
-	
 }

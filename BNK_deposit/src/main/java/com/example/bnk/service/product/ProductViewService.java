@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.product.IProductViewDao;
 import com.example.bnk.dto.product.ProductCompareViewDto;
@@ -14,6 +15,7 @@ import com.example.bnk.dto.product.ProductListViewDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ProductViewService {
 
@@ -85,6 +87,7 @@ public class ProductViewService {
     }
 
     // 상품별 추천 점수 계산
+    @Transactional
     private int getRecommendScore(ProductListViewDto product,
                                   int age,
                                   int creditScore,

@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/productView.css}">
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+    <script src="/js/productDetail.js" defer></script>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header_default}"></div>
@@ -222,7 +223,7 @@
 				    <!-- 일반 웹/영업점 가입 상품 -->
 				    <a th:if="${product.mobile_join_yn != 'Y'}"
 				       href="javascript:void(0);"
-				       onclick="alert('가입 신청 기능은 추후 구현 예정입니다.');"
+				       onclick="product_join()"
 				       class="compare-btn">
 				        가입하기
 				    </a>

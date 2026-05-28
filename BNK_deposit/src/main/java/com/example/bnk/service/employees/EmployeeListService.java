@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.employee.IEmployeeDao;
 import com.example.bnk.dto.employee.EmployeeDetailUpdateDto;
@@ -12,12 +13,11 @@ import com.example.bnk.dto.employee.EmployeeListDetailDto;
 import com.example.bnk.dto.employee.EmployeeListDto;
 
 @Service
+@Transactional
 public class EmployeeListService {
 	
 	@Autowired
 	private IEmployeeDao empDao;
-	
-	
 	
 	// 사원 전체 리스트 , 부서이름 출력
 	public List<EmployeeListDto> allList(){
@@ -46,8 +46,6 @@ public class EmployeeListService {
 		return result;
 	}
 	
-	
-	
 	// 상품제안서 작성을 위한 상사들의 목록을 반환하는 함수
 	public List<EmployeeDto> managers() {
 		List<EmployeeDto> managers = empDao.managers();
@@ -58,8 +56,5 @@ public class EmployeeListService {
 		EmployeeDto myInfo = empDao.findByUsername(username);
 		return myInfo;
 	}
-	
-	
-	
 	
 }

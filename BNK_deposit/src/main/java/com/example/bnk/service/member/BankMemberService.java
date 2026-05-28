@@ -2,6 +2,7 @@ package com.example.bnk.service.member;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.member.IBankMemberDao;
 import com.example.bnk.dto.member.BankMemberDto;
