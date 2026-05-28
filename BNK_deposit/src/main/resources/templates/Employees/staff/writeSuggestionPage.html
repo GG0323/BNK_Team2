@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>제안서 작성</title>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
+
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,45 +15,6 @@ body {
   min-height: 100vh;
 }
 
-/* ===== 사이드바 ===== */
-.sidebar {
-  width: 190px;
-  background: #111111;
-  flex-shrink: 0;
-  min-height: 100vh;
-  position: fixed;
-  top: 0; left: 0;
-}
-
-.sidebar .logo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  padding: 1.5rem 1.25rem;
-  letter-spacing: -0.3px;
-  border-bottom: 1px solid #2a2a2a;
-}
-
-.sidebar .logo span { color: #E8282F; }
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 11px 1.25rem;
-  font-size: 13px;
-  color: #888;
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: all 0.15s;
-}
-
-.nav-item:hover { color: #fff; background: #1c1c1c; }
-
-.nav-item.active {
-  color: #fff;
-  background: #1c1c1c;
-  border-left-color: #E8282F;
-}
 
 /* ===== 메인 ===== */
 .main {
@@ -271,12 +234,8 @@ body {
 </head>
 <body>
 
-  <!-- 사이드바 (staff용 - 필요에 따라 수정) -->
-  <aside class="sidebar">
-    <div class="logo">BNK <span>직원</span> 페이지</div>
-    <a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
-    <a class="nav-item active" th:href="@{/employee/staff/suggestion/write}">제안서 작성</a>
-  </aside>
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
 
   <div class="main">
 

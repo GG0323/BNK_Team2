@@ -1,10 +1,511 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>설명</title>
+<title>상품 구성 - 상품 설명 세부설정</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 본문 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== 대시보드 카드 서식 ===== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 2rem;
+  max-width: 1000px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.card-title-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #E8282F;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.mode-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.badge-new { background: #FFF8E1; color: #B8860B; }
+.badge-view { background: #F0FFF4; color: #22863a; }
+
+/* ===== 섹션 타이틀 서식 ===== */
+.section-divider {
+  grid-column: span 2;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+  background: #F8F8F8;
+  padding: 6px 12px;
+  border-left: 3px solid #E8282F;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ===== 폼 그리드 레이아웃 ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* 입력 필드 공통 서식 */
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 13px;
+  border: 1px solid #D0D0D0;
+  border-radius: 6px;
+  background: #fff;
+  color: #222;
+  transition: border-color 0.15s;
+}
+input:focus, textarea:focus {
+  border-color: #E8282F;
+  outline: none;
+}
+input:disabled, textarea:disabled {
+  background: #F9F9F9;
+  color: #777;
+  cursor: not-allowed;
+  border-color: #E5E5E5;
+}
+
+/* CLOB 대용량 텍스트용 넓은 textarea 크기 정의 */
+textarea.clob-input {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* ===== 하단 버튼단 ===== */
+.btn-group {
+  margin-top: 2rem;
+  display: flex;
+  gap: 10px;
+  max-width: 1000px;
+}
+.btn {
+  padding: 11px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  text-decoration: none;
+  text-align: center;
+}
+.btn-secondary { background: #fff; border: 1px solid #D0D0D0; color: #555; }
+.btn-secondary:hover { border-color: #111; color: #111; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover { background: #E8282F; }
+
+/* ===== 토스트 ===== */
+.toast {
+  position: fixed;
+  bottom: 2rem; right: 2rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #111; }
+.toast.error { background: #E8282F; }
+</style>
 </head>
 <body>
 
+  <aside class="sidebar">
+    <div class="logo">BNK <span>관리자</span> 페이지</div>
+    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
+    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
+    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
+    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
+    <a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+  </aside>
+
+  <div class="main">
+    <div class="breadcrumb">
+      관리자 페이지 ›
+      <a th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a> ›
+      <span class="current">상품설명 세부설정</span>
+    </div>
+
+    <div class="page-title">상품 구성 컴포넌트 관리</div>
+
+    <div class="card">
+      <div class="card-title-group">
+        <div class="card-title">상품 설명 문구 설정 (Description Info)</div>
+        <div>
+          <span th:if="${desDto != null}" class="mode-badge badge-view">데이터 조회 모드</span>
+          <span th:if="${desDto == null}" class="mode-badge badge-new">신규 구성 등록 모드</span>
+        </div>
+      </div>
+
+      <form id="descriptionForm">
+        <input type="hidden" id="suggestion_no" name="suggestion_no" th:value="${suggestion_no}" />
+        <input type="hidden" id="description_no" name="description_no" th:value="${desDto != null ? desDto.description_no : ''}" />
+
+        <div class="form-grid">
+          
+          <div class="section-divider">1. 기본 요약 및 홍보 정보</div>
+
+          <div class="form-group">
+            <label>상품 부제목 (subtitle)</label>
+            <input type="text" id="subtitle" name="subtitle" placeholder="예: BNK가치성장 정기예금" required
+                   th:value="${desDto != null ? desDto.subtitle : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>대표 이미지 URL (image_url)</label>
+            <input type="text" id="image_url" name="image_url" placeholder="예: /images/products/saving_01.png"
+                   th:value="${desDto != null ? desDto.image_url : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group full-width">
+            <label>메인 홍보 문구 (content)</label>
+            <input type="text" id="content" name="content" placeholder="예: 생산적금융 참여 특판 정기예금" required
+                   th:value="${desDto != null ? desDto.content : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group full-width">
+            <label>상단 우대금리 조건 요약 - 고정 영역 표시용 (preferential_rate_summary) [CLOB]</label>
+            <textarea id="preferential_rate_summary" name="preferential_rate_summary" class="clob-input" placeholder="스마트폰 가입 시 연 0.2%p, 첫 거래 시 연 0.3%p 우대제공 등 상단에 간략히 요약 노출될 문구를 기입하세요."
+                      th:text="${desDto != null ? desDto.preferential_rate_summary : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+
+          <div class="section-divider">2. 핵심 가입 정보 안내문구</div>
+
+          <div class="form-group">
+            <label>예금 과목 명칭 (deposit_subject_desc)</label>
+            <input type="text" id="deposit_subject_desc" name="deposit_subject_desc" placeholder="예: 정기적금 / 정기예금"
+                   th:value="${desDto != null ? desDto.deposit_subject_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>납입 방법 안내 (payment_method_desc)</label>
+            <input type="text" id="payment_method_desc" name="payment_method_desc" placeholder="예: 자유적립식 / 정기적립식"
+                   th:value="${desDto != null ? desDto.payment_method_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>가입 자격 안내 (eligibility_desc)</label>
+            <input type="text" id="eligibility_desc" name="eligibility_desc" placeholder="예: 실명에 의한 개인 (제한 없음)"
+                   th:value="${desDto != null ? desDto.eligibility_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>가입 기간 안내 (period_desc)</label>
+            <input type="text" id="period_desc" name="period_desc" placeholder="예: 6개월 ~ 36개월 (일 단위 지정 가능)"
+                   th:value="${desDto != null ? desDto.period_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>가입 금액 안내 (amount_desc)</label>
+            <input type="text" id="amount_desc" name="amount_desc" placeholder="예: 월 1만원 이상 300만원 이하"
+                   th:value="${desDto != null ? desDto.amount_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>판매 기간 조건 (sale_period_desc)</label>
+            <input type="text" id="sale_period_desc" name="sale_period_desc" placeholder="예: 한도 5,000억원 소진 시 조기종료"
+                   th:value="${desDto != null ? desDto.sale_period_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+
+          <div class="section-divider">3. 상세 상품 안내서 정보 (고객 공시용 상세 내용)</div>
+
+          <div class="form-group full-width">
+            <label>상품 특징 상세 설명 (product_feature_desc)</label>
+            <textarea id="product_feature_desc" name="product_feature_desc" class="clob-input" placeholder="상품의 주요 특징과 기대효과를 서술하세요."
+                      th:text="${desDto != null ? desDto.product_feature_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>가입 방법 상세 (join_method_desc)</label>
+            <textarea id="join_method_desc" name="join_method_desc" class="clob-input" placeholder="예: 영업점 창구, 인터넷뱅킹, 모바일뱅킹(원뱅크)"
+                      th:text="${desDto != null ? desDto.join_method_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>필요 서류 안내 (required_document_desc)</label>
+            <input type="text" id="required_document_desc" name="required_document_desc" placeholder="예: 본인 실명확인증표 (대리인 가입 시 서류 별도 참조)"
+                   th:value="${desDto != null ? desDto.required_document_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group">
+            <label>세제 혜택 안내 요약 (tax_benefit_desc)</label>
+            <input type="text" id="tax_benefit_desc" name="tax_benefit_desc" placeholder="예: 비과세종합저축 가입 가능 (본인 한도 내)"
+                   th:value="${desDto != null ? desDto.tax_benefit_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+          <div class="form-group full-width">
+            <label>적용 금리 안내 구조 (interest_rate_desc)</label>
+            <textarea id="interest_rate_desc" name="interest_rate_desc" class="clob-input" placeholder="예: 만기지급식 기본금리 적용 (기본금리표 참조)"
+                      th:text="${desDto != null ? desDto.interest_rate_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>이자 지급 방식 설명 (interest_payment_desc) [CLOB]</label>
+            <textarea id="interest_payment_desc" name="interest_payment_desc" class="clob-input" placeholder="예: 만기일시지급식 (만기 시 축적된 이자를 원금과 함께 일시 지급)"
+                      th:text="${desDto != null ? desDto.interest_payment_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>우대 이율 세부 요건 가이드 (preferential_rate_desc) [CLOB]</label>
+            <textarea id="preferential_rate_desc" name="preferential_rate_desc" class="clob-input" placeholder="우대 조건 세부 항목을 표 형식이나 리스트 형태로 기술하세요."
+                      th:text="${desDto != null ? desDto.preferential_rate_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>원금 또는 이자지급 제한 유의안내 (principal_interest_limit_desc) [CLOB]</label>
+            <textarea id="principal_interest_limit_desc" name="principal_interest_limit_desc" class="clob-input" placeholder="계좌 압류, 담보제공, 중도해지 시 약정이율 적용 제한 등의 정보를 기입하세요."
+                      th:text="${desDto != null ? desDto.principal_interest_limit_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>비과세 종합 저축 관련 유의사항 (non_taxable_savings_desc) [CLOB]</label>
+            <textarea id="non_taxable_savings_desc" name="non_taxable_savings_desc" class="clob-input" placeholder="관련 세법 개정 및 한도 산정에 대한 관련 규정을 적어주세요."
+                      th:text="${desDto != null ? desDto.non_taxable_savings_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>시뮬레이션 예상 수취이자액 관련 설명 (expected_interest_desc) [CLOB]</label>
+            <textarea id="expected_interest_desc" name="expected_interest_desc" class="clob-input" placeholder="만기 전 해지 시 중도해지이율 적용에 따른 예상 세후 금액 가이드 문구를 기입하세요."
+                      th:text="${desDto != null ? desDto.expected_interest_desc : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+
+          <div class="section-divider">4. 법적 필수 고지 및 행정 사항</div>
+
+          <div class="form-group full-width">
+            <label>금융상품 통합 유의사항 (caution_note) [CLOB]</label>
+            <textarea id="caution_note" name="caution_note" class="clob-input" placeholder="계약 체결 전 상품설명서 및 약관을 반드시 읽어보시기 바랍니다 등 법적 필수 문구를 적어주세요."
+                      th:text="${desDto != null ? desDto.caution_note : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>기타 참고사항 안내 (reference_note) [CLOB]</label>
+            <textarea id="reference_note" name="reference_note" class="clob-input" placeholder="기타 특이 조건이나 예외 처리 프로세스를 적어주세요."
+                      th:text="${desDto != null ? desDto.reference_note : ''}" 
+                      th:disabled="${desDto != null}"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label>준법감시인 심의 및 공시 승인번호 (disclosure_approval_desc)</label>
+            <input type="text" id="disclosure_approval_desc" name="disclosure_approval_desc" placeholder="예: 준법감시인 심의필 제2026-XXXX호 (유효기간: 2026-12-31까지)" required
+                   th:value="${desDto != null ? desDto.disclosure_approval_desc : ''}" 
+                   th:disabled="${desDto != null}" />
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="btn-group">
+      <a th:href="@{/employee/manager/SUG/approvedList}" class="btn btn-secondary">목록으로</a>
+      <button type="button" class="btn btn-secondary" onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
+      
+      <button th:if="${desDto == null}" type="button" class="btn btn-primary" onclick="submitDescription()">상품 설명 등록 완료</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const parentSugNo = document.getElementById("suggestion_no").value;
+
+    /* ── 토스트 알림창 함수 ── */
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => { t.className = 'toast'; }, 3000);
+    }
+
+    /* ── 이전 승인 제안서 상세 컴포넌트 현황 화면으로 리턴하는 백 스페이스 함수 ── */
+    function goBackToParent() {
+      if(parentSugNo) {
+        location.href = `/employee/manager/SUG/approvedDetail?suggestion_no=${parentSugNo}`;
+      } else {
+        location.href = "/employee/manager/SUG/approvedList";
+      }
+    }
+
+    /* ── 상품설명 데이터를 묶어 비동기 저장 API로 전송하는 함수 ── */
+    function submitDescription() {
+      const form = document.getElementById("descriptionForm");
+      
+      // 유효성 체크 (required 체크)
+      if(!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+      const jsonObject = {};
+      
+      formData.forEach((value, key) => {
+        jsonObject[key] = value;
+      });
+
+      console.log("전송할 상품 설명 등록 데이터 구조:", jsonObject);
+
+      // 백엔드 비동기 통신 요청 처리
+      fetch("/api/employee/approved/registerDescription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonObject)
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result === 1) {
+          showToast('상품 설명 컴포넌트 구성이 성공적으로 등록되었습니다.', 'success');
+          setTimeout(() => {
+            goBackToParent();
+          }, 1500);
+        } else {
+          showToast('데이터 저장 도중 원인 모를 결함이 식별되었습니다.', 'error');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('서ver 통신 중 장애가 발생했습니다.', 'error');
+      });
+    }
+  </script>
 </body>
 </html>

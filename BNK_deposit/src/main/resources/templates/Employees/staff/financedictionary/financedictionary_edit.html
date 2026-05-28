@@ -15,18 +15,7 @@
 <body>
 <div class="admin-wrap">
 
-    <aside class="sidebar">
-    	<div class="logo">BNK <span>일반 사원</span> 페이지</div>
-    	<!-- nav 항목들 -->	
-    	
-    	<a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
-    	<a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
-    	<a class="nav-item" th:href="@{/employee/staff/writeSuggestionPage}">제안서 작성 페이지</a>
-    	<a class="nav-item" th:href="@{/employee/staff/productTerm}">약관 등록 페이지</a>
-   		<a class="nav-item" th:href="@{/employee/staff/product/condition}">상품 가입 조건 등록 페이지</a>
-		<a class="nav-item" th:href="@{/employee/staff/product/rate}">상품 금리 등록 페이지</a>
-		<a class="nav-item" th:href="@{/employee/staff/product/description}">상품 설명 등록 페이지</a>   	
-  	</aside>
+    <div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
     <!-- 우측 본문 -->
     <main class="main">
