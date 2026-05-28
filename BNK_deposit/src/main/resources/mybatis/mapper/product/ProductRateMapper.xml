@@ -23,5 +23,19 @@
 		    #{display_order},
 		    #{use_yn})
 	</insert>
-
+	
+	<update id="updateProductRate" parameterType="com.example.bnk.dto.product.ProductRateDto">
+		UPDATE TB_PRODUCT_RATE
+		SET rate_group = #{rate_group},
+			rate_label = #{rate_label},
+			annual_rate = #{annual_rate, jdbcType=VARCHAR},
+			annual_return_rate = #{annual_return_rate, jdbcType=VARCHAR},
+			note = #{note, jdbcType=VARCHAR},
+			display_order = #{display_order},
+			use_yn = #{use_yn},
+			updated_at = SYSDATE
+		WHERE rate_no = #{rate_no}
+		AND product_no = #{product_no}
+	</update>
+	
 </mapper>

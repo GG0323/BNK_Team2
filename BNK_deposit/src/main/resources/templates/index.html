@@ -1,94 +1,140 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<title>BNK 부산은행</title>
+    <meta charset="UTF-8">
+    <title>BNK 부산은행</title>
 
-	<link rel="stylesheet" th:href="@{/css/index.css}">
-	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+
+    <script th:src="@{/js/index.js}" defer></script>
 </head>
 <body>
 
 <div th:replace="~{fragments/header :: header_default}"></div>
 
-<!-- Main -->
 <main class="main">
 
-    <!-- Main Visual -->
-    <section class="visual-section">
-        <div class="visual-banner">
-            <div class="visual-text">
-                <p class="visual-label">BNK 금융상품</p>
-                <h1>나에게 맞는 금융상품을<br>쉽고 빠르게 찾아보세요</h1>
-                <p>
-                    예금부터 적금, 대출상품까지<br>
-                    필요한 상품을 한눈에 확인할 수 있습니다.
-                </p>
+    <!-- Hero -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <p class="hero-label">BNK 금융상품</p>
+
+            <h1>
+                나에게 맞는 금융상품을<br>
+                더 쉽고 간단하게
+            </h1>
+
+            <p class="hero-desc">
+                예금, 적금, 대출상품까지 복잡한 조건은 줄이고<br>
+                필요한 상품만 빠르게 확인해보세요.
+            </p>
+
+            <div class="hero-actions">
+                <button type="button" class="primary-btn" onclick="productSearch()">
+                    상품 검색하기
+                </button>
+
+                <a th:href="@{/products}" class="secondary-btn">
+                    전체 상품 보기
+                </a>
             </div>
 
-            <div class="visual-graphic">
-                <div class="circle circle-1"></div>
-                <div class="circle circle-2"></div>
-                <div class="card-graphic">
-                    <span>금융상품</span>
-                    <strong>맞춤추천</strong>
-                </div>
-            </div>
-
-            <div class="visual-dots">
-                <span></span>
-                <span></span>
-                <span class="active"></span>
-                <span></span>
+            <div class="hero-tags">
+                <span>예금</span>
+                <span>적금</span>
+                <span>대출</span>
+                <span>맞춤추천</span>
             </div>
         </div>
 
-        <aside class="quick-service">
-            <button type="button" class="quick red" onclick="alert('준비중입니다.')">
-                <span>↗</span>
-                빠른조회 서비스
-            </button>
-			
-			<a th:href="@{/employee/toMain}">
-            <button type="button" class="quick dark" onclick="alert('준비중입니다.')">
-                <span>⚠</span>
-                사고분실 신고
-            </button>
-			</a>
-			
-            <button type="button" class="quick teal" onclick="alert('준비중입니다.')">
-                <span>🛡</span>
-                금융소비자보호
-            </button>
-        </aside>
+        <div class="hero-visual" aria-hidden="true">
+            <div class="phone-card">
+                <div class="phone-top"></div>
+
+                <div class="product-card yellow-card">
+                    <span>추천 상품</span>
+                    <strong>BNK 맞춤 적금</strong>
+                    <p>최고 연 4.20%</p>
+                </div>
+
+                <div class="product-card white-card">
+                    <span>만기 예상금액</span>
+                    <strong>12,450,000원</strong>
+                    <p>월 100만원 · 12개월</p>
+                </div>
+
+                <div class="mini-row">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- Product Shortcut -->
-    <section class="product-shortcut">
-        <button type="button" class="shortcut-item shortcut-button" onclick="productSearch()">
-            <div class="shortcut-icon medal">★</div>
-            <strong>상품검색</strong>
-            <p>원하는 상품을 빠르게 검색</p>
-        </button>
+    <!-- Main Services -->
+    <section class="service-section">
+        <div class="section-title">
+            <h2>무엇을 도와드릴까요?</h2>
+            <p>자주 찾는 메뉴를 한 곳에 모았습니다.</p>
+        </div>
 
-        <a th:href="@{/products}" class="shortcut-item">
-            <div class="shortcut-icon target">◎</div>
-            <strong>상품 리스트 보기</strong>
-            <p>전체 상품 목록 확인</p>
+        <div class="service-grid">
+
+            <button type="button" class="service-card" onclick="productSearch()">
+                <span class="service-badge">Search</span>
+                <strong>상품검색</strong>
+                <p>원하는 금융상품을 조건에 맞게 빠르게 찾아보세요.</p>
+            </button>
+
+            <a th:href="@{/products}" class="service-card">
+                <span class="service-badge">List</span>
+                <strong>상품 리스트 보기</strong>
+                <p>예금, 적금, 대출 등 전체 상품을 한눈에 확인할 수 있어요.</p>
+            </a>
+
+            <button type="button" class="service-card" onclick="alert('준비중입니다.')">
+                <span class="service-badge">AI</span>
+                <strong>AI 맞춤 상품 찾기</strong>
+                <p>내 조건과 목적에 맞는 상품을 추천받을 수 있어요.</p>
+            </button>
+
+            <button type="button" class="service-card" onclick="openCalculatorPopup()">
+                <span class="service-badge">Calc</span>
+                <strong>금융계산기</strong>
+                <p>이자, 만기금액, 월 납입액을 간단하게 계산해보세요.</p>
+            </button>
+
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="quick-section">
+        <a href="javascript:void(0)" class="quick-link" onclick="alert('준비중입니다.')">
+            <div>
+                <strong>빠른조회 서비스</strong>
+                <p>계좌와 금융정보를 간편하게 확인</p>
+            </div>
+            <span>→</span>
         </a>
 
-        <button type="button" class="shortcut-item shortcut-button" onclick="alert('준비중입니다.')">
-            <div class="shortcut-icon chart">↗</div>
-            <strong>AI로 나에게 맞는 상품 찾기</strong>
-            <p>내 조건에 맞춘 상품 추천</p>
-        </button>
+        <a th:href="@{/employee/toMain}" class="quick-link">
+            <div>
+                <strong>사고분실 신고</strong>
+                <p>카드·통장 분실 신고 바로가기</p>
+            </div>
+            <span>→</span>
+        </a>
 
-        <button type="button" class="shortcut-item shortcut-button" onclick="alert('준비중입니다.')">
-            <div class="shortcut-icon calc">₩</div>
-            <strong>금융계산기</strong>
-            <p>이자와 만기금액 계산</p>
-        </button>
+        <a href="javascript:void(0)" class="quick-link" onclick="alert('준비중입니다.')">
+            <div>
+                <strong>금융소비자보호</strong>
+                <p>안전한 금융생활을 위한 안내</p>
+            </div>
+            <span>→</span>
+        </a>
     </section>
 
 </main>
