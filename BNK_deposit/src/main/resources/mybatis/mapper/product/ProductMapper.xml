@@ -19,4 +19,9 @@
 		SELECT * FROM TB_PRODUCT WHERE product_no = #{product_no}
 	</select>
 	
+	<update id="updateProductStatus" parameterType="com.example.bnk.dto.product.ProductDto">
+		UPDATE TB_PRODUCT
+		SET product_status = #{product_status}, updated_at = SYSDATE
+		WHERE product_no = #{product_no}
+	</update>
 </mapper>

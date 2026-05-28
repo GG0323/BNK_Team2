@@ -1,0 +1,50 @@
+@charset "UTF-8";
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  
+  position: sticky;       /* 1. 화면에 딱 붙여서 고정 */
+  top: 0;                 /* 2. 모니터 천장(최상단)에 딱 붙임 */
+  height: 100vh;          /* 3. 사이드바 높이를 모니터 화면 높이(100%)로 고정 */
+  
+  /* 만약 나중에 메뉴가 너무 많아지면 사이드바 내부에서만 스크롤이 생기도록 보장해 주면~서 */
+  overflow-y: auto;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span {
+  color: #E8282F;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover {
+  color: #ffffff;
+  background: #1c1c1c;
+}
+
+.nav-item.active {
+  color: #ffffff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
