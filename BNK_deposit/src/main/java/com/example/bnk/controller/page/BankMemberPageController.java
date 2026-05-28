@@ -2,6 +2,7 @@ package com.example.bnk.controller.page;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountTransactionDto;
 import com.example.bnk.dto.member.BankMemberDto;
@@ -17,6 +19,7 @@ import com.example.bnk.dto.member.MemberProductDto;
 import com.example.bnk.dto.member.MemberTrackingLogDto;
 import com.example.bnk.service.member.AccountService;
 import com.example.bnk.service.member.AccountTransactionService;
+import com.example.bnk.service.member.BankMemberLogService;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.member.MemberTrackingLogService;
 import com.example.bnk.service.product.ProductSalesService;
@@ -46,11 +49,21 @@ public class BankMemberPageController {
 	private final ProductSalesService productSalesService;
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
+	
+	private final BankMemberLogService logService;
+	
 
 	// 마이페이지
 	@GetMapping("/mypage")
-    public String rootMembersMypage(Model model, SecurityContextHolder secu) {
-	
+    public String rootMembersMypage(
+    		Model model, 
+    		SecurityContextHolder secu
+    		//@AuthenticationPrincipal String username
+    		) {
+		// 로그 
+		//logService.build(logService.findByUserID(username), 
+		//		"member/mypage", "GET", "/member/mypage");
+		
         // 회원 정보 조회
         String currentLoginId = secu.getContext().getAuthentication().getName(); 
         BankMemberDto memberInfo = bankMemberService.getMemberInfo(currentLoginId);

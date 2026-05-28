@@ -3,6 +3,7 @@ package com.example.bnk.service.member;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.member.IMemberLogDao;
@@ -34,10 +35,12 @@ public class BankMemberLogService {
 		return dto;
 	}
 	
-	
+	// @AuthenticationPrincipal String username
 	public long findByUserID(String userid) {
 		
+		System.out.println("로그인 한 유저의 ID:" +userid);
 		long memberpk = logDao.findByUserID(userid);
+		System.out.println("로그인 한 유저의 PK: "+memberpk);
 		
 		return memberpk;
 	}
