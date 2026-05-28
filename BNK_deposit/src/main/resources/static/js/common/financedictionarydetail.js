@@ -21,15 +21,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dictionaryNo = getDictionaryNo();
 
   try {
-    const body = await fetchApi(`/api/financedictionary/${dictionaryNo}`);
+    const body = await fetchApi(`/api/finance/financedictionary/${dictionaryNo}`);
     renderDetail(body.data);
   } catch (e) {
     console.error(e);
 
-    document.getElementById("detailCard").innerHTML = `
-      <div class="empty-state">
-        금융 용어 상세 정보를 불러오지 못했습니다.
-      </div>
-    `;
+    document.getElementById("dictionaryName").textContent =
+      "금융 용어 상세 정보를 불러오지 못했습니다.";
+    document.getElementById("dictionaryCategory").textContent = "-";
+    document.getElementById("viewCount").textContent = "-";
+    document.getElementById("dictionaryContent").textContent =
+      "잠시 후 다시 시도해주세요.";
   }
 });

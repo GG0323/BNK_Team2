@@ -56,21 +56,30 @@
                 <h4>조회 조건</h4>
                 <div class="filter-group">
                     <span class="filter-label">유형</span>
-                    <div class="filter-buttons">
-                        <button type="button" class="btn-filter active">전체</button>
-                        <button type="button" class="btn-filter">입금</button>
-                        <button type="button" class="btn-filter">출금</button>
-                        <button type="button" class="btn-filter">이체</button>
-                    </div>
+                    <div class="filter-buttons" id="typeFilterButtons">
+					    <button type="button" class="btn-filter active" data-type="ALL">전체</button>
+					    <button type="button" class="btn-filter" data-type="DEPOSIT">입금</button>
+					    <button type="button" class="btn-filter" data-type="WITHDRAW">출금</button>
+					    <button type="button" class="btn-filter" data-type="TRANSFER">이체</button>
+					</div>
                 </div>
                 <div class="filter-row">
-                    <span class="filter-label">조회 기간</span>
-                    <span class="filter-value">최근 1개월</span>
-                </div>
-                <div class="filter-row">
-                    <span class="filter-label">정렬 기준</span>
-                    <span class="filter-value">최신순</span>
-                </div>
+				    <span class="filter-label">조회 기간</span>
+				    <select id="periodFilter" class="filter-select">
+				        <option value="30">최근 1개월</option>
+				        <option value="90">최근 3개월</option>
+				        <option value="180">최근 6개월</option>
+				        <option value="ALL">전체</option>
+				    </select>
+				</div>
+				
+				<div class="filter-row">
+				    <span class="filter-label">정렬 기준</span>
+				    <select id="sortFilter" class="filter-select">
+				        <option value="latest">최신순</option>
+				        <option value="oldest">오래된순</option>
+				    </select>
+				</div>
             </section>
         </div>
 

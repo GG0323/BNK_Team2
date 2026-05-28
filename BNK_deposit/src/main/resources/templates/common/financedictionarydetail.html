@@ -37,12 +37,18 @@
     </table>
 
     <div class="btn-wrap">
-        <a href="/financedictionary" class="list-btn">목록으로</a>
-        <a id="editBtn" href="#" class="list-btn" style="border-color: #d71920; color: #d71920;">수정</a>
-        <button type="button" id="deleteBtn" class="list-btn" style="background-color: #d71920; color: white; border: none;">
-            삭제
-        </button>
+        <button type="button" class="list-btn" onclick="window.close()">닫기</button>
     </div>
+    
+    <script>
+		function closeDictionaryPopup() {
+		    if (window.opener) {
+		        window.close();
+		    } else {
+		        location.href = "/finance/financedictionary";
+		    }
+		}
+	</script>
 
     <script src="/js/members/common.js"></script>
     <script src="/js/common/financedictionarydetail.js"></script>

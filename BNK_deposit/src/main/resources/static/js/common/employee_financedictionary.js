@@ -43,22 +43,33 @@ function renderDictionaryTable(list) {
     return;
   }
 
-  tbody.innerHTML = list.map(item => `
-    <tr>
-      <td>${item.dictionary_no ?? "-"}</td>
-      <td class="term-name">${escapeHtml(item.dictionary_nm)}</td>
-      <td>${escapeHtml(item.dictionary_category ?? "-")}</td>
-      <td>${item.view_count ?? 0}</td>
-      <td>${formatDate(item.created_at)}</td>
-      <td>${formatDate(item.updated_at)}</td>
-      <td>
-        <button type="button" class="edit-btn"
-          onclick="location.href='/financedictionary/edit/${item.dictionary_no}'">
-          수정
-        </button>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = list.map(item => {
+    const editUrl = `/finance/financedictionary/edit/${item.dictionary_no}`;
+
+    return `
+      <tr>
+        <td>${item.dictionary_no ?? "-"}</td>
+
+		<td class="term-name">
+		  <a class="term-link" href="${editUrl}">
+		    ${escapeHtml(item.dictionary_nm)}
+		  </a>
+		</td>
+
+        <td>${escapeHtml(item.dictionary_category ?? "-")}</td>
+        <td>${item.view_count ?? 0}</td>
+        <td>${formatDate(item.created_at)}</td>
+        <td>${formatDate(item.updated_at)}</td>
+
+        <td>
+          <button type="button" class="edit-btn"
+            onclick="location.href='${editUrl}'">
+            수정
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 async function loadDictionaryList() {
@@ -73,8 +84,8 @@ async function loadDictionaryList() {
   }
 
   const url = params.toString()
-    ? `/api/financedictionary?${params.toString()}`
-    : "/api/financedictionary";
+    ? `/api/finance/financedictionary?${params.toString()}`
+    : "/api/finance/financedictionary";
 
   try {
     const res = await fetch(url, {
