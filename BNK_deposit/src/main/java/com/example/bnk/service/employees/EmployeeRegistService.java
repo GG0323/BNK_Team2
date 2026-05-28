@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bnk.dao.employee.IEmployeeDao;
@@ -27,6 +28,7 @@ public class EmployeeRegistService {
 	@Value("${file.upload.url}")
 	private String uploadUrl;  // 어플리케이션 프로포티스의 경로 file.upload.url=/upload/
 	
+	@Transactional
 	public int regist(EmployeeRegistDto empRegistDto, MultipartFile img) {
 		
 		String password_hash = encode(empRegistDto.getUnHashPassword());
@@ -79,11 +81,4 @@ public class EmployeeRegistService {
 		
 		return passwordEncode.encode(pass);
 	}
-	
-	
-	
-	
-	
-	
-	
 }

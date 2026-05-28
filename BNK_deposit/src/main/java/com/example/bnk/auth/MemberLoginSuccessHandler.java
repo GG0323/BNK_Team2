@@ -78,9 +78,10 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		Cookie cookie = new Cookie("bnk_token", token);
 		cookie.setPath("/");
 		response.addCookie(cookie);
-
-		// 로그인 성공 후 이동
-		response.sendRedirect("/member/mypage");
+		
+		// 로그인 성공 데이터 보내기
+		response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().write("{ \"result\" : \"success\"}");
 		
 	}
 

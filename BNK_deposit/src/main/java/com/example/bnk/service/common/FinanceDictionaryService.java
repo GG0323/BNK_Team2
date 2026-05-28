@@ -3,6 +3,7 @@ package com.example.bnk.service.common;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.common.IFinanceDictionaryDao;
 import com.example.bnk.dto.common.FinanceDictionaryDto;
@@ -10,6 +11,7 @@ import com.example.bnk.dto.common.FinanceDictionaryDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class FinanceDictionaryService {
 
