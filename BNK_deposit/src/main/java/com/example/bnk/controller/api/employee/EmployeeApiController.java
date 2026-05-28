@@ -2,14 +2,17 @@ package com.example.bnk.controller.api.employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.employee.EmployeeLogInsertDto;
 import com.example.bnk.dto.employee.EmployeeRegistDto;
+import com.example.bnk.service.employees.EmployeeListService;
 import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.employees.EmployeeRegistService;
 import com.example.bnk.service.employees.EmployeesLoginService;
@@ -24,17 +27,18 @@ public class EmployeeApiController {
 	EmployeeRegistService registService;
 	@Autowired
 	EmployeeLogService logService;
-	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
+	//logService.build(  "INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
 	
 	
 	// 회원가입 처리 
 	@PostMapping("/HRM/regist")
 	public ResponseEntity<String> regist(
 			EmployeeRegistDto empRegistDto,
-			@RequestParam("img") MultipartFile img		// 이미지는 dto에서 빼기
+			@RequestParam("img") MultipartFile img,		// 이미지는 dto에서 빼기
+			@AuthenticationPrincipal String username
 			) {
 		// 컨트롤러 안에 붙어서 log를 하드코딩한다. >> 필터단에 이 값을 넘긴다.
-		logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
+		logService.build(username,"INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
 		
 		System.out.println(empRegistDto.toString());
 		if(!img.isEmpty() ) {

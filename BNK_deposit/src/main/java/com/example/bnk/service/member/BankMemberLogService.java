@@ -22,14 +22,14 @@ public class BankMemberLogService {
 	
 	//컨트롤러에서 어트리뷰트에 Dto저장하기
 	public BankMemberLogDto build(
-			long member_no, String requested_page, String request_method, String request_url
+			long member_no, String requested_page
 			) {
 		BankMemberLogDto dto = new BankMemberLogDto();
 		
 		dto.setMember_no(member_no);
 		dto.setRequested_page(requested_page);
-		dto.setRequest_method(request_method);
-		dto.setRequest_url(request_url);
+		dto.setRequest_method(request.getMethod());
+		dto.setRequest_url(request.getRequestURI());
 		
 		request.setAttribute("memberLogDto", dto);
 		return dto;

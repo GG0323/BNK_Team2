@@ -51,18 +51,17 @@ public class BankMemberPageController {
 	private final AccountTransactionService accountTransactionService;
 	
 	private final BankMemberLogService logService;
-	
+	// logService.build(logService.findByUserID(username), "member/mypage"); @AuthenticationPrincipal String username
 
 	// 마이페이지
 	@GetMapping("/mypage")
     public String rootMembersMypage(
     		Model model, 
-    		SecurityContextHolder secu
-    		//@AuthenticationPrincipal String username
+    		SecurityContextHolder secu,
+    		@AuthenticationPrincipal String username
     		) {
 		// 로그 
-		//logService.build(logService.findByUserID(username), 
-		//		"member/mypage", "GET", "/member/mypage");
+		logService.build(logService.findByUserID(username), "member/mypage");
 		
         // 회원 정보 조회
         String currentLoginId = secu.getContext().getAuthentication().getName(); 

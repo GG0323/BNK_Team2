@@ -13,11 +13,11 @@
 	        request_ip
     		)
 	    VALUES (
-	        #{dto.memberNo},
-	        #{dto.requestedPage},
-	        #{dto.requestMethod},
-	        #{dto.requestUrl},
-	        #{dto.requestIp}
+	        #{dto.member_no},
+	        #{dto.requested_page},
+	        #{dto.request_method},
+	        #{dto.request_url},
+	        #{dto.request_ip}
 	    )
 	</insert>
 	
