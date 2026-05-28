@@ -77,5 +77,9 @@
 			updated_at = SYSDATE
 		WHERE description_no = #{description_no}
 		AND product_no = #{product_no}
-	</update>	
+	</update>
+	
+	<select id="selectDescriptionPrd" resultType="com.example.bnk.dto.product.ProductDescriptionDto">
+		
+	</select>
 </mapper>

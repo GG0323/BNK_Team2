@@ -33,7 +33,7 @@ public class EmployeePageController {
 	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.", "POST", "/api/employee/HRM/regist");
 	@Autowired
 	ProductForEmployee prdForEmpService;
-
+	
 	
 	
 	// /employee/toMain
@@ -102,9 +102,51 @@ public class EmployeePageController {
 		return "Employees/manager/SUG/approvedSuggestionDetail";
 	}
 	
-	
-	
-
+	// 매니저 상세 페이지 -> 상품 디테일의 디테일
+	// 브라우저 호출 주소: /manager/SUG/approvedDetail/productDetail?type=rate&suggestion_no=5
+    @GetMapping("/manager/SUG/approvedDetail/productDetail")
+    public String goProductComponentDetail(
+            @RequestParam("type") String type, 
+            @RequestParam("suggestion_no") long suggestion_no,
+            Model model) {
+        
+        System.out.println("넘어온 컴포넌트 타입: " + type);
+        System.out.println("넘어온 제안서 번호: " + suggestion_no);
+        
+        model.addAttribute("suggestion_no", suggestion_no);
+        
+        ApprovedSuggestionDetailDto aprDto = prdForEmpService.selectApprovedSug(suggestion_no);
+        
+        
+        if ("rate".equals(type)) {
+            // 금리 등록/상세 페이지로 이동
+        	
+        	
+            return "Employees/manager/SUG/composition/productRateDetail"; 
+        } else if ("terms".equals(type)) {
+            // 약관 등록/상세 페이지로 이동
+        	
+        	
+        	
+            return "Employees/manager/SUG/composition/productTermsDetail";
+        } else if ("description".equals(type)) {
+            // 설명 등록/상세 페이지로 이동
+        	ProductDescriptionDto desDto = prdForEmpService.selectDescriptionPrd(aprDto.getDescription_no());
+        	model.addAttribute("desDto", desDto);
+        	
+            return "Employees/manager/SUG/composition/productDescriptionDetail";
+        } else if ("condition".equals(type)) {
+            // 조건 등록/상세 페이지로 이동
+        	ProductConditionDto conDto = prdForEmpService.selectConditionPrd(aprDto.getCondition_no());
+        	model.addAttribute("conDto", conDto);
+        	
+            return "Employees/manager/SUG/composition/productConditionDetail";
+        }
+        
+        // 알 수 없는 타입인 경우 에러 페이지나 목록으로 리다이렉트
+        System.out.println("뭔가 잘못된 클릭입니다.");
+        return "redirect:/employee/manager/SUG/approvedList";
+    }
 	
 	// 스테프 페이지,  /employee/staff/staffPage
 	@GetMapping("/staff/staffPage")
@@ -238,6 +280,16 @@ public class EmployeePageController {
 		System.out.println("1. description_no 등록하기 실패");
 		
 		return "redirect:/employee/staff/product/description";
+	}
+	
+	// 승인된 상품 리스트 출력 페이지
+	@GetMapping("/staff/product/approved/list")
+	public String showAllApprovedList(Model model) {
+		
+		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
+		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		System.out.println(approvedSuggestion);
+		return "Employees/staff/ApprovedProductList";
 	}
 	
 	

@@ -473,23 +473,23 @@ body {
         <div class="card">
           <div class="card-title">상품 구성 현황</div>
           <div class="component-list">
-            <div class="component-item">
-              <span class="comp-name">금리</span>
-              <span id="rate_status" class="status-no">미등록</span>
-            </div>
-            <div class="component-item">
-              <span class="comp-name">약관</span>
-              <span id="terms_status" class="status-no">미등록</span>
-            </div>
-            <div class="component-item">
-              <span class="comp-name">설명</span>
-              <span id="description_status" class="status-no">미등록</span>
-            </div>
-            <div class="component-item">
-              <span class="comp-name">조건</span>
-              <span id="condition_status" class="status-no">미등록</span>
-            </div>
-          </div>
+			  <div class="component-item" onclick="goComponentPage('rate')" style="cursor: pointer;">
+			    <span class="comp-name">금리</span>
+			    <span id="rate_status" class="status-no">미등록</span>
+			  </div>
+			  <div class="component-item" onclick="goComponentPage('terms')" style="cursor: pointer;">
+			    <span class="comp-name">약관</span>
+			    <span id="terms_status" class="status-no">미등록</span>
+			  </div>
+			  <div class="component-item" onclick="goComponentPage('description')" style="cursor: pointer;">
+			    <span class="comp-name">설명</span>
+			    <span id="description_status" class="status-no">미등록</span>
+			  </div>
+			  <div class="component-item" onclick="goComponentPage('condition')" style="cursor: pointer;">
+			    <span class="comp-name">조건</span>
+			    <span id="condition_status" class="status-no">미등록</span>
+			  </div>
+			</div>
         </div>
 
         <!-- 상품 등록 버튼 -->
@@ -617,6 +617,78 @@ body {
         console.error(e);
         showToast('상품 등록 중 오류가 발생했습니다.', 'error');
       });
+    }
+    
+    
+    
+    /* 상품 구성 현황 div 클릭 시 동작.
+    -------------------------------------------------------------------------------------------------------------------------------*/
+    /* 클릭 시 suggestion_no를 가지고 페이지를 이동하는 함수 */
+    function goComponentPage(type) {
+      // 현재 페이지 URL에서 가져온 suggestion_no 값이 없으면 동작하지 않도록 방어
+      if (!suggestion_no) {
+        showToast("제안서 번호가 올바르지 않습니다.", "error");
+        return;
+      }
+
+      // 요청하신 기본 베이스 주소
+      const basePath = "employee/manager/SUG/approvedDetail/productDetail";
+      
+      // 어떤 항목을 클릭했느냐에 따라 주소를 최종 조립합니다.
+      // (만약 수신하는 컨트롤러 매핑 주소 구조에 따라 유연하게 변경하셔도 됩니다!)
+      let targetUrl = "";
+
+      switch (type) {
+        case 'rate':
+          targetUrl = `${basePath}?type=rate&suggestion_no=${suggestion_no}`;
+          break;
+        case 'terms':
+          targetUrl = `${basePath}?type=terms&suggestion_no=${suggestion_no}`;
+          break;
+        case 'description':
+          targetUrl = `${basePath}?type=description&suggestion_no=${suggestion_no}`;
+          break;
+        case 'condition':
+          targetUrl = `${basePath}?type=condition&suggestion_no=${suggestion_no}`;
+          break;
+      }
+
+      // 조립된 주소로 단순 href 이동 수행!
+      if (targetUrl) {
+        location.href = targetUrl;
+      }
+    }
+    
+    /* ── [최종 완성형] 통합 컨트롤러 주소로 파라미터를 넘기는 함수 ── */
+    function goComponentPage(type) {
+      if (!suggestion_no) {
+        showToast("제안서 번호가 올바르지 않습니다.", "error");
+        return;
+      }
+
+      // ⭕ 컨트롤러에 작성된 @GetMapping 주소인 productDetail과 매핑되도록 주소를 정확히 맞춥니다!
+      const basePath = "/employee/manager/SUG/approvedDetail/productDetail";
+      let targetUrl = "";
+
+      switch (type) {
+        case 'rate':
+          targetUrl = `${basePath}?type=rate&suggestion_no=${suggestion_no}`;
+          break;
+        case 'terms':
+          targetUrl = `${basePath}?type=terms&suggestion_no=${suggestion_no}`;
+          break;
+        case 'description':
+          targetUrl = `${basePath}?type=description&suggestion_no=${suggestion_no}`;
+          break;
+        case 'condition':
+          targetUrl = `${basePath}?type=condition&suggestion_no=${suggestion_no}`;
+          break;
+      }
+
+      // 조립된 올바른 주소로 페이지 이동!
+      if (targetUrl) {
+        location.href = targetUrl;
+      }
     }
   </script>
 

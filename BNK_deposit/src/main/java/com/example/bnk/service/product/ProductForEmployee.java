@@ -52,7 +52,6 @@ public class ProductForEmployee {
     	
     	return iAprSuggestionDao.approvedSuggestionList();
     }
-    
 	// 상품 목록 조회
 	public List<ProductDto> showProduct(){
 		return productDao.showProduct();
@@ -68,6 +67,26 @@ public class ProductForEmployee {
 		return iProductDetailResponseDao.selectProductDetail(Product_no);
 	}
 	
+	// 특정 approved suggestion 불러오기
+	public ApprovedSuggestionDetailDto selectApprovedSug(@Param("suggestion_no") long suggestion_no) {
+		return iAprSuggestionDao.selectApprovedSug(suggestion_no);
+	}
+	
+	
+	/* 특정 조회
+	------------------------------------------------------------------------------*/
+	// con
+	public ProductConditionDto selectConditionPrd(@Param("condition_no") long condition_no) {
+		return iProductCondDao.selectConditionPrd(condition_no);
+	}
+	
+	// des
+	public ProductDescriptionDto selectDescriptionPrd(@Param("description_no") long description_no) {
+		return iProductDescDao.selectDescriptionPrd(description_no);
+	}
+	
+	/* 등록 서비스
+	---------------------------------------------------------------------------------------------------*/
 	// 상품 조건 등록 서비스
 	@Transactional // 두 개 이상의 CUD 작업이 일어나므로 트랜잭션 보장 필수!
 	public int insertAllCondition(ProductConditionDto prdCndDto,
@@ -174,11 +193,7 @@ public class ProductForEmployee {
 		return 0;
 	}
 	
-
-	
-	
-
-
+	// 상품 설명 등록 서비스
     @Transactional
     public int saveDescription(ProductDescriptionDto prdDescDto,
     		 @RequestParam("suggestion_no") long suggestion_no	) throws IOException {
@@ -213,6 +228,9 @@ public class ProductForEmployee {
     }
     
     
+    
+    /* 업데이트
+    ----------------------------------------------------------------------------------------------*/
     // 상품 기본정보 업데이트
     public int updateProductStatus(ProductDto productDto) {
     	if(productDto != null) {

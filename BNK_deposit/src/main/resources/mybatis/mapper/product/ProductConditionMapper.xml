@@ -72,4 +72,8 @@
 		WHERE condition_no = #{condition_no}
 		AND product_no = #{product_no}
 	</update>
+	
+	<select id="selectConditionPrd" resultType="com.example.bnk.dto.product.ProductConditionDto">
+		SELECT * FROM TB_PRODUCT_CONDITION WHERE condition_no = #{condition_no}
+	</select>
 </mapper>
