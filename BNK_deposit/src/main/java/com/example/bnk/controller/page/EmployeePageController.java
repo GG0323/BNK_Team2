@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.bnk.dto.product.ApprovedSuggestionDto;
 import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
+import com.example.bnk.dto.product.ProductTermsDto;
 import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
-import com.example.bnk.service.employees.EmployeeListService;
 import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.product.ProductForEmployee;
 
@@ -31,12 +30,9 @@ public class EmployeePageController {
 	
 	@Autowired
 	EmployeeLogService logService;
-	//logService.build("INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
+	
 	@Autowired
 	ProductForEmployee prdForEmpService;
-
-	@Autowired
-	private EmployeeListService empService;
 	
 	
 	// /employee/toMain
@@ -237,41 +233,50 @@ public class EmployeePageController {
 
 	    return "Employees/staff/productDetails";
 	}
+	/*
+	-----------------------------------------------------------------------------------*/
 	
-	/* 상품 디테일의 자세히보기 페이지
-	--------------------------------------------------------------------------------------*/
-	// 1. 관제탑: 제안서 상세보기 및 사양 관리 현황판
-    @GetMapping("/product/approved/details/{suggestion_no}")
-    public String approvedDetails(@PathVariable("suggestion_no") Long suggestionNo, Model model) {
-        // TODO: IApporvedSuggestionDao.selectApprovedSug(suggestionNo) 호출하여 DTO 획득
-        // AprSugDto aprSugDto = approvedSuggestionService.getDetail(suggestionNo);
-        // model.addAttribute("aprSugDto", aprSugDto);
-        return "employee/staff_approved_detail"; // 상세보기 HTML 경로
-    }
-
-    // 2. 가입 조건 등록 폼 열기 (쿼리스트링 전달 방식: ?suggestion_no=12)
-    @GetMapping("/product/condition")
-    public String registerConditionForm(@RequestParam("suggestion_no") Long suggestionNo, Model model) {
-        model.addAttribute("suggestion_no", suggestionNo);
-        model.addAttribute("conDto", null); // 신규 등록 모드 식별용 null 전달
-        return "employee/staff_condition_form"; // 가입조건 HTML 경로
-    }
-
-    // 3. 가입 조건 상세 조회 폼 열기 (경로 변수 방식: /detail/45?suggestion_no=12)
-    @GetMapping("/product/condition/detail/{condition_no}")
-    public String viewConditionDetail(
-            @PathVariable("condition_no") Long conditionNo,
-            @RequestParam("suggestion_no") Long suggestionNo, 
-            Model model) {
-        
-        // TODO: conditionNo 기반으로 DB에서 가입 조건 단건 데이터 조회
-        // ConditionDto conDto = conditionService.getCondition(conditionNo);
-        
-        model.addAttribute("suggestion_no", suggestionNo);
-        model.addAttribute("conDto", conditionNo); // 조회 모드 바인딩 (input 필드 disabled 처리됨)
-        return "employee/staff_condition_form";
-    }
+	@GetMapping("/staff/product/approved/{type}/detail")
+	public String approvedProductDetail(
+	        @PathVariable("type") String type,
+	        @RequestParam("suggestion_no") String suggestion_no,
+	        @RequestParam("no") String no,
+	        Model model) {
+	    
+	    System.out.println("========================================");
+	    System.out.println("[컨트롤러 수신 성공]");
+	    System.out.println("▶ type(컴포넌트 종류) : " + type);
+	    System.out.println("▶ suggestion_no       : " + suggestion_no);
+	    System.out.println("▶ no(사양 고유번호)    : " + no);
+	    System.out.println("========================================");
+	    
+	    switch (type){
+			case "rate":
+				ProductRateDto rateDto = prdForEmpService.selectRatePrd(Integer.parseInt(no));
+				model.addAttribute("rateDto", rateDto);
+				return "/Employees/staff/composition/productRateDetail";
+//			case "term":
+//				ProductTermsDto termsDto = prdForEmpService.select
+			case "description":
+				ProductDescriptionDto desDto = prdForEmpService.selectDescriptionPrd(Integer.parseInt(no));
+				model.addAttribute("desDto", desDto);
+				return "/Employees/staff/composition/productDescriptionDetail";
+			case "condition":
+				ProductConditionDto conDto = prdForEmpService.selectConditionPrd(Integer.parseInt(no));
+				model.addAttribute("conDto", conDto);
+				return "/Employees/staff/composition/productConditionDetail";
+			default:
+				break;
+			
+		}
+	    	
+	    
+	    return "redirect:/employee/staff/approved/list/detail?"+suggestion_no;
+	}
 	
+    
+	/* 가입조건
+    -----------------------------------------------------------------------------------*/
 	// 상품 가입 조건 등록 페이지
 	// /employee/staff/product/condition
 	@GetMapping("/staff/product/condition")
