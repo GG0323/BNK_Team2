@@ -15,7 +15,9 @@
 	</select>
 	
 	
-	
+	<select id="selectTermsPrd" resultType="com.example.bnk.dto.product.ProductTermsDto">
+		SELECT * FROM TB_PRODUCT_TERMS WHERE terms_no = #{terms_no}
+	</select>
 	
 	
 	

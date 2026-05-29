@@ -1,0 +1,182 @@
+@charset "UTF-8";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+/* ===== 메인 레이아웃 본문 ===== */
+.main {
+	flex: 1;
+	padding: 2rem 2rem 5rem 2rem;
+	min-width: 0;
+}
+
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1.5rem;
+}
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
+	letter-spacing: -0.5px;
+	margin-bottom: 1.5rem;
+}
+
+/* ===== 백그라운드 화이트 대형 카드 ===== */
+.card {
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2.5rem;
+	max-width: 950px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.card-title-group {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 2rem;
+	padding-bottom: 14px;
+	border-bottom: 1px solid #F0F0F0;
+}
+
+.card-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #E8282F;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.mode-badge {
+	font-size: 11px;
+	font-weight: 600;
+	padding: 4px 10px;
+	border-radius: 20px;
+}
+.badge-new { background: #E1F5FE; color: #0288D1; }
+
+/* ===== 세션 구분 타이틀 바 ===== */
+.section-divider {
+	font-size: 13px;
+	font-weight: 700;
+	color: #111;
+	background: #F8F9FA;
+	padding: 10px 14px;
+	border-left: 3px solid #E8282F;
+	border-radius: 2px;
+	margin-bottom: 1.5rem;
+}
+
+/* ===== 2열 정형 폼 그리드 ===== */
+.form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.25rem 1.5rem;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.form-group.full-width {
+	grid-column: span 2;
+}
+
+label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #555;
+}
+label .required {
+	color: #E8282F;
+	margin-right: 2px;
+}
+
+/* 입력 필드 (단문/선택박스) 통합 디자인 */
+input[type="text"],
+select,
+textarea {
+	width: 100%;
+	padding: 10px 12px;
+	font-size: 13px;
+	border: 1px solid #D2D2D2;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	transition: border-color 0.15s, box-shadow 0.15s;
+}
+input[type="text"]::placeholder, 
+textarea::placeholder {
+	color: #b0b0b0;
+	font-size: 12.5px;
+}
+input:focus, select:focus, textarea:focus {
+	border-color: #E8282F;
+	box-shadow: 0 0 0 3px rgba(232, 40, 47, 0.05);
+	outline: none;
+}
+
+/* CLOB 텍스트 영역 커스텀 조절 */
+textarea {
+	resize: vertical;
+	line-height: 1.5;
+	font-family: inherit;
+}
+
+/* 파일 업로드 래퍼 디자인 */
+.file-upload-wrapper {
+	border: 1px dashed #C8C8C8;
+	padding: 12px;
+	border-radius: 6px;
+	background: #FAFAFA;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.file-upload-wrapper input[type="file"] {
+	font-size: 12px;
+	color: #555;
+}
+.file-hint {
+	font-size: 11px;
+	color: #888;
+}
+
+/* ===== 하단 제어 버턴 영역 ===== */
+.btn-group {
+	margin-top: 3rem;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	border-top: 1px solid #F0F0F0;
+	padding-top: 1.5rem;
+}
+.btn {
+	padding: 11px 26px;
+	font-size: 13px;
+	font-weight: 600;
+	border-radius: 6px;
+	cursor: pointer;
+	border: none;
+	transition: all 0.15s;
+	text-align: center;
+}
+.btn-secondary { background: #fff; border: 1px solid #D0D0D0; color: #555; }
+.btn-secondary:hover { border-color: #111; color: #111; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover { background: #E8282F; }
