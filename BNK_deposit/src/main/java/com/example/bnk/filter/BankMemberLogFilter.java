@@ -38,7 +38,7 @@ public class BankMemberLogFilter extends OncePerRequestFilter {
  			
  			//요청 IP 저장
  			logDto.setRequest_ip(servletRequest.getRemoteAddr());
- 			
+ 			//로그 DB에 저장
  			logService.log(logDto);
  			
  		}catch (Exception e) {
