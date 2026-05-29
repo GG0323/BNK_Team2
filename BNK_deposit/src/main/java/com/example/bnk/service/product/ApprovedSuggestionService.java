@@ -17,6 +17,7 @@ public class ApprovedSuggestionService {
 	private IApporvedSuggestionDao approvedDao;
 	
 	
+	
 	public List<ApprovedSuggestionDetailDto> approvedList(long employee_no) {
 		
 		List<ApprovedSuggestionDetailDto> list = approvedDao.approvedList(employee_no);
@@ -30,6 +31,12 @@ public class ApprovedSuggestionService {
 		ApprovedSuggestionDetailDto detail = approvedDao.approvedDetail(suggestion_no);
 		
 		return detail;
+	}
+
+
+	public List<ApprovedSuggestionDetailDto> chooseApprovedList() {
+		List<ApprovedSuggestionDetailDto> list = approvedDao.chooseApprovedList();
+		return list;
 	}
 
 }

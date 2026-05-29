@@ -50,14 +50,7 @@ public class EmployeeLogFilter extends OncePerRequestFilter{
 			// 응답 status 저장
 			insertDto.setResponse_status(servletResponse.getStatus()); 
 			// 요청 IP 저장
-			insertDto.setRequest_ip(servletRequest.getRemoteAddr()); // 또는 servletRequest.getHeader("X-Forwarded-For")
-			// 직원 pk 저장 -> @AuthenticationPrincipal String username
-			// empService.findByUsername(username);로 정보 받아오기 @Autowired
-			// private EmployeeListService empService
-			//EmployeeDto pk = empService.findByUsername(username);
-			//pk.getEmployee_no()
-			
-			//insertDto.setEmployee_no(4);
+			insertDto.setRequest_ip(servletRequest.getRemoteAddr());
 			
 			LogService.log(insertDto);
 			

@@ -24,5 +24,7 @@ public interface IApporvedSuggestionDao {
 	public int updateAprToDescription(@Param("suggestion_no") long suggestion_no,
 									  @Param("description_no")long description_no);
 	public int updateAprToRate(@Param("suggestion_no") long suggestion_no,
-							   @Param("rate_no") long rate_no);											
+							   @Param("rate_no") long rate_no);
+
+	public List<ApprovedSuggestionDetailDto> chooseApprovedList();											
 }
