@@ -211,7 +211,7 @@ function validateResidentNumber(id1, id2) {
         return false;
     }
 
-    // 7. 체크섬 검증
+/*    // 7. 체크섬 검증
     const weights = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
     let sum = 0;
 
@@ -224,7 +224,7 @@ function validateResidentNumber(id1, id2) {
     if (checkDigit !== Number(rrn[12])) {
         alert("유효하지 않은 주민등록번호입니다.");
         return false;
-    }
+    }*/
 
     return true;
 }
@@ -508,7 +508,7 @@ function signup() {
                 alert("회원가입이 완료되었습니다.");
                 location.href = "/loginPage";
             } else {
-                alert("잠시 후 다시 시도해주세요.");
+                alert("이미 가입하셨습니다.");
             }
         })
         .catch(e => {
