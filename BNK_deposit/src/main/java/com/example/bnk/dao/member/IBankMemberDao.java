@@ -19,6 +19,9 @@ public interface IBankMemberDao {
 	// 회원 등록
 	public int regist(@Param("dto") BankMemberDto dto);
 	
+	// 회원 중복 조회
+	public List<String> checkIdentifier();
+	
 	// 회원 정보 수정
 	public int editMember(@Param("dto") BankMemberDto dto);
 	
