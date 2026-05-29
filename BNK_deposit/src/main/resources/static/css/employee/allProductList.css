@@ -1,0 +1,199 @@
+@charset "UTF-8";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+/* ===== 메인 본문 ===== */
+.main {
+	flex: 1;
+	padding: 2rem 2rem 5rem 2rem;
+	min-width: 0;
+}
+
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1.5rem;
+}
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
+	letter-spacing: -0.5px;
+	margin-bottom: 1.5rem;
+}
+
+/* ===== 대시보드 메인 카드 ===== */
+.card {
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2rem;
+	max-width: 1100px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+	margin-bottom: 2.5rem;
+}
+
+.card-title-group {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #F0F0F0;
+}
+
+.card-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #E8282F;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.total-count {
+	font-size: 13px;
+	font-weight: 600;
+	color: #666;
+}
+.total-count span {
+	color: #E8282F;
+}
+
+/* ===== 세련된 대시보드 테이블 서식 ===== */
+.table-responsive {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.dashboard-table {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+	font-size: 13px;
+}
+
+.dashboard-table th {
+	background: #F8F9FA;
+	color: #555;
+	font-weight: 600;
+	padding: 12px 16px;
+	border-bottom: 2px solid #E8E8E8;
+}
+
+.dashboard-table td {
+	padding: 14px 16px;
+	border-bottom: 1px solid #F0F0F0;
+	color: #333;
+}
+
+/* 테이블 내부 상태 정렬 및 폰트 세부조정 */
+.clickable-row {
+	cursor: pointer;
+	transition: background-color 0.15s;
+}
+.clickable-row:hover {
+	background-color: #FFF5F5;
+}
+
+.text-center { text-align: center; }
+.text-code { font-family: 'Courier New', monospace; color: #666; font-weight: 600; text-align: center; }
+.text-name { color: #111; }
+.font-semibold { font-weight: 600; }
+
+/* 예금 / 적금 구분 뱃지 디자인 */
+.type-badge {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	padding: 3px 8px;
+	border-radius: 4px;
+}
+.badge-deposit { background: #E3F2FD; color: #0D47A1; }
+.badge-saving { background: #E8F5E9; color: #1B5E20; }
+
+/* 데이터 미존재 시 뷰 */
+.no-data {
+	padding: 50px 0 !important;
+}
+.no-data-box {
+	text-align: center;
+	color: #999;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+/* ===== 하단 퀵 링크 영역 레이아웃 ===== */
+.quick-section-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #444;
+	margin-bottom: 1rem;
+	padding-left: 4px;
+}
+
+.quick-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+	max-width: 1100px;
+}
+
+.quick-card {
+	background: #fff;
+	border: 1px solid #E8E8E8;
+	border-radius: 10px;
+	padding: 1.5rem;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+	display: flex;
+	flex-direction: column;
+}
+
+.quick-card:hover {
+	transform: translateY(-4px);
+	border-color: #E8282F;
+	box-shadow: 0 6px 16px rgba(232, 40, 47, 0.06);
+}
+
+.quick-card .icon {
+	font-size: 24px;
+	margin-bottom: 0.75rem;
+}
+
+.quick-card .title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #111;
+	margin-bottom: 0.5rem;
+}
+
+.quick-card .desc {
+	font-size: 12px;
+	color: #777;
+	line-height: 1.5;
+	margin-bottom: 1.25rem;
+	flex: 1; /* 카드 높이 맞춤용 */
+}
+
+.quick-card .arrow {
+	font-size: 12px;
+	font-weight: 600;
+	color: #666;
+	transition: color 0.15s;
+}
+
+.quick-card:hover .arrow {
+	color: #E8282F;
+}

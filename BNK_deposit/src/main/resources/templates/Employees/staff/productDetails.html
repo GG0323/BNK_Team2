@@ -146,6 +146,12 @@ tr:last-child td {
 	
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 	
+	<input type="hidden" id="suggestion_no" th:value="${aprSugDto.suggestion_no}"/>
+	<input type="hidden" id="rate_no" th:value="${aprSugDto.rate_no}"/>
+	<input type="hidden" id="condition_no" th:value="${aprSugDto.condition_no}"/>
+	<input type="hidden" id="description_no" th:value="${aprSugDto.description_no}"/>
+	<input type="hidden" id="terms_no" th:value="${aprSugDto.terms_no}"/>
+	
 	<div class="main">
 		<div class="topbar">
 			<button class="logout-btn">로그아웃</button>
@@ -317,39 +323,24 @@ tr:last-child td {
 		
 	</div>
 
-	<script th:inline="javascript">
-	/*<![CDATA[*/
-		const suggestionNo = /*[[${aprSugDto != null ? aprSugDto.suggestion_no : 0}]]*/ 0;
+	<script>
+		const suggestion_no = document.getElementById("suggestion_no").value;
+		const rate_no = document.getElementById("rate_no").value;
+		const terms_no = document.getElementById("terms_no").value;
+		const condition_no = document.getElementById("condition_no").value;
+		const description_no = document.getElementById("description_no").value;
 		
-		function rateWrite(){
-			location.href = '/employee/staff/product/rate?suggestion_no=' + suggestionNo;
-		}
-		function termsWrite(){
-			location.href = '/employee/staff/productTerm?suggestion_no=' + suggestionNo;
-		}
-		function descWrite(){
-			location.href = '/employee/staff/product/description?suggestion_no=' + suggestionNo;
-		}
-		function condWrite(){
-			location.href = '/employee/staff/product/condition?suggestion_no=' + suggestionNo;
-		}
+		// PK 데이터가 안들어 있을 때.
+		function rateWrite(){location.href = '/employee/staff/product/rate?suggestion_no=' + suggestion_no;}
+		function termsWrite(){location.href = '/employee/staff/productTerm?suggestion_no=' + suggestion_no;}
+		function descWrite(){location.href = '/employee/staff/product/description?suggestion_no=' + suggestion_no;}
+		function condWrite(){location.href = '/employee/staff/product/condition?suggestion_no=' + suggestion_no;}
 		
-		function ratePage(no){
-			location.href = '/employee/staff/product/rate/detail/' + no + '?suggestion_no=' + suggestionNo;
-		}
-		
-		function termsPage(no){
-			location.href = '/employee/staff/productTerm/detail/' + no + '?suggestion_no=' + suggestionNo;
-		}
-		
-		function descPage(no){
-			location.href = '/employee/staff/product/description/detail/' + no + '?suggestion_no=' + suggestionNo;
-		}
-		
-		function condPage(no){
-			location.href = '/employee/staff/product/condition/detail/' + no + '?suggestion_no=' + suggestionNo;
-		}
-	/*]]>*/
+		// PK데이터가 들어와 있을 때 -> Detail 페이지로 이동
+		function ratePage(no){location.href = '/employee/staff/product/approved/rate/detail?suggestion_no=' + suggestion_no + '&no=' + rate_no;}
+		function termsPage(no){location.href = '/employee/staff/product/approved/term/detail?suggestion_no=' + suggestion_no + '&no=' + terms_no;}
+		function descPage(no){location.href = '/employee/staff/product/approved/description/detail?suggestion_no=' + suggestion_no + '&no=' + description_no;}
+		function condPage(no){location.href = '/employee/staff/product/approved/condition/detail?suggestion_no=' + suggestion_no + '&no=' + condition_no;}
 	</script>
 </body>
 </html>

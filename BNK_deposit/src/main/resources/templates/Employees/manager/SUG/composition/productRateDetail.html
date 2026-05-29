@@ -4,345 +4,429 @@
 <meta charset="UTF-8">
 <title>상품 구성 - 금리 사양 세부설정</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
 
 body {
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  background: #F5F5F5;
-  display: flex;
-  min-height: 100vh;
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
 }
 
 /* ===== 사이드바 ===== */
 .sidebar {
-  width: 190px;
-  background: #111111;
-  flex-shrink: 0;
-  min-height: 100vh;
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 10;
+	width: 190px;
+	background: #111111;
+	flex-shrink: 0;
+	min-height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 10;
 }
 
 .sidebar .logo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  padding: 1.5rem 1.25rem;
-  letter-spacing: -0.3px;
-  border-bottom: 1px solid #2a2a2a;
+	font-size: 14px;
+	font-weight: 700;
+	color: #fff;
+	padding: 1.5rem 1.25rem;
+	letter-spacing: -0.3px;
+	border-bottom: 1px solid #2a2a2a;
 }
-.sidebar .logo span { color: #E8282F; }
+
+.sidebar .logo span {
+	color: #E8282F;
+}
 
 .nav-item {
-  display: flex;
-  align-items: center;
-  padding: 11px 1.25rem;
-  font-size: 13px;
-  color: #888;
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: all 0.15s;
+	display: flex;
+	align-items: center;
+	padding: 11px 1.25rem;
+	font-size: 13px;
+	color: #888;
+	text-decoration: none;
+	border-left: 3px solid transparent;
+	transition: all 0.15s;
 }
-.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item:hover {
+	color: #fff;
+	background: #1c1c1c;
+}
+
 .nav-item.active {
-  color: #fff;
-  background: #1c1c1c;
-  border-left-color: #E8282F;
+	color: #fff;
+	background: #1c1c1c;
+	border-left-color: #E8282F;
 }
 
 /* ===== 메인 본문 ===== */
 .main {
-  margin-left: 190px;
-  flex: 1;
-  padding: 2rem 2rem 5rem 2rem; /* 하단 여백 확보 */
-  min-width: 0;
+	margin-left: 190px;
+	flex: 1;
+	padding: 2rem 2rem 5rem 2rem; /* 하단 여백 확보 */
+	min-width: 0;
 }
 
 .breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 1.5rem;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1.5rem;
 }
-.breadcrumb a { color: #aaa; text-decoration: none; }
-.breadcrumb a:hover { color: #111; }
-.breadcrumb .current { color: #111; font-weight: 600; }
+
+.breadcrumb a {
+	color: #aaa;
+	text-decoration: none;
+}
+
+.breadcrumb a:hover {
+	color: #111;
+}
+
+.breadcrumb .current {
+	color: #111;
+	font-weight: 600;
+}
 
 .page-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-  letter-spacing: -0.5px;
-  margin-bottom: 1.5rem;
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
+	letter-spacing: -0.5px;
+	margin-bottom: 1.5rem;
 }
 
 /* ===== 대시보드 카드 서식 ===== */
 .card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #E8E8E8;
-  padding: 2rem;
-  max-width: 900px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2rem;
+	max-width: 900px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
 .card-title-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #F0F0F0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #F0F0F0;
 }
 
 .card-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #E8282F;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 700;
+	color: #E8282F;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
 }
 
 .mode-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
+	font-size: 11px;
+	font-weight: 600;
+	padding: 4px 10px;
+	border-radius: 20px;
 }
-.badge-new { background: #FFF8E1; color: #B8860B; }
-.badge-view { background: #F0FFF4; color: #22863a; }
+
+.badge-new {
+	background: #FFF8E1;
+	color: #B8860B;
+}
+
+.badge-view {
+	background: #F0FFF4;
+	color: #22863a;
+}
 
 /* ===== 폼 그리드 레이아웃 ===== */
 .form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 }
+
 .form-group.full-width {
-  grid-column: span 2;
+	grid-column: span 2;
 }
 
 label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
+	font-size: 12px;
+	font-weight: 600;
+	color: #666;
 }
 
 /* 입력 필드 공통 서식 */
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 13px;
-  border: 1px solid #D0D0D0;
-  border-radius: 6px;
-  background: #fff;
-  color: #222;
-  transition: border-color 0.15s;
+input[type="text"], input[type="number"], select, textarea {
+	width: 100%;
+	padding: 10px 12px;
+	font-size: 13px;
+	border: 1px solid #D0D0D0;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	transition: border-color 0.15s;
 }
+
 input:focus, select:focus, textarea:focus {
-  border-color: #E8282F;
-  outline: none;
+	border-color: #E8282F;
+	outline: none;
 }
+
 input:disabled, select:disabled, textarea:disabled {
-  background: #F9F9F9;
-  color: #777;
-  cursor: not-allowed;
-  border-color: #E5E5E5;
+	background: #F9F9F9;
+	color: #777;
+	cursor: not-allowed;
+	border-color: #E5E5E5;
 }
 
 /* 라디오 그룹 서식 */
 .radio-group {
-  display: flex;
-  gap: 1.5rem;
-  padding: 10px 0;
+	display: flex;
+	gap: 1.5rem;
+	padding: 10px 0;
 }
+
 .radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #333;
-  cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	color: #333;
+	cursor: pointer;
 }
+
 .radio-label input {
-  accent-color: #E8282F;
+	accent-color: #E8282F;
 }
 
 /* 유효성 에러 서식 */
 .field-error {
-  font-size: 11px;
-  color: #E8282F;
-  margin-top: 2px;
+	font-size: 11px;
+	color: #E8282F;
+	margin-top: 2px;
 }
 
 /* ===== 하단 버튼단 ===== */
 .btn-group {
-  margin-top: 2rem;
-  display: flex;
-  gap: 10px;
-  max-width: 900px;
-  padding-bottom: 2rem;
+	margin-top: 2rem;
+	display: flex;
+	gap: 10px;
+	max-width: 900px;
+	padding-bottom: 2rem;
 }
+
 .btn {
-  padding: 11px 24px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-  text-decoration: none;
-  text-align: center;
+	padding: 11px 24px;
+	font-size: 13px;
+	font-weight: 600;
+	border-radius: 6px;
+	cursor: pointer;
+	border: none;
+	transition: all 0.15s;
+	text-decoration: none;
+	text-align: center;
 }
-.btn-secondary { background: #fff; border: 1px solid #D0D0D0; color: #555; }
-.btn-secondary:hover { border-color: #111; color: #111; }
-.btn-primary { background: #111; color: #fff; }
-.btn-primary:hover { background: #E8282F; }
+
+.btn-secondary {
+	background: #fff;
+	border: 1px solid #D0D0D0;
+	color: #555;
+}
+
+.btn-secondary:hover {
+	border-color: #111;
+	color: #111;
+}
+
+.btn-primary {
+	background: #111;
+	color: #fff;
+}
+
+.btn-primary:hover {
+	background: #E8282F;
+}
 
 /* ===== 토스트 ===== */
 .toast {
-  position: fixed;
-  bottom: 2rem; right: 2rem;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.25s;
-  pointer-events: none;
-  z-index: 999;
+	position: fixed;
+	bottom: 2rem;
+	right: 2rem;
+	padding: 12px 20px;
+	border-radius: 10px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #fff;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	opacity: 0;
+	transform: translateY(10px);
+	transition: all 0.25s;
+	pointer-events: none;
+	z-index: 999;
 }
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast.success { background: #111; }
-.toast.error { background: #E8282F; }
+
+.toast.show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.toast.success {
+	background: #111;
+}
+
+.toast.error {
+	background: #E8282F;
+}
 </style>
 </head>
 <body>
 
-  <aside class="sidebar">
-    <div class="logo">BNK <span>관리자</span> 페이지</div>
-    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
-    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
-    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
-    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
-    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
-    <a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
-  </aside>
+	<aside class="sidebar">
+		<div class="logo">
+			BNK <span>관리자</span> 페이지
+		</div>
+		<a class="nav-item" th:href="@{/employee/manager/managerPage}">메인
+			페이지</a> <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원
+			등록</a> <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동
+			로그</a> <a class="nav-item"
+			th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a> <a
+			class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서
+			리스트</a> <a class="nav-item active"
+			th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
+	</aside>
 
-  <div class="main">
-    <div class="breadcrumb">
-      관리자 페이지 ›
-      <a th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a> ›
-      <span class="current">금리 사양 세부설정</span>
-    </div>
+	<div class="main">
+		<div class="breadcrumb">
+			관리자 페이지 › <a th:href="@{/employee/manager/SUG/approvedList}">승인된
+				제안서</a> › <span class="current">금리 사양 세부설정</span>
+		</div>
 
-    <div class="page-title">상품 구성 컴포넌트 관리</div>
+		<div class="page-title">상품 구성 컴포넌트 관리</div>
 
-    <div class="card">
-      <div class="card-title-group">
-        <div class="card-title">금리 정보 설정 (Rate Info)</div>
-        <div>
-          <span th:if="${rateDto != null}" class="mode-badge badge-view">데이터 조회 모드</span>
-          <span th:if="${rateDto == null}" class="mode-badge badge-new">신규 구성 등록 모드</span>
-        </div>
-      </div>
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">금리 정보 설정 (Rate Info)</div>
+				<div>
+					<span th:if="${rateDto != null}" class="mode-badge badge-view">데이터
+						조회 모드</span> <span th:if="${rateDto == null}"
+						class="mode-badge badge-new">신규 구성 등록 모드</span>
+				</div>
+			</div>
 
-      <form id="rateForm">
-        <input type="hidden" id="suggestion_no" name="suggestion_no" th:value="${suggestion_no}" />
-        <input type="hidden" id="rate_no" name="rate_no" th:value="${rateDto != null ? rateDto.rate_no : ''}" />
+			<form id="rateForm">
+				<input type="hidden" id="suggestion_no" name="suggestion_no"
+					th:value="${suggestion_no}" /> <input type="hidden" id="rate_no"
+					name="rate_no" th:value="${rateDto != null ? rateDto.rate_no : ''}" />
 
-        <div class="form-grid">
-          
-          <div class="form-group">
-            <label>금리 구분 (Rate Group) *</label>
-            <select id="rate_group" name="rate_group" required th:disabled="${rateDto != null}">
-              <option value="">-- 구분 선택 --</option>
-              <option value="MATURITY" th:selected="${rateDto != null && rateDto.rate_group == 'MATURITY'}">만기지급 (MATURITY)</option>
-              <option value="AFTER_MATURITY" th:selected="${rateDto != null && rateDto.rate_group == 'AFTER_MATURITY'}">만기 후 금리 (AFTER_MATURITY)</option>
-              <option value="EARLY_TERMINATION" th:selected="${rateDto != null && rateDto.rate_group == 'EARLY_TERMINATION'}">중도 해지 금리 (EARLY_TERMINATION)</option>
-            </select>
-          </div>
+				<div class="form-grid">
 
-          <div class="form-group">
-            <label>노출 순서 (Display Order) *</label>
-            <input type="number" id="display_order" name="display_order" placeholder="화면 출력 순서 (예: 1)" required min="1" max="99999"
-                   th:value="${rateDto != null ? rateDto.display_order : '1'}" 
-                   th:disabled="${rateDto != null}" />
-          </div>
+					<div class="form-group">
+						<label>금리 구분 (Rate Group) *</label> <select id="rate_group"
+							name="rate_group" required th:disabled="${rateDto != null}">
+							<option value="">-- 구분 선택 --</option>
+							<option value="MATURITY"
+								th:selected="${rateDto != null && rateDto.rate_group == 'MATURITY'}">만기지급
+								(MATURITY)</option>
+							<option value="AFTER_MATURITY"
+								th:selected="${rateDto != null && rateDto.rate_group == 'AFTER_MATURITY'}">만기
+								후 금리 (AFTER_MATURITY)</option>
+							<option value="EARLY_TERMINATION"
+								th:selected="${rateDto != null && rateDto.rate_group == 'EARLY_TERMINATION'}">중도
+								해지 금리 (EARLY_TERMINATION)</option>
+						</select>
+					</div>
 
-          <div class="form-group full-width">
-            <label>금리 구간 / 조건명 (Rate Label) *</label>
-            <input type="text" id="rate_label" name="rate_label" placeholder="예: 1개월 이상 6개월 미만,본인확인 완료 시 등 조건 기입" required maxlength="200"
-                   th:value="${rateDto != null ? rateDto.rate_label : ''}" 
-                   th:disabled="${rateDto != null}" />
-          </div>
+					<div class="form-group">
+						<label>노출 순서 (Display Order) *</label> <input type="number"
+							id="display_order" name="display_order"
+							placeholder="화면 출력 순서 (예: 1)" required min="1" max="99999"
+							th:value="${rateDto != null ? rateDto.display_order : '1'}"
+							th:disabled="${rateDto != null}" />
+					</div>
 
-          <div class="form-group">
-            <label>연이율 (Annual Rate, %) *</label>
-            <input type="text" id="annual_rate" name="annual_rate" placeholder="예: 2.10 또는 약정형 기본금리 명시" required maxlength="20"
-                   th:value="${rateDto != null ? rateDto.annual_rate : ''}" 
-                   th:disabled="${rateDto != null}" />
-          </div>
+					<div class="form-group full-width">
+						<label>금리 구간 / 조건명 (Rate Label) *</label> <input type="text"
+							id="rate_label" name="rate_label"
+							placeholder="예: 1개월 이상 6개월 미만,본인확인 완료 시 등 조건 기입" required
+							maxlength="200"
+							th:value="${rateDto != null ? rateDto.rate_label : ''}"
+							th:disabled="${rateDto != null}" />
+					</div>
 
-          <div class="form-group">
-            <label>연수익률 (Annual Return Rate, %) *</label>
-            <input type="text" id="annual_return_rate" name="annual_return_rate" placeholder="예: 2.12 또는 없음 표기(-)" required maxlength="20"
-                   th:value="${rateDto != null ? rateDto.annual_return_rate : ''}" 
-                   th:disabled="${rateDto != null}" />
-          </div>
+					<div class="form-group">
+						<label>연이율 (Annual Rate, %) *</label> <input type="text"
+							id="annual_rate" name="annual_rate"
+							placeholder="예: 2.10 또는 약정형 기본금리 명시" required maxlength="20"
+							th:value="${rateDto != null ? rateDto.annual_rate : ''}"
+							th:disabled="${rateDto != null}" />
+					</div>
 
-          <div class="form-group">
-            <label>사용 여부 (Use YN) *</label>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="use_yn" value="Y" th:checked="${rateDto == null || rateDto.use_yn == 'Y'}" th:disabled="${rateDto != null}"> 사용 (Y)
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="use_yn" value="N" th:checked="${rateDto != null && rateDto.use_yn == 'N'}" th:disabled="${rateDto != null}"> 미사용 (N)
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            </div>
+					<div class="form-group">
+						<label>연수익률 (Annual Return Rate, %) *</label> <input type="text"
+							id="annual_return_rate" name="annual_return_rate"
+							placeholder="예: 2.12 또는 없음 표기(-)" required maxlength="20"
+							th:value="${rateDto != null ? rateDto.annual_return_rate : ''}"
+							th:disabled="${rateDto != null}" />
+					</div>
 
-          <div class="form-group full-width">
-            <label>금리 계산식 및 안내 비고 사항 (Note)</label>
-            <textarea id="note" name="note" rows="4" placeholder="상세 계산법이나 우대조건 인정 기준 문구를 자유롭게 기술하세요..." maxlength="1000"
-                      th:text="${rateDto != null ? rateDto.note : ''}" 
-                      th:disabled="${rateDto != null}"></textarea>
-          </div>
+					<div class="form-group">
+						<label>사용 여부 (Use YN) *</label>
+						<div class="radio-group">
+							<label class="radio-label"> <input type="radio"
+								name="use_yn" value="Y"
+								th:checked="${rateDto == null || rateDto.use_yn == 'Y'}"
+								th:disabled="${rateDto != null}"> 사용 (Y)
+							</label> <label class="radio-label"> <input type="radio"
+								name="use_yn" value="N"
+								th:checked="${rateDto != null && rateDto.use_yn == 'N'}"
+								th:disabled="${rateDto != null}"> 미사용 (N)
+							</label>
+						</div>
+					</div>
 
-        </div>
-      </form>
-    </div>
+					<div class="form-group"></div>
 
-    <div class="btn-group">
-      <a th:href="@{/employee/manager/SUG/approvedList}" class="btn btn-secondary">목록으로</a>
-      <button type="button" class="btn btn-secondary" onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
-      
-      <button th:if="${rateDto == null}" type="button" class="btn btn-primary" onclick="submitRate()">금리 사양 등록 완료</button>
-    </div>
-  </div>
+					<div class="form-group full-width">
+						<label>금리 계산식 및 안내 비고 사항 (Note)</label>
+						<textarea id="note" name="note" rows="4"
+							placeholder="상세 계산법이나 우대조건 인정 기준 문구를 자유롭게 기술하세요..."
+							maxlength="1000" th:text="${rateDto != null ? rateDto.note : ''}"
+							th:disabled="${rateDto != null}"></textarea>
+					</div>
 
-  <div class="toast" id="toast"></div>
+				</div>
+			</form>
+		</div>
 
-  <script>
+		<div class="btn-group">
+			<a th:href="@{/employee/manager/SUG/approvedList}"
+				class="btn btn-secondary">목록으로</a>
+			<button type="button" class="btn btn-secondary"
+				onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
+
+			<button th:if="${rateDto == null}" type="button"
+				class="btn btn-primary" onclick="submitRate()">금리 사양 등록 완료</button>
+		</div>
+	</div>
+
+	<div class="toast" id="toast"></div>
+
+	<script>
     const parentSugNo = document.getElementById("suggestion_no").value;
 
     /* ── 토스트 알림창 함수 ── */
