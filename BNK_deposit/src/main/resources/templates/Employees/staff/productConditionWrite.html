@@ -2,235 +2,216 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>상품 가입 조건 등록</title>
+<title>상품 구성 - 가입 조건 등록</title>
 <link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
-<link rel="stylesheet"
-	th:href="@{/css/employee/product_condition_write.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/write/conditionWrite.css}" />
 </head>
 <body>
 
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
-	<section>
 
-		<form th:action="@{/employee/staff/product/condition/save}"
-			method="POST">
+	<div class="main">
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+		<div class="breadcrumb">
+			직원 페이지 › 상품 통합 관리 › <span class="current">가입 조건 등록</span>
+		</div>	
 
-			<!-- 보안과 PostMapping을 사용할 때 필요한 거. -->
-			<input type="hidden" th:name="${_csrf.parameterName}"
-				th:value="${_csrf.token}" />
+		<div class="page-title">가입 조건 등록</div>
 
-			<!-- 연결할 승인 상품 -->
-			<div class="form_group">
-				<label for="suggestion_no"><span style="color: red">*</span>연결할
-					승인 상품 제안 :</label> <select id="suggestion_no" name="suggestion_no" required>
-					<option value="">-- 승인된 상품 제안서를 선택하세요 --</option>
-					<option th:each="aprsug : ${approvedSuggestion}"
-						th:value="${aprsug.suggestion_no}"
-						th:text="| [No.${aprsug.suggestion_no} - ${aprsug.product_name}] |">
-					</option>
-				</select>
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">가입 조건 신규 등록 (Condition Registration)</div>
 			</div>
 
-			<!-- 나이 -->
-			<div class="flex_grouping">
-				<!-- 최소 가입 나이 -->
-				<div class="form_group">
-					<label for="min_age"><span style="color: red">*</span>최소 가입
-						나이 (세) :</label> <input type="number" id="min_age" name="min_age" min="0"
-						required placeholder="0">
-				</div>
-				<!-- 최대 가입 나이 -->
-				<div class="form_group">
-					<label for="max_age">최대 가입 나이 (세) :</label> <input type="number"
-						id="max_age" name="max_age" min="0" placeholder="제한 없을 경우 비워둠">
-				</div>
-			</div>
+			<form th:action="@{/employee/staff/product/condition/save}" method="POST" id="conditionForm">
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-			<!-- 해외 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="foreigner_available_yn">외국인 가입 가능 여부 :</label> <select
-						id="foreigner_available_yn" name="foreigner_available_yn">
-						<option value="N">불가능 (N)</option>
-						<option value="Y">가능 (Y)</option>
-					</select>
-				</div>
-
-				<div class="form_group">
-					<label for="overseas_tax_yn">해외 납세 의무 확인 필요 :</label> <select
-						id="overseas_tax_yn" name="overseas_tax_yn">
-						<option value="Y" selected>필요 (Y)</option>
-						<option value="N">불필요 (N)</option>
-					</select>
-				</div>
-			</div>
-			<!-- 제한, 유형 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="gender">성별 제한 :</label> <select id="gender"
-						name="gender">
-						<option value="ALL">제한 없음 (ALL)</option>
-						<option value="F">여성 전용 (F)</option>
-						<option value="M">남성 전용 (M)</option>
-					</select>
-				</div>
-
-				<div class="form_group">
-					<label for="customer_type">고객 유형 :</label> <select
-						id="customer_type" name="customer_type">
-						<option value="PERSONAL">개인</option>
-						<option value="BUSINESS">기업</option>
-						<option value="ALL">제한없음</option>
-					</select>
-				</div>
-
-
-			</div>
-			<!-- 혜택 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="tax_benefit_yn">세제혜택 가능 여부 :</label> <select
-						id="tax_benefit_yn" name="tax_benefit_yn">
-						<option value="N" selected>불가능 (N)</option>
-						<option value="Y">가능 (Y)</option>
-					</select>
-				</div>
-
-				<div class="form_group">
-					<label for="non_taxable_savings_yn">비과세 종합 저축 가능 :</label> <select
-						id="non_taxable_savings_yn" name="non_taxable_savings_yn">
-						<option value="N" selected>불가능 (N)</option>
-						<option value="Y">가능 (Y)</option>
-					</select>
-				</div>
-
-				<div class="form_group">
-					<label for="depositor_protection_yn">예금자 보호 대상 여부 :</label> <select
-						id="depositor_protection_yn" name="depositor_protection_yn">
-						<option value="Y" selected>대상 (Y)</option>
-						<option value="N">비대상 (N)</option>
-					</select>
-				</div>
-			</div>
-
-			<!-- 금액 관련 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="min_join_amount"><span style="color: red">*</span>최소
-						가입 금액 (원) :</label> <input type="number" id="min_join_amount"
-						name="min_join_amount" min="0" required placeholder="10000">
-				</div>
-
-				<div class="form_group">
-					<label for="max_join_amount">최대 가입 금액 (원) :</label> <input
-						type="number" id="max_join_amount" name="max_join_amount" min="0"
-						placeholder="제한 없으면 비워둠">
-				</div>
-
-				<div class="form_group">
-					<label for="deposit_unit">입금 단위 (원) :</label> <input type="number"
-						id="deposit_unit" name="deposit_unit" min="0" placeholder="10000">
-				</div>
-			</div>
-
-			<!-- 가입 기간 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="min_term_months"><span style="color: red">*</span>최소
-						가입 기간 (월) :</label> <input type="number" id="min_term_months"
-						name="min_term_months" min="0" value="6" required>
-				</div>
-
-				<div class="form_group">
-					<label for="max_term_months">최대 가입 기간 (월) :</label> <input
-						type="number" id="max_term_months" name="max_term_months" min="0"
-						placeholder="36">
-				</div>
-			</div>
-
-			<!-- 가입 기간 단위 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="term_unit_type">가입 기간 단위 유형 :</label> <select
-						id="term_unit_type" name="term_unit_type"
-						onchange="changeTermUnit()">
-						<option value="MONTH" selected>월 단위 (MONTH)</option>
-						<option value="DAY">일 단위 (DAY)</option>
-						<option value="YEAR">년 단위 (YEAR)</option>
-					</select>
-				</div>
-
-				<div class="form_group">
-					<label for="term_unit_value"><span style="color: red">*</span>가입
-						기간 단위 값 :</label>
-					<div class="term_val_group">
-						<input type="number" id="term_unit_value" name="term_unit_value"
-							min="1" value="1" required> <span id="unit_text"
-							style="font-weight: bold; color: #555;">개월</span>
+				<div class="form-grid">
+					
+					<div class="form-group full-width">
+						<label for="suggestion_no"><span class="required">*</span> 연결할 승인 상품 제안서</label>
+						<select id="suggestion_no" name="suggestion_no" required>
+							<option value="">-- 사양이 승인되어 조건 조립을 대기 중인 상품 제안서를 선택하세요 --</option>
+							<option th:each="aprsug : ${approvedSuggestion}"
+								th:value="${aprsug.suggestion_no}"
+								th:text="| [No.${aprsug.suggestion_no}] ${aprsug.product_name} |">
+							</option>
+						</select>
 					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 연령 제한 (단위: 세)</label>
+						<div class="range-container">
+							<input type="number" id="min_age" name="min_age" min="0" placeholder="최소 나이 (예: 19)" required />
+							<span class="range-sep">~</span>
+							<input type="number" id="max_age" name="max_age" min="0" placeholder="최대 나이 (공백 시 제한 없음)" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="customer_type">대상 고객 유형</label>
+						<select id="customer_type" name="customer_type">
+							<option value="ALL" selected>전체 고객 (ALL)</option>
+							<option value="PERSONAL">개인 고객 (PERSONAL)</option>
+							<option value="BUSINESS">개인사업자/법인 (BUSINESS)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 금액 설정 (단위: 원)</label>
+						<div class="range-container">
+							<input type="number" id="min_join_amount" name="min_join_amount" min="0" placeholder="최소 금액 (예: 10000)" required />
+							<span class="range-sep">~</span>
+							<input type="number" id="max_join_amount" name="max_join_amount" min="0" placeholder="최대 한도 (공백 시 무제한)" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="deposit_unit">회차별 최소 입금 단위액 (원)</label>
+						<input type="number" id="deposit_unit" name="deposit_unit" min="0" placeholder="예: 10000" />
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 약정 기간 범위</label>
+						<div class="range-container">
+							<input type="number" id="min_term_months" name="min_term_months" min="0" value="6" placeholder="최소 기간" required />
+							<span class="range-sep">~</span>
+							<input type="number" id="max_term_months" name="max_term_months" min="0" placeholder="최대 기간" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 기간 단위 기준 및 배수 값</label>
+						<div class="range-container">
+							<select id="term_unit_type" name="term_unit_type" style="flex: 2;" onchange="changeTermUnit()">
+								<option value="MONTH" selected>월 단위 (MONTH)</option>
+								<option value="DAY">일 단위 (DAY)</option>
+								<option value="YEAR">연 단위 (YEAR)</option>
+							</select>
+							<div style="flex: 1; display: flex; align-items: center; gap: 4px;">
+								<input type="number" id="term_unit_value" name="term_unit_value" min="1" value="1" required style="width: 100%;" />
+								<span id="unit_text" style="font-size: 13px; font-weight: 700; color: #555; white-space: nowrap;">개월</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="gender">성별 제한 필터</label>
+						<select id="gender" name="gender">
+							<option value="ALL" selected>제한 없음 (ALL)</option>
+							<option value="M">남성 전용 (M)</option>
+							<option value="F">여성 전용 (F)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="fixed_term_yn">정형 고정 가입기간 활성화 여부</label>
+						<div class="range-container">
+							<select id="fixed_term_yn" name="fixed_term_yn" style="flex: 1;" onchange="toggleFixedTermInput()">
+								<option value="N" selected>N (범위식 선택)</option>
+								<option value="Y">Y (고정치 지정)</option>
+							</select>
+							<input type="text" id="fixed_term_values" name="fixed_term_values" class="hidden-input" placeholder="예시) 3, 6, 12" style="flex: 2;" disabled />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="foreigner_available_yn">외국인 가입 가능 여부</label>
+						<select id="foreigner_available_yn" name="foreigner_available_yn">
+							<option value="N" selected>불가 (N)</option>
+							<option value="Y">가능 (Y)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="overseas_tax_yn">해외 납세 의무 여부 검증 필터</label>
+						<select id="overseas_tax_yn" name="overseas_tax_yn">
+							<option value="Y" selected>검증 필요 (Y)</option>
+							<option value="N">검증 생략 (N)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="tax_benefit_yn">세제 혜택 가입 대상 해당 여부</label>
+						<select id="tax_benefit_yn" name="tax_benefit_yn">
+							<option value="N" selected>일반 과세 (N)</option>
+							<option value="Y">혜택 대상 (Y)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="non_taxable_savings_yn">비과세 종합 저축 가입 가능 여부</label>
+						<select id="non_taxable_savings_yn" name="non_taxable_savings_yn">
+							<option value="N" selected>해당 없음 (N)</option>
+							<option value="Y">적용 가능 (Y)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="depositor_protection_yn">예금자 보호법 대상 여부</label>
+						<select id="depositor_protection_yn" name="depositor_protection_yn">
+							<option value="Y" selected>보호 대상 (Y)</option>
+							<option value="N">비대상 (N)</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						</div>
+
+					<div class="form-group full-width">
+						<label for="condition_note">가입 조건 부가 설명 및 특이 비고 사항</label>
+						<textarea id="condition_note" name="condition_note" rows="3" placeholder="예: 미성년자의 경우 법정대리인 동의서 구비 필수..."></textarea>
+					</div>
+
 				</div>
-			</div>
 
-			<!-- 가입 기간 고정 -->
-			<div class="flex_grouping">
-				<div class="form_group">
-					<label for="fixed_term_yn">가입 기간 고정 여부 :</label> <select
-						id="fixed_term_yn" name="fixed_term_yn"
-						onchange="toggleFixedTermInput()">
-						<option value="N" selected>자유 선택 (N)</option>
-						<option value="Y">지정 기간만 가능 (Y)</option>
-					</select>
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary" onclick="history.back();">취소 및 돌아가기</button>
+					<button type="submit" class="btn btn-primary">신규 가입 조건 등록 완료</button>
 				</div>
+			</form>
+		</div>
+	</div>
 
-				<div class="form_group hidden_group" id="fixed_term_div">
-					<label for="fixed_term_values">고정 가입 기간 값 :</label> <input
-						type="text" id="fixed_term_values" name="fixed_term_values"
-						placeholder="Ex) 3, 6, 12">
-				</div>
-			</div>
-
-			<!-- 가입 조건 비고 -->
-			<div class="form_group">
-				<label for="condition_note">가입 조건 비고 :</label>
-				<textarea id="condition_note" name="condition_note" rows="4"
-					placeholder="Ex) 미성년자는 가입 불가"></textarea>
-			</div>
-			<hr>
-
-			<!-- 버튼! -->
-			<div class="button_group">
-				<button type="button" class="btn_cancel" onclick="history.back();">취소</button>
-				<input type="submit" value="신규 조건 등록">
-			</div>
-
-
-		</form>
-	</section>
-
-	<script>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		
+		// ── 고정 가입 기간 선택 여부에 따른 인풋 필드 활성화/비활성화 제어 ──
 		function toggleFixedTermInput() {
 			const fixedTermYn = document.getElementById("fixed_term_yn").value;
-			const fixedTermDiv = document.getElementById("fixed_term_div");
+			const fixedTermValues = document.getElementById("fixed_term_values");
 
 			if (fixedTermYn === "Y") {
-				fixedTermDiv.classList.remove("hidden_group");
+				fixedTermValues.disabled = false;
+				fixedTermValues.classList.remove("hidden-input");
+				fixedTermValues.required = true;
+				fixedTermValues.focus();
 			} else {
-				fixedTermDiv.classList.add("hidden_group");
-				document.getElementById("fixed_term_values").value = "";
+				fixedTermValues.disabled = true;
+				fixedTermValues.classList.add("hidden-input");
+				fixedTermValues.required = false;
+				fixedTermValues.value = "";
 			}
 		}
 
+		// ── 선택 단위 기준에 맞는 동적 레이블 텍스트 스위칭 ──
 		function changeTermUnit() {
 			const unitType = document.getElementById("term_unit_type").value;
 			const unitText = document.getElementById("unit_text");
 
-			if (unitType === "MONTH")
-				unitText.innerText = "개월";
-			else if (unitType === "DAY")
-				unitText.innerText = "일";
-			else if (unitType === "YEAR")
-				unitText.innerText = "년";
+			if (unitType === "MONTH") {
+				unitText.textContent = "개월";
+			} else if (unitType === "DAY") {
+				unitText.textContent = "일";
+			} else if (unitType === "YEAR") {
+				unitText.textContent = "년";
+			}
 		}
+		
+	/*]]>*/
 	</script>
 </body>
 </html>

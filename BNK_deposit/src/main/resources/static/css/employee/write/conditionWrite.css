@@ -1,0 +1,163 @@
+@charset "UTF-8";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+/* ===== 메인 본문 ===== */
+.main {
+	flex: 1;
+	padding: 2rem 2rem 5rem 2rem;
+	min-width: 0;
+}
+
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1.5rem;
+}
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
+	letter-spacing: -0.5px;
+	margin-bottom: 1.5rem;
+}
+
+/* ===== 대시보드 카드 서식 ===== */
+.card {
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2rem;
+	max-width: 900px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.card-title-group {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #F0F0F0;
+}
+
+.card-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #E8282F;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.mode-badge {
+	font-size: 11px;
+	font-weight: 600;
+	padding: 4px 10px;
+	border-radius: 20px;
+}
+.badge-new { background: #FFF8E1; color: #B8860B; }
+
+/* ===== 폼 그리드 레이아웃 ===== */
+.form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.form-group.full-width {
+	grid-column: span 2;
+}
+
+label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #666;
+}
+label .required {
+	color: #E8282F;
+	margin-right: 2px;
+}
+
+/* 입력 필드 공통 서식 */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+	width: 100%;
+	padding: 10px 12px;
+	font-size: 13px;
+	border: 1px solid #D0D0D0;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	transition: border-color 0.15s, background-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+	border-color: #E8282F;
+	outline: none;
+}
+
+/* 기간 비활성화 상태 전용 인터랙션 */
+input:disabled {
+	background: #F5F5F5;
+	color: #999;
+	cursor: not-allowed;
+	border-color: #E2E2E2;
+}
+.hidden-input {
+	background: #FAFAFA !important;
+	opacity: 0.5;
+}
+
+/* 범위형 입력 배치 ( ~ ) */
+.range-container {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.range-sep {
+	font-size: 13px;
+	color: #aaa;
+}
+
+/* ===== 하단 버튼단 ===== */
+.btn-group {
+	margin-top: 2.5rem;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	border-top: 1px solid #F0F0F0;
+	padding-top: 1.5rem;
+}
+.btn {
+	padding: 11px 24px;
+	font-size: 13px;
+	font-weight: 600;
+	border-radius: 6px;
+	cursor: pointer;
+	border: none;
+	transition: all 0.15s;
+	text-decoration: none;
+	text-align: center;
+}
+.btn-secondary { background: #fff; border: 1px solid #D0D0D0; color: #555; }
+.btn-secondary:hover { border-color: #111; color: #111; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover { background: #E8282F; }
