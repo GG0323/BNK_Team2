@@ -18,11 +18,13 @@ import com.example.bnk.dao.product.IProductDao;
 import com.example.bnk.dao.product.IProductDescriptionDao;
 import com.example.bnk.dao.product.IProductDetailResponseDao;
 import com.example.bnk.dao.product.IProductRateDao;
+import com.example.bnk.dao.product.IProductTermsDao;
 import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductDetailResponseDto;
 import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
+import com.example.bnk.dto.product.ProductTermsDto;
 import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
 
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,7 @@ public class ProductForEmployee {
 	private final IProductRateDao iProductRateDao;
 	private final IProductDescriptionDao iProductDescDao;
 	private final IProductDetailResponseDao iProductDetailResponseDao;
+	private final IProductTermsDao iProductTermsDao;
 	
 	// 이미지 저장용
 	@Value("${file.upload.path}")
@@ -89,6 +92,11 @@ public class ProductForEmployee {
 	// des
 	public ProductDescriptionDto selectDescriptionPrd(@Param("description_no") long description_no) {
 		return iProductDescDao.selectDescriptionPrd(description_no);
+	}
+	
+	// terms
+	public ProductTermsDto selectTermsPrd(@Param("terms_no") long terms_no) {
+		return iProductTermsDao.selectTermsPrd(terms_no);
 	}
 	
 	/* 등록 서비스

@@ -235,7 +235,7 @@ public class EmployeePageController {
 	}
 	/*
 	-----------------------------------------------------------------------------------*/
-	
+	// 승인된 상품 상세 페이지의 상세 사양 페이지
 	@GetMapping("/staff/product/approved/{type}/detail")
 	public String approvedProductDetail(
 	        @PathVariable("type") String type,
@@ -243,20 +243,15 @@ public class EmployeePageController {
 	        @RequestParam("no") String no,
 	        Model model) {
 	    
-	    System.out.println("========================================");
-	    System.out.println("[컨트롤러 수신 성공]");
-	    System.out.println("▶ type(컴포넌트 종류) : " + type);
-	    System.out.println("▶ suggestion_no       : " + suggestion_no);
-	    System.out.println("▶ no(사양 고유번호)    : " + no);
-	    System.out.println("========================================");
-	    
 	    switch (type){
 			case "rate":
 				ProductRateDto rateDto = prdForEmpService.selectRatePrd(Integer.parseInt(no));
 				model.addAttribute("rateDto", rateDto);
 				return "/Employees/staff/composition/productRateDetail";
-//			case "term":
-//				ProductTermsDto termsDto = prdForEmpService.select
+			case "term":
+				ProductTermsDto termsDto = prdForEmpService.selectTermsPrd(Integer.parseInt(no));
+				model.addAttribute("termsDto", termsDto);
+				return "/Employees/staff/composition/productTermsDetail";
 			case "description":
 				ProductDescriptionDto desDto = prdForEmpService.selectDescriptionPrd(Integer.parseInt(no));
 				model.addAttribute("desDto", desDto);
