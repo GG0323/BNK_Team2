@@ -14,9 +14,8 @@
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
 	<div class="main">
-		<div class="topbar">
-			<button class="logout-btn">로그아웃</button>
-		</div>
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
 		<div class="breadcrumb">
 			직원 페이지 › 상품 통합 관리 › <span class="current">상세 설명 등록</span>
 		</div>	

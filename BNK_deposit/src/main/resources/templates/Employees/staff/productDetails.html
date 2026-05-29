@@ -3,166 +3,227 @@
 <head>
 <meta charset="UTF-8">
 <title>제안서 상세보기 및 사양 관리</title>
-<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
-<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}"/>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
 <style>
 /* ===== 리스트 보관용 폼 카드 크기 맞춤 ===== */
 .form-card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #E8E8E8;
-  padding: 2rem;
-  max-width: 1100px;
-  margin-bottom: 2rem;
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2rem;
+	max-width: 1100px;
+	margin-bottom: 2rem;
 }
 
 .section-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: #E8282F;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #F0F0F0;
+	font-size: 11px;
+	font-weight: 700;
+	color: #E8282F;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	margin-bottom: 1.5rem;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #F0F0F0;
 }
 
 /* ===== 테이블 고급화 서식 ===== */
 .table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  margin-bottom: 2rem;
+	width: 100%;
+	overflow-x: auto;
+	margin-bottom: 2rem;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 13px;
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+	font-size: 13px;
 }
 
 th {
-  color: #555;
-  font-weight: 600;
-  font-size: 12px;
-  padding: 12px 10px;
-  border-bottom: 2px solid #E0E0E0;
-  background: #fff;
+	color: #555;
+	font-weight: 600;
+	font-size: 12px;
+	padding: 12px 10px;
+	border-bottom: 2px solid #E0E0E0;
+	background: #fff;
 }
 
 td {
-  padding: 14px 10px;
-  color: #333;
-  border-bottom: 1px solid #EEEEEE;
-  vertical-align: middle;
+	padding: 14px 10px;
+	color: #333;
+	border-bottom: 1px solid #EEEEEE;
+	vertical-align: middle;
 }
 
 tr:last-child td {
-  border-bottom: none;
+	border-bottom: none;
 }
 
-.text-id { font-size: 12px; font-weight: 500; color: #888; }
-.text-name { font-size: 13px; font-weight: 600; color: #111; }
-.text-rate { font-weight: 600; color: #222; }
+.text-id {
+	font-size: 12px;
+	font-weight: 500;
+	color: #888;
+}
+
+.text-name {
+	font-size: 13px;
+	font-weight: 600;
+	color: #111;
+}
+
+.text-rate {
+	font-weight: 600;
+	color: #222;
+}
 
 /* ===== 관제탑 전용 한 행 정렬 컴포넌트 서식 ===== */
 .comp-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 10px;
-  border-bottom: 1px solid #EEEEEE;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem 10px;
+	border-bottom: 1px solid #EEEEEE;
 }
-.comp-row:last-child { border-bottom: none; }
 
-.comp-info { display: flex; align-items: center; gap: 15px; }
-.comp-label { font-size: 13px; font-weight: 600; color: #111; min-width: 150px; }
+.comp-row:last-child {
+	border-bottom: none;
+}
+
+.comp-info {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.comp-label {
+	font-size: 13px;
+	font-weight: 600;
+	color: #111;
+	min-width: 150px;
+}
 
 /* ===== 컴포넌트 상태 뱃지 ===== */
 .comp-status {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  text-align: center;
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 6px;
+	font-size: 11px;
+	font-weight: 600;
+	text-align: center;
 }
-.status-assigned { background: #EAF7EE; color: #1E7E34; }
-.status-empty { background: #FDF2F2; color: #E8282F; }
-.sub-no { font-size: 11px; color: #999; }
+
+.status-assigned {
+	background: #EAF7EE;
+	color: #1E7E34;
+}
+
+.status-empty {
+	background: #FDF2F2;
+	color: #E8282F;
+}
+
+.sub-no {
+	font-size: 11px;
+	color: #999;
+}
 
 /* ===== 상세보기 및 액션 버튼 가이드 ===== */
 .btn-action {
-  display: inline-block;
-  padding: 6px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px solid #E0E0E0;
-  border-radius: 6px;
-  background: #fff;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-decoration: none;
-  text-align: center;
-  white-space: nowrap;
+	display: inline-block;
+	padding: 6px 14px;
+	font-size: 12px;
+	font-weight: 600;
+	border: 1px solid #E0E0E0;
+	border-radius: 6px;
+	background: #fff;
+	color: #555;
+	cursor: pointer;
+	transition: all 0.15s;
+	text-decoration: none;
+	text-align: center;
+	white-space: nowrap;
 }
-.btn-action:hover { border-color: #111; color: #111; background: #FAFAFA; }
 
-.btn-action.assign-trigger { border-color: #E8282F; color: #E8282F; background: #FFFBFB; }
-.btn-action.assign-trigger:hover { background: #E8282F; color: #fff; }
+.btn-action:hover {
+	border-color: #111;
+	color: #111;
+	background: #FAFAFA;
+}
 
-.btn-row-bottom { display: flex; justify-content: flex-end; max-width: 1100px; margin-top: 1.5rem; }
+.btn-action.assign-trigger {
+	border-color: #E8282F;
+	color: #E8282F;
+	background: #FFFBFB;
+}
+
+.btn-action.assign-trigger:hover {
+	background: #E8282F;
+	color: #fff;
+}
+
+.btn-row-bottom {
+	display: flex;
+	justify-content: flex-end;
+	max-width: 1100px;
+	margin-top: 1.5rem;
+}
 
 /* ===== 하단 수정 인라인 섹션 서식 보정 ===== */
 .modify-box {
-  width: 100%;
-  max-width: 1100px;
-  margin-top: 2rem;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+	width: 100%;
+	max-width: 1100px;
+	margin-top: 2rem;
+	padding: 2rem;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
+
 .form-inline-group {
-  margin-bottom: 12px;
+	margin-bottom: 12px;
 }
+
 .form-inline-group label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
+	font-size: 12px;
+	font-weight: 600;
+	color: #555;
 }
+
 .form-inline-group input, .form-inline-group textarea {
-  width: 100%;
-  padding: 8px 12px;
-  font-size: 13px;
-  border: 1px solid #D0D0D0;
-  border-radius: 6px;
-  margin-top: 4px;
+	width: 100%;
+	padding: 8px 12px;
+	font-size: 13px;
+	border: 1px solid #D0D0D0;
+	border-radius: 6px;
+	margin-top: 4px;
 }
 </style>
 </head>
 <body>
-	
+
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
-	
-	<input type="hidden" id="suggestion_no" th:value="${aprSugDto.suggestion_no}"/>
-	<input type="hidden" id="rate_no" th:value="${aprSugDto.rate_no}"/>
-	<input type="hidden" id="condition_no" th:value="${aprSugDto.condition_no}"/>
-	<input type="hidden" id="description_no" th:value="${aprSugDto.description_no}"/>
-	<input type="hidden" id="terms_no" th:value="${aprSugDto.terms_no}"/>
-	
+
+	<input type="hidden" id="suggestion_no"
+		th:value="${aprSugDto.suggestion_no}" />
+	<input type="hidden" id="rate_no" th:value="${aprSugDto.rate_no}" />
+	<input type="hidden" id="condition_no"
+		th:value="${aprSugDto.condition_no}" />
+	<input type="hidden" id="description_no"
+		th:value="${aprSugDto.description_no}" />
+	<input type="hidden" id="terms_no" th:value="${aprSugDto.terms_no}" />
+
 	<div class="main">
-		<div class="topbar">
-			<button class="logout-btn">로그아웃</button>
-		</div>
-	
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+
 		<div class="breadcrumb">
 			직원 페이지 › 승인된 제안서 리스트 › <span class="current">제안서 상세보기</span>
 		</div>
-	
+
 		<div class="page-title">제안서 상세보기</div>
-	
+
 		<div class="form-card">
 			<div class="section-title">기본 정보</div>
 			<div class="table-responsive">
@@ -178,149 +239,206 @@ tr:last-child td {
 					<tbody>
 						<tr>
 							<td class="text-id" th:text="${aprSugDto.suggestion_no}">1</td>
-							<td class="text-name" th:text="${aprSugDto.product_name}">기본 상품 제안명</td>
-							<td class="text-rate" th:text="|${aprSugDto.proposed_min_interest_rate}%|">0.00%</td>
-							<td class="text-rate" th:text="|${aprSugDto.proposed_max_interest_rate}%|">0.00%</td>
+							<td class="text-name" th:text="${aprSugDto.product_name}">기본
+								상품 제안명</td>
+							<td class="text-rate"
+								th:text="|${aprSugDto.proposed_min_interest_rate}%|">0.00%</td>
+							<td class="text-rate"
+								th:text="|${aprSugDto.proposed_max_interest_rate}%|">0.00%</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			
+
 			<div class="section-title">상품 컴포넌트 연계 제어 구조</div>
-			
+
 			<div class="comp-row">
 				<div class="comp-info">
 					<span class="comp-label">상품 금리 사양</span>
-					<th:block th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}">
+					<th:block
+						th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}">
 						<span class="comp-status status-assigned">구성 완료</span>
 						<span class="sub-no" th:text="|No. ${aprSugDto.rate_no}|"></span>
 					</th:block>
-					<th:block th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}">
+					<th:block
+						th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}">
 						<span class="comp-status status-empty">미등록</span>
 					</th:block>
 				</div>
 				<div>
-					<button th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}" class="btn-action assign-trigger" onclick="rateWrite()">상품 금리 작성하기</button>
-					<button th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}" class="btn-action" th:onclick="ratePage([[${aprSugDto.rate_no}]])">자세히 보기</button>
+					<button
+						th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}"
+						class="btn-action assign-trigger" onclick="rateWrite()">상품
+						금리 작성하기</button>
+					<button
+						th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}"
+						class="btn-action" th:onclick="ratePage([[${aprSugDto.rate_no}]])">자세히
+						보기</button>
 				</div>
 			</div>
-			
+
 			<div class="comp-row">
 				<div class="comp-info">
 					<span class="comp-label">상품 약관 사양</span>
-					<th:block th:if="${aprSugDto.terms_no != null and aprSugDto.terms_no != 0}">
+					<th:block
+						th:if="${aprSugDto.terms_no != null and aprSugDto.terms_no != 0}">
 						<span class="comp-status status-assigned">구성 완료</span>
 						<span class="sub-no" th:text="|No. ${aprSugDto.terms_no}|"></span>
 					</th:block>
-					<th:block th:if="${aprSugDto.terms_no == null or aprSugDto.terms_no == 0}">
+					<th:block
+						th:if="${aprSugDto.terms_no == null or aprSugDto.terms_no == 0}">
 						<span class="comp-status status-empty">미등록</span>
 					</th:block>
 				</div>
 				<div>
-					<button th:if="${aprSugDto.terms_no == null or aprSugDto.terms_no == 0}" class="btn-action assign-trigger" onclick="termsWrite()">상품 약관 작성하기</button>
-					<button th:if="${aprSugDto.terms_no != null and aprSugDto.terms_no != 0}" class="btn-action" th:onclick="termsPage([[${aprSugDto.terms_no}]])">자세히 보기</button>
+					<button
+						th:if="${aprSugDto.terms_no == null or aprSugDto.terms_no == 0}"
+						class="btn-action assign-trigger" onclick="termsWrite()">상품
+						약관 작성하기</button>
+					<button
+						th:if="${aprSugDto.terms_no != null and aprSugDto.terms_no != 0}"
+						class="btn-action"
+						th:onclick="termsPage([[${aprSugDto.terms_no}]])">자세히 보기</button>
 				</div>
 			</div>
-			
+
 			<div class="comp-row">
 				<div class="comp-info">
 					<span class="comp-label">상품 요약 설명 사양</span>
-					<th:block th:if="${aprSugDto.description_no != null and aprSugDto.description_no != 0}">
+					<th:block
+						th:if="${aprSugDto.description_no != null and aprSugDto.description_no != 0}">
 						<span class="comp-status status-assigned">구성 완료</span>
 						<span class="sub-no" th:text="|No. ${aprSugDto.description_no}|"></span>
 					</th:block>
-					<th:block th:if="${aprSugDto.description_no == null or aprSugDto.description_no == 0}">
+					<th:block
+						th:if="${aprSugDto.description_no == null or aprSugDto.description_no == 0}">
 						<span class="comp-status status-empty">미등록</span>
 					</th:block>
 				</div>
 				<div>
-					<button th:if="${aprSugDto.description_no == null or aprSugDto.description_no == 0}" class="btn-action assign-trigger" onclick="descWrite()">상품 설명 작성하기</button>
-					<button th:if="${aprSugDto.description_no != null and aprSugDto.description_no != 0}" class="btn-action" th:onclick="descPage([[${aprSugDto.description_no}]])">자세히 보기</button>
+					<button
+						th:if="${aprSugDto.description_no == null or aprSugDto.description_no == 0}"
+						class="btn-action assign-trigger" onclick="descWrite()">상품
+						설명 작성하기</button>
+					<button
+						th:if="${aprSugDto.description_no != null and aprSugDto.description_no != 0}"
+						class="btn-action"
+						th:onclick="descPage([[${aprSugDto.description_no}]])">자세히
+						보기</button>
 				</div>
 			</div>
-			
+
 			<div class="comp-row">
 				<div class="comp-info">
 					<span class="comp-label">가입 제약 조건 사양</span>
-					<th:block th:if="${aprSugDto.condition_no != null and aprSugDto.condition_no != 0}">
+					<th:block
+						th:if="${aprSugDto.condition_no != null and aprSugDto.condition_no != 0}">
 						<span class="comp-status status-assigned">구성 완료</span>
 						<span class="sub-no" th:text="|No. ${aprSugDto.condition_no}|"></span>
 					</th:block>
-					<th:block th:if="${aprSugDto.condition_no == null or aprSugDto.condition_no == 0}">
+					<th:block
+						th:if="${aprSugDto.condition_no == null or aprSugDto.condition_no == 0}">
 						<span class="comp-status status-empty">미등록</span>
 					</th:block>
 				</div>
 				<div>
-					<button th:if="${aprSugDto.condition_no == null or aprSugDto.condition_no == 0}" class="btn-action assign-trigger" onclick="condWrite()">상품 조건 작성하기</button>
-					<button th:if="${aprSugDto.condition_no != null and aprSugDto.condition_no != 0}" class="btn-action" th:onclick="condPage([[${aprSugDto.condition_no}]])">자세히 보기</button>
+					<button
+						th:if="${aprSugDto.condition_no == null or aprSugDto.condition_no == 0}"
+						class="btn-action assign-trigger" onclick="condWrite()">상품
+						조건 작성하기</button>
+					<button
+						th:if="${aprSugDto.condition_no != null and aprSugDto.condition_no != 0}"
+						class="btn-action"
+						th:onclick="condPage([[${aprSugDto.condition_no}]])">자세히
+						보기</button>
 				</div>
 			</div>
 		</div>
 
 		<th:block th:if="${prdDtResDto != null}">
-			
+
 			<div class="modify-box" style="border: 1px solid #43a047;">
-				<form th:action="@{/employee/staff/product/update/description}" method="POST">		
+				<form th:action="@{/employee/staff/product/update/description}"
+					method="POST">
 					<h3 style="color: #43a047; margin-top: 0;">상품 설명 정보 변경</h3>
-					
-					<input type="hidden" name="product_no" th:value="${prdDtResDto.product != null ? prdDtResDto.product.product_no : ''}"/>
-					
+
+					<input type="hidden" name="product_no"
+						th:value="${prdDtResDto.product != null ? prdDtResDto.product.product_no : ''}" />
+
 					<div class="form-inline-group">
-						<label>상품 설명 PK</label>
-						<input type="text" name="description_no" th:value="${prdDtResDto.description != null ? prdDtResDto.description.description_no : ''}" readonly style="background-color: #f5f5f5;"/>
+						<label>상품 설명 PK</label> <input type="text" name="description_no"
+							th:value="${prdDtResDto.description != null ? prdDtResDto.description.description_no : ''}"
+							readonly style="background-color: #f5f5f5;" />
 					</div>
-					
-					<div class="form-inline-group" th:if="${prdDtResDto.description != null && prdDtResDto.description.image_url != null}">
-						<label>상품 대표 이미지:</label><br>
-						<img th:src="${prdDtResDto.description.image_url}" alt="상품 이미지" style="max-width: 200px; height: auto; margin-top: 5px; border: 1px solid #ccc;"/>
-						<input type="hidden" name="image_url" th:value="${prdDtResDto.description.image_url}"/>
+
+					<div class="form-inline-group"
+						th:if="${prdDtResDto.description != null && prdDtResDto.description.image_url != null}">
+						<label>상품 대표 이미지:</label><br> <img
+							th:src="${prdDtResDto.description.image_url}" alt="상품 이미지"
+							style="max-width: 200px; height: auto; margin-top: 5px; border: 1px solid #ccc;" />
+						<input type="hidden" name="image_url"
+							th:value="${prdDtResDto.description.image_url}" />
 					</div>
-					
+
 					<div class="form-inline-group">
-						<label>부제목:</label>
-						<input type="text" name="subtitle" th:value="${prdDtResDto.description != null ? prdDtResDto.description.subtitle : ''}"/>
+						<label>부제목:</label> <input type="text" name="subtitle"
+							th:value="${prdDtResDto.description != null ? prdDtResDto.description.subtitle : ''}" />
 					</div>
 					<div class="form-inline-group">
 						<label>홍보 문구:</label>
-						<textarea rows="2" name="content" th:text="${prdDtResDto.description != null ? prdDtResDto.description.content : ''}" style="resize: none;"></textarea>
+						<textarea rows="2" name="content"
+							th:text="${prdDtResDto.description != null ? prdDtResDto.description.content : ''}"
+							style="resize: none;"></textarea>
 					</div>
 					<div class="form-inline-group">
 						<label>가입 자격 설명:</label>
-						<textarea rows="2" name="eligibility_desc" th:text="${prdDtResDto.description != null ? prdDtResDto.description.eligibility_desc : ''}" style="resize: none;"></textarea>
+						<textarea rows="2" name="eligibility_desc"
+							th:text="${prdDtResDto.description != null ? prdDtResDto.description.eligibility_desc : ''}"
+							style="resize: none;"></textarea>
 					</div>
 					<div class="form-inline-group">
-						<label>우대 금리 요약:</label>
-						<input type="text" name="preferential_rate_summary" th:value="${prdDtResDto.description != null ? prdDtResDto.description.preferential_rate_summary : ''}"/>
+						<label>우대 금리 요약:</label> <input type="text"
+							name="preferential_rate_summary"
+							th:value="${prdDtResDto.description != null ? prdDtResDto.description.preferential_rate_summary : ''}" />
 					</div>
-					
+
 					<div style="margin-top: 15px;">
-						<button type="submit" class="btn-action" style="border-color: #43a047; color: #43a047;">상품 설명 변경하기</button>
+						<button type="submit" class="btn-action"
+							style="border-color: #43a047; color: #43a047;">상품 설명
+							변경하기</button>
 					</div>
 				</form>
 			</div>
 
 			<div class="modify-box" style="border: 1px solid #e65100;">
-				<form th:action="@{/employee/staff/product/update/condition}" method="POST">
+				<form th:action="@{/employee/staff/product/update/condition}"
+					method="POST">
 					<h3 style="color: #e65100; margin-top: 0;">상품 가입 조건 정보 변경</h3>
-					
-					<input type="hidden" name="product_no" th:value="${prdDtResDto.product != null ? prdDtResDto.product.product_no : ''}"/>
-					
+
+					<input type="hidden" name="product_no"
+						th:value="${prdDtResDto.product != null ? prdDtResDto.product.product_no : ''}" />
+
 					<div class="form-inline-group">
-						<label>상품 가입조건 PK: </label>
-						<input type="text" name="condition_no" th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.condition_no : ''}" readonly style="background-color: #f5f5f5;"/>
+						<label>상품 가입조건 PK: </label> <input type="text" name="condition_no"
+							th:value="${prdDtResDto.condition != null ? prdDtResDto.condition.condition_no : ''}"
+							readonly style="background-color: #f5f5f5;" />
 					</div>
-					
+
 					<div style="margin-top: 15px;">
-						<button type="submit" class="btn-action" style="border-color: #e65100; color: #e65100;">가입 조건 변경하기</button>
+						<button type="submit" class="btn-action"
+							style="border-color: #e65100; color: #e65100;">가입 조건
+							변경하기</button>
 					</div>
 				</form>
 			</div>
 		</th:block>
 
 		<div class="btn-row-bottom">
-			<a class="btn-action" style="padding: 10px 24px;" th:href="@{/employee/staff/product/approved/list}">승인된 제안서 목록으로 돌아가기</a>
+			<a class="btn-action" style="padding: 10px 24px;"
+				th:href="@{/employee/staff/product/approved/list}">승인된 제안서 목록으로
+				돌아가기</a>
 		</div>
-		
+
 	</div>
 
 	<script>
@@ -329,18 +447,42 @@ tr:last-child td {
 		const terms_no = document.getElementById("terms_no").value;
 		const condition_no = document.getElementById("condition_no").value;
 		const description_no = document.getElementById("description_no").value;
-		
+
 		// PK 데이터가 안들어 있을 때.
-		function rateWrite(){location.href = '/employee/staff/product/rate?suggestion_no=' + suggestion_no;}
-		function termsWrite(){location.href = '/employee/staff/productTerm?suggestion_no=' + suggestion_no;}
-		function descWrite(){location.href = '/employee/staff/product/description?suggestion_no=' + suggestion_no;}
-		function condWrite(){location.href = '/employee/staff/product/condition?suggestion_no=' + suggestion_no;}
-		
+		function rateWrite() {
+			location.href = '/employee/staff/product/rate?suggestion_no='
+					+ suggestion_no;
+		}
+		function termsWrite() {
+			location.href = '/employee/staff/productTerm?suggestion_no='
+					+ suggestion_no;
+		}
+		function descWrite() {
+			location.href = '/employee/staff/product/description?suggestion_no='
+					+ suggestion_no;
+		}
+		function condWrite() {
+			location.href = '/employee/staff/product/condition?suggestion_no='
+					+ suggestion_no;
+		}
+
 		// PK데이터가 들어와 있을 때 -> Detail 페이지로 이동
-		function ratePage(no){location.href = '/employee/staff/product/approved/rate/detail?suggestion_no=' + suggestion_no + '&no=' + rate_no;}
-		function termsPage(no){location.href = '/employee/staff/product/approved/term/detail?suggestion_no=' + suggestion_no + '&no=' + terms_no;}
-		function descPage(no){location.href = '/employee/staff/product/approved/description/detail?suggestion_no=' + suggestion_no + '&no=' + description_no;}
-		function condPage(no){location.href = '/employee/staff/product/approved/condition/detail?suggestion_no=' + suggestion_no + '&no=' + condition_no;}
+		function ratePage(no) {
+			location.href = '/employee/staff/product/approved/rate/detail?suggestion_no='
+					+ suggestion_no + '&no=' + rate_no;
+		}
+		function termsPage(no) {
+			location.href = '/employee/staff/product/approved/term/detail?suggestion_no='
+					+ suggestion_no + '&no=' + terms_no;
+		}
+		function descPage(no) {
+			location.href = '/employee/staff/product/approved/description/detail?suggestion_no='
+					+ suggestion_no + '&no=' + description_no;
+		}
+		function condPage(no) {
+			location.href = '/employee/staff/product/approved/condition/detail?suggestion_no='
+					+ suggestion_no + '&no=' + condition_no;
+		}
 	</script>
 </body>
 </html>

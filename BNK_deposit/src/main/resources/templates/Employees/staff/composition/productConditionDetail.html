@@ -5,20 +5,21 @@
 <title>상품 구성 - 가입 조건 설정</title>
 <link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
 <link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
-<link rel="stylesheet" th:href="@{/css/employee/composition/conditionDetail.css}" />
+<link rel="stylesheet"
+	th:href="@{/css/employee/composition/conditionDetail.css}" />
 </head>
 <body>
 
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
 	<div class="main">
-		<div class="topbar">
-			<button class="logout-btn">로그아웃</button>
-		</div>
-		
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+
 		<div class="breadcrumb">
-			직원 페이지 › 승인된 제안서 리스트 › 제안서 상세보기 › <span class="current">가입 조건 사양</span>
-		</div>	
+			직원 페이지 › 승인된 제안서 리스트 › 제안서 상세보기 › <span class="current">가입 조건
+				사양</span>
+		</div>
 
 		<div class="page-title">상품 구성 컴포넌트 관리</div>
 
@@ -26,68 +27,80 @@
 			<div class="card-title-group">
 				<div class="card-title">가입조건 정보(Condition Info)</div>
 				<div>
-					<span th:if="${conDto != null}" class="mode-badge badge-view">데이터 조회 모드</span>
-					<span th:if="${conDto == null}" class="mode-badge badge-new">신규 구성 등록 모드</span>
+					<span th:if="${conDto != null}" class="mode-badge badge-view">데이터
+						조회 모드</span> <span th:if="${conDto == null}" class="mode-badge badge-new">신규
+						구성 등록 모드</span>
 				</div>
 			</div>
 
 			<form id="conditionForm">
-				<input type="hidden" id="suggestion_no" name="suggestion_no" th:value="${suggestion_no != null ? suggestion_no : '0'}" />
-				<input type="hidden" id="condition_no" name="condition_no" th:value="${conDto != null ? conDto.condition_no : ''}" />
+				<input type="hidden" id="suggestion_no" name="suggestion_no"
+					th:value="${suggestion_no != null ? suggestion_no : '0'}" /> <input
+					type="hidden" id="condition_no" name="condition_no"
+					th:value="${conDto != null ? conDto.condition_no : ''}" />
 
 				<div class="form-grid">
-          
+
 					<div class="form-group">
 						<label>가입 연령 제한 (단위: 세)</label>
 						<div class="range-container">
-							<input type="number" id="min_age" name="min_age" placeholder="최소 나이 (예: 19)" required
-								th:value="${conDto != null ? conDto.min_age : ''}" 
-								th:disabled="${conDto != null}" />
-							<span class="range-sep">~</span>
-							<input type="number" id="max_age" name="max_age" placeholder="최대 나이 (공백 시 제한 없음)"
-								th:value="${conDto != null ? conDto.max_age : ''}" 
+							<input type="number" id="min_age" name="min_age"
+								placeholder="최소 나이 (예: 19)" required
+								th:value="${conDto != null ? conDto.min_age : ''}"
+								th:disabled="${conDto != null}" /> <span class="range-sep">~</span>
+							<input type="number" id="max_age" name="max_age"
+								placeholder="최대 나이 (공백 시 제한 없음)"
+								th:value="${conDto != null ? conDto.max_age : ''}"
 								th:disabled="${conDto != null}" />
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label>대상 고객 유형</label>
-						<select id="customer_type" name="customer_type" th:disabled="${conDto != null}">
-							<option value="ALL" th:selected="${conDto != null && conDto.customer_type == 'ALL'}">전체 고객 (ALL)</option>
-							<option value="PERSONAL" th:selected="${conDto != null && conDto.customer_type == 'PERSONAL'}">개인 고객 (PERSONAL)</option>
-							<option value="BUSINESS" th:selected="${conDto != null && conDto.customer_type == 'BUSINESS'}">개인사업자/법인 (BUSINESS)</option>
+						<label>대상 고객 유형</label> <select id="customer_type"
+							name="customer_type" th:disabled="${conDto != null}">
+							<option value="ALL"
+								th:selected="${conDto != null && conDto.customer_type == 'ALL'}">전체
+								고객 (ALL)</option>
+							<option value="PERSONAL"
+								th:selected="${conDto != null && conDto.customer_type == 'PERSONAL'}">개인
+								고객 (PERSONAL)</option>
+							<option value="BUSINESS"
+								th:selected="${conDto != null && conDto.customer_type == 'BUSINESS'}">개인사업자/법인
+								(BUSINESS)</option>
 						</select>
 					</div>
 
 					<div class="form-group">
 						<label>가입 금액 설정 (단위: 원)</label>
 						<div class="range-container">
-							<input type="number" id="min_join_amount" name="min_join_amount" placeholder="최소 금액" required
-								th:value="${conDto != null ? conDto.min_join_amount : ''}" 
-								th:disabled="${conDto != null}" />
-							<span class="range-sep">~</span>
-							<input type="number" id="max_join_amount" name="max_join_amount" placeholder="최대 한도 (공백 시 무제한)"
-								th:value="${conDto != null ? conDto.max_join_amount : ''}" 
+							<input type="number" id="min_join_amount" name="min_join_amount"
+								placeholder="최소 금액" required
+								th:value="${conDto != null ? conDto.min_join_amount : ''}"
+								th:disabled="${conDto != null}" /> <span class="range-sep">~</span>
+							<input type="number" id="max_join_amount" name="max_join_amount"
+								placeholder="최대 한도 (공백 시 무제한)"
+								th:value="${conDto != null ? conDto.max_join_amount : ''}"
 								th:disabled="${conDto != null}" />
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label>회차별 최소 입금 단위액 (원)</label>
-						<input type="number" id="deposit_unit" name="deposit_unit" placeholder="예: 10000"
-							th:value="${conDto != null ? conDto.deposit_unit : ''}" 
+						<label>회차별 최소 입금 단위액 (원)</label> <input type="number"
+							id="deposit_unit" name="deposit_unit" placeholder="예: 10000"
+							th:value="${conDto != null ? conDto.deposit_unit : ''}"
 							th:disabled="${conDto != null}" />
 					</div>
 
 					<div class="form-group">
 						<label>가입 약정 기간 범위</label>
 						<div class="range-container">
-							<input type="number" id="min_term_months" name="min_term_months" placeholder="최소 기간" required
-								th:value="${conDto != null ? conDto.min_term_months : ''}" 
-								th:disabled="${conDto != null}" />
-							<span class="range-sep">~</span>
-							<input type="number" id="max_term_months" name="max_term_months" placeholder="최대 기간" required
-								th:value="${conDto != null ? conDto.max_term_months : ''}" 
+							<input type="number" id="min_term_months" name="min_term_months"
+								placeholder="최소 기간" required
+								th:value="${conDto != null ? conDto.min_term_months : ''}"
+								th:disabled="${conDto != null}" /> <span class="range-sep">~</span>
+							<input type="number" id="max_term_months" name="max_term_months"
+								placeholder="최대 기간" required
+								th:value="${conDto != null ? conDto.max_term_months : ''}"
 								th:disabled="${conDto != null}" />
 						</div>
 					</div>
@@ -95,13 +108,20 @@
 					<div class="form-group">
 						<label>가입 기간 단위 기준 및 배수 값</label>
 						<div class="range-container">
-							<select id="term_unit_type" name="term_unit_type" style="flex: 2;" th:disabled="${conDto != null}">
-								<option value="MONTH" th:selected="${conDto != null && conDto.term_unit_type == 'MONTH'}">월 단위 (MONTH)</option>
-								<option value="DAY" th:selected="${conDto != null && conDto.term_unit_type == 'DAY'}">일 단위 (DAY)</option>
-								<option value="YEAR" th:selected="${conDto != null && conDto.term_unit_type == 'YEAR'}">연 단위 (YEAR)</option>
-							</select>
-							<input type="number" id="term_unit_value" name="term_unit_value" placeholder="배수단위(예:1)" style="flex: 1;"
-								th:value="${conDto != null ? conDto.term_unit_value : '1'}" 
+							<select id="term_unit_type" name="term_unit_type"
+								style="flex: 2;" th:disabled="${conDto != null}">
+								<option value="MONTH"
+									th:selected="${conDto != null && conDto.term_unit_type == 'MONTH'}">월
+									단위 (MONTH)</option>
+								<option value="DAY"
+									th:selected="${conDto != null && conDto.term_unit_type == 'DAY'}">일
+									단위 (DAY)</option>
+								<option value="YEAR"
+									th:selected="${conDto != null && conDto.term_unit_type == 'YEAR'}">연
+									단위 (YEAR)</option>
+							</select> <input type="number" id="term_unit_value" name="term_unit_value"
+								placeholder="배수단위(예:1)" style="flex: 1;"
+								th:value="${conDto != null ? conDto.term_unit_value : '1'}"
 								th:disabled="${conDto != null}" />
 						</div>
 					</div>
@@ -109,21 +129,36 @@
 					<div class="form-group">
 						<label>성별 제한 필터</label>
 						<div class="radio-group">
-							<label class="radio-label"><input type="radio" name="gender" value="" th:checked="${conDto == null || conDto?.gender == null}" th:disabled="${conDto != null}"> 제한 없음</label>
-							<label class="radio-label"><input type="radio" name="gender" value="M" th:checked="${conDto != null && conDto?.gender == 'M'}" th:disabled="${conDto != null}"> 남성 전용</label>
-							<label class="radio-label"><input type="radio" name="gender" value="F" th:checked="${conDto != null && conDto?.gender == 'F'}" th:disabled="${conDto != null}"> 여성 전용</label>
+							<label class="radio-label"><input type="radio"
+								name="gender" value=""
+								th:checked="${conDto == null || conDto?.gender == null}"
+								th:disabled="${conDto != null}"> 제한 없음</label> <label
+								class="radio-label"><input type="radio" name="gender"
+								value="M"
+								th:checked="${conDto != null && conDto?.gender == 'M'}"
+								th:disabled="${conDto != null}"> 남성 전용</label> <label
+								class="radio-label"><input type="radio" name="gender"
+								value="F"
+								th:checked="${conDto != null && conDto?.gender == 'F'}"
+								th:disabled="${conDto != null}"> 여성 전용</label>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label>정형 고정 가입기간 활성화 여부</label>
 						<div class="range-container">
-							<select id="fixed_term_yn" name="fixed_term_yn" style="flex: 1;" th:disabled="${conDto != null}">
-								<option value="N" th:selected="${conDto != null && conDto.fixed_term_yn == 'N'}">N (범위식 선택)</option>
-								<option value="Y" th:selected="${conDto != null && conDto.fixed_term_yn == 'Y'}">Y (고정치 지정)</option>
-							</select>
-							<input type="text" id="fixed_term_values" name="fixed_term_values" placeholder="예: 3,6,12" style="flex: 2;"
-								th:value="${conDto != null ? conDto.fixed_term_values : ''}" 
+							<select id="fixed_term_yn" name="fixed_term_yn" style="flex: 1;"
+								th:disabled="${conDto != null}">
+								<option value="N"
+									th:selected="${conDto != null && conDto.fixed_term_yn == 'N'}">N
+									(범위식 선택)</option>
+								<option value="Y"
+									th:selected="${conDto != null && conDto.fixed_term_yn == 'Y'}">Y
+									(고정치 지정)</option>
+							</select> <input type="text" id="fixed_term_values"
+								name="fixed_term_values" placeholder="예: 3,6,12"
+								style="flex: 2;"
+								th:value="${conDto != null ? conDto.fixed_term_values : ''}"
 								th:disabled="${conDto != null}" />
 						</div>
 					</div>
@@ -131,50 +166,80 @@
 					<div class="form-group">
 						<label>외국인 가입 가능 여부</label>
 						<div class="radio-group">
-							<label class="radio-label"><input type="radio" name="foreigner_available_yn" value="Y" th:checked="${conDto != null && conDto?.foreigner_available_yn == 'Y'}" th:disabled="${conDto != null}"> Y (가능)</label>
-							<label class="radio-label"><input type="radio" name="foreigner_available_yn" value="N" th:checked="${conDto == null || conDto?.foreigner_available_yn == 'N'}" th:disabled="${conDto != null}"> N (불가)</label>
+							<label class="radio-label"><input type="radio"
+								name="foreigner_available_yn" value="Y"
+								th:checked="${conDto != null && conDto?.foreigner_available_yn == 'Y'}"
+								th:disabled="${conDto != null}"> Y (가능)</label> <label
+								class="radio-label"><input type="radio"
+								name="foreigner_available_yn" value="N"
+								th:checked="${conDto == null || conDto?.foreigner_available_yn == 'N'}"
+								th:disabled="${conDto != null}"> N (불가)</label>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label>해외 납세 의무 여부 검증 필터</label>
 						<div class="radio-group">
-							<label class="radio-label"><input type="radio" name="overseas_tax_yn" value="Y" th:checked="${conDto == null || conDto?.overseas_tax_yn == 'Y'}" th:disabled="${conDto != null}"> Y (검증 필요)</label>
-							<label class="radio-label"><input type="radio" name="overseas_tax_yn" value="N" th:checked="${conDto != null && conDto?.overseas_tax_yn == 'N'}" th:disabled="${conDto != null}"> N (검증 생략)</label>
+							<label class="radio-label"><input type="radio"
+								name="overseas_tax_yn" value="Y"
+								th:checked="${conDto == null || conDto?.overseas_tax_yn == 'Y'}"
+								th:disabled="${conDto != null}"> Y (검증 필요)</label> <label
+								class="radio-label"><input type="radio"
+								name="overseas_tax_yn" value="N"
+								th:checked="${conDto != null && conDto?.overseas_tax_yn == 'N'}"
+								th:disabled="${conDto != null}"> N (검증 생략)</label>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label>세제 혜택 가입 대상 해당 여부</label>
 						<div class="radio-group">
-							<label class="radio-label"><input type="radio" name="tax_benefit_yn" value="Y" th:checked="${conDto != null && conDto?.tax_benefit_yn == 'Y'}" th:disabled="${conDto != null}"> Y (혜택 대상)</label>
-							<label class="radio-label"><input type="radio" name="tax_benefit_yn" value="N" th:checked="${conDto == null || conDto?.tax_benefit_yn == 'N'}" th:disabled="${conDto != null}"> N (일반 과세)</label>
+							<label class="radio-label"><input type="radio"
+								name="tax_benefit_yn" value="Y"
+								th:checked="${conDto != null && conDto?.tax_benefit_yn == 'Y'}"
+								th:disabled="${conDto != null}"> Y (혜택 대상)</label> <label
+								class="radio-label"><input type="radio"
+								name="tax_benefit_yn" value="N"
+								th:checked="${conDto == null || conDto?.tax_benefit_yn == 'N'}"
+								th:disabled="${conDto != null}"> N (일반 과세)</label>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label>비과세 종합 저축 가입 가능 여부</label>
 						<div class="radio-group">
-							<label class="radio-label"><input type="radio" name="non_taxable_savings_yn" value="Y" th:checked="${conDto != null && conDto?.non_taxable_savings_yn == 'Y'}" th:disabled="${conDto != null}"> Y (적용 가능)</label>
-							<label class="radio-label"><input type="radio" name="non_taxable_savings_yn" value="N" th:checked="${conDto == null || conDto?.non_taxable_savings_yn == 'N'}" th:disabled="${conDto != null}"> N (해당 없음)</label>
+							<label class="radio-label"><input type="radio"
+								name="non_taxable_savings_yn" value="Y"
+								th:checked="${conDto != null && conDto?.non_taxable_savings_yn == 'Y'}"
+								th:disabled="${conDto != null}"> Y (적용 가능)</label> <label
+								class="radio-label"><input type="radio"
+								name="non_taxable_savings_yn" value="N"
+								th:checked="${conDto == null || conDto?.non_taxable_savings_yn == 'N'}"
+								th:disabled="${conDto != null}"> N (해당 없음)</label>
 						</div>
 					</div>
 
 					<div class="form-group">
 						<label>예금자 보호법 대상 여부</label>
 						<div class="radio-group">
-							<label class="radio-label"><input type="radio" name="depositor_protection_yn" value="Y" th:checked="${conDto == null || conDto?.depositor_protection_yn == 'Y'}" th:disabled="${conDto != null}"> Y (보호 대상)</label>
-							<label class="radio-label"><input type="radio" name="depositor_protection_yn" value="N" th:checked="${conDto != null && conDto?.depositor_protection_yn == 'N'}" th:disabled="${conDto != null}"> N (비대상)</label>
+							<label class="radio-label"><input type="radio"
+								name="depositor_protection_yn" value="Y"
+								th:checked="${conDto == null || conDto?.depositor_protection_yn == 'Y'}"
+								th:disabled="${conDto != null}"> Y (보호 대상)</label> <label
+								class="radio-label"><input type="radio"
+								name="depositor_protection_yn" value="N"
+								th:checked="${conDto != null && conDto?.depositor_protection_yn == 'N'}"
+								th:disabled="${conDto != null}"> N (비대상)</label>
 						</div>
 					</div>
-          
-					<div class="form-group">
-						</div>
+
+					<div class="form-group"></div>
 
 					<div class="form-group full-width">
 						<label>가입 조건 부가 설명 및 특이 비고 사항</label>
-						<textarea id="condition_note" name="condition_note" rows="3" placeholder="예: 미성년자의 경우 법정대리인 동의서 구비 필수..." 
-							th:text="${conDto != null ? conDto.condition_note : ''}" 
+						<textarea id="condition_note" name="condition_note" rows="3"
+							placeholder="예: 미성년자의 경우 법정대리인 동의서 구비 필수..."
+							th:text="${conDto != null ? conDto.condition_note : ''}"
 							th:disabled="${conDto != null}"></textarea>
 					</div>
 
@@ -183,10 +248,14 @@
 		</div>
 
 		<div class="btn-group">
-			<a th:href="@{/employee/manager/SUG/approvedList}" class="btn btn-secondary">목록으로</a>
-			<button type="button" class="btn btn-secondary" onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
-      
-			<button th:if="${conDto == null}" type="button" class="btn btn-primary" onclick="submitCondition()">가입 조건 등록 완료</button>
+			<a th:href="@{/employee/manager/SUG/approvedList}"
+				class="btn btn-secondary">목록으로</a>
+			<button type="button" class="btn btn-secondary"
+				onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
+
+			<button th:if="${conDto == null}" type="button"
+				class="btn btn-primary" onclick="submitCondition()">가입 조건
+				등록 완료</button>
 		</div>
 	</div>
 

@@ -16,7 +16,7 @@
 			<a class="nav-item active" th:href="@{/employee/financedictionary}">금융 사전 관리</a>
 			<a class="nav-item" th:href="@{/employee/staff/product/list}">등록된 전체 상품</a>
 	  	</aside>
-
+	  	
 	  	<script>
 	  		document.addEventListener("DOMContentLoaded", function() {
 	  			// 현재 브라우저 주소창의 주소를 가져옴
@@ -39,5 +39,12 @@
 	  		});
 	  	</script>
 	</div>
+	
+	<div th:fragment="goHomePage">
+		<div class="topbar">
+			<a class="logout-btn" th:href="@{/}">부산은행 홈으로</a>
+	    </div>
+	</div>
+	
 </body>
 </html>

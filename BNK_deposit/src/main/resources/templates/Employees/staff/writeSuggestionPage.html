@@ -3,175 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <title>제안서 작성</title>
-<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
-<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}"/>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
 <style>
 
 /* ===== 폼 카드 ===== */
 .form-card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #E8E8E8;
-  padding: 2rem;
-  max-width: 700px;
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2rem;
+	max-width: 700px;
 }
 
 .section-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: #E8282F;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #F0F0F0;
+	font-size: 11px;
+	font-weight: 700;
+	color: #E8282F;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	margin-bottom: 1rem;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #F0F0F0;
 }
 
-.divider { border: none; border-top: 1px solid #F0F0F0; margin: 1.5rem 0; }
+.divider {
+	border: none;
+	border-top: 1px solid #F0F0F0;
+	margin: 1.5rem 0;
+}
 
 /* 폼 그리드 */
 .form-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 14px;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 }
 
-.form-group.full { grid-column: 1 / -1; }
+.form-group.full {
+	grid-column: 1/-1;
+}
 
 .form-group label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #555;
+	font-size: 12px;
+	font-weight: 600;
+	color: #555;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 9px 12px;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  font-size: 13px;
-  color: #111;
-  background: #fff;
-  outline: none;
-  transition: border-color 0.15s;
-  width: 100%;
-  font-family: inherit;
+.form-group input, .form-group select, .form-group textarea {
+	padding: 9px 12px;
+	border: 1px solid #E0E0E0;
+	border-radius: 8px;
+	font-size: 13px;
+	color: #111;
+	background: #fff;
+	outline: none;
+	transition: border-color 0.15s;
+	width: 100%;
+	font-family: inherit;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus { border-color: #111; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus
+	{
+	border-color: #111;
+}
 
 /* 작성자 표시 (readonly 느낌) */
 .author-box {
-  padding: 9px 12px;
-  border: 1px solid #EEEEEE;
-  border-radius: 8px;
-  font-size: 13px;
-  color: #444;
-  background: #F8F8F8;
-  font-weight: 500;
+	padding: 9px 12px;
+	border: 1px solid #EEEEEE;
+	border-radius: 8px;
+	font-size: 13px;
+	color: #444;
+	background: #F8F8F8;
+	font-weight: 500;
 }
 
 /* textarea */
 .form-group textarea {
-  resize: vertical;
-  min-height: 120px;
-  line-height: 1.6;
+	resize: vertical;
+	min-height: 120px;
+	line-height: 1.6;
 }
 
 /* 금리 입력 행 */
 .rate-row {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 8px;
-  grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 8px;
+	grid-column: 1/-1;
 }
 
 .rate-sep {
-  font-size: 14px;
-  color: #ccc;
-  text-align: center;
-  font-weight: 600;
-  padding-top: 22px; /* label 높이 보정 */
+	font-size: 14px;
+	color: #ccc;
+	text-align: center;
+	font-weight: 600;
+	padding-top: 22px; /* label 높이 보정 */
 }
 
 /* 유효성 에러 */
 .field-error {
-  font-size: 11px;
-  color: #E8282F;
-  display: none;
+	font-size: 11px;
+	color: #E8282F;
+	display: none;
 }
 
-.field-error.show { display: block; }
+.field-error.show {
+	display: block;
+}
 
 /* ===== 버튼 행 ===== */
 .btn-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 1.75rem;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 1.75rem;
 }
 
 .btn-cancel {
-  padding: 10px 24px;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  background: #fff;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-decoration: none;
+	padding: 10px 24px;
+	font-size: 13px;
+	font-weight: 600;
+	border: 1px solid #E0E0E0;
+	border-radius: 8px;
+	background: #fff;
+	color: #555;
+	cursor: pointer;
+	transition: all 0.15s;
+	text-decoration: none;
 }
 
-.btn-cancel:hover { border-color: #111; color: #111; }
+.btn-cancel:hover {
+	border-color: #111;
+	color: #111;
+}
 
 .btn-submit {
-  padding: 10px 28px;
-  font-size: 13px;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  background: #E8282F;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.15s;
+	padding: 10px 28px;
+	font-size: 13px;
+	font-weight: 600;
+	border: none;
+	border-radius: 8px;
+	background: #E8282F;
+	color: #fff;
+	cursor: pointer;
+	transition: background 0.15s;
 }
 
-.btn-submit:hover { background: #C5202A; }
-.btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+.btn-submit:hover {
+	background: #C5202A;
+}
+
+.btn-submit:disabled {
+	background: #ccc;
+	cursor: not-allowed;
+}
 
 /* ===== 토스트 ===== */
 .toast {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.25s;
-  pointer-events: none;
-  z-index: 999;
+	position: fixed;
+	bottom: 2rem;
+	right: 2rem;
+	padding: 12px 20px;
+	border-radius: 10px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #fff;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	opacity: 0;
+	transform: translateY(10px);
+	transition: all 0.25s;
+	pointer-events: none;
+	z-index: 999;
 }
 
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast.success { background: #111; }
-.toast.error   { background: #E8282F; }
+.toast.show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.toast.success {
+	background: #111;
+}
+
+.toast.error {
+	background: #E8282F;
+}
 </style>
 </head>
 <body>
@@ -179,91 +204,94 @@
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
 
-  <div class="main">
+	<div class="main">
 
-    <div class="topbar">
-      <button class="logout-btn">로그아웃</button>
-    </div>
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
 
-    <div class="breadcrumb">
-      직원 페이지 › <span class="current">제안서 작성</span>
-    </div>
 
-    <div class="page-title">상품 제안서 작성</div>
+		<div class="breadcrumb">
+			직원 페이지 › <span class="current">제안서 작성</span>
+		</div>
 
-    <div class="form-card">
+		<div class="page-title">상품 제안서 작성</div>
 
-      <form id="suggestionForm">
+		<div class="form-card">
 
-        <!-- 작성자 / 책임자 -->
-        <div class="section-title">작성 정보</div>
-        <div class="form-grid-2">
+			<form id="suggestionForm">
 
-          <div class="form-group">
-            <label>작성자</label>
-            <input type="hidden" name="employee_no" id="employee_no">
-            <div class="author-box" id="my_name">불러오는 중...</div>
-          </div>
+				<!-- 작성자 / 책임자 -->
+				<div class="section-title">작성 정보</div>
+				<div class="form-grid-2">
 
-          <div class="form-group">
-            <label>승인 책임자 *</label>
-            <select name="manager_employee_no" id="manager_select">
-              <option value="">-- 책임자 선택 --</option>
-            </select>
-            <span class="field-error" id="err-manager">책임자를 선택해주세요.</span>
-          </div>
+					<div class="form-group">
+						<label>작성자</label> <input type="hidden" name="employee_no"
+							id="employee_no">
+						<div class="author-box" id="my_name">불러오는 중...</div>
+					</div>
 
-        </div>
+					<div class="form-group">
+						<label>승인 책임자 *</label> <select name="manager_employee_no"
+							id="manager_select">
+							<option value="">-- 책임자 선택 --</option>
+						</select> <span class="field-error" id="err-manager">책임자를 선택해주세요.</span>
+					</div>
 
-        <hr class="divider">
+				</div>
 
-        <!-- 제안 내용 -->
-        <div class="section-title">제안 내용</div>
-        <div class="form-grid-2">
+				<hr class="divider">
 
-          <div class="form-group full">
-            <label>제안 상품명 *</label>
-            <input type="text" name="product_name" id="product_name" placeholder="상품명을 입력해주세요">
-            <span class="field-error" id="err-product_name">상품명을 입력해주세요.</span>
-          </div>
+				<!-- 제안 내용 -->
+				<div class="section-title">제안 내용</div>
+				<div class="form-grid-2">
 
-          <div class="form-group full">
-            <label>제안 내용 *</label>
-            <textarea name="suggestion_content" id="suggestion_content" placeholder="제안 내용을 상세히 작성해주세요."></textarea>
-            <span class="field-error" id="err-suggestion_content">제안 내용을 입력해주세요.</span>
-          </div>
+					<div class="form-group full">
+						<label>제안 상품명 *</label> <input type="text" name="product_name"
+							id="product_name" placeholder="상품명을 입력해주세요"> <span
+							class="field-error" id="err-product_name">상품명을 입력해주세요.</span>
+					</div>
 
-          <!-- 금리 입력 (2컬럼 span) -->
-          <div class="rate-row">
-            <div class="form-group">
-              <label>제안 최저 금리 (%) *</label>
-              <input type="number" name="proposed_min_interest_rate" id="proposed_min_interest_rate"
-                     placeholder="예: 2.5" step="0.01" min="0">
-              <span class="field-error" id="err-min">최저 금리를 입력해주세요.</span>
-            </div>
-            <div class="rate-sep">~</div>
-            <div class="form-group">
-              <label>제안 최고 금리 (%) *</label>
-              <input type="number" name="proposed_max_interest_rate" id="proposed_max_interest_rate"
-                     placeholder="예: 4.0" step="0.01" min="0">
-              <span class="field-error" id="err-max">최고 금리를 입력해주세요.</span>
-            </div>
-          </div>
+					<div class="form-group full">
+						<label>제안 내용 *</label>
+						<textarea name="suggestion_content" id="suggestion_content"
+							placeholder="제안 내용을 상세히 작성해주세요."></textarea>
+						<span class="field-error" id="err-suggestion_content">제안
+							내용을 입력해주세요.</span>
+					</div>
 
-        </div>
+					<!-- 금리 입력 (2컬럼 span) -->
+					<div class="rate-row">
+						<div class="form-group">
+							<label>제안 최저 금리 (%) *</label> <input type="number"
+								name="proposed_min_interest_rate"
+								id="proposed_min_interest_rate" placeholder="예: 2.5" step="0.01"
+								min="0"> <span class="field-error" id="err-min">최저
+								금리를 입력해주세요.</span>
+						</div>
+						<div class="rate-sep">~</div>
+						<div class="form-group">
+							<label>제안 최고 금리 (%) *</label> <input type="number"
+								name="proposed_max_interest_rate"
+								id="proposed_max_interest_rate" placeholder="예: 4.0" step="0.01"
+								min="0"> <span class="field-error" id="err-max">최고
+								금리를 입력해주세요.</span>
+						</div>
+					</div>
 
-        <div class="btn-row">
-          <a class="btn-cancel" th:href="@{/employee/staff/staffPage}">취소</a>
-          <button type="submit" class="btn-submit" id="submitBtn">제안서 등록</button>
-        </div>
+				</div>
 
-      </form>
-    </div>
-  </div>
+				<div class="btn-row">
+					<a class="btn-cancel" th:href="@{/employee/staff/staffPage}">취소</a>
+					<button type="submit" class="btn-submit" id="submitBtn">제안서
+						등록</button>
+				</div>
 
-  <div class="toast" id="toast"></div>
+			</form>
+		</div>
+	</div>
 
-  <script>
+	<div class="toast" id="toast"></div>
+
+	<script>
     /* ── 토스트 ── */
     function showToast(msg, type = 'success') {
       const t = document.getElementById('toast');
