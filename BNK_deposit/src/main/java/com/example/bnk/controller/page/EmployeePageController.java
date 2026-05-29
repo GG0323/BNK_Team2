@@ -187,15 +187,13 @@ public class EmployeePageController {
 
 	/*
 	 * 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드
-	 * -----------------------------------------------------------------------------
-	 * --------
-	 */
+	 * -----------------------------------------------------------------------------*/
 	// /employee/staff/product/list
 	@GetMapping("/staff/product/list")
 	public String employeeProductListPage(Model model) {
-		// 상품 리스트를 productList에 저장
+		
 		List<ProductDto> productList = prdForEmpService.showProduct();
-		// productList를 model에 저장
+		
 		model.addAttribute("productList", productList);
 
 		return "Employees/staff/productList";

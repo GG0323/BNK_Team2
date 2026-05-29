@@ -14,17 +14,8 @@
 
     <!-- 우측 본문 -->
     <main class="main">
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
 
-	    <div class="topbar">
-		    <form th:action="@{/employee/logout}" method="post">
-		        <input type="hidden"
-		               th:name="${_csrf.parameterName}"
-		               th:value="${_csrf.token}">
-		        <button type="submit" class="logout-btn">
-		            로그아웃
-		        </button>
-		    </form>
-		</div>
 	
 	    <div class="breadcrumb">
 	        직원 페이지 › <span class="current">금융 사전 관리</span>

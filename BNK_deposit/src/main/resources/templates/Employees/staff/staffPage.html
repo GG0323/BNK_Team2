@@ -3,238 +3,244 @@
 <head>
 <meta>
 <title>Staff MainPage</title>
-<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}"/>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
 
-	<style>
-	* {
-	  box-sizing: border-box;
-	  margin: 0;
-	  padding: 0;
-	}
-	
-	body {
-	  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-	  background: #F5F5F5;
-	  display: flex;
-	  min-height: 100vh;
-	}
-	
+<style>
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
 
-	
-	/* ===== 메인 콘텐츠 ===== */
-	.main {
-	  flex: 1;
-	  padding: 2rem;
-	  min-width: 0;
-	}
-	
-	/* 상단 바 */
-	.topbar {
-	  display: flex;
-	  justify-content: flex-end;
-	  margin-bottom: 2rem;
-	}
-	
-	.logout-btn {
-	  font-size: 12px;
-	  color: #555555;
-	  background: #ffffff;
-	  border: 1px solid #E0E0E0;
-	  padding: 6px 16px;
-	  border-radius: 6px;
-	  cursor: pointer;
-	  font-weight: 500;
-	  transition: all 0.15s;
-	  text-decoration: none;
-	}
-	
-	.logout-btn:hover {
-	  border-color: #111111;
-	  color: #111111;
-	}
-	
-	/* 브레드크럼 */
-	.breadcrumb {
-	  display: flex;
-	  align-items: center;
-	  gap: 6px;
-	  font-size: 12px;
-	  color: #aaaaaa;
-	  margin-bottom: 1.5rem;
-	}
-	
-	.breadcrumb .current {
-	  color: #111111;
-	  font-weight: 600;
-	}
-	
-	/* 페이지 헤더 */
-	.page-header {
-	  margin-bottom: 2rem;
-	}
-	
-	.page-title {
-	  font-size: 18px;
-	  font-weight: 700;
-	  color: #111111;
-	  letter-spacing: -0.5px;
-	  margin-bottom: 4px;
-	}
-	
-	.page-desc {
-	  font-size: 12.5px;
-	  color: #999999;
-	}
-	
-	/* ===== 메뉴 카드 그리드 ===== */
-	.menu-grid {
-	  display: grid;
-	  grid-template-columns: repeat(2, 1fr);
-	  gap: 14px;
-	}
-	
-	.menu-card {
-	  background: #ffffff;
-	  border-radius: 12px;
-	  border: 1px solid #E8E8E8;
-	  padding: 1.5rem 1.25rem;
-	  cursor: pointer;
-	  transition: all 0.15s;
-	  text-decoration: none;
-	  display: flex;
-	  align-items: center;
-	  gap: 16px;
-	}
-	
-	.menu-card:hover {
-	  border-color: #111111;
-	  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-	}
-	
-	/* 첫 번째 카드(신규사원 등록) 강조 */
-	.menu-card.primary:hover {
-	  border-color: #E8282F;
-	}
-	
-	.menu-card.primary .card-icon {
-	  background: #FFF0F0;
-	}
-	
-	.menu-card.primary .card-icon i,
-	.menu-card.primary .card-icon .icon {
-	  color: #E8282F;
-	}
-	
-	/* 카드 아이콘 */
-	.card-icon {
-	  width: 44px;
-	  height: 44px;
-	  border-radius: 10px;
-	  background: #F0F0F0;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  flex-shrink: 0;
-	}
-	
-	.card-icon i,
-	.card-icon .icon {
-	  font-size: 20px;
-	  color: #555555;
-	}
-	
-	/* 카드 텍스트 */
-	.card-title {
-	  font-size: 14px;
-	  font-weight: 600;
-	  color: #111111;
-	  margin-bottom: 3px;
-	}
-	
-	.card-sub {
-	  font-size: 12px;
-	  color: #aaaaaa;
-	}
-	
-	
-	
-	</style>
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+/* ===== 메인 콘텐츠 ===== */
+.main {
+	flex: 1;
+	padding: 2rem;
+	min-width: 0;
+}
+
+/* 상단 바 */
+.topbar {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 2rem;
+}
+
+.logout-btn {
+	font-size: 12px;
+	color: #555555;
+	background: #ffffff;
+	border: 1px solid #E0E0E0;
+	padding: 6px 16px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.15s;
+	text-decoration: none;
+}
+
+.logout-btn:hover {
+	border-color: #111111;
+	color: #111111;
+}
+
+/* 브레드크럼 */
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaaaaa;
+	margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current {
+	color: #111111;
+	font-weight: 600;
+}
+
+/* 페이지 헤더 */
+.page-header {
+	margin-bottom: 2rem;
+}
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111111;
+	letter-spacing: -0.5px;
+	margin-bottom: 4px;
+}
+
+.page-desc {
+	font-size: 12.5px;
+	color: #999999;
+}
+
+/* ===== 메뉴 카드 그리드 ===== */
+.menu-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 14px;
+}
+
+.menu-card {
+	background: #ffffff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 1.5rem 1.25rem;
+	cursor: pointer;
+	transition: all 0.15s;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.menu-card:hover {
+	border-color: #111111;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 첫 번째 카드(신규사원 등록) 강조 */
+.menu-card.primary:hover {
+	border-color: #E8282F;
+}
+
+.menu-card.primary .card-icon {
+	background: #FFF0F0;
+}
+
+.menu-card.primary .card-icon i, .menu-card.primary .card-icon .icon {
+	color: #E8282F;
+}
+
+/* 카드 아이콘 */
+.card-icon {
+	width: 44px;
+	height: 44px;
+	border-radius: 10px;
+	background: #F0F0F0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.card-icon i, .card-icon .icon {
+	font-size: 20px;
+	color: #555555;
+}
+
+/* 카드 텍스트 */
+.card-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #111111;
+	margin-bottom: 3px;
+}
+
+.card-sub {
+	font-size: 12px;
+	color: #aaaaaa;
+}
+</style>
 
 </head>
 <body>
 
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
-  	
+
 	<main class="main">
-		<div class="topbar">
-			<a class="logout-btn" href="#">로그아웃</a>
-	    </div>
-	
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
 		<div class="breadcrumb">
 			<span class="current">직원 페이지</span>
-   		</div>
-		
+		</div>
+
 		<div class="page-header">
-      		<h1 class="page-title">메인 페이지</h1>
-      		<p class="page-desc">좋은 하루입니다. 업무를 선택해 주세요</p>
-    	</div>
+			<h1 class="page-title">메인 페이지</h1>
+			<p class="page-desc">좋은 하루입니다. 업무를 선택해 주세요</p>
+		</div>
 		<div class="menu-grid">
-      	<!-- 업무 활동 카드 -->
-      	
-      		<a class="menu-card primary" th:href="@{/employee/staff/writeSuggestionPage}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">제안서 작성 페이지</p>
-        			<p class="card-sub">신규 상품 제안서를 작성합니다.</p>
-       			</div>
-      		</a>
-      		<a class="menu-card primary" th:href="@{/employee/financedictionary}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">금융 용어 사전 관리</p>
-        			<p class="card-sub">등록된 금융용어를 조회, 수정, 등록 합니다.</p>
-       			</div>
-      		</a>
-      		<a class="menu-card primary" th:href="@{/employee/staff/product/rate}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">상품 금리 등록 페이지</p>
-        			<p class="card-sub">상품 금리를 등록합니다.</p>
-       			</div>
-      		</a>
-      		<a class="menu-card primary" th:href="@{/employee/staff/productTerm}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">약관 등록 페이지</p>
-        			<p class="card-sub">상품 약관을 등록합니다.</p>
-       			</div>
-      		</a>
-			<a class="menu-card primary" th:href="@{/employee/staff/product/description}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">상품 설명 등록 페이지</p>
-        			<p class="card-sub">상품 상세 설명을 등록합니다.</p>
-       			</div>
-      		</a>
-      		<a class="menu-card primary" th:href="@{/employee/staff/product/condition}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">상품 가입 조건</p>
-        			<p class="card-sub">상품 가입 조건을 등록합니다.</p>
-       			</div>
-      		</a>
-			<a class="menu-card primary" th:href="@{/employee/staff/product/approved/list}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
-        		<div>
-        			<p class="card-title">승인된 상품 목록</p>
-        			<p class="card-sub">승인된 상품들의 목록을 출력합니다.</p>
-       			</div>
-      		</a>      		
-      		
-      		
-    	</div>
-		
+			<!-- 업무 활동 카드 -->
+
+			<a class="menu-card primary"
+				th:href="@{/employee/staff/writeSuggestionPage}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">제안서 작성 페이지</p>
+					<p class="card-sub">신규 상품 제안서를 작성합니다.</p>
+				</div>
+			</a> <a class="menu-card primary"
+				th:href="@{/employee/financedictionary}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">금융 용어 사전 관리</p>
+					<p class="card-sub">등록된 금융용어를 조회, 수정, 등록 합니다.</p>
+				</div>
+			</a> <a class="menu-card primary"
+				th:href="@{/employee/staff/product/rate}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">상품 금리 등록 페이지</p>
+					<p class="card-sub">상품 금리를 등록합니다.</p>
+				</div>
+			</a> <a class="menu-card primary"
+				th:href="@{/employee/staff/productTerm}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">약관 등록 페이지</p>
+					<p class="card-sub">상품 약관을 등록합니다.</p>
+				</div>
+			</a> <a class="menu-card primary"
+				th:href="@{/employee/staff/product/description}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">상품 설명 등록 페이지</p>
+					<p class="card-sub">상품 상세 설명을 등록합니다.</p>
+				</div>
+			</a> <a class="menu-card primary"
+				th:href="@{/employee/staff/product/condition}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">상품 가입 조건</p>
+					<p class="card-sub">상품 가입 조건을 등록합니다.</p>
+				</div>
+			</a> <a class="menu-card primary"
+				th:href="@{/employee/staff/product/approved/list}">
+				<div class="card-icon">
+					<!-- 아이콘 -->
+				</div>
+				<div>
+					<p class="card-title">승인된 상품 목록</p>
+					<p class="card-sub">승인된 상품들의 목록을 출력합니다.</p>
+				</div>
+			</a>
+
+
+		</div>
+
 	</main>
-				
+
 </body>
 </html>

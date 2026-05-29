@@ -12,9 +12,7 @@
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
 	<div class="main">
-		<div class="topbar">
-			<button class="logout-btn">로그아웃</button>
-		</div>
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
 		
 		<div class="breadcrumb">
 			직원 페이지 › 승인된 제안서 리스트 › 제안서 상세보기 › <span class="current">상품 설명
