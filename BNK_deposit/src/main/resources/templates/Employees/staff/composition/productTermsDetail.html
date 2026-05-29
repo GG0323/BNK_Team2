@@ -3,439 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <title>상품 구성 - 약관 사양 세부설정</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  background: #F5F5F5;
-  display: flex;
-  min-height: 100vh;
-}
-
-/* ===== 사이드바 ===== */
-.sidebar {
-  width: 190px;
-  background: #111111;
-  flex-shrink: 0;
-  min-height: 100vh;
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 10;
-}
-
-.sidebar .logo {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-  padding: 1.5rem 1.25rem;
-  letter-spacing: -0.3px;
-  border-bottom: 1px solid #2a2a2a;
-}
-.sidebar .logo span { color: #E8282F; }
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  padding: 11px 1.25rem;
-  font-size: 13px;
-  color: #888;
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: all 0.15s;
-}
-.nav-item:hover { color: #fff; background: #1c1c1c; }
-.nav-item.active {
-  color: #fff;
-  background: #1c1c1c;
-  border-left-color: #E8282F;
-}
-
-/* ===== 메인 본문 ===== */
-.main {
-  margin-left: 190px;
-  flex: 1;
-  padding: 2rem 2rem 5rem 2rem; /* 하단 여백 확보 */
-  min-width: 0;
-}
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 1.5rem;
-}
-.breadcrumb a { color: #aaa; text-decoration: none; }
-.breadcrumb a:hover { color: #111; }
-.breadcrumb .current { color: #111; font-weight: 600; }
-
-.page-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-  letter-spacing: -0.5px;
-  margin-bottom: 1.5rem;
-}
-
-/* ===== 대시보드 카드 서식 ===== */
-.card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #E8E8E8;
-  padding: 2rem;
-  max-width: 900px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-}
-
-.card-title-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #F0F0F0;
-}
-
-.card-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #E8282F;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.mode-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-}
-.badge-new { background: #FFF8E1; color: #B8860B; }
-.badge-view { background: #F0FFF4; color: #22863a; }
-
-/* ===== 폼 그리드 레이아웃 ===== */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.form-group.full-width {
-  grid-column: span 2;
-}
-
-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
-}
-
-/* 입력 필드 공통 서식 */
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 13px;
-  border: 1px solid #D0D0D0;
-  border-radius: 6px;
-  background: #fff;
-  color: #222;
-  transition: border-color 0.15s;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: #E8282F;
-  outline: none;
-}
-input:disabled, select:disabled, textarea:disabled {
-  background: #F9F9F9;
-  color: #777;
-  cursor: not-allowed;
-  border-color: #E5E5E5;
-}
-
-/* 라디오 그룹 서식 */
-.radio-group {
-  display: flex;
-  gap: 1.5rem;
-  padding: 10px 0;
-}
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #333;
-  cursor: pointer;
-}
-.radio-label input {
-  accent-color: #E8282F;
-}
-
-/* PDF/이미지 파일 다운로드 및 미리보기 링크 박스 스타일 */
-.file-link-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-.btn-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: #E8282F;
-  text-decoration: none;
-  font-weight: 600;
-}
-.btn-link:hover { text-decoration: underline; }
-
-/* ===== 하단 버튼단 ===== */
-.btn-group {
-  margin-top: 2rem;
-  display: flex;
-  gap: 10px;
-  max-width: 900px;
-  padding-bottom: 2rem;
-}
-.btn {
-  padding: 11px 24px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-  text-decoration: none;
-  text-align: center;
-}
-.btn-secondary { background: #fff; border: 1px solid #D0D0D0; color: #555; }
-.btn-secondary:hover { border-color: #111; color: #111; }
-.btn-primary { background: #111; color: #fff; }
-.btn-primary:hover { background: #E8282F; }
-
-/* ===== 토스트 ===== */
-.toast {
-  position: fixed;
-  bottom: 2rem; right: 2rem;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.25s;
-  pointer-events: none;
-  z-index: 999;
-}
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast.success { background: #111; }
-.toast.error { background: #E8282F; }
-</style>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/composition/termsDetail.css}" />
 </head>
 <body>
 
-  <aside class="sidebar">
-    <div class="logo">BNK <span>관리자</span> 페이지</div>
-    <a class="nav-item" th:href="@{/employee/manager/managerPage}">메인 페이지</a>
-    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmRegist}">신규사원 등록</a>
-    <a class="nav-item" th:href="@{/employee/manager/LOG/logList}">사원활동 로그</a>
-    <a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
-    <a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
-    <a class="nav-item active" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
-  </aside>
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
-  <div class="main">
-    <div class="breadcrumb">
-      관리자 페이지 ›
-      <a th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a> ›
-      <span class="current">약관 사양 세부설정</span>
-    </div>
+	<div class="main">
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+		<div class="breadcrumb">
+			직원 페이지 › 승인된 제안서 리스트 › 제안서 상세보기 › <span class="current">상품 약관
+				사양</span>
+		</div>
+		<div class="page-title">상품 구성 컴포넌트 관리</div>
 
-    <div class="page-title">상품 구성 컴포넌트 관리</div>
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">약관 정보 설정 (Terms Info)</div>
+				<div>
+					<span th:if="${termsDto != null}" class="mode-badge badge-view">데이터
+						조회 모드</span> <span th:if="${termsDto == null}"
+						class="mode-badge badge-new">신규 구성 등록 모드</span>
+				</div>
+			</div>
 
-    <div class="card">
-      <div class="card-title-group">
-        <div class="card-title">약관 정보 설정 (Terms Info)</div>
-        <div>
-          <span th:if="${termsDto != null}" class="mode-badge badge-view">데이터 조회 모드</span>
-          <span th:if="${termsDto == null}" class="mode-badge badge-new">신규 구성 등록 모드</span>
-        </div>
-      </div>
+			<form id="termsForm">
+				<!-- th:value 분기 처리 안전하게 변경 -->
+				<input type="hidden" id="suggestion_no" name="suggestion_no"
+					th:value="${suggestion_no != null ? suggestion_no : '0'}" /> <input
+					type="hidden" id="terms_no" name="terms_no"
+					th:value="${termsDto != null ? termsDto.terms_no : ''}" /> <input
+					type="hidden" id="product_no" name="product_no"
+					th:value="${termsDto != null ? termsDto.product_no : ''}" />
 
-      <form id="termsForm">
-        <input type="hidden" id="suggestion_no" name="suggestion_no" th:value="${suggestion_no}" />
-        <input type="hidden" id="terms_no" name="terms_no" th:value="${termsDto != null ? termsDto.terms_no : ''}" />
-        <input type="hidden" id="product_no" name="product_no" th:value="${termsDto != null ? termsDto.product_no : ''}" />
+				<div class="form-grid">
 
-        <div class="form-grid">
-          
-          <div class="form-group full-width">
-            <label>약관명 (Terms Title) *</label>
-            <input type="text" id="terms_title" name="terms_title" placeholder="예: 예금거래기본약관, 개인정보수집이용동의서 등 기입" required maxlength="100"
-                   th:value="${termsDto != null ? termsDto.terms_title : ''}" 
-                   th:disabled="${termsDto != null}" />
-          </div>
+					<div class="form-group full-width">
+						<label>약관명 (Terms Title) *</label> <input type="text"
+							id="terms_title" name="terms_title"
+							placeholder="예: 예금거래기본약관, 개인정보수집이용동의서 등 기입" required
+							maxlength="100"
+							th:value="${termsDto != null ? termsDto.terms_title : ''}"
+							th:disabled="${termsDto != null}" />
+					</div>
 
-          <div class="form-group">
-            <label>약관 구분 (Terms Type) *</label>
-            <select id="terms_type" name="terms_type" required th:disabled="${termsDto != null}">
-              <option value="">-- 구분 선택 --</option>
-              <option value="REQUIRED" th:selected="${termsDto != null && termsDto.terms_type == 'REQUIRED'}">필수 동의 (REQUIRED)</option>
-              <option value="OPTIONAL" th:selected="${termsDto != null && termsDto.terms_type == 'OPTIONAL'}">선택 동의 (OPTIONAL)</option>
-            </select>
-          </div>
+					<div class="form-group">
+						<label>약관 구분 (Terms Type) *</label> <select id="terms_type"
+							name="terms_type" required th:disabled="${termsDto != null}">
+							<option value="">-- 구분 선택 --</option>
+							<option value="REQUIRED"
+								th:selected="${termsDto != null && termsDto.terms_type == 'REQUIRED'}">필수
+								동의 (REQUIRED)</option>
+							<option value="OPTIONAL"
+								th:selected="${termsDto != null && termsDto.terms_type == 'OPTIONAL'}">선택
+								동의 (OPTIONAL)</option>
+						</select>
+					</div>
 
-          <div class="form-group">
-            <label>약관 버전 (Terms Version) *</label>
-            <input type="text" id="terms_version" name="terms_version" placeholder="예: 1.0" required maxlength="20"
-                   th:value="${termsDto != null ? termsDto.terms_version : '1.0'}" 
-                   th:disabled="${termsDto != null}" />
-          </div>
+					<div class="form-group">
+						<label>약관 버전 (Terms Version) *</label> <input type="text"
+							id="terms_version" name="terms_version" placeholder="예: 1.0"
+							required maxlength="20"
+							th:value="${termsDto != null ? termsDto.terms_version : '1.0'}"
+							th:disabled="${termsDto != null}" />
+					</div>
 
-          <div class="form-group full-width">
-            <label>원본 약관 PDF 경로 (PDF URL) *</label>
-            <input type="text" id="pdf_url" name="pdf_url" placeholder="예: /uploads/pdf/terms_sample.pdf" required maxlength="500"
-                   th:value="${termsDto != null ? termsDto.pdf_url : ''}" 
-                   th:disabled="${termsDto != null}" />
-            <div class="file-link-box" th:if="${termsDto != null && termsDto.pdf_url != null}">
-              <a th:href="${termsDto.pdf_url}" target="_blank" class="btn-link">📄 원본 PDF 확인하기</a>
-            </div>
-          </div>
+					<div class="form-group full-width">
+						<label>원본 약관 PDF 경로 (PDF URL) *</label> <input type="text"
+							id="pdf_url" name="pdf_url"
+							placeholder="예: /uploads/pdf/terms_sample.pdf" required
+							maxlength="500"
+							th:value="${termsDto != null ? termsDto.pdf_url : ''}"
+							th:disabled="${termsDto != null}" />
+						<div class="file-link-box"
+							th:if="${termsDto != null && termsDto.pdf_url != null}">
+							<a th:href="${termsDto.pdf_url}" target="_blank" class="btn-link">📄
+								원본 PDF 확인하기</a>
+						</div>
+					</div>
 
-          <div class="form-group full-width">
-            <label>미리보기 대표 이미지 경로 (Image URL)</label>
-            <input type="text" id="image_url" name="image_url" placeholder="예: /uploads/images/preview_sample.jpg" maxlength="500"
-                   th:value="${termsDto != null ? termsDto.image_url : ''}" 
-                   th:disabled="${termsDto != null}" />
-            <div class="file-link-box" th:if="${termsDto != null && termsDto.image_url != null}">
-              <a th:href="${termsDto.image_url}" target="_blank" class="btn-link">🖼️ 미리보기 이미지 확인하기</a>
-            </div>
-          </div>
+					<div class="form-group full-width">
+						<label>미리보기 대표 이미지 경로 (Image URL)</label> <input type="text"
+							id="image_url" name="image_url"
+							placeholder="예: /uploads/images/preview_sample.jpg"
+							maxlength="500"
+							th:value="${termsDto != null ? termsDto.image_url : ''}"
+							th:disabled="${termsDto != null}" />
+						<div class="file-link-box"
+							th:if="${termsDto != null && termsDto.image_url != null}">
+							<a th:href="${termsDto.image_url}" target="_blank"
+								class="btn-link">🖼️ 미리보기 이미지 확인하기</a>
+						</div>
+					</div>
 
-          <div class="form-group">
-            <label>사용 여부 (Use YN) *</label>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="use_yn" value="Y" th:checked="${termsDto == null || termsDto.use_yn == 'Y'}" th:disabled="${termsDto != null}"> 사용 (Y)
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="use_yn" value="N" th:checked="${termsDto != null && termsDto.use_yn == 'N'}" th:disabled="${termsDto != null}"> 미사용 (N)
-              </label>
-            </div>
-          </div>
+					<div class="form-group">
+						<label>사용 여부 (Use YN) *</label>
+						<div class="radio-group">
+							<!-- 🛠️ Safe Navigation (?.) 연산자를 적용하여 null 포인터 예외 완벽 방지 -->
+							<label class="radio-label"> <input type="radio"
+								name="use_yn" value="Y"
+								th:checked="${termsDto == null || termsDto?.use_yn == 'Y'}"
+								th:disabled="${termsDto != null}"> 사용 (Y)
+							</label> <label class="radio-label"> <input type="radio"
+								name="use_yn" value="N"
+								th:checked="${termsDto != null && termsDto?.use_yn == 'N'}"
+								th:disabled="${termsDto != null}"> 미사용 (N)
+							</label>
+						</div>
+					</div>
 
-          <div class="form-group" th:if="${termsDto != null}">
-            <label>등록 책임자 사원번호 (Uploaded By)</label>
-            <input type="text" th:value="${termsDto.uploaded_by}" disabled style="background: #F5F5F5;" />
-          </div>
+					<div class="form-group" th:if="${termsDto != null}">
+						<label>등록 책임자 사원번호 (Uploaded By)</label> <input type="text"
+							th:value="${termsDto.uploaded_by}" disabled />
+					</div>
 
-          <div class="form-group" th:if="${termsDto != null}">
-            <label>최초 등록일시 (Uploaded At)</label>
-            <input type="text" th:value="${#dates.format(termsDto.uploaded_at, 'yyyy-MM-dd HH:mm:ss')}" disabled style="background: #F5F5F5;" />
-          </div>
+					<!-- 🛠️ #dates.format 사용 시 null 체크 추가하여 파싱 안정성 확보 -->
+					<div class="form-group"
+						th:if="${termsDto != null && termsDto.uploaded_at != null}">
+						<label>최초 등록일시 (Uploaded At)</label> <input type="text"
+							th:value="${#temporals.format(termsDto.uploaded_at, 'yyyy-MM-dd HH:mm:ss')}"
+							disabled />
+					</div>
 
-          <div class="form-group" th:if="${termsDto != null}">
-            <label>마지막 수정일시 (Updated At)</label>
-            <input type="text" th:value="${termsDto.updated_at != null ? #dates.format(termsDto.updated_at, 'yyyy-MM-dd HH:mm:ss') : '수정 내역 없음'}" disabled style="background: #F5F5F5;" />
-          </div>
+					<div class="form-group" th:if="${termsDto != null}">
+						<label>마지막 수정일시 (Updated At)</label> <input type="text"
+							th:value="${termsDto.updated_at != null ? #temporals.format(termsDto.updated_at, 'yyyy-MM-dd HH:mm:ss') : '수정 내역 없음'}"
+							disabled />
+					</div>
 
-          <div class="form-group full-width">
-            <label>약관 요약 내용 (Terms Summary CLOB) *</label>
-            <textarea id="terms_summary" name="terms_summary" rows="6" placeholder="고객 가독성을 위한 필수 핵심 약관 요약 문구를 기술하세요..." required
-                      th:text="${termsDto != null ? termsDto.terms_summary : ''}" 
-                      th:disabled="${termsDto != null}"></textarea>
-          </div>
+					<div class="form-group full-width">
+						<label>약관 요약 내용 (Terms Summary CLOB) *</label>
+						<textarea id="terms_summary" name="terms_summary" rows="6"
+							placeholder="고객 가독성을 위한 필수 핵심 약관 요약 문구를 기술하세요..." required
+							th:text="${termsDto != null ? termsDto.terms_summary : ''}"
+							th:disabled="${termsDto != null}"></textarea>
+					</div>
 
-        </div>
-      </form>
-    </div>
+				</div>
+			</form>
+		</div>
 
-    <div class="btn-group">
-      <a th:href="@{/employee/manager/SUG/approvedList}" class="btn btn-secondary">목록으로</a>
-      <button type="button" class="btn btn-secondary" onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
-      
-      <button th:if="${termsDto == null}" type="button" class="btn btn-primary" onclick="submitTerms()">약관 사양 등록 완료</button>
-    </div>
-  </div>
+		<div class="btn-group">
+			<a th:href="@{/employee/manager/SUG/approvedList}"
+				class="btn btn-secondary">목록으로</a>
+			<button type="button" class="btn btn-secondary"
+				onclick="goBackToParent()">← 컴포넌트 현황판으로</button>
 
-  <div class="toast" id="toast"></div>
+			<button th:if="${termsDto == null}" type="button"
+				class="btn btn-primary" onclick="submitTerms()">약관 사양 등록 완료</button>
+		</div>
+	</div>
 
-  <script th:inline="javascript">
-    /*<![CDATA[*/
-    // 타임리프 인라인을 사용하여 스크립트 변수로 안전하게 확보
-    const parentSugNo = document.getElementById("suggestion_no").value;
+	<div class="toast" id="toast"></div>
 
-    /* ── 토스트 알림창 함수 ── */
-    function showToast(msg, type = 'success') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = `toast ${type} show`;
-      setTimeout(() => { t.className = 'toast'; }, 3000);
-    }
-
-    /* ── 이전 승인 제안서 상세 컴포넌트 현황 화면으로 리턴하는 백 스페이스 함수 ── */
-    function goBackToParent() {
-      if(parentSugNo && parentSugNo !== "0") {
-        location.href = `/employee/manager/SUG/approvedDetail?suggestion_no=${parentSugNo}`;
-      } else {
-        location.href = "/employee/manager/SUG/approvedList";
-      }
-    }
-
-    /* ── 약관 양식 데이터를 JSON 포맷화 하여 저장 API로 전송하는 함수 ── */
-    function submitTerms() {
-      const form = document.getElementById("termsForm");
-      
-      // 브라우저 기본 내장 유효성 필드 검증 피드백
-      if(!form.checkValidity()) {
-        form.reportValidity();
-        return;
-      }
-
-      const formData = new FormData(form);
-      const jsonObject = {};
-      
-      formData.forEach((value, key) => {
-        jsonObject[key] = value;
-      });
-
-      console.log("전송할 약관 구성 사양 데이터:", jsonObject);
-
-      // 백엔드 약관 등록 전용 비동기 API 요청 처리 호출
-      fetch("/api/employee/approved/registerTerms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(jsonObject)
-      })
-      .then(res => res.json())
-      .then(result => {
-        // 백엔드 성공 리턴 사양(1) 식별 조건문 
-        if (result === 1) {
-          showToast('약관 구성 사양이 성공적으로 셋업되었습니다.', 'success');
-          setTimeout(() => {
-            goBackToParent();
-          }, 1500);
-        } else {
-          showToast('데이터 저장 도중 예기치 못한 결함이 식별되었습니다.', 'error');
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        showToast('서버 통신 중 장애가 발생했습니다.', 'error');
-      });
-    }
-    /*]]>*/
-  </script>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		// 자바스크립트 변수 대입 안전하게 수정
+		const parentSugNo = document.getElementById("suggestion_no") ? document.getElementById("suggestion_no").value : "0";
+		
+		function showToast(msg, type = 'success') {
+			const t = document.getElementById('toast');
+			if(t) {
+				t.textContent = msg;
+				t.className = `toast ${type} show`;
+				setTimeout(() => { t.className = 'toast'; }, 3000);
+			}
+		}
+		
+		function goBackToParent() {
+			if(parentSugNo && parentSugNo !== "0") {
+				location.href = `/employee/manager/SUG/approvedDetail?suggestion_no=${parentSugNo}`;
+			} else {
+				location.href = "/employee/manager/SUG/approvedList";
+			}
+		}
+		
+		function submitTerms() {
+			const form = document.getElementById("termsForm");
+			if(!form) return;
+			  
+			if(!form.checkValidity()) {
+				form.reportValidity();
+				return;
+			}
+			
+			const formData = new FormData(form);
+			const jsonObject = {};
+			
+			formData.forEach((value, key) => {
+				jsonObject[key] = value;
+			});
+			
+			fetch("/api/employee/approved/registerTerms", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(jsonObject)
+			})
+			.then(res => res.json())
+			.then(result => {
+				if (result === 1) {
+					showToast('약관 구성 사양이 성공적으로 셋업되었습니다.', 'success');
+					setTimeout(() => { goBackToParent(); }, 1500);
+				} else {
+					showToast('데이터 저장 도중 예기치 못한 결함이 식별되었습니다.', 'error');
+				}
+			})
+			.catch(err => {
+				console.error(err);
+				showToast('서버 통신 중 장애가 발생했습니다.', 'error');
+			});
+		}
+	/*]]>*/
+	</script>
 </body>
 </html>
