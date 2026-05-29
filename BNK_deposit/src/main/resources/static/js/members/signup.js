@@ -152,7 +152,7 @@ function signup(){
 		if(data){
 			alert('회원가입 성공!');
 			location.href="/loginPage";
-		}else alert('잠시후 다시 실행해주세요.');
+		}else alert('이미 가입하셨습니다.');
 	}).catch(e => alert(e));
 	
 }
