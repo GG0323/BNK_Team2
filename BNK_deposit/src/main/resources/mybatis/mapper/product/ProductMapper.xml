@@ -4,7 +4,7 @@
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.product.IProductDao">
 	<select id="showProduct" resultType="com.example.bnk.dto.product.ProductDto">
-		SELECT * FROM TB_PRODUCT ORDER BY product_name ASC
+		SELECT * FROM TB_PRODUCT ORDER BY product_name
 	</select>
 	
 	<select id="showPrdToDeposit" resultType="com.example.bnk.dto.product.ProductDto">

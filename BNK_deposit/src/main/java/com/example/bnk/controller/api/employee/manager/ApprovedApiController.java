@@ -49,6 +49,16 @@ public class ApprovedApiController {
 	@Value("${file.upload.path}")
 	private String uploadPath;
 	
+	// 사원 테이블에서 사용할 승인한 제안서 목록 가져오기
+	@GetMapping("/chooseApprovedList")
+	public List<ApprovedSuggestionDetailDto> chooseApprovedList() {
+		
+		// 승인한 제안서
+		List<ApprovedSuggestionDetailDto> list = approvedService.chooseApprovedList();
+		
+		return list;
+	}
+	
 	
 	// 승인한 제안서 목록 가져오기
 	@GetMapping("/approvedList")
@@ -63,7 +73,7 @@ public class ApprovedApiController {
 		String logKey = "사원 번호:"+myInfo.getEmployee_no();
 		logService.build(username, "SELECT", "TB_APPROVED_SUGGESTION", logKey, "승인된 제안서 목록을 불러온다.");
 		
-		// 2. 내가 승인한 상품
+		// 2. 내가 승인한 제안서
 		List<ApprovedSuggestionDetailDto> list = approvedService.approvedList(myInfo.getEmployee_no());
 		
 		return list;

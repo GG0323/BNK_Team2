@@ -94,5 +94,19 @@
 		SET rate_no = #{rate_no}
 		WHERE suggestion_no = #{suggestion_no}
 	</update>
+	
+	
+	
+	<select id="chooseApprovedList" resultType="com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto">
+		SELECT * 
+		FROM TB_APPROVED_SUGGESTION A
+	    JOIN TB_PRODUCTS_SUGGESTION B
+	    ON A.suggestion_no = B.suggestion_no
+	</select>
+	
+	
+	
+	
+	
 </mapper>
 	
