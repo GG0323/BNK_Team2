@@ -2,78 +2,123 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>상품 수정 및 판매 상태 변경</title>
+<title>상품 구성 - 상품 통합 관리 마스터</title>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/allProductList.css}" />
 </head>
 <body>
-	<h2>상품 목록</h2>
-	
-	<!-- 상품 가입 조건 등록 페이지로 이동 -->	
-	<div th:onclick="|productConditionWrite()|" style="border: 1px solid black; width: 250px; margin-top: 50px; margin-bottom: 50px;">
-		상품 가입 조건 등록하기 <span style="color: red;">이곳</span>을 <span style="color: blue;">클릭</span>
-	</div>
-	
-	<!-- 상품 금리 등록 페이지로 이동 -->	
-	<div th:onclick="|productRateWrite()|" style="border: 1px solid black; width: 250px; margin-top: 50px; margin-bottom: 50px;">
-		상품 금리 등록하기 <span style="color: red;">이곳</span>을 <span style="color: blue;">클릭</span>
-	</div>
-	
-	<!-- 상품 설명 등록 페이지로 이동 -->	
-	<div th:onclick="|productDescriptionWrite()|" style="border: 1px solid black; width: 250px; margin-top: 50px; margin-bottom: 50px;">
-		상품 설명 등록하기 <span style="color: red;">이곳</span>을 <span style="color: blue;">클릭</span>
-	</div>
-	
-	<!-- 전체 상품 리스트 출력 -->
-	<div id="product_list_place">
-		<table>
-			<thead>
-				<tr>
-					<th>번호</th>
-					<th>상품코드</th>
-					<th>상품명</th>
-					<th>구분</th>
-				</tr>
-			</thead>
-			<tbody th:if="${#lists.isEmpty(productList)}">
-				<tr>
-					<td colspan="4" style="text-align: center;">상품이 없습니다.</td>
-				</tr>
-			</tbody>
-			<tbody th:if="${not #lists.isEmpty(productList)}">
-				<tr th:each="prd, stat : ${productList}" 
-					th:onclick="|productDetail('${prd.product_no}')|">
-					
-					<td th:text="${stat.count}"></td>
-					<td th:text="${prd.product_no}"></td>
-					<td th:text="${prd.product_name}"></td>
-					<td th:text="${prd.product_type}"></td>
-				</tr>
-			</tbody>
-			
-		</table>
 
-	
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+	<div class="main">
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+		<div class="breadcrumb">
+			직원 페이지 › <span class="current">상품 통합 관리 마스터</span>
+		</div>	
+
+		<div class="page-title">출시 상품 및 컴포넌트 마스터 관리</div>
+
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">현재 운영중인 상품 리스트 (Product Master)</div>
+				<div class="total-count">
+					전체 상품: <span th:text="${#lists.isEmpty(productList) ? 0 : #lists.size(productList)}">0</span>건
+				</div>
+			</div>
+
+			<div id="product_list_place" class="table-responsive">
+				<table class="dashboard-table">
+					<thead>
+						<tr>
+							<th style="width: 80px;">번호</th>
+							<th style="width: 150px;">상품 코드</th>
+							<th>상품 명칭 (Product Name)</th>
+							<th style="width: 180px;">상품 구분 (Type)</th>
+						</tr>
+					</thead>
+					
+					<tbody th:if="${#lists.isEmpty(productList)}">
+						<tr>
+							<td colspan="4" class="no-data">
+								<div class="no-data-box">
+									📦 현재 시스템에 등록된 상품 사양이 존재하지 않습니다.
+								</div>
+							</td>
+						</tr>
+					</tbody>
+					
+					<tbody th:if="${not #lists.isEmpty(productList)}">
+						<tr th:each="prd, stat : ${productList}" 
+							th:onclick="|productDetail('${prd.product_no}')|" 
+							class="clickable-row">
+							
+							<td class="text-center" th:text="${stat.count}">1</td>
+							<td class="text-code" th:text="${prd.product_no}">PRD-001</td>
+							<td class="text-name font-semibold" th:text="${prd.product_name}">BNK 가치성장 정기예금</td>
+							<td class="text-center">
+								<span class="type-badge" th:classappend="${prd.product_type == '정기예금' ? 'badge-deposit' : 'badge-saving'}" th:text="${prd.product_type}">정기예금</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="quick-section-title">컴포넌트 개별 사양 신규 등록 바로가기</div>
+		
+		<div class="quick-grid">
+			<div class="quick-card" onclick="productConditionWrite()">
+				<div class="icon">⚙️</div>
+				<div class="title">가입 조건 설정</div>
+				<div class="desc">연령제한, 가입금액 한도, 기간 범위 등 핵심 가입 필터를 세부 구성합니다.</div>
+				<div class="arrow">등록하러 가기 →</div>
+			</div>
+			
+			<div class="quick-card" onclick="productRateWrite()">
+				<div class="icon">📈</div>
+				<div class="title">금리/이율 사양 설정</div>
+				<div class="desc">기본 금리 테이블 및 우대 금리 변동 세부 요건을 조립 등록합니다.</div>
+				<div class="arrow">등록하러 가기 →</div>
+			</div>
+			
+			<div class="quick-card" onclick="productDescriptionWrite()">
+				<div class="icon">📝</div>
+				<div class="title">상품 설명 문구 설정</div>
+				<div class="desc">고객 노출용 홍보 문구, 부제목 및 법적 필수 유의사항 CLOB을 편집합니다.</div>
+				<div class="arrow">등록하러 가기 →</div>
+			</div>
+		</div>
 	</div>
-	<script>
-	
-	function productDetail(product_no) {
-	    // 상품 번호를 주소 경로(Path)의 일부로 포함시켜 이동.
-	    location.href = '/employee/prdPage/detail/' + product_no;
-	}
-	
-	// 상품 가입 조건 등록 페이지로 이동하는 함수
-	function productConditionWrite(){
-		location.href= '/employee/staff/product/condition';
-	}
-	
-	// 상품 금리 등록 페이지로 이동
-	function productRateWrite(){
-		location.href= '/employee/staff/product/rate';
-	}
-	
-	// 상품 설명 등록 페이지로 이동
-	function productDescriptionWrite(){
-		location.href= '/employee/staff/product/description';
-	}
+
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		
+		// ── 특정 상품 행 클릭 시 상세 페이지(조회/수정)로 이동하는 함수 ──
+		function productDetail(product_no) {
+			if(product_no) {
+				location.href = '/employee/prdPage/detail/' + product_no;
+			}
+		}
+		
+		// ── 상품 가입 조건 등록 페이지로 이동 ──
+		function productConditionWrite(){
+			location.href = '/employee/staff/product/condition';
+		}
+		
+		// ── 상품 금리 등록 페이지로 이동 ──
+		function productRateWrite(){
+			location.href = '/employee/staff/product/rate';
+		}
+		
+		// ── 상품 설명 등록 페이지로 이동 ──
+		function productDescriptionWrite(){
+			location.href = '/employee/staff/product/description';
+		}
+		
+	/*]]>*/
 	</script>
 </body>
 </html>
