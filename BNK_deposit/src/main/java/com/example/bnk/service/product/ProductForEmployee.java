@@ -204,7 +204,73 @@ public class ProductForEmployee {
 		System.out.println("그냥 DTO가 안들어있는데?");
 		return 0;
 	}
+	
+	
+	
+	// 약관 등록 서비스
+	// 약관 등록 및 파일 디스크 물리 저장 서비스 (완성형)
+		@Transactional
+		public int insertAllTerms(ProductTermsDto prdTermsDto, 
+				long suggestion_no, 
+				MultipartFile pdfFile, 
+				MultipartFile imageFile) throws IOException {
+			
+			// 없으면 /file 인가? 새로 생성. 있으면 거기다 넣음
+			File uploadFolder = new File(uploadPath);
+			if (!uploadFolder.exists()) {
+				uploadFolder.mkdirs();
+			}
 
+			// 2. 컨트롤러가 넘겨준 진짜 PDF 파일 하드디스크에 저장하기
+			if (pdfFile != null && !pdfFile.isEmpty()) {
+				String originalName = pdfFile.getOriginalFilename();
+				String savedName = UUID.randomUUID().toString() + "_" + originalName; // UUID 중복방지 믹싱
+				
+				// C:/upload/UUID_파일명.pdf 로 실제 디스크 저장 실행
+				pdfFile.transferTo(new File(uploadPath + savedName));
+				
+				prdTermsDto.setPdf_url(uploadUrl + savedName);
+			}
+
+			if (imageFile != null && !imageFile.isEmpty()) {
+				String originalName = imageFile.getOriginalFilename();
+				String savedName = UUID.randomUUID().toString() + "_" + originalName;
+				
+				imageFile.transferTo(new File(uploadPath + savedName));
+				
+				prdTermsDto.setImage_url(uploadUrl + savedName);
+			}
+
+
+			prdTermsDto.setProduct_no(suggestion_no); 
+
+			System.out.println("====== [MyBatis 전송 직전] 최종 정제 완료된 DTO ======");
+			System.out.println(prdTermsDto);
+
+
+			int insertResult = iProductTermsDao.insertProductTerms(prdTermsDto);
+			if(insertResult != 0) {
+				
+				long terms_no = prdTermsDto.getTerms_no();
+				
+				System.out.println("발급된 terms_no 확인: " + terms_no);
+				System.out.println("목표 승인 제안서 번호(suggestion_no): " + suggestion_no);
+				
+				int updateResult = iAprSuggestionDao.updateAprToTerms(suggestion_no, terms_no);
+				if(updateResult == 1) {
+					System.out.println("약관 등록 성공");
+					return 1;
+				}
+				System.out.println("중간 테이블에 약관 업데이트 실패");
+				return 0; 
+			} else {
+				System.out.println("약관 DB 인서트 과정 중 오류가 발생했습니다.");
+				return 0;
+			}
+		}
+	
+	
+	
 	// 상품 설명 등록 서비스
     @Transactional
     public int saveDescription(ProductDescriptionDto prdDescDto,

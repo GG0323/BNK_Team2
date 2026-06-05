@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
@@ -32,6 +34,12 @@ public class EmployeePageController {
 	@Autowired
 	ProductForEmployee prdForEmpService;
 
+	@Value("${file.upload.path}")
+    private String uploadPath;
+	
+	@Value("${file.upload.url}")
+    private String uploadUrl;
+	
 	// /employee/toMain
 	@GetMapping("/toMain")
 	public String mainWorkSpace(Model model, @RequestParam(value = "message", required = false) String msg) {
@@ -242,8 +250,9 @@ public class EmployeePageController {
 
 		return "redirect:/employee/staff/approved/list/detail?" + suggestion_no;
 	}
-	 /* 가입조건
-	 * -----------------------------------------------------------------------------*/
+	
+	/* 등록
+	-----------------------------------------------------------------------------------------*/
 
 	// 상품 가입 조건 등록 페이지
 	// /employee/staff/product/condition
@@ -310,8 +319,35 @@ public class EmployeePageController {
 	
 	
 	// 상품 약관 등록하기
-	// employee/staff/term/save
-	
+	// employee/staff/product/terms/save
+	@PostMapping("/staff/product/terms/save")
+	public String saveProductTerms(
+			ProductTermsDto prdTermsDto,
+			@RequestParam("suggestion_no") long suggestion_no,
+			@RequestParam(value = "pdf_file", required = false) MultipartFile pdfFile,
+			@RequestParam(value = "image_file", required = false) MultipartFile imageFile) {
+		
+		System.out.println("====== [컨트롤러] 약관 등록 프로세스 시동 ======");
+		System.out.println("기본 텍스트 데이터: " + prdTermsDto);
+		System.out.println("타겟 상품 제안서 번호: " + suggestion_no);
+		System.out.println("수신된 PDF 파일 존재 여부: " + (pdfFile != null && !pdfFile.isEmpty()));
+		System.out.println("수신된 이미지 파일 존재 여부: " + (imageFile != null && !imageFile.isEmpty()));
+		
+		try {
+			int result = prdForEmpService.insertAllTerms(prdTermsDto, suggestion_no, pdfFile, imageFile);
+			
+			if (result == 1) {
+				System.out.println("하드디스크 파일 저장 및 DB 등록 최종 성공!");
+				return "redirect:/employee/staff/product/approved/list";
+			}
+			
+		} catch (java.io.IOException e) {
+			System.out.println("파일 물리 저장 중 하드디스크 에러 발생: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return "redirect:/employee/staff/product/terms";
+	}
 	
 	
 	

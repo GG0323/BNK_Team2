@@ -89,12 +89,18 @@
 		WHERE suggestion_no = #{suggestion_no}
 	</update>
 	
+	<!-- 승인된 거에 RATE pk 넣기 -->
 	<update id="updateAprToRate">
 		UPDATE TB_APPROVED_SUGGESTION
 		SET rate_no = #{rate_no}
 		WHERE suggestion_no = #{suggestion_no}
 	</update>
 	
+	<update id="updateAprToTerms">
+		UPDATE TB_APPROVED_SUGGESTION
+		SET terms_no = #{terms_no}
+		WHERE suggestion_no = #{suggestion_no}
+	</update>
 	
 	
 	<select id="chooseApprovedList" resultType="com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto">
