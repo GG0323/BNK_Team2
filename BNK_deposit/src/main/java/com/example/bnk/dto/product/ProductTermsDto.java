@@ -2,6 +2,8 @@ package com.example.bnk.dto.product;
 
 import java.time.LocalDate;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,4 +29,6 @@ public class ProductTermsDto {
 	private LocalDate uploaded_at;  // 등록일시 DEFAULT SYSDATE
 	private LocalDate updated_at;   // 마지막 수정일시
 	
+	private MultipartFile pdf_file;
+	private MultipartFile image_file;
 }

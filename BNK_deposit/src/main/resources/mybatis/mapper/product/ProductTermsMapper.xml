@@ -19,6 +19,29 @@
 		SELECT * FROM TB_PRODUCT_TERMS WHERE terms_no = #{terms_no}
 	</select>
 	
-	
+	<insert id="insertProductTerms" 
+			parameterType="com.example.bnk.dto.product.ProductTermsDto"
+			statementType="CALLABLE">
+		BEGIN
+		
+		    INSERT INTO TB_PRODUCT_TERMS (
+		        TERMS_TITLE,
+		        TERMS_TYPE,
+		        PDF_URL, IMAGE_URL, TERMS_SUMMARY,
+		        TERMS_VERSION,
+		        USE_YN
+		    ) VALUES (
+		        #{terms_title},
+		        #{terms_type},
+		        #{pdf_url},
+		        #{image_url, jdbcType=VARCHAR},
+		        #{terms_summary},
+		        #{terms_version},
+		        #{use_yn})
+			RETURNING terms_no
+			INTO #{terms_no, mode=OUT, jdbcType=NUMERIC};
+		    
+		END;
+	</insert>
 	
 </mapper>

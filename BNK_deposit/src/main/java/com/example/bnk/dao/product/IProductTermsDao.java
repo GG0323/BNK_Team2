@@ -10,7 +10,7 @@ public interface IProductTermsDao {
 
 	ProductTermsDto detail(@Param("suggestion_no") long suggestion_no);
 	ProductTermsDto selectTermsPrd(@Param("terms_no") long terms_no);
-	
+	int insertProductTerms(ProductTermsDto prdTermsDto);
 	
 	
 }
