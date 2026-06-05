@@ -18,13 +18,18 @@ public interface IApporvedSuggestionDao {
 	
 	public ApprovedSuggestionDetailDto selectApprovedSug(@Param("suggestion_no") long suggestion_no);
 	
+	
 	public int updateAprToCondition(@Param("suggestion_no") long suggestion_no, 
 									@Param("condition_no") long condition_no);
 	
 	public int updateAprToDescription(@Param("suggestion_no") long suggestion_no,
 									  @Param("description_no")long description_no);
+	
 	public int updateAprToRate(@Param("suggestion_no") long suggestion_no,
 							   @Param("rate_no") long rate_no);
-
+	
+	public int updateAprToTerms(@Param("suggestion_no") long suggestion_no,
+							   @Param("terms_no") long terms_no);
+	
 	public List<ApprovedSuggestionDetailDto> chooseApprovedList();											
 }
