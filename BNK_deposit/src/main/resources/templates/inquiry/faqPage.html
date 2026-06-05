@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+
+faq리스트를 불러오는 페이지 DB불러오기까지 해냄!!!
+	
+	
+
+
+	<script>
+	
+	fetch("/api/inquiry/faq", {
+		method: "GET"
+	})
+	.then(response => response.json())
+	.then(data => {
+		console.log(data);
+		
+		
+	})
+	.catch(e=> console.log(e));
+	
+	
+	
+	</script>
+
+
+
+
+
+</body>
+</html>
