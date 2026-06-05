@@ -165,7 +165,7 @@ public class EmployeePageController {
 		return "Employees/staff/staffPage";
 	}
 
-	// 약관 등록 페이지 /employee/staff/productTerm
+	// 약관 등록 페이지 /employee/staff/productTerm --------------------------------------------------------------------------------
 	@GetMapping("/staff/productTerm")
 	public String productTermForm() {
 		return "Employees/staff/term/productTermForm";
@@ -242,12 +242,9 @@ public class EmployeePageController {
 
 		return "redirect:/employee/staff/approved/list/detail?" + suggestion_no;
 	}
+	 /* 가입조건
+	 * -----------------------------------------------------------------------------*/
 
-	/*
-	 * 가입조건
-	 * -----------------------------------------------------------------------------
-	 * ------
-	 */
 	// 상품 가입 조건 등록 페이지
 	// /employee/staff/product/condition
 	@GetMapping("/staff/product/condition")
@@ -300,6 +297,26 @@ public class EmployeePageController {
 		return "redirect:/employee/staff/product/descrition";
 	}
 
+	// 약관 등록 페이지 이동
+	// employee/staff/product/terms
+	@GetMapping("/staff/product/terms")
+	public String goWriteToTerms(Model model) {
+		
+		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
+		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		
+		return "Employees/staff/productTermsWrite";
+	}
+	
+	
+	// 상품 약관 등록하기
+	// employee/staff/term/save
+	
+	
+	
+	
+	
+	
 	// 상품 설명 관리 페이지
 	// /employee/staff/product/description
 	@GetMapping("/staff/product/description")
@@ -335,11 +352,8 @@ public class EmployeePageController {
 		return "Employees/staff/ApprovedProductList";
 	}
 
-	/*
-	 * 상품 상세 페이지 수정용.
-	 * -----------------------------------------------------------------------------
-	 * ------------
-	 */
+	/* 상품 상세 페이지 수정용.
+	----------------------------------------------------------------------------- */
 	// 상품 기본 정보 수정
 	@PostMapping("staff/product/update/product")
 	public String updateProduct(ProductDto productDto) {

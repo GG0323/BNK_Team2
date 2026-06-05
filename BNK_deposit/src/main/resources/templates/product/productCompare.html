@@ -46,18 +46,20 @@
 
                 <thead>
                     <tr>
-                        <th>구분</th>
+                        <th style="font-size: 22px;">구분</th>
 
                         <th th:each="product : ${compareList}">
-                            <div>
+                            <div style="font-size: 20px;">
                                 <span class="compare-product-type"
-                                      th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                                      th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}"
+                                      style="font-size: 22px;">
                                     예금
                                 </span>
                             </div>
 
                             <div class="compare-product-name"
-                                 th:text="${product.product_name}">
+                                 th:text="${product.product_name}"
+                                 style="font-size: 21px;">
                                 상품명
                             </div>
 
@@ -71,15 +73,16 @@
                 <tbody>
 
                     <tr>
-                        <th>상품명</th>
+                        <th style="font-size: 20px;">상품명</th>
                         <td th:each="product : ${compareList}"
-                            th:text="${product.product_name}">
+                            th:text="${product.product_name}"
+                            style="font-size: 20px;">
                             상품명
                         </td>
                     </tr>
 
                     <tr>
-                        <th>최저금리</th>
+                        <th style="font-size: 20px;">최저금리</th>
                         <td th:each="product : ${compareList}"
                             th:text="'연 ' + ${product.min_interest_rate} + '%'">
                             연 0.00%
@@ -87,7 +90,7 @@
                     </tr>
 
                     <tr>
-                        <th>최고금리</th>
+                        <th style="font-size: 20px;">최고금리</th>
                         <td th:each="product : ${compareList}"
                             th:text="'연 ' + ${product.max_interest_rate} + '%'">
                             연 0.00%
@@ -95,26 +98,29 @@
                     </tr>
 
                     <tr>
-                        <th>가입단위</th>
+                        <th style="font-size: 20px;">가입단위</th>
                         <td th:each="product : ${compareList}"
-                            th:text="${product.min_join_amount != null ? #numbers.formatInteger(product.min_join_amount, 0, 'COMMA') + '원' : '-'}">
+                            th:text="${product.min_join_amount != null ? #numbers.formatInteger(product.min_join_amount, 0, 'COMMA') + '원' : '-'}"
+                            style="font-size: 20px;">
                             10,000원
                         </td>
                     </tr>
 
                     <tr>
-                        <th>상품구분</th>
+                        <th style="font-size: 20px;">상품구분</th>
                         <td th:each="product : ${compareList}"
-                            th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                            th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}"
+                            style="font-size: 20px;">
                             예금
                         </td>
                     </tr>
 
                     <tr>
-                        <th>가입방법</th>
+                        <th style="font-size: 20px;">가입방법</th>
                         <td th:each="product : ${compareList}">
                             <span th:if="${product.join_method_desc != null}"
-                                  th:text="${product.join_method_desc}">
+                                  th:text="${product.join_method_desc}"
+                                  style="font-size: 20px;">
                                 인터넷/영업점
                             </span>
 
@@ -129,7 +135,7 @@
                     </tr>
 
                     <tr>
-                        <th>우대조건</th>
+                        <th style="font-size: 20px;">우대조건</th>
                         <td th:each="product : ${compareList}"
                             th:text="${product.condition_note != null ? product.condition_note : '-'}">
                             우대조건
@@ -137,16 +143,18 @@
                     </tr>
 
                     <tr>
-                        <th>예금자보호</th>
+                        <th style="font-size: 20px;">예금자보호</th>
                         <td th:each="product : ${compareList}"
-                            th:text="${product.depositor_protection_yn == 'Y' ? '예금자보호 대상' : '해당 없음'}">
+                            th:text="${product.depositor_protection_yn == 'Y' ? '예금자보호 대상' : '해당 없음'}"
+                            style="font-size: 20px;">
                             예금자보호 대상
                         </td>
                     </tr>
 
                     <tr>
-                        <th>중도해지</th>
-                        <td th:each="product : ${compareList}">
+                        <th style="font-size: 20px;">중도해지</th>
+                        <td th:each="product : ${compareList}"
+                        style="font-size: 20px;">
                             중도해지 시 약정금리보다 낮은 금리 적용 가능
                         </td>
                     </tr>
