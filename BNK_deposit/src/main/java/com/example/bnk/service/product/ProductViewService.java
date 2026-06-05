@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bnk.dao.product.IProductViewDao;
-import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.dto.product.ProductCompareViewDto;
 import com.example.bnk.dto.product.ProductDetailViewDto;
 import com.example.bnk.dto.product.ProductListViewDto;
+import com.example.bnk.service.product.ai.ProductCompareAiService;
+import com.example.bnk.service.product.ai.ProductRecommendAiService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class ProductViewService {
 
     private final IProductViewDao productViewDao;
+    private final ProductRecommendAiService productRecommendAiService;
+    private final ProductCompareAiService productCompareAiService;
 
     // 상품 목록 조회 + 정렬
     public List<ProductListViewDto> getProductList(String sort) {
@@ -29,14 +32,14 @@ public class ProductViewService {
         // 최대금리 높은 순
         if ("maxRateDesc".equals(sort)) {
             list.sort(Comparator
-            				.comparingDouble(ProductListViewDto::getMax_interest_rate)
-            				.reversed()
+                            .comparingDouble(ProductListViewDto::getMax_interest_rate)
+                            .reversed()
             );
          // 상품명 순
         } else if ("nameAsc".equals(sort)) {
             list.sort(Comparator
-            		.comparing(ProductListViewDto::getProduct_name,
-            				Comparator.nullsLast(String::compareTo)));
+                    .comparing(ProductListViewDto::getProduct_name,
+                            Comparator.nullsLast(String::compareTo)));
          
         // 기본금리 높은 순
         } else {
@@ -176,7 +179,7 @@ public class ProductViewService {
         return productViewDao.selectCompareProducts(productNoList);
     }
     
-	// 로그인 회원 유형별 상품 목록 조회
+    // 로그인 회원 유형별 상품 목록 조회
     public List<ProductListViewDto> getProductListForMember(String memberType, String sort) {
 
         List<ProductListViewDto> list = productViewDao.selectProductListForMember(memberType);
@@ -209,5 +212,56 @@ public class ProductViewService {
 
         return productViewDao.searchProductListForMember(memberType, keyword.trim());
     }
-}
 
+    // 상품 추천 AI 추천 이유 생성
+    public String getProductAiRecommendReason(ProductListViewDto product) {
+
+        String aiReason = productRecommendAiService.createRecommendReason(product);
+
+        // Ollama 연결 실패 시 기본 추천 문구 사용
+        if (aiReason == null || aiReason.contains("AI 서버 연결에 실패")) {
+            return productRecommendAiService.createFallbackRecommendReason(product);
+        }
+
+        return aiReason;
+    }
+
+    // 상품 비교 AI 요약 생성
+    public String getCompareAiSummary(String ids) {
+
+        List<ProductCompareViewDto> compareList = getCompareProducts(ids);
+
+        String aiSummary = productCompareAiService.createCompareSummary(compareList);
+
+        // Ollama 연결 실패 시 기본 비교 요약 사용
+        if (aiSummary == null || aiSummary.contains("AI 서버 연결에 실패")) {
+            return productCompareAiService.createFallbackCompareSummary(compareList);
+        }
+
+        return aiSummary;
+    }
+
+    // 비교 페이지 상품 1개 AI 요약 생성
+    public String getCompareProductAiSummary(String ids, long product_no) {
+
+        List<ProductCompareViewDto> compareList = getCompareProducts(ids);
+
+        ProductCompareViewDto targetProduct = null;
+
+        for (ProductCompareViewDto product : compareList) {
+            if (product.getProduct_no() == product_no) {
+                targetProduct = product;
+                break;
+            }
+        }
+
+        String aiSummary = productCompareAiService.createCompareProductSummary(targetProduct);
+
+        // Ollama 연결 실패 시 기본 상품 요약 사용
+        if (aiSummary == null || aiSummary.contains("AI 서버 연결에 실패")) {
+            return productCompareAiService.createFallbackCompareProductSummary(targetProduct);
+        }
+
+        return aiSummary;
+    }
+}

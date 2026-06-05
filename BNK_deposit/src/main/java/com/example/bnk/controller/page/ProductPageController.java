@@ -39,7 +39,8 @@ public class ProductPageController {
     // 조건: product_type = DEPOSIT / SAVINGS, product_status = SALE
     @GetMapping
     public String productList(Model model,
-    		@RequestParam(value="sort", required = false, defaultValue = "baseRateDesc")String sort) {
+            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort) {
+
         model.addAttribute("productList", productViewService.getProductList(sort));
         model.addAttribute("sort", sort);
 
@@ -108,8 +109,32 @@ public class ProductPageController {
         List<ProductCompareViewDto> compareList = productViewService.getCompareProducts(ids);
 
         model.addAttribute("compareList", compareList);
+        model.addAttribute("ids", ids);
+
+        // 페이지 최초 진입 시 Ollama를 자동 호출하지 않음
+        // AI 요약은 버튼 클릭 시 /products/compare-ai-summary API로 별도 호출
+        model.addAttribute("aiSummary", null);
 
         return "product/productCompare";
+    }
+
+    // 상품 비교 AI 요약 API
+    // 예: /products/compare-ai-summary?ids=1,2,3
+    @GetMapping("/compare-ai-summary")
+    @ResponseBody
+    public String compareAiSummary(@RequestParam(value = "ids", required = false) String ids) {
+
+        return productViewService.getCompareAiSummary(ids);
+    }
+
+    // 비교 페이지 상품 1개 AI 요약 API
+    // 예: /products/compare-product-ai-summary?ids=1,2,3&product_no=1
+    @GetMapping("/compare-product-ai-summary")
+    @ResponseBody
+    public String compareProductAiSummary(@RequestParam(value = "ids", required = false) String ids,
+                                          @RequestParam("product_no") long product_no) {
+
+        return productViewService.getCompareProductAiSummary(ids, product_no);
     }
 
     // 모바일 상품 가입 QR 안내 페이지
@@ -150,17 +175,17 @@ public class ProductPageController {
 
         return outputStream.toByteArray();
     }
-	 // 사용자 정보 기반 맞춤 상품 추천
-	 // 현재는 시연용으로 member_no = 1 회원 기준 추천
-	 @GetMapping("/recommend")
-	 public String recommendProductList(Model model) {
-	
-	     List<ProductListViewDto> productList = productViewService.getRecommendProductList();
-	
-	     model.addAttribute("productList", productList);
-	     model.addAttribute("recommendMode", true);
-	
-	     return "product/productList";
-	 }
-    
+
+    // 사용자 정보 기반 맞춤 상품 추천
+    // 현재는 시연용으로 member_no = 1 회원 기준 추천
+    @GetMapping("/recommend")
+    public String recommendProductList(Model model) {
+
+        List<ProductListViewDto> productList = productViewService.getRecommendProductList();
+
+        model.addAttribute("productList", productList);
+        model.addAttribute("recommendMode", true);
+
+        return "product/productList";
+    }
 }
