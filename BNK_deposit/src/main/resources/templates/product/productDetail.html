@@ -450,6 +450,13 @@
                    class="compare-btn">
                     가입하기
                 </a>
+
+                <!-- 영업점 방문 예약 : 모바일 전용이 아닐 때만 노출 -->
+                <a th:if="${product.mobile_join_yn != 'Y'}"
+                   th:href="@{/member/reservation(product_no=${product.product_no})}"
+                   class="compare-btn">
+                    영업점 방문 예약
+                </a>
             </div>
 
         </div>
