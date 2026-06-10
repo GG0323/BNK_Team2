@@ -55,43 +55,89 @@ function setKeyword(keyword) {
 // 챗봇
 //------------------------------------------------------------------------------------------
 // 챗봇 오른쪽 영역에 가두기
+// 챗봇 오른쪽 영역에 가두기
 document.addEventListener('DOMContentLoaded', function() {
+    // 변수명을 하나로 통일합니다.
     const chatbot = document.getElementById('trailChatbot');
-    
-    // 🌟 기준이 되는 중앙 콘텐츠 전체 너비 (디자인 레이아웃에 맞춰 조절 가능)
-    const CONTENT_WIDTH = 1200; 
-    const CHATBOT_SIZE = 70; // 부기 캐릭터 크기
+    const chatbotWindow = document.getElementById('chatbotWindow');
+    const closeBtn = document.getElementById('closeChatbot');
 
+    if (!chatbot) return; // 예외 방어선
+
+    // 🌟 레이아웃 기준 스펙 설정
+    const CONTENT_WIDTH = 1200; 
+    const CHATBOT_SIZE = 70; // 부기 크기
+    
+    // 🌟 안전 바운더리 라인 설정 (픽셀)
+    const TOP_LIMIT = 120;   // 헤더 아래 마지노선
+
+    // 1️⃣ [마우스 이동 로직]
     window.addEventListener('mousemove', function(e) {
         const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
         
-        // 1. 중앙 콘텐츠가 끝나는 '오른쪽 시작 벽'의 위치 계산
-        const rightWall = (windowWidth + CONTENT_WIDTH) / 2;
+        // 오른쪽 여백의 고정 X 레일 좌표 계산
+        const rightTrackX = (windowWidth + CONTENT_WIDTH) / 2 + 20;
 
-        let targetX = e.clientX - (CHATBOT_SIZE / 2);
-        let targetY = e.clientY - (CHATBOT_SIZE / 2);
-
-        // 2. 🌟 우측 레일 강제 잠금(Lock) 알고리즘
-        // 마우스 커서가 오른쪽 여백보다 왼쪽에 있다면 (즉, 본문이나 왼쪽 공백에 있다면)
-        if (e.clientX < rightWall) {
-            // 부기는 무조건 오른쪽 벽 바깥쪽 대기선(오른쪽 벽 + 20px)에 강제로 대기시킵니다.
-            targetX = rightWall + 20; 
-        } else {
-            // 마우스 커서가 아예 오른쪽 빈 여백 영역으로 진입했을 때만 마우스 X축을 자연스럽게 따라갑니다.
+        // X축: 기본적으로 우측 고정 레일에 두되, 마우스가 더 우측 구석으로 가면 따라감
+        let targetX = rightTrackX;
+        if (e.clientX > rightTrackX) {
             targetX = e.clientX - (CHATBOT_SIZE / 2);
         }
 
-        // 3. 화면 우측 구석 모서리를 삐져나가지 않게 최종 방어선 구축
+        // 화면 맨 오른쪽 화면 이탈 방지
         if (targetX > windowWidth - CHATBOT_SIZE - 15) {
             targetX = windowWidth - CHATBOT_SIZE - 15;
         }
 
-        // 4. Y축(위아래)은 화면 상하단 구석을 탈출하지 못하도록 방어
-        if (targetY < 15) targetY = 15;
-        if (targetY > window.innerHeight - CHATBOT_SIZE - 15) targetY = window.innerHeight - CHATBOT_SIZE - 15;
+        // Y축: 마우스를 따라가되 헤더 영역(TOP_LIMIT) 밑으로만 제한
+        let targetY = e.clientY - (CHATBOT_SIZE / 2);
 
-        // 5. 부드러운 3D 하드웨어 가속으로 좌표 이동 실행
+        if (targetY < TOP_LIMIT) {
+            targetY = TOP_LIMIT; // 마우스가 헤더 위로 가도 부기는 120px 선에서 대기
+        }
+        
+        // 화면 맨 아래 바닥 뚫고 나가지 않게 방어
+        if (targetY > windowHeight - CHATBOT_SIZE - 15) {
+            targetY = windowHeight - CHATBOT_SIZE - 15;
+        }
+
+        // 🌟 chatbot 변수명으로 정확하게 매핑하여 CSS 변수와 transform 적용
+        chatbot.style.setProperty('--target-x', `${targetX}px`);
+        chatbot.style.setProperty('--target-y', `${targetY}px`);
         chatbot.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+    });
+
+    // 2️⃣ [클릭 토글 로직] - 하나의 DOMContentLoaded 안에 묶어두는 것이 관리하기 좋습니다.
+    // 부기 아이콘 클릭 시 -> 대화창 열기 + 아이콘 숨기기
+    chatbot.addEventListener('click', function(e) {
+        e.stopPropagation(); 
+        chatbotWindow.classList.add('active'); // 대화창 오픈
+        chatbot.classList.add('hidden');       // 부기 아이콘 숨김
+        
+        setTimeout(() => {
+            document.getElementById('chatbotInput').focus();
+        }, 200);
+    });
+
+    // 대화창 내부 ✕ 버튼 클릭 시 -> 대화창 닫기 + 아이콘 부활
+    closeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        chatbotWindow.classList.remove('active'); 
+        chatbot.classList.remove('hidden');   
+    });
+
+    // 대화창 내부를 클릭했을 때는 창이 안 닫히게 방어
+    chatbotWindow.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // 화면 빈 곳 아무 데나 클릭하면 대화창 닫히고 아이콘 부활
+    document.addEventListener('click', function() {
+        if (chatbotWindow.classList.contains('active')) {
+            chatbotWindow.classList.remove('active');
+            chatbot.classList.remove('hidden');
+        }
     });
 });
 document.addEventListener('DOMContentLoaded', function() {
