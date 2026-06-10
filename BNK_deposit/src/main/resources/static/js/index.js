@@ -103,19 +103,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. 부기 아이콘 클릭 시 -> 대화창 열기/닫기 토글
     chatbotIcon.addEventListener('click', function(e) {
         // 부기 아이콘을 클릭했을 때 클릭 이벤트가 부모나 윈도우로 번지는 것 방지
-        e.stopPropagation(); 
-        chatbotWindow.classList.toggle('active');
+		e.stopPropagation(); 
+		        
+        chatbotWindow.classList.add('active'); // 대화창 오픈
+        chatbotIcon.classList.add('hidden');   // 부기 아이콘 숨김
         
-        // 창이 열리면 입력창에 자동 포커스 주기
-        if(chatbotWindow.classList.contains('active')) {
+        // 입력창 자동 포커스
+        setTimeout(() => {
             document.getElementById('chatbotInput').focus();
-        }
+        }, 200);
     });
 
     // 2. 대화창 내부 ✕ 버튼 클릭 시 -> 대화창 닫기
     closeBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        chatbotWindow.classList.remove('active');
+		e.stopPropagation();
+		        
+        chatbotWindow.classList.remove('active'); // 대화창 클로즈
+        chatbotIcon.classList.remove('hidden');   // 부기 아이콘 등장
     });
 
     // 3. (디테일 팁) 대화창 내부를 클릭했을 때는 창이 안 닫히게 방어
@@ -125,6 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 4. (디테일 팁) 화면 빈 곳 아무 데나 클릭하면 대화창 닫히게 하기
     document.addEventListener('click', function() {
-        chatbotWindow.classList.remove('active');
+		if (chatbotWindow.classList.contains('active')) {
+            chatbotWindow.classList.remove('active');
+            chatbotIcon.classList.remove('hidden');
+        }
     });
 });

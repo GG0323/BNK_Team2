@@ -336,12 +336,12 @@ button {
     position: fixed;
     top: 0;
     left: 0;
-    width: 65px;         /* 챗봇 아이콘 크기 */
+    width: 65px;
     height: 65px;
     border-radius: 50%;
-    background: #E8282F; /* 부산은행 레드 포인트 컬러 매싱 */
+    background: #E8282F;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    z-index: 10000;      /* 화면 최상단 보장 */
+    z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -349,10 +349,21 @@ button {
     font-size: 28px;
     color: white;
     
-    /* 🌟 중요: 마우스 포인터 위치로 스르륵 미끄러지듯 이동시키는 애니메이션 엔진 */
-    transition: transform 0.15s ease-out;
-    pointer-events: auto; /* 클릭은 가능하게 */
+    pointer-events: auto;
+    /* 🌟 열고 닫힐 때 아이콘이 자연스럽게 사라지고 나타나도록 transition 설정 */
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.2s ease, 
+                visibility 0.2s ease;
+    will-change: transform, opacity;
 }
+
+.custom-chatbot.hidden {
+    opacity: 0;
+    pointer-events: none; /* 클릭 안되게 방어 */
+    visibility: hidden;   /* 완전히 공간에서 숨김 */
+    transform: translate3d(var(--target-x, 0px), var(--target-y, 0px), 0) scale(0); /* 슥 작아지며 사라지는 효과 */
+}
+
 
 /* 챗봇 예시 아이콘 */
 .custom-chatbot img {
