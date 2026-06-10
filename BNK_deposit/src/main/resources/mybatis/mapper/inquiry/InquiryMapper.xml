@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.inquiry.IInquiryDao">
+	
+	<insert id="insertInquiry">
+		<selectKey  keyProperty="dto.inquiry_no" resultType="long" order="BEFORE">
+			SELECT TB_INQUIRY_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO TB_INQUIRY (
+			INQUIRY_NO,
+			INQUIRY_CATEGORY,
+			INQUIRY_TITLE,
+			BANK_MEMBER_NO
+		)
+		VALUES (
+			#{dto.inquiry_no},
+			#{dto.inquiry_category},
+			#{dto.inquiry_title},
+			#{dto.bank_member_no}
+		)
+	</insert>
+	
+	<!-- 리스트 불러오기 -->
+	<select id="callList" resultType="com.example.bnk.dto.inquiry.InquiryDto">
+		SELECT * FROM TB_INQUIRY WHERE bank_member_no = #{bank_member_no}
+	</select>
+	
+	<!-- 하나만 불러오기 -->
+	<select id="callDetail" resultType="com.example.bnk.dto.inquiry.InquiryDto">
+		SELECT * FROM TB_INQUIRY WHERE inquiry_no = #{inquiryNo}
+	</select>
+	
+	
+	
+	
+	<!-- =========직원 업무======== -->
+	<select id="waitingAnswers" resultType="com.example.bnk.dto.inquiry.InquiryDto">
+		SELECT * FROM TB_INQUIRY
+	</select>
+	<update id="updateStatus">
+		UPDATE  TB_INQUIRY
+		SET     INQUIRY_STATUS = #{inquiryStatus}
+		WHERE   inquiry_no = #{inquiryNo}
+	</update>
+	
+	
+</mapper>

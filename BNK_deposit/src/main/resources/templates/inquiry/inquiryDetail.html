@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	인쿼리 디테일스
+	http://localhost:8080/inquiry/inquiryList
+	<!-- 헤더 영역 -->
+	<div>
+	    <button onclick="history.back()">←</button>
+	    <div id="inquiryHeader"></div>
+	</div>
+	
+	<!-- 메시지 목록 -->
+	<div id="msgList"></div>
+	
+	
+	<!-- 답변 만족 여부 선택 (기본 숨김) -->
+	<div id="satisfactionBox" style="display:none">
+	    <p>답변이 도움이 되셨나요?</p>
+	    <button onclick="handleSatisfied()">✔ 해결됐어요</button>
+	    <button onclick="handleMoreInquiry()">✉ 추가 문의할게요</button>
+	</div>
+	<!-- 하단 입력창 -->
+	<div  id="inputBox" style="display:none">
+	    <input type="text" id="msgInput" placeholder="추가 문의 내용 입력...">
+	    <button onclick="sendMsg()">전송</button>
+	</div>
+	
+	
+	
+	<script>
+	const inquiry_no= new URLSearchParams(location.search).get("inquiry_no");
+	console.log(inquiry_no);
+	// 시작함수
+	fetch("/api/inquiry/detail?inquiry_no=" + inquiry_no, {
+		method: "GET"
+	})
+	.then(res => {
+		return res.json();
+	})
+	.then(data => {
+		console.log(data);
+		renderHeader(data);              // 문의사항 
+	    renderMessages(data.msgDtoList, data.inquiry_status); // 문의사항 msg
+	})
+	.catch(e => console.log(e));
+	// 문의 사항
+	function renderHeader(data) {
+		const header = document.querySelector("#inquiryHeader");
+		header.innerHTML = `
+		    <span>${data.inquiry_status}</span>
+		    <span>${data.inquiry_category}</span>
+		    <p>${data.inquiry_title}</p>
+		`;
+	}
+	// 문의사항 msg
+	function renderMessages(messagesList, status) {
+		const list = document.querySelector("#msgList");
+		
+		list.innerHTML = messagesList.map(msg => {
+			const isUser = msg.sender_type === 'USER';
+			return `
+				<div style="text-align: ${isUser ? 'right' : 'left'}">
+					<div>${msg.msg_content}</div>
+					<small>${isUser ? '사용자' : '담당자'} · ${msg.msg_created_at}</small>
+				</div>
+			`;
+		}).join('');
+		
+		 // 해결 상태면 모든 입력 UI 숨기고 종료
+	    if (status === '해결') {
+	        list.innerHTML += `<p>해결된 문의입니다.</p>`;
+	        document.querySelector("#satisfactionBox").style.display = 'none';
+	        document.querySelector("#inputBox").style.display = 'none';
+	        return;
+	    }
+		
+		// 마지막 메시지가 USER면 안내문구 표시
+	    const lastMsg = messagesList[messagesList.length - 1];
+	    if (lastMsg.sender_type === 'USER') {
+	        list.innerHTML += `<p>답변을 기다리는 중입니다...</p>`;
+	        document.querySelector("#satisfactionBox").style.display = 'none';
+	        document.querySelector("#inputBox").style.display = 'none';
+	    }else{
+	    	document.querySelector("#satisfactionBox").style.display = 'block';
+	        document.querySelector("#inputBox").style.display = 'none';
+	    }
+	}
+	
+	// 해결됐어요 클릭
+	function handleSatisfied() {
+	    document.querySelector("#satisfactionBox").style.display = 'none';
+	    // 해결 상태로 변경
+	    fetch("/api/inquiry/cleared?inquiry_no=" + inquiry_no, {
+	    	method: "GET"
+	    })
+	    .then(res => res.text())
+	    .then(data => {
+	    	console.log(data);
+	    	document.querySelector("#msgList").innerHTML += `<p>문의가 해결되었습니다. 감사합니다!</p>`;
+	    })
+	    .catch(e=> console.log(e));
+	}
+
+	// 추가 문의할게요 클릭
+	function handleMoreInquiry() {
+	    document.querySelector("#satisfactionBox").style.display = 'none';
+	    document.querySelector("#inputBox").style.display = 'block';
+	}
+	// 추가 문의 사항 등록 함수
+	function sendMsg() {
+		alert("!!!!!!!");
+	    const content = document.querySelector("#msgInput").value.trim();
+	    if (!content) return;
+
+	    fetch("/api/inquiry/msg", {
+	        method: "POST",
+	        headers: { "Content-Type": "application/json" },
+	        body: JSON.stringify({
+	            inquiry_no: inquiry_no,
+	            msg_content: content
+	        })
+	    })
+	    .then(res => res.text())
+	    .then(data => {
+	        console.log(data);
+	        
+	        document.querySelector("#msgInput").value = "";        
+	        document.querySelector("#inputBox").style.display = 'none';  // 전송 후 입력창 닫기
+	        
+	        // 메세지 전송후 화면 다시 불러오기
+	        fetch("/api/inquiry/detail?inquiry_no=" + inquiry_no)
+	            .then(res => res.json())
+	            .then(data => renderMessages(data.msgDtoList, data.inquiry_status));
+	    })
+	    .catch(e => console.log(e));
+	}
+	
+	
+	
+	
+	</script>
+	
+</body>
+</html>
