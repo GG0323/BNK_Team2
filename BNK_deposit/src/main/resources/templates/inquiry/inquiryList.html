@@ -6,8 +6,68 @@
 </head>
 <body>
 
+http://localhost:8080/inquiry/inquiryList
 
 	마이페이지에서 확인 할 수 있는 내가 작성한 문의 사항 리스트
+	1. 일단, 유저pk로 검색 문의사항 테이블만 가져오기 
 
+    <!-- 헤더 영역 -->
+    <div>
+        <span>문의 목록</span>
+        <button onclick="location.href='/inquiry/inquiryForm'">+ 새 문의하기</button>
+    </div>
+
+    <!-- 목록 영역 -->
+    <div id="inquiryList"></div>
+    
+	
+	<script>
+	
+	fetch("/api/inquiry/list", {
+		method: "GET"
+	})
+	.then(res => {
+		
+		return res.json();
+	})
+	.then(data => {
+		
+		console.log(data);
+		
+		const inquiryList = document.querySelector("#inquiryList");
+		
+		if (data.length === 0) {
+	        list.innerHTML = `<p>문의 내역이 없습니다.</p>`;
+	        return;
+	    }
+		
+		inquiryList.innerHTML = data.map(inquiry => `
+			<hr>
+			<div onclick="location.href='/inquiry/inquiryDetail?inquiry_no=${inquiry.inquiry_no}'">
+				<span>${getStatusBadge(inquiry.inquiry_status)}</span>
+	            <span>${inquiry.inquiry_category}</span>
+	            <span>${inquiry.created_at}</span>
+	            <p>${inquiry.inquiry_title}</p>
+				
+			</div>
+			<hr>
+		`).join('');
+		
+		
+	})
+	.catch(e => console.log(e));
+	
+	function getStatusBadge(status) {
+	    const map = {
+	        '답변완료': '답변 완료',
+	        '처리중':   '처리 중',
+	        '접수완료': '접수 완료'
+	    };
+	    return map[status] || status;
+	}
+	
+	</script>
+	
+	
 </body>
 </html>

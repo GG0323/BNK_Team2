@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/inquery")
+@RequestMapping("/inquiry")
 public class InquiryPageController {
 	
 	
@@ -15,12 +15,12 @@ public class InquiryPageController {
 	public String faqPage() {
 		return "inquiry/faqPage";
 	}
-	// 문의 사항 작성
+	// 문의 사항 작성  /inquery/inquiryForm
 	@GetMapping("/inquiryForm")
 	public String inquiryForm() {
 		return "inquiry/inquiryForm";
 	}
-	// 문의 사항 리스트
+	// 문의 사항 리스트  /inquery/inquiryList
 	@GetMapping("/inquiryList")
 	public String inquiryList() {
 		return "inquiry/inquiryList";
@@ -32,6 +32,17 @@ public class InquiryPageController {
 	}
 	
 	
+	
+	// ==========================
+	@GetMapping("/inquiryAnswerList")
+	public String inquiryAnswerList() {
+		return "inquiry/inquiryAnswerList";
+	}
+	
+	@GetMapping("/inquiryAnswer")
+	public String inquiryAnswer() {
+		return "inquiry/inquiryAnswer";
+	}
 	
 	
 }
