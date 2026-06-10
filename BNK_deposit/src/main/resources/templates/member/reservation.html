@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <title>BNK 영업점 방문 예약</title>
 
-    <link rel="stylesheet" th:href="@{/css/reservationView.css}">
+    <link rel="stylesheet" th:href="@{/css/member/reservation.css}">
 
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 
     <!-- 카카오맵 JS SDK : 키는 application-secret.properties 에서 주입 -->
     <script type="text/javascript"
-        th:src="@{|//dapi.kakao.com/v2/maps/sdk.js?appkey=${@environment.getProperty('kakao.map.js-key')}&autoload=false|}"></script>
+        th:src="@{|https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoMapKey}&autoload=false|}"></script>
 
-    <script th:src="@{/js/reservation.js}" defer></script>
+    <script th:src="@{/js/members/reservation.js}" defer></script>
 </head>
 
 <body>

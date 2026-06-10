@@ -1,7 +1,9 @@
 package com.example.bnk.controller.page;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,14 +27,26 @@ import lombok.RequiredArgsConstructor;
 public class ReservationPageController {
 
     private final BankMemberLogService logService;
+    
+    @Value("${kakao.map.js-key}")
+    private String kakaoMapKey;
 
     // 영업점 방문 예약 화면 (껍데기만 반환)
     @GetMapping("/reservation")
     public String rootMembersReservation(
-            @AuthenticationPrincipal String username
+            @AuthenticationPrincipal String username,
+            Model model
             ) {
-        // 접속 로그
+        // 비로그인 차단: username 이 null 이거나 "anonymousUser" 면 로그인 화면으로
+        if (username == null || "anonymousUser".equals(username)) {
+            return "redirect:/loginPage";
+        }
+
+        // 접속 로그 (로그인 사용자만)
         logService.build(logService.findByUserID(username), "member/reservation");
+        
+        // 카카오맵 키를 화면으로 전달
+        model.addAttribute("kakaoMapKey", kakaoMapKey);
 
         return "member/reservation";
     }
