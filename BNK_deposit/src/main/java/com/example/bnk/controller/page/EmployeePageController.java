@@ -442,4 +442,11 @@ public class EmployeePageController {
 		System.out.println("실패");
 		return "redirect:/employee/prdPage/detail" + product_no;
 	}
+	
+	// /employee/staff/reservation
+    @GetMapping("/staff/reservation")
+    public String staffReservationPage(@AuthenticationPrincipal String username) {
+        logService.build(username, "PAGEVIEW", "TB_RESERVATION", null, "예약 관리 페이지 접근");
+        return "Employees/staff/reservation";
+    }
 }
