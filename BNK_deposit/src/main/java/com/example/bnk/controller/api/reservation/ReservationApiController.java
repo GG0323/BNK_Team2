@@ -1,4 +1,4 @@
-package com.example.bnk.controller.api.member;
+package com.example.bnk.controller.api.reservation;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.dto.common.ApiResponse;
-import com.example.bnk.dto.common.ReservationDto;
 import com.example.bnk.dto.member.BankMemberDto;
+import com.example.bnk.dto.reservation.ReservationDto;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.member.ReservationService;
 
@@ -92,7 +92,7 @@ public class ReservationApiController {
         ReservationDto dto = new ReservationDto();
         dto.setMember_no(memberInfo.getMember_no());
         dto.setBranch_id(branchId);
-        dto.setReserved_at(reservedDateTime);
+        dto.setReserved_at(reservedDateTime);   // LocalDateTime 그대로
         dto.setBiz_type(bizType);
         dto.setPurpose(purpose.trim().isEmpty() ? null : purpose);
 
@@ -125,5 +125,15 @@ public class ReservationApiController {
                 ? ResponseEntity.ok(ApiResponse.success("예약이 취소되었습니다."))
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(ApiResponse.fail("취소할 수 없는 예약입니다."));
+    }
+    
+    // 특정 영업점·날짜의 마감 시간대 조회
+    @GetMapping("/slots")
+    public ResponseEntity<ApiResponse<?>> bookedSlots(
+            @RequestParam("branchId") long branchId,
+            @RequestParam("date") String date) {
+
+        List<String> booked = reservationService.getBookedSlots(branchId, date);
+        return ResponseEntity.ok(ApiResponse.ok(booked));
     }
 }

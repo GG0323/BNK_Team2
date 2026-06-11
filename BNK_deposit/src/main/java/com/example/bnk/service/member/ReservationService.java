@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.bnk.dao.member.IReservationDao;
-import com.example.bnk.dto.common.ReservationDto;
+import com.example.bnk.dao.reservation.IReservationDao;
+import com.example.bnk.dto.reservation.ReservationDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,5 +29,10 @@ public class ReservationService {
     public boolean cancelReservation(long reservationId, long memberNo) {
         int result = reservationDao.cancelReservation(reservationId, memberNo);
         return result > 0;
+    }
+    
+    // 예약된 시간대 조회
+    public List<String> getBookedSlots(long branchId, String date) {
+        return reservationDao.findBookedSlots(branchId, date);
     }
 }

@@ -10,10 +10,55 @@ document.addEventListener("DOMContentLoaded", function () {
         bizType: "DEPOSIT"
     };
 
-    // 마감(가득 찬) 시간대 예시 — 실제로는 서버 조회 결과로 대체
+    // ===== 상품 상세에서 넘어온 경우 — 상품명 자동입력 =====
+    (function autoFillFromProduct() {
+        const params = new URLSearchParams(window.location.search);
+        const productNo = params.get("product_no");
+        if (!productNo) return; // 상품 없이 직접 진입한 경우 스킵
+
+        fetch("/api/products/member/detail?product_no=" + productNo)
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (!data || !data.success || !data.data) return;
+                const product = data.data.product;
+                if (!product || !product.product_name) return;
+
+                // purpose 입력칸에 상품명 자동 입력
+                const purposeEl = document.getElementById("purpose");
+                if (purposeEl && !purposeEl.value) {
+                    purposeEl.value = product.product_name + " 상담/가입";
+                    purposeEl.classList.add("prefilled"); // 노란 배경 강조
+                }
+
+                // biz_type 자동 선택 (상품 카테고리 기반)
+                // product_category 가 있으면 매핑, 없으면 DEPOSIT 유지
+                const bizTypeEl = document.getElementById("bizType");
+                if (bizTypeEl && product.product_category) {
+                    const categoryMap = {
+                        "예금": "DEPOSIT",
+                        "적금": "DEPOSIT",
+                        "대출": "LOAN",
+                        "카드": "CARD",
+                        "외환": "FX",
+                        "송금": "FX"
+                    };
+                    const matched = Object.keys(categoryMap).find(function (key) {
+                        return product.product_category.includes(key);
+                    });
+                    if (matched) bizTypeEl.value = categoryMap[matched];
+                }
+            })
+            .catch(function () {
+                // 상품 조회 실패해도 예약 진행엔 지장 없음 — 조용히 무시
+            });
+    })();
+
+    // 전체 시간대 (점심시간 12:00~12:30 포함)
     const TIME_LIST = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+                       "12:00", "12:30",
                        "13:00", "13:30", "14:00", "14:30", "15:00", "15:30"];
-    const FULL_SLOTS = ["10:00", "10:30", "14:00"];
+    const LUNCH_SLOTS = ["12:00", "12:30"]; // 점심시간 — 항상 고정 마감
+    let bookedSlots = [];                   // 서버에서 받은 실제 예약 마감 시간대
 
     // ===== 요약 갱신 =====
     function setSummary(id, value) {
@@ -51,16 +96,30 @@ document.addEventListener("DOMContentLoaded", function () {
     // ===== STEP 1: 영업점 선택 (카카오맵 + 거리순 정렬) =====
     let branches = [];        // API 로 받은 영업점 목록
     let kakaoMap = null;
-    let markers = [];
+    let markers = [];         // { branchId, marker, isSelected } 객체 배열
     let userPos = null;       // 사용자 위치 { lat, lng }
     const branchListEl = document.getElementById("branchList");
     const mapEl = document.getElementById("branchMap");
+
+    // 기본 마커 이미지 (파란 핀, 카카오 기본)
+    function defaultMarkerImage() {
+        return null; // null이면 카카오 기본 파란 핀
+    }
+
+    // 선택된 마커 이미지 (빨간 핀, 기본보다 1.4배 크게)
+    function selectedMarkerImage() {
+        const size = new kakao.maps.Size(33, 46);       // 기본(24×35)의 약 1.4배
+        const offset = new kakao.maps.Point(16, 46);    // 핀 꼭짓점이 좌표에 맞닿도록
+        return new kakao.maps.MarkerImage(
+            "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png",
+            size, { offset: offset }
+        );
+    }
 
     // 1) 영업점 목록 API 호출 → 목록·지도 그리기
     fetch("/api/member/reservation/branches")
         .then(function (res) { return res.json(); })
         .then(function (data) {
-            // ApiResponse 구조 가정: { success, data: [...] }
             branches = (data && data.data) ? data.data : [];
             initMap();
             renderBranchList(branches);
@@ -71,9 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 2) 카카오맵 초기화
     function initMap() {
-        if (typeof kakao === "undefined" || !kakao.maps) return; // SDK 미로드 시 목록만 사용
+        if (typeof kakao === "undefined" || !kakao.maps) return;
         kakao.maps.load(function () {
-            const center = new kakao.maps.LatLng(35.1796, 129.0756); // 부산 시청 부근 기본 중심
+            const center = new kakao.maps.LatLng(35.1796, 129.0756);
             kakaoMap = new kakao.maps.Map(mapEl, { center: center, level: 7 });
             drawMarkers(branches);
         });
@@ -81,18 +140,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 3) 마커 그리기 (기존 마커 제거 후 다시)
     function drawMarkers(list) {
-        markers.forEach(function (m) { m.setMap(null); });
+        markers.forEach(function (m) { m.marker.setMap(null); });
         markers = [];
         if (!kakaoMap) return;
 
         const bounds = new kakao.maps.LatLngBounds();
         list.forEach(function (b) {
             const pos = new kakao.maps.LatLng(b.latitude, b.longitude);
-            const marker = new kakao.maps.Marker({ position: pos, map: kakaoMap });
+
+            // 이미 선택된 영업점이면 강조 이미지로 생성
+            const isSelected = String(state.branchId) === String(b.branch_id);
+            const markerOptions = { position: pos, map: kakaoMap };
+            if (isSelected) markerOptions.image = selectedMarkerImage();
+
+            const marker = new kakao.maps.Marker(markerOptions);
             kakao.maps.event.addListener(marker, "click", function () {
                 selectBranch(b.branch_id);
             });
-            markers.push(marker);
+
+            markers.push({ branchId: String(b.branch_id), marker: marker });
             bounds.extend(pos);
         });
         if (list.length > 0) kakaoMap.setBounds(bounds);
@@ -130,13 +196,25 @@ document.addEventListener("DOMContentLoaded", function () {
         state.branchId = b.branch_id;
         state.branchName = b.branch_name;
 
+        // 목록 강조
         branchListEl.querySelectorAll(".branch-item").forEach(function (el) {
             el.classList.toggle("selected", el.getAttribute("data-branch-id") === String(branchId));
         });
 
+        // 마커 강조: 이전 선택은 기본 이미지로, 새 선택은 강조 이미지로
         if (kakaoMap) {
+            markers.forEach(function (m) {
+                if (m.branchId === String(branchId)) {
+                    m.marker.setImage(selectedMarkerImage());
+                    m.marker.setZIndex(10);
+                } else {
+                    m.marker.setImage(null); // 기본 파란 핀으로 복원
+                    m.marker.setZIndex(1);
+                }
+            });
             kakaoMap.panTo(new kakao.maps.LatLng(b.latitude, b.longitude));
         }
+
         document.getElementById("next1").disabled = false;
         syncSummary();
     }
@@ -187,13 +265,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     document.getElementById("next1").addEventListener("click", function () {
-        renderSlots();
+        // 슬롯은 날짜 선택 후에만 렌더링 — 여기서 미리 그리지 않음
         goStep(2);
     });
 
-    // ===== STEP 2: 날짜·시간 =====
+    // STEP 2 진입 시 슬롯 초기화 (날짜 미선택 안내 문구 표시)
     const dateInput = document.getElementById("reservedDate");
     const slotWrap = document.getElementById("timeSlots");
+    renderSlots(); // 날짜 없으면 안내 문구, 있으면 슬롯
 
     // 오늘 이전 날짜 선택 방지
     const today = new Date();
@@ -205,18 +284,44 @@ document.addEventListener("DOMContentLoaded", function () {
     dateInput.addEventListener("change", function () {
         state.date = dateInput.value;
         state.time = null;
-        renderSlots();
         syncSummary();
         checkStep2();
+
+        // 영업점·날짜 기반으로 마감 시간대 서버 조회
+        if (state.branchId && state.date) {
+            fetch("/api/member/reservation/slots?branchId=" + state.branchId + "&date=" + state.date)
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    bookedSlots = (data && data.data) ? data.data : [];
+                    renderSlots();
+                })
+                .catch(function () {
+                    bookedSlots = [];
+                    renderSlots();
+                });
+        } else {
+            bookedSlots = [];
+            renderSlots();
+        }
     });
 
     function renderSlots() {
         slotWrap.innerHTML = "";
+
+        // 날짜 미선택 시 안내 문구
+        if (!state.date) {
+            slotWrap.innerHTML = '<p style="color:#999;font-size:14px;grid-column:1/-1;padding:10px 0;">날짜를 먼저 선택해주세요.</p>';
+            return;
+        }
+
         TIME_LIST.forEach(function (t) {
             const div = document.createElement("div");
-            const isFull = FULL_SLOTS.indexOf(t) !== -1;
+            const isLunch = LUNCH_SLOTS.indexOf(t) !== -1;          // 점심시간 고정 마감
+            const isBooked = bookedSlots.indexOf(t) !== -1;          // 실제 예약 마감
+            const isFull = isLunch || isBooked;
+
             div.className = "time-slot" + (isFull ? " full" : "") + (state.time === t ? " selected" : "");
-            div.textContent = t;
+            div.textContent = isLunch ? t + " (점심)" : t;           // 점심 표시
             if (!isFull) {
                 div.addEventListener("click", function () {
                     state.time = t;
@@ -281,21 +386,27 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("submitBtn").addEventListener("click", function () {
         const reservedAt = state.date + "T" + state.time; // yyyy-MM-ddTHH:mm
 
+        // 페이지에 심어진 CSRF 토큰 읽기 (Thymeleaf hidden input)
+        const csrfEl = document.querySelector('input[name="_csrf"]');
+        const csrfToken = csrfEl ? csrfEl.value : null;
+
         const params = new URLSearchParams();
         params.append("branchId", state.branchId);
         params.append("reservedAt", reservedAt);
         params.append("bizType", state.bizType);
         params.append("purpose", state.purpose || "");
 
+        const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+        if (csrfToken) headers["X-CSRF-TOKEN"] = csrfToken;
+
         fetch("/api/member/reservation/create", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: headers,
             body: params.toString()
         })
         .then(function (res) { return res.json(); })
         .then(function (data) {
-            // ApiResponse 형태 가정: { success, message, data ... }
-            if (data && (data.success === true || data.status === "OK")) {
+            if (data && data.success === true) {
                 document.getElementById("doneReviewBox").innerHTML = reviewHtml();
                 if (data.data && data.data.reservation_id) {
                     document.getElementById("doneResNo").textContent = "BR-" + data.data.reservation_id;

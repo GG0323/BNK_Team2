@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" class="product-list-snap">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" class="product-list-fullpage">
 <head>
     <meta charset="UTF-8">
     <title>BNK 상품 목록</title>
@@ -15,13 +15,23 @@
 	<div th:replace="~{fragments/header :: header_default}"></div>
 
 
-<section class="recommended-passbook-hero product-snap-section product-hero-section"
+<section class="recommended-passbook-hero product-fullpage-section product-hero-section"
          id="recommendedPassbookHero"
          th:if="${recommendedProducts != null and !#lists.isEmpty(recommendedProducts)}">
 
     <div class="rpb-bg rpb-bg-single"></div>
     <div class="rpb-bg rpb-bg-split rpb-bg-split-top"></div>
     <div class="rpb-bg rpb-bg-split rpb-bg-split-bottom"></div>
+
+    <div class="rpb-effect-layer" aria-hidden="true">
+        <div class="rpb-light-ring rpb-light-ring-1"></div>
+        <div class="rpb-light-ring rpb-light-ring-2"></div>
+        <div class="rpb-energy-line rpb-energy-line-1"></div>
+        <div class="rpb-energy-line rpb-energy-line-2"></div>
+        <div class="rpb-energy-line rpb-energy-line-3"></div>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
 
     <div class="rpb-word rpb-word-1">RECOMMENDED</div>
     <div class="rpb-word rpb-word-2">OPEN PASSBOOK</div>
@@ -31,6 +41,11 @@
         <div class="rpb-intro">
             <span th:text="${recommendationMode == 'MEMBER' ? '회원 맞춤 추천' : '인기 추천'}">인기 추천</span>
             <strong th:text="${recommendationMessage}">지금 고객들이 가장 많이 선택한 인기 예적금 상품입니다.</strong>
+
+            <div class="rpb-quick-actions" aria-label="상품 목록 바로가기">
+                <button type="button" class="rpb-search-start-btn">상품 검색하기</button>
+                <button type="button" class="rpb-list-start-btn rpb-scroll-next">전체 상품 보기 <strong>↓</strong></button>
+            </div>
         </div>
 
         <div class="rpb-stage">
@@ -117,16 +132,16 @@
             </div>
 
             <button type="button" class="rpb-close-btn">← 다른 상품 보기</button>
-        </div>
 
-        <a href="#productListSection" class="rpb-scroll-next" aria-label="상품 목록 섹션으로 이동">
-            <span>상품 목록 보기</span>
-            <strong>↓</strong>
-        </a>
+            <a href="#productListSection" class="rpb-scroll-next" aria-label="상품 목록 섹션으로 이동">
+                <span>상품 목록 보기</span>
+                <strong>↓</strong>
+            </a>
+        </div>
     </div>
 </section>
 
-<div class="page-wrap product-snap-section product-list-section" id="productListSection">
+<div class="page-wrap product-fullpage-section product-list-section" id="productListSection">
 
     <section class="search-section">
         <form th:action="@{/products/search}" method="get" class="search-box">
@@ -242,10 +257,10 @@
 </div>
 
 <!-- 상품 비교함 -->
-<div class="compare-bar expanded" id="compareBar">
+<div class="compare-bar collapsed" id="compareBar">
 
     <!-- 닫기 / 열기 버튼 -->
-    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">×</button>
+    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">상품 비교함 열기</button>
 
     <!-- 펼친 상태에서 보이는 비교함 -->
     <div class="compare-expanded-area" id="compareExpandedArea">

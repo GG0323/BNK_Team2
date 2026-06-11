@@ -277,6 +277,7 @@
     outline: none;
     background: white;
     color: #111111;
+    box-sizing: border-box;  /* 패딩 포함해서 100% 너비 유지 */
 }
 
 .field-input:focus,
@@ -313,6 +314,26 @@
     font-size: 15px;
     font-family: inherit;
     outline: none;
+    box-sizing: border-box;
+    background: white;
+    color: #111111;
+    cursor: pointer;         /* 칸 전체에 포인터 커서 */
+}
+
+/* 크롬 계열: 달력 아이콘 포함 전체 클릭 영역 확장 */
+.datetime-input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* 달력 아이콘이 있는 input은 relative 기준점 필요 */
+input[type="date"].datetime-input {
+    position: relative;
 }
 
 .datetime-input:focus {

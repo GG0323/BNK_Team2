@@ -1,11 +1,11 @@
-package com.example.bnk.dao.member;
+package com.example.bnk.dao.reservation;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.example.bnk.dto.common.ReservationDto;
+import com.example.bnk.dto.reservation.ReservationDto;
 
 @Mapper
 public interface IReservationDao {
@@ -23,5 +23,11 @@ public interface IReservationDao {
     int cancelReservation(
             @Param("reservationId") long reservationId,
             @Param("memberNo") long memberNo
+    );
+    
+    // 특정 영업점·날짜의 예약된 시간대 조회 (마감 판단용)
+    List<String> findBookedSlots(
+        @Param("branchId") long branchId,
+        @Param("date") String date   // yyyy-MM-dd
     );
 }

@@ -59,9 +59,30 @@ function productResultSection() {
 
 function scrollToProductResult(behavior = "smooth") {
   const target = productResultSection();
+  const listSection = document.getElementById("productListSection");
 
   if (!target) return;
 
+  // productList.js의 패널 전환 방식이 적용된 경우
+  if (typeof window.moveToProductListSection === "function" && listSection) {
+    window.moveToProductListSection({ resetScroll: false });
+
+    // 패널 전환 중에는 내부 스크롤이 바로 보이지 않으므로 약간 기다린 뒤 보정한다.
+    window.setTimeout(function () {
+      const listRect = listSection.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const top = listSection.scrollTop + targetRect.top - listRect.top - 20;
+
+      listSection.scrollTo({
+        top: Math.max(top, 0),
+        behavior: behavior,
+      });
+    }, 760);
+
+    return;
+  }
+
+  // 기존 일반 문서 스크롤 방식 fallback
   const header = document.querySelector(".header");
   const headerHeight = header ? header.offsetHeight : 0;
   const extraGap = 16;
