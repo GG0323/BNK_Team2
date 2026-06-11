@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.log.IMemberPageLogDao">
+	
+	
+	<!-- DB 저장 -->
+	<!-- jdbcType 쓰는 이유 : null 값이 들어갈때 오류방지 -->
+	<insert id="insertLog">
+        INSERT INTO MEMBER_PAGE_LOG (
+            SESSION_ID, MEMBER_NO, REQUEST_URL, REQUEST_METHOD,
+            HTTP_STATUS, REQUEST_IP, USER_AGENT, REFERER, DURATION_MS
+        ) 
+        VALUES (
+			#{dto.sessionId},
+			#{dto.memberNo,      jdbcType=NUMERIC},
+			#{dto.requestUrl},
+			#{dto.requestMethod, jdbcType=VARCHAR},
+			#{dto.httpStatus,    jdbcType=NUMERIC},
+			#{dto.requestIp,     jdbcType=VARCHAR},
+			#{dto.userAgent,     jdbcType=VARCHAR},
+			#{dto.referer,       jdbcType=VARCHAR},
+			#{dto.durationMs,    jdbcType=NUMERIC}
+        )
+    </insert>
+	
+	
+	
+
+</mapper>
