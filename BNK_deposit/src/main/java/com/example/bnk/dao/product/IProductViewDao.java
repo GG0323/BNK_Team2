@@ -28,7 +28,7 @@ public interface IProductViewDao {
     // 상품 비교 조회
     // 선택한 상품 번호 여러 개를 기준으로 비교 데이터 조회
     public List<ProductCompareViewDto> selectCompareProducts(@Param("product_no_list") List<Long> product_no_list);
-    
+
     // 회원 유형별 상품 목록 조회
     List<ProductListViewDto> selectProductListForMember(
             @Param("memberType") String memberType
@@ -38,5 +38,18 @@ public interface IProductViewDao {
     List<ProductListViewDto> searchProductListForMember(
             @Param("memberType") String memberType,
             @Param("keyword") String keyword
+    );
+
+    // 비회원/공통 추천 상품 TOP 3
+    // 기준: 판매중 상품 + 판매기간 유효 + TB_PRODUCT_SALES에서 DRAFT 제외 가입 이력
+    List<ProductListViewDto> selectPopularRecommendedProducts();
+
+    // 로그인 개인 회원 추천 상품 TOP 3
+    // 기준: 가입 가능 조건 통과 + 같은 회원 그룹 판매 이력 + 전체 판매 이력 + 금리/채널 점수
+    List<ProductListViewDto> selectRecommendedProductsForMember(
+            @Param("age") int age,
+            @Param("gender") String gender,
+            @Param("memberType") String memberType,
+            @Param("groupCode") String groupCode
     );
 }

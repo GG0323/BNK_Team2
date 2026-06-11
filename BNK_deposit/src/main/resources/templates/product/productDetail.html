@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <title>BNK 상품 상세</title>
 
-    <link rel="stylesheet" th:href="@{/css/productView.css}">
-
+    <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 
-    <script src="/js/productDetail.js" defer></script>
-    <script th:src="@{/js/productDetailTabs.js}" defer></script>
+    <script src="/js/product/productDetail.js" defer></script>
+    <script th:src="@{/js/product/productDetailTabs.js}" defer></script>
 
     <script>
         function openTaxBenefitDictionaryPopup() {
@@ -21,7 +20,6 @@
             );
         }
     </script>
-
     <style>
         /* 금융용어 팝업 링크: 평소에는 일반 글자처럼, hover 때만 강조 */
         .dictionary-soft-link {

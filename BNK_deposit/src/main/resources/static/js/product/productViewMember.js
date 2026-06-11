@@ -1,11 +1,15 @@
 /**
  * productViewMember.js
  *
- * 로그인한 회원의 member_type(PERSONAL / BUSINESS)에 맞는 상품만
- * /api/products/member API로 다시 불러와서 상품 목록 영역을 교체한다.
+ * 상품 목록 페이지에서 검색/정렬 결과를 AJAX로 다시 불러와 상품 목록 영역만 교체한다.
  *
- * 비로그인 사용자는 기존 Thymeleaf 목록을 그대로 사용한다.
+ * - 로그인 회원: /api/products/member, /api/products/member/search 우선 사용
+ * - 비로그인 사용자: /api/products, /api/products/search 사용
+ * - 외부 페이지에서 헤더 검색으로 진입한 경우 #productResultSection 위치로 스크롤
+ * - 상품 페이지 내부의 헤더 검색은 window.searchProductListFromHeader(keyword)로 연결
  */
+
+const PRODUCT_RESULT_HASH = "#productResultSection";
 
 /* =========================
    공통 유틸
@@ -43,6 +47,38 @@ function productTypeLabel(type) {
 function getQueryParam(name) {
   const params = new URLSearchParams(location.search);
   return params.get(name);
+}
+
+function getCurrentSort() {
+  return getQueryParam("sort") || document.getElementById("sort")?.value || "baseRateDesc";
+}
+
+function productResultSection() {
+  return document.getElementById("productResultSection") || document.querySelector(".product-section");
+}
+
+function scrollToProductResult(behavior = "smooth") {
+  const target = productResultSection();
+
+  if (!target) return;
+
+  const header = document.querySelector(".header");
+  const headerHeight = header ? header.offsetHeight : 0;
+  const extraGap = 16;
+  const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - extraGap;
+
+  window.scrollTo({
+    top: Math.max(top, 0),
+    behavior: behavior,
+  });
+}
+
+function setListLoading(isLoading) {
+  const productGrid = document.querySelector(".product-grid");
+
+  if (!productGrid) return;
+
+  productGrid.classList.toggle("is-loading", isLoading);
 }
 
 /* =========================
@@ -164,16 +200,14 @@ function renderProductList(list) {
    API 호출
 ========================= */
 
-async function fetchMemberProductList(sort) {
-  const query = sort ? `?sort=${encodeURIComponent(sort)}` : "";
-  const res = await fetch(`/api/products/member${query}`, {
+async function fetchJson(url) {
+  const res = await fetch(url, {
     headers: {
       Accept: "application/json",
     },
     credentials: "same-origin",
   });
 
-  // 비로그인 사용자는 기존 Thymeleaf 목록을 그대로 쓰게 둔다.
   if (res.status === 401 || res.status === 403) {
     return null;
   }
@@ -187,28 +221,127 @@ async function fetchMemberProductList(sort) {
   return body.data;
 }
 
+async function fetchMemberProductList(sort) {
+  const query = sort ? `?sort=${encodeURIComponent(sort)}` : "";
+  return fetchJson(`/api/products/member${query}`);
+}
+
+async function fetchPublicProductList(sort) {
+  const query = sort ? `?sort=${encodeURIComponent(sort)}` : "";
+  return fetchJson(`/api/products${query}`);
+}
+
 async function fetchMemberProductSearch(keyword) {
   const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : "";
-  const res = await fetch(`/api/products/member/search${query}`, {
-    headers: {
-      Accept: "application/json",
-    },
-    credentials: "same-origin",
-  });
-
-  // 비로그인 사용자는 기존 /products/search 흐름을 사용하게 둔다.
-  if (res.status === 401 || res.status === 403) {
-    return null;
-  }
-
-  const body = await res.json();
-
-  if (!res.ok || body.success === false) {
-    throw new Error(body.message || "상품 검색에 실패했습니다.");
-  }
-
-  return body.data;
+  return fetchJson(`/api/products/member/search${query}`);
 }
+
+async function fetchPublicProductSearch(keyword) {
+  const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : "";
+  return fetchJson(`/api/products/search${query}`);
+}
+
+async function fetchProductList(sort) {
+  const memberList = await fetchMemberProductList(sort);
+
+  if (memberList !== null) {
+    return memberList;
+  }
+
+  return fetchPublicProductList(sort);
+}
+
+async function fetchProductSearch(keyword) {
+  const memberList = await fetchMemberProductSearch(keyword);
+
+  if (memberList !== null) {
+    return memberList;
+  }
+
+  return fetchPublicProductSearch(keyword);
+}
+
+/* =========================
+   검색/정렬 적용
+========================= */
+
+async function applyProductSearch(keyword, options = {}) {
+  const normalizedKeyword = keyword ? keyword.trim() : "";
+  const shouldUpdateUrl = options.updateUrl !== false;
+  const shouldScroll = options.scroll !== false;
+
+  setListLoading(true);
+
+  try {
+    let list;
+
+    if (normalizedKeyword) {
+      list = await fetchProductSearch(normalizedKeyword);
+    } else {
+      list = await fetchProductList(getCurrentSort());
+    }
+
+    renderProductList(list);
+
+    if (shouldUpdateUrl) {
+      const newUrl = normalizedKeyword
+        ? `/products/search?keyword=${encodeURIComponent(normalizedKeyword)}`
+        : "/products";
+
+      history.pushState(null, "", newUrl);
+    }
+
+    const pageSearchInput = document.querySelector(".search-box input[name='keyword']");
+    if (pageSearchInput) {
+      pageSearchInput.value = normalizedKeyword;
+    }
+
+    if (shouldScroll) {
+      scrollToProductResult("smooth");
+    }
+
+    return list;
+  } finally {
+    setListLoading(false);
+  }
+}
+
+async function applyProductSort(sort, options = {}) {
+  const selectedSort = sort || "baseRateDesc";
+  const shouldUpdateUrl = options.updateUrl !== false;
+  const shouldScroll = options.scroll === true;
+
+  setListLoading(true);
+
+  try {
+    const list = await fetchProductList(selectedSort);
+    renderProductList(list);
+
+    if (shouldUpdateUrl) {
+      history.pushState(null, "", `/products?sort=${encodeURIComponent(selectedSort)}`);
+    }
+
+    if (shouldScroll) {
+      scrollToProductResult("smooth");
+    }
+
+    return list;
+  } finally {
+    setListLoading(false);
+  }
+}
+
+// header.js에서 호출한다.
+window.searchProductListFromHeader = async function (keyword) {
+  return applyProductSearch(keyword, {
+    updateUrl: true,
+    scroll: true,
+  });
+};
+
+// 다른 스크립트에서도 필요할 수 있으므로 명시적으로 노출한다.
+window.renderProductList = renderProductList;
+window.scrollToProductResult = scrollToProductResult;
 
 /* =========================
    이벤트 연결
@@ -223,28 +356,11 @@ function bindSearchForm() {
   searchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const keyword = keywordInput.value.trim();
-
     try {
-      const list = await fetchMemberProductSearch(keyword);
-
-      // 비로그인 상태면 기존 서버 검색으로 이동
-      if (list === null) {
-        if (keyword) {
-          location.href = `/products/search?keyword=${encodeURIComponent(keyword)}`;
-        } else {
-          location.href = "/products";
-        }
-        return;
-      }
-
-      const newUrl = keyword
-        ? `/products/search?keyword=${encodeURIComponent(keyword)}`
-        : "/products";
-
-      history.pushState(null, "", newUrl);
-      renderProductList(list);
-
+      await applyProductSearch(keywordInput.value, {
+        updateUrl: true,
+        scroll: true,
+      });
     } catch (err) {
       console.error(err);
       alert(err.message || "상품 검색 중 오류가 발생했습니다.");
@@ -257,21 +373,18 @@ function bindSortSelect() {
 
   if (!sortSelect) return;
 
+  // HTML에 onchange="this.form.submit()"가 남아 있으면 AJAX 정렬 전에 페이지가 이동한다.
+  // JS에서 한 번 끊어 안전하게 AJAX 정렬만 동작하게 한다.
+  sortSelect.onchange = null;
+
   sortSelect.addEventListener("change", async () => {
     const sort = sortSelect.value;
 
     try {
-      const list = await fetchMemberProductList(sort);
-
-      // 비로그인 상태면 기존 서버 정렬로 이동
-      if (list === null) {
-        location.href = `/products?sort=${encodeURIComponent(sort)}`;
-        return;
-      }
-
-      history.pushState(null, "", `/products?sort=${encodeURIComponent(sort)}`);
-      renderProductList(list);
-
+      await applyProductSort(sort, {
+        updateUrl: true,
+        scroll: false,
+      });
     } catch (err) {
       console.error(err);
       alert(err.message || "상품 정렬 중 오류가 발생했습니다.");
@@ -288,26 +401,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   bindSortSelect();
 
   const keyword = getQueryParam("keyword");
-  const sort = getQueryParam("sort") || document.getElementById("sort")?.value || "baseRateDesc";
+  const sort = getCurrentSort();
+  const shouldScrollToResult = window.location.hash === PRODUCT_RESULT_HASH;
 
   try {
-    let list;
-
+    // 서버 렌더링 결과가 먼저 보이므로, API 실패 시에도 화면은 유지된다.
     if (keyword) {
-      list = await fetchMemberProductSearch(keyword);
+      await applyProductSearch(keyword, {
+        updateUrl: false,
+        scroll: false,
+      });
     } else {
-      list = await fetchMemberProductList(sort);
+      await applyProductSort(sort, {
+        updateUrl: false,
+        scroll: false,
+      });
     }
-
-    // 비로그인 사용자는 기존 Thymeleaf 목록 유지
-    if (list === null) {
-      return;
-    }
-
-    renderProductList(list);
-
   } catch (err) {
     console.error(err);
     // 실패해도 기존 Thymeleaf 목록은 남겨둔다.
+  } finally {
+    if (shouldScrollToResult) {
+      setTimeout(function () {
+        scrollToProductResult("smooth");
+      }, 120);
+    }
   }
 });
