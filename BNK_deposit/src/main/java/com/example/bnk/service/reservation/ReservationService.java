@@ -1,4 +1,4 @@
-package com.example.bnk.service.member;
+package com.example.bnk.service.reservation;
 
 import java.util.List;
 

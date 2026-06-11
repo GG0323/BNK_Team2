@@ -1,10 +1,10 @@
-package com.example.bnk.dao.member;
+package com.example.bnk.dao.reservation;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.example.bnk.dto.common.BranchDto;
+import com.example.bnk.dto.reservation.BranchDto;
 
 @Mapper
 public interface IBranchDao {

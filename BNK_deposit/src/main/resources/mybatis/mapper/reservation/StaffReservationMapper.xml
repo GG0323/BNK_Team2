@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.reservation.IStaffReservationDao">
+
+    <!-- 예약 목록 조회 -->
+    <select id="findReservations" parameterType="map" resultType="map">
+        SELECT r.reservation_id,
+               r.member_no,
+               r.branch_id,
+               r.reserved_at,
+               r.biz_type,
+               r.purpose,
+               r.status,
+               r.created_at,
+               r.updated_at,
+               m.member_name,
+               b.branch_name
+          FROM TB_RESERVATION r
+          JOIN TB_BANK_MEMBER m ON r.member_no = m.member_no
+          JOIN TB_BRANCH      b ON r.branch_id = b.branch_id
+         <where>
+             <if test="branchId != null">
+                 AND r.branch_id = #{branchId}
+             </if>
+             <if test="status != null and status != ''">
+                 AND r.status = #{status}
+             </if>
+             <if test="date != null and date != ''">
+                 AND TRUNC(r.reserved_at) = TO_DATE(#{date}, 'YYYY-MM-DD')
+             </if>
+         </where>
+         ORDER BY r.created_at DESC
+    </select>
+
+    <!-- 본 테이블 상태 업데이트 -->
+    <update id="updateReservationStatus" parameterType="map">
+        UPDATE TB_RESERVATION
+           SET status     = #{afterStatus},
+               updated_at = SYSDATE
+               <if test="newBranchId != null">
+                 , branch_id   = #{newBranchId}
+               </if>
+               <if test="newReservedAt != null">
+                 , reserved_at = #{newReservedAt, jdbcType=TIMESTAMP}
+               </if>
+         WHERE reservation_id = #{reservationId}
+           AND status IN ('PENDING', 'CONFIRMED')
+    </update>
+
+    <!-- 처리 로그 INSERT -->
+    <insert id="insertReservationLog" parameterType="map">
+        INSERT INTO TB_RESERVATION_LOG (
+            log_id, reservation_id,
+            actor_type, actor_no, employee_no,
+            action, after_status, reason,
+            new_branch_id, new_reserved_at,
+            created_at
+        ) VALUES (
+            SEQ_TB_RESERVATION_LOG.NEXTVAL,
+            #{reservationId},
+            'EMPLOYEE', #{employeeNo}, #{employeeNo},
+            #{action}, #{afterStatus}, #{reason},
+            #{newBranchId, jdbcType=NUMERIC},
+            #{newReservedAt, jdbcType=TIMESTAMP},
+            SYSDATE
+        )
+    </insert>
+
+</mapper>

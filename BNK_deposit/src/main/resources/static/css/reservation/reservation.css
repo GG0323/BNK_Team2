@@ -570,6 +570,48 @@ input[type="date"].datetime-input {
     font-size: 16px;
 }
 
+/* 완료 화면 버튼 — 꽉 채우지 않고 적당한 크기로 */
+.done-area .reservation-actions {
+    justify-content: center;
+    gap: 12px;
+}
+
+.done-area .reservation-actions .btn {
+    flex: none;          /* flex:1 해제 — 컨텐츠 크기에 맞춤 */
+    height: 44px;
+    padding: 0 28px;
+    font-size: 14px;
+}
+
+/* "상품 목록으로" — 링크처럼 안 보이게 버튼 스타일 명시 */
+.done-area .btn-ghost {
+    border: 1px solid #999999;
+    color: #555555;
+    background: white;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.done-area .btn-ghost:hover {
+    border-color: #111111;
+    color: #111111;
+    background: white;
+}
+
+/* 리뷰 행 값 — 긴 텍스트 줄바꿈 처리 */
+.review-row .r-val {
+    font-weight: 800;
+    color: #111111;
+    text-align: right;
+    word-break: keep-all;   /* 단어 단위로 줄바꿈 */
+    overflow-wrap: break-word;
+    max-width: 60%;         /* 너무 길면 잘리지 않고 자연스럽게 줄바꿈 */
+}
+
 /* 반응형 */
 @media (max-width: 900px) {
     .reservation-section {

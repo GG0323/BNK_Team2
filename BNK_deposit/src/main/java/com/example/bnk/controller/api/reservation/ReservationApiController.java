@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import com.example.bnk.dto.common.ApiResponse;
 import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.dto.reservation.ReservationDto;
 import com.example.bnk.service.member.BankMemberService;
-import com.example.bnk.service.member.ReservationService;
+import com.example.bnk.service.reservation.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -98,9 +99,9 @@ public class ReservationApiController {
 
         int result = reservationService.createReservation(dto);
         return result > 0
-                ? ResponseEntity.ok(ApiResponse.success("예약이 접수되었습니다."))
-                : ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ApiResponse.fail("예약 접수에 실패했습니다."));
+            ? ResponseEntity.ok(ApiResponse.ok(dto))
+            : ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.fail("예약 접수에 실패했습니다."));
     }
 
     // 예약 취소

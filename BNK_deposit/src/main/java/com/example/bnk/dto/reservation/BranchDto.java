@@ -1,4 +1,4 @@
-package com.example.bnk.dto.common;
+package com.example.bnk.dto.reservation;
 
 import java.time.LocalDate;
 

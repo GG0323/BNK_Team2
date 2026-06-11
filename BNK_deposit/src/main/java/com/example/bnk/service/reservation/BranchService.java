@@ -1,11 +1,11 @@
-package com.example.bnk.service.member;
+package com.example.bnk.service.reservation;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.bnk.dao.member.IBranchDao;
-import com.example.bnk.dto.common.BranchDto;
+import com.example.bnk.dao.reservation.IBranchDao;
+import com.example.bnk.dto.reservation.BranchDto;
 
 import lombok.RequiredArgsConstructor;
 

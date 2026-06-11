@@ -48,6 +48,22 @@ public class ReservationPageController {
         // 카카오맵 키를 화면으로 전달
         model.addAttribute("kakaoMapKey", kakaoMapKey);
 
-        return "member/reservation";
+        return "reservation/reservation";
+    }
+    
+    // 내 예약 목록 (추가)
+    @GetMapping("/reservation/list")
+    public String rootMembersReservationList(
+            @AuthenticationPrincipal String username,
+            Model model) {
+
+        if (username == null || "anonymousUser".equals(username)) {
+            return "redirect:/loginPage";
+        }
+
+        logService.build(logService.findByUserID(username), "member/reservation/list");
+        model.addAttribute("pageName", "myreservation");
+
+        return "member/myReservation";
     }
 }

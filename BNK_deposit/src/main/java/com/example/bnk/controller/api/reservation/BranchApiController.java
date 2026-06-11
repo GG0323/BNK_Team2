@@ -1,4 +1,4 @@
-package com.example.bnk.controller.api.member;
+package com.example.bnk.controller.api.reservation;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.dto.common.ApiResponse;
-import com.example.bnk.dto.common.BranchDto;
-import com.example.bnk.service.member.BranchService;
+import com.example.bnk.dto.reservation.BranchDto;
+import com.example.bnk.service.reservation.BranchService;
 
 import lombok.RequiredArgsConstructor;
 
