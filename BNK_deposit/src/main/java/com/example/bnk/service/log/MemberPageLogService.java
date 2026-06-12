@@ -14,6 +14,8 @@ import com.example.bnk.dto.log.LogTransitionStatDto;
 import com.example.bnk.dto.log.MemberPageLogDto;
 import com.example.bnk.dto.log.MemberPageLogJourneyDto;
 import com.example.bnk.dto.log.MemberPageLogSearchDto;
+import com.example.bnk.dto.log.PersonaProductLogStatDto;
+import com.example.bnk.dto.log.SessionSummaryDto;
 
 @Service
 public class MemberPageLogService {
@@ -85,6 +87,22 @@ public class MemberPageLogService {
 	public List<LogTransitionStatDto> statTransitions(String fromDate, String toDate) {
 		System.out.println("페이지 이동 횟 수");
 	    return logDao.logTransitionStat(fromDate, toDate);
+	}
+	// 페르소나별 인기 상품 조회
+	public List<PersonaProductLogStatDto> statPersonaProduct(String fromDate, String toDate) {
+		System.out.println("페르소나별 인기 상품");
+		return logDao.statPersonaProduct(fromDate, toDate);
+	}
+	
+	// 세션 개수
+	public int countSessions(MemberPageLogSearchDto dto) {
+		System.out.println("세션 개수");
+		return logDao.countSessions(dto);
+	}
+	// 세션 목록
+	public List<SessionSummaryDto> sessionList(MemberPageLogSearchDto dto) {
+		System.out.println("세션 목록");
+		return logDao.sessionList(dto);
 	}
 	
     

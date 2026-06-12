@@ -451,3 +451,58 @@ td.status-warn { color: #E8282F; font-weight: 600; }
   border-radius: 20px;
   padding: 3px 10px;
 }
+
+
+
+/* ===== 원본 로그 토글 ===== */
+.raw-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.btn-raw-toggle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-raw-toggle:hover { border-color: #111; color: #111; }
+
+/* ===== 원본 로그 섹션 ===== */
+.raw-section { margin-top: 1.25rem; }
+
+/* 섹션 제목 — 여정 패널 h2 와 같은 레드 마커 문법으로 통일 */
+.raw-section .page-head h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.raw-section .page-head h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: #E8282F;
+  border-radius: 2px;
+}
+
+/* "검색 조건이 그대로 적용됩니다" 안내 문구 */
+.raw-section .note {
+  font-size: 11px;
+  color: #aaa;
+  flex: 1;
+  text-align: right;
+}
+

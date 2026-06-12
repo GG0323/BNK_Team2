@@ -26,10 +26,14 @@ function loadStats() {
             return res.json();
         })
         .then(data => {
+			console.log(data);
+			
             renderSummary(data.summary);
             renderPageStats(data.page_stats);
             renderDailyStats(data.daily_stats);
             renderTransitions(data.transitions);
+			
+			renderPersonaProducts(data.persona_products);   // 페르소나
         })
         .catch(err => {
             console.error('통계 조회 실패:', err);
@@ -100,6 +104,37 @@ function renderTransitions(rows) {
         </tr>
     `).join('');
 }
+
+/** 페르소나별 인기 상품  */
+function renderPersonaProducts(rows) {
+    const tbody = document.getElementById('personaTbody');
+    if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty">기간 내 데이터가 없습니다.
+            (상품 상세 조회 기록이 있는 로그인 회원이 필요합니다)</td></tr>`;
+        return;
+    }
+
+    let prevPersona = null;
+    tbody.innerHTML = rows.map(r => {
+        const personaCell = (r.persona === prevPersona)
+            ? ''
+            : `<b>${escapeHtml(r.persona)}</b>`;
+        prevPersona = r.persona;
+        return `
+        <tr>
+            <td class="persona">${personaCell}</td>
+            <td title="상품번호 ${r.product_no}">${escapeHtml(r.product_name)}</td>
+            <td>${escapeHtml(r.product_type ?? '')}</td>
+            <td class="num">${r.view_cnt.toLocaleString()}</td>
+            <td class="num">${r.member_cnt.toLocaleString()}</td>
+        </tr>`;
+    }).join('');
+}
+
+
+
+
+
 
 /* ── 공통 유틸 ── */
 

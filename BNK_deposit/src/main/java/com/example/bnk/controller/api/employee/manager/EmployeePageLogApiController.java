@@ -14,6 +14,7 @@ import com.example.bnk.dto.log.MemberPageLogDto;
 import com.example.bnk.dto.log.MemberPageLogJourneyDto;
 import com.example.bnk.dto.log.MemberPageLogListResponseDto;
 import com.example.bnk.dto.log.MemberPageLogSearchDto;
+import com.example.bnk.dto.log.SessionListResponseDto;
 import com.example.bnk.service.log.MemberPageLogService;
 
 @RestController
@@ -24,7 +25,7 @@ public class EmployeePageLogApiController {
     private MemberPageLogService logService;
 	
 	
-    //로그 검색 조건에 맞는 로그 리스트를 페이지 규모에 맞게 가져온다.
+    //로그 검색 조건에 맞는 로그 리스트를 페이지 규모에 맞게 가져온다. >> 전체 로그
     @GetMapping("/list")
     public MemberPageLogListResponseDto logList(
     		MemberPageLogSearchDto searchDto // 검색 조건 Dto
@@ -48,6 +49,19 @@ public class EmployeePageLogApiController {
         
         return resDto;
     }
+    // 전체 로그를 session ID 별로 묶은것
+    @GetMapping("/sessions")
+    public SessionListResponseDto sessionList(MemberPageLogSearchDto dto) {
+
+        int totalCount = logService.countSessions(dto);
+        int totalPages = (int) Math.ceil((double) totalCount / dto.getSize());
+        if (totalPages == 0) totalPages = 1;
+        if (dto.getPage() > totalPages) dto.setPage(totalPages);
+        if (dto.getPage() < 1) dto.setPage(1);
+
+        return new SessionListResponseDto(logService.sessionList(dto), totalCount, totalPages, dto.getPage());
+    }
+    
     
     // 세션 id 별 여정 탐색
     @GetMapping("/session/{sessionId}")
@@ -67,7 +81,8 @@ public class EmployeePageLogApiController {
                 logService.statSummary(fromDate, toDate),
                 logService.statByPage(fromDate, toDate),
                 logService.statByDate(fromDate, toDate),
-                logService.statTransitions(fromDate, toDate)
+                logService.statTransitions(fromDate, toDate),
+                logService.statPersonaProduct(fromDate, toDate) 
         );
     }
 	

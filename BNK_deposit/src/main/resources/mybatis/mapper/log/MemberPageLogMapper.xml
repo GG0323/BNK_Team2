@@ -168,8 +168,95 @@
 	    FETCH FIRST 20 ROWS ONLY <!-- 20개 만 가져오기 -->
 	</select>
 	
+	<!-- 페르소나별 인기 상품 조회 -->
+	<sql id="personaCase"> <!-- 페르소나 설정 -->
+	    CASE
+	        WHEN FLOOR(MONTHS_BETWEEN(SYSDATE, m.BIRTH_DATE) / 12) &lt; 35 THEN  <!-- 35보다 낮으면 청년 -->
+	        	CASE WHEN m.GENDER = 'M' THEN '청년 남성'
+	                 WHEN m.GENDER = 'F' THEN '청년 여성'
+	                 ELSE '청년(성별미상)' END
+	        WHEN FLOOR(MONTHS_BETWEEN(SYSDATE, m.BIRTH_DATE) / 12) &lt; 65 THEN  <!-- 65보다 낮으면 중년 -->
+	            CASE WHEN m.GENDER = 'M' THEN '중년 남성'
+	                 WHEN m.GENDER = 'F' THEN '중년 여성'
+	                 ELSE '중년(성별미상)' END
+	        ELSE '노년'
+	    END
+	</sql>
+	<select id="statPersonaProduct" resultType="com.example.bnk.dto.log.PersonaProductLogStatDto">
+	    WITH product_view AS (
+	        SELECT  MEMBER_NO,
+	                TO_NUMBER(REGEXP_SUBSTR(REQUEST_URL, 'product_no=([0-9]+)', 1, 1, NULL, 1)) AS PRODUCT_NO
+	        FROM    MEMBER_PAGE_LOG
+	        WHERE   REQUEST_URL LIKE '/products/detail%'   <!-- ★ 조정 지점 5: 분석 대상 URL. QR 가입 등도 보려면 LIKE '/products/%' -->
+	          AND   MEMBER_NO IS NOT NULL
+	        <if test="from_date != null and from_date != ''">
+	          AND   ACCESSED_AT &gt;= TO_TIMESTAMP(#{from_date}, 'YYYY-MM-DD')
+	        </if>
+	        <if test="to_date != null and to_date != ''">
+	          AND   ACCESSED_AT &lt; TO_TIMESTAMP(#{to_date}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+	        </if>
+	    ) <!--  FROM product_view v  에서 쓰임-->
+	    SELECT  <include refid="personaCase"/>  AS persona,
+	            p.PRODUCT_NO                    AS product_no,
+	            p.PRODUCT_NAME                  AS product_name,
+	            p.PRODUCT_TYPE                  AS product_type,
+	            COUNT(*)                        AS view_cnt,
+	            COUNT(DISTINCT v.MEMBER_NO)     AS member_cnt
+	    FROM    product_view v 
+	    JOIN    TB_BANK_MEMBER m ON m.MEMBER_NO = v.MEMBER_NO
+	    JOIN    TB_PRODUCT     p ON p.PRODUCT_NO = v.PRODUCT_NO
+	    WHERE   v.PRODUCT_NO IS NOT NULL
+	      AND   m.MEMBER_TYPE = 'PERSONAL'
+	    GROUP BY <include refid="personaCase"/>, p.PRODUCT_NO, p.PRODUCT_NAME, p.PRODUCT_TYPE
+	    ORDER BY persona, view_cnt DESC
+	
+	</select>
 	
 	
+	<!-- ===== -->
+	<sql id="sessionCondition">
+	    <where>
+	        <if test="dto.fromDate != null and dto.fromDate != ''">
+	            AND ACCESSED_AT &gt;= TO_TIMESTAMP(#{dto.fromDate}, 'YYYY-MM-DD')
+	        </if>
+	        <if test="dto.toDate != null and dto.toDate != ''">
+	            AND ACCESSED_AT &lt; TO_TIMESTAMP(#{dto.toDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+	        </if>
+	        <if test="dto.memberNo != null">
+	            AND SESSION_ID IN (
+	                SELECT SESSION_ID FROM MEMBER_PAGE_LOG WHERE MEMBER_NO = #{dto.memberNo}
+	            )
+	        </if>
+	        <if test="dto.url != null and dto.url != ''">
+	            AND SESSION_ID IN (
+	                SELECT SESSION_ID FROM MEMBER_PAGE_LOG WHERE REQUEST_URL LIKE '%' || #{dto.url} || '%'
+	            )
+	        </if>
+	    </where>
+	</sql>
+	<select id="sessionList" resultType="com.example.bnk.dto.log.SessionSummaryDto">
+	    SELECT  SESSION_ID                                   AS session_id,
+	            MAX(MEMBER_NO)                               AS member_no,
+	            MIN(ACCESSED_AT)                             AS start_at,
+	            MAX(ACCESSED_AT)                             AS end_at,
+	            COUNT(*)                                     AS page_cnt,
+	            ROUND( ( CAST(MAX(ACCESSED_AT) AS DATE)
+	                   - CAST(MIN(ACCESSED_AT) AS DATE) ) * 86400 ) AS duration_sec,
+	            MIN(REQUEST_URL) KEEP (DENSE_RANK FIRST ORDER BY ACCESSED_AT, LOG_NO) AS first_url,
+	            MAX(REQUEST_URL) KEEP (DENSE_RANK LAST  ORDER BY ACCESSED_AT, LOG_NO) AS last_url
+	    FROM    MEMBER_PAGE_LOG
+	    <include refid="sessionCondition"/>
+	    GROUP BY SESSION_ID
+	    ORDER BY MAX(ACCESSED_AT) DESC
+	    OFFSET #{dto.offset} ROWS FETCH NEXT #{dto.size} ROWS ONLY
+	</select>
+	
+	<!-- 같은 조건의 세션 수 (페이지네이션 계산용) -->
+	<select id="countSessions" resultType="int">
+	    SELECT COUNT(DISTINCT SESSION_ID)
+	    FROM   MEMBER_PAGE_LOG
+	    <include refid="sessionCondition"/>
+	</select>
 	
 
 </mapper>

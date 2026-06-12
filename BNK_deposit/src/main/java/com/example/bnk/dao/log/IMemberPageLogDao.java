@@ -12,6 +12,8 @@ import com.example.bnk.dto.log.LogTransitionStatDto;
 import com.example.bnk.dto.log.MemberPageLogDto;
 import com.example.bnk.dto.log.MemberPageLogJourneyDto;
 import com.example.bnk.dto.log.MemberPageLogSearchDto;
+import com.example.bnk.dto.log.PersonaProductLogStatDto;
+import com.example.bnk.dto.log.SessionSummaryDto;
 
 @Mapper
 public interface IMemberPageLogDao {
@@ -39,7 +41,13 @@ public interface IMemberPageLogDao {
     List<LogDailyStatDto> logDailyStat(@Param("from_date") String fromDate, @Param("to_date") String toDate);
     // 페이지 이동 수
     List<LogTransitionStatDto> logTransitionStat(@Param("from_date") String fromDate, @Param("to_date") String toDate);
-    
+	// 페르소나 조회
+    List<PersonaProductLogStatDto> statPersonaProduct(@Param("from_date") String fromDate, @Param("to_date") String toDate);
+	
+    // 세션 개수
+    int countSessions(@Param("dto") MemberPageLogSearchDto dto);
+    // 세션 목록
+	List<SessionSummaryDto> sessionList(@Param("dto") MemberPageLogSearchDto dto);
     
     
     

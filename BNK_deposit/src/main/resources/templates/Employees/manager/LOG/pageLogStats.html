@@ -43,7 +43,7 @@
 			<button type="button" class="btn-reset" id="resetBtn">전체 기간</button>
 		</form>
 
-		<!-- ── ① 요약 카드 ── -->
+		<!-- ── 요약 카드 ── -->
 		<section class="summary-cards" id="summaryCards">
 			<div class="card"><span class="card-label">총 페이지뷰</span><b class="card-value" id="sumView">-</b></div>
 			<div class="card"><span class="card-label">총 방문(세션)</span><b class="card-value" id="sumSession">-</b></div>
@@ -51,7 +51,7 @@
 			<div class="card"><span class="card-label">방문당 평균 페이지</span><b class="card-value" id="sumAvgPages">-</b></div>
 		</section>
 
-		<!-- ── ② 페이지별 통계 ── -->
+		<!-- ── 페이지별 통계 ── -->
 		<section class="stat-section">
 			<h2>페이지별 조회수 · 체류 시간 <small>(조회수 상위 30)</small></h2>
 			<table id="pageStatTable">
@@ -70,7 +70,7 @@
 				방문의 마지막 페이지와 30분 초과(자리 비움 추정)는 집계에서 제외됩니다.</p>
 		</section>
 
-		<!-- ── ③ 일자별 추이 ── -->
+		<!-- ── 일자별 추이 ── -->
 		<section class="stat-section">
 			<h2>일자별 방문 추이</h2>
 			<table id="dailyStatTable">
@@ -86,7 +86,7 @@
 			</table>
 		</section>
 
-		<!-- ── ④ 페이지 전환 TOP ── -->
+		<!-- ── 페이지 전환 TOP ── -->
 		<section class="stat-section">
 			<h2>페이지 전환 TOP 20 <small>(어느 페이지에서 어디로 이동했나)</small></h2>
 			<table id="transitionTable">
@@ -100,6 +100,24 @@
 				</thead>
 				<tbody id="transitionTbody"></tbody>
 			</table>
+		</section>
+		
+		<!-- ── 페르소나 별 인기상품 ── -->
+		<section class="stat-section">
+		    <h2>페르소나별 인기 상품 <small>(상품 상세 조회 기준 · 로그인 회원만)</small></h2>
+		    <table id="personaTable">
+		        <thead>
+		        <tr>
+		            <th>페르소나</th>
+		            <th>상품명</th>
+		            <th>유형</th>
+		            <th>조회수</th>
+		            <th>조회 회원수</th>
+		        </tr>
+		        </thead>
+		        <tbody id="personaTbody"></tbody>
+		    </table>
+		    <p class="note">페르소나 기준(연령 경계·라벨)은 서버 쿼리의 personaCase 조각에서 관리합니다.</p>
 		</section>
 
 	</div><!-- /.main -->
