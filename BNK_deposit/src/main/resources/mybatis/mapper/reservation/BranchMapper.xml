@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.reservation.IBranchDao">
+
+    <select id="findActiveBranches"
+            resultType="com.example.bnk.dto.reservation.BranchDto">
+        SELECT branch_id, branch_name, branch_code, address,
+               phone_number, latitude, longitude, status,
+               created_at, updated_at
+          FROM TB_BRANCH
+         WHERE status = 'ACTIVE'
+         ORDER BY branch_name
+    </select>
+
+</mapper>

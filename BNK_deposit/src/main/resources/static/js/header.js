@@ -1,4 +1,4 @@
-const input = document.getElementById("modalSearchInput");
+/* Header Search + Auto Collapse */
 
 /* 헤더 자동 접힘 */
 document.addEventListener("DOMContentLoaded", function () {
@@ -87,11 +87,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // 검색 모달에서 Enter 키로 검색
+    const modalInput = document.getElementById("modalSearchInput");
+    if (modalInput) {
+        modalInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                submitSearch();
+            }
+        });
+    }
+
     // 페이지 진입 후 2.5초 뒤 자동 접힘
     startHeaderTimer();
 });
 
+function getModalSearchInput() {
+    return document.getElementById("modalSearchInput");
+}
+
 function setKeyword(keyword) {
+    const input = getModalSearchInput();
+
     if (input) {
         input.value = keyword;
         input.focus();
@@ -99,29 +116,62 @@ function setKeyword(keyword) {
 }
 
 function productSearch() {
-    const modal = document.getElementById('searchModal');
+    const modal = document.getElementById("searchModal");
+    const input = getModalSearchInput();
 
     if (modal) {
-        modal.classList.add('active');
-        document.body.classList.add('modal-open');
-        return;
+        modal.classList.add("active");
+        document.body.classList.add("modal-open");
+
+        setTimeout(function () {
+            if (input) input.focus();
+        }, 80);
     }
 }
 
 function closeSearchModal() {
-    const modal = document.getElementById('searchModal');
+    const modal = document.getElementById("searchModal");
 
     if (modal) {
-        modal.classList.remove('active');
-        document.body.classList.remove('modal-open');
+        modal.classList.remove("active");
+        document.body.classList.remove("modal-open");
     }
 }
 
-function submitSearch(){
-	if(input.value == ""){
-		alert('검색하실 내용을 입력해주세요.');
-		return;
-	}
-	
-	location.href="/products/search?keyword="+input.value
+function isProductListPageReady() {
+    return Boolean(
+        document.getElementById("productResultSection") &&
+        document.querySelector(".product-grid") &&
+        typeof window.searchProductListFromHeader === "function"
+    );
+}
+
+async function submitSearch() {
+    const input = getModalSearchInput();
+    const keyword = input ? input.value.trim() : "";
+
+    if (keyword === "") {
+        alert("검색하실 내용을 입력해주세요.");
+        return;
+    }
+
+    closeSearchModal();
+
+    // 상품 목록 페이지에서는 새로고침 없이 AJAX로 검색 결과만 교체한다.
+    if (isProductListPageReady()) {
+        try {
+            await window.searchProductListFromHeader(keyword);
+            return;
+        } catch (err) {
+            console.error(err);
+            alert(err.message || "상품 검색 중 오류가 발생했습니다.");
+            return;
+        }
+    }
+
+    // 외부 페이지에는 상품 목록 DOM이 없으므로 상품 목록 페이지로 이동한다.
+    location.href =
+        "/products/search?keyword=" +
+        encodeURIComponent(keyword) +
+        "#productResultSection";
 }

@@ -351,4 +351,175 @@
 	
 	</select>
 
+
+    <!--
+        비회원/공통 추천 상품 TOP 3
+        기준:
+        1. 판매중 상품
+        2. 판매기간 유효
+        3. TB_PRODUCT_SALES에서 DRAFT만 제외한 가입 이력 집계
+        4. 가입 이력 > 최고금리 > 기본금리 > 최근 등록 상품 순
+    -->
+    <select id="selectPopularRecommendedProducts"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        SELECT *
+        FROM (
+            SELECT
+                p.product_no,
+                p.product_name,
+                p.product_type,
+                p.min_interest_rate,
+                p.max_interest_rate,
+                p.interest_payment_type,
+                p.interest_calc_type,
+                p.product_status,
+                p.branch_join_yn,
+                p.internet_join_yn,
+                p.mobile_join_yn,
+                p.sale_start_date,
+                p.sale_end_date,
+                d.subtitle,
+                d.content,
+                d.image_url
+            FROM TB_PRODUCT p
+            LEFT JOIN TB_PRODUCT_DESCRIPTION d
+                ON p.product_no = d.product_no
+            LEFT JOIN (
+                SELECT
+                    product_no,
+                    COUNT(*) AS sales_count
+                FROM TB_PRODUCT_SALES
+                WHERE subscription_status &lt;&gt; 'DRAFT'
+                GROUP BY product_no
+            ) s
+                ON p.product_no = s.product_no
+            WHERE p.product_status = 'SALE'
+              AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+              AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+              AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+            ORDER BY
+                NVL(s.sales_count, 0) DESC,
+                NVL(p.max_interest_rate, 0) DESC,
+                NVL(p.min_interest_rate, 0) DESC,
+                p.product_no DESC
+        )
+        WHERE ROWNUM &lt;= 3
+
+    </select>
+
+
+    <!--
+        로그인 개인 회원 추천 상품 TOP 3
+        필수 조건:
+        1. 판매중 상품
+        2. 판매기간 유효
+        3. 회원 나이/성별/회원유형 기준 가입 가능 상품만 필터링
+
+        추천 점수:
+        같은 그룹 가입 이력 * 100
+        + 전체 가입 이력 * 20
+        + 최고금리 * 10
+        + 모바일 가입 가능 가산점 5
+    -->
+    <select id="selectRecommendedProductsForMember"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        WITH total_sales AS (
+            SELECT
+                product_no,
+                COUNT(*) AS total_sales_count
+            FROM TB_PRODUCT_SALES
+            WHERE subscription_status &lt;&gt; 'DRAFT'
+            GROUP BY product_no
+        ),
+        group_sales AS (
+            SELECT
+                s.product_no,
+                COUNT(*) AS group_sales_count
+            FROM TB_PRODUCT_SALES s
+            JOIN TB_BANK_MEMBER m
+                ON s.member_no = m.member_no
+            WHERE s.subscription_status &lt;&gt; 'DRAFT'
+              AND m.member_type = 'PERSONAL'
+              AND m.member_status IN ('ASSOCIATE', 'REGULAR')
+              AND m.birth_date IS NOT NULL
+
+              <choose>
+                  <when test="groupCode == 'YOUTH'">
+                      AND FLOOR(MONTHS_BETWEEN(TRUNC(SYSDATE), m.birth_date) / 12) BETWEEN 19 AND 39
+                  </when>
+                  <when test="groupCode == 'MIDDLE_MALE'">
+                      AND FLOOR(MONTHS_BETWEEN(TRUNC(SYSDATE), m.birth_date) / 12) BETWEEN 40 AND 64
+                      AND m.gender = 'M'
+                  </when>
+                  <when test="groupCode == 'MIDDLE_FEMALE'">
+                      AND FLOOR(MONTHS_BETWEEN(TRUNC(SYSDATE), m.birth_date) / 12) BETWEEN 40 AND 64
+                      AND m.gender = 'F'
+                  </when>
+                  <when test="groupCode == 'SENIOR'">
+                      AND FLOOR(MONTHS_BETWEEN(TRUNC(SYSDATE), m.birth_date) / 12) &gt;= 65
+                  </when>
+                  <otherwise>
+                      AND 1 = 0
+                  </otherwise>
+              </choose>
+
+            GROUP BY s.product_no
+        )
+        SELECT *
+        FROM (
+            SELECT
+                p.product_no,
+                p.product_name,
+                p.product_type,
+                p.min_interest_rate,
+                p.max_interest_rate,
+                p.interest_payment_type,
+                p.interest_calc_type,
+                p.product_status,
+                p.branch_join_yn,
+                p.internet_join_yn,
+                p.mobile_join_yn,
+                p.sale_start_date,
+                p.sale_end_date,
+                d.subtitle,
+                d.content,
+                d.image_url,
+                (
+                    NVL(gs.group_sales_count, 0) * 100
+                    + NVL(ts.total_sales_count, 0) * 20
+                    + NVL(p.max_interest_rate, 0) * 10
+                    + CASE WHEN p.mobile_join_yn = 'Y' THEN 5 ELSE 0 END
+                ) AS recommend_score
+            FROM TB_PRODUCT p
+            JOIN TB_PRODUCT_CONDITION c
+                ON p.product_no = c.product_no
+            LEFT JOIN TB_PRODUCT_DESCRIPTION d
+                ON p.product_no = d.product_no
+            LEFT JOIN total_sales ts
+                ON p.product_no = ts.product_no
+            LEFT JOIN group_sales gs
+                ON p.product_no = gs.product_no
+            WHERE p.product_status = 'SALE'
+              AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+              AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+              AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+
+              AND #{age} &gt;= c.min_age
+              AND (c.max_age IS NULL OR #{age} &lt;= c.max_age)
+              AND (c.gender IS NULL OR c.gender = #{gender})
+              AND (c.customer_type = 'ALL' OR c.customer_type = #{memberType})
+
+            ORDER BY
+                recommend_score DESC,
+                NVL(p.max_interest_rate, 0) DESC,
+                NVL(ts.total_sales_count, 0) DESC,
+                p.product_no DESC
+        )
+        WHERE ROWNUM &lt;= 3
+
+    </select>
+
+
 </mapper>

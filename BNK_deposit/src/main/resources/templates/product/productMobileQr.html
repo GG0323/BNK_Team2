@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>모바일 상품 가입 안내</title>
-    <link rel="stylesheet" th:href="@{/css/productView.css}">
+    <link rel="stylesheet" th:href="@{/css/product/productMobileQr.css}">
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 </head>
@@ -72,8 +72,8 @@
             <div class="qr-guide-box">
 				<div class="qr-guide-box">
 				    <img class="qr-image"
-				         th:src="@{/products/mobile-qr-image(product_no=${product.product_no})}"
-				         alt="모바일 상품 가입 QR 코드">
+					     th:src="@{/api/products/mobile-qr-image(product_no=${product.product_no})}"
+					     alt="모바일 상품 가입 QR 코드">
 				
 				    <p>
 				        QR 코드를 스캔하면 BNK 앱 이동 화면으로 연결됩니다.<br>
