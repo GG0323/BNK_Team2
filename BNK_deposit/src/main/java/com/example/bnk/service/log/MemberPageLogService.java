@@ -7,7 +7,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.example.bnk.dao.log.IMemberPageLogDao;
+import com.example.bnk.dto.log.LogDailyStatDto;
+import com.example.bnk.dto.log.LogPageStatSummaryDto;
+import com.example.bnk.dto.log.LogSummaryDto;
+import com.example.bnk.dto.log.LogTransitionStatDto;
 import com.example.bnk.dto.log.MemberPageLogDto;
+import com.example.bnk.dto.log.MemberPageLogJourneyDto;
+import com.example.bnk.dto.log.MemberPageLogSearchDto;
 
 @Service
 public class MemberPageLogService {
@@ -26,10 +32,10 @@ public class MemberPageLogService {
             int result = logDao.insertLog(dto);
             if (result != 1) {
                 System.out.println("[페이지로그] INSERT 결과가 1이 아님: " + result
-                        + " (url=" + dto.getRequestUrl() + ")");
+                        + " (url=" + dto.getRequest_url() + ")");
             }
         } catch (Exception e) {
-            System.out.println("[페이지로그] 저장 실패 (url=" + dto.getRequestUrl() + "): " + e.getMessage());
+            System.out.println("[페이지로그] 저장 실패 (url=" + dto.getRequest_url() + "): " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -39,6 +45,48 @@ public class MemberPageLogService {
     	System.out.println("전체 page log 조회");
         return logDao.allLog();
     }
+    
+    // 조건에 맞는 로그 개수 검색
+    public int countLogs(MemberPageLogSearchDto searchDto) {
+    	int counts = logDao.countLogs(searchDto);
+    	System.out.println("로그 개수 : "+ counts);
+		return counts;
+	}
+	// 조건에 맞는 로그 내용 가져오기
+	public List<MemberPageLogDto> searchLogs(MemberPageLogSearchDto searchDto) {
+		List<MemberPageLogDto> list = logDao.searchLogs(searchDto);
+		System.out.println("로그 내용 가져오기");
+		return list;
+	}
+	// 세션 id로 가져오기
+	public List<MemberPageLogJourneyDto> findJourney(String sessionId) {
+		List<MemberPageLogJourneyDto> list = logDao.findBySessionId(sessionId);
+		System.out.println("Session id로 사용자 여정 탐색");
+		return list;
+	}
+	
+	
+	// 로그 전체 통계
+	public LogSummaryDto statSummary(String fromDate, String toDate) {
+		System.out.println("전체 로그 요약");
+	    return logDao.logSummary(fromDate, toDate);
+	}
+	// 페이지 방문
+	public List<LogPageStatSummaryDto> statByPage(String fromDate, String toDate) {
+		System.out.println("페이지 총 방문");
+	    return logDao.logPageStatSummary(fromDate, toDate);
+	}
+	// 일일 방문
+	public List<LogDailyStatDto> statByDate(String fromDate, String toDate) {
+		System.out.println("페이지 일일 방문");
+	    return logDao.logDailyStat(fromDate, toDate);
+	}
+	// 페이지 이동
+	public List<LogTransitionStatDto> statTransitions(String fromDate, String toDate) {
+		System.out.println("페이지 이동 횟 수");
+	    return logDao.logTransitionStat(fromDate, toDate);
+	}
+	
     
     
     

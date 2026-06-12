@@ -21,6 +21,7 @@ public class PageLogWebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(memberPageLogInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
+                		"/employee/**", 
                         "/css/**", "/js/**", "/images/**", "/img/**", "/fonts/**",
                         "/favicon.ico",
                         "/error",                 // 스프링 기본 에러 포워딩 (상태코드는 원 요청에 이미 기록됨)

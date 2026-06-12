@@ -121,14 +121,14 @@ public class MemberPageLogInterceptor implements HandlerInterceptor {
             // [변경] 기존: dto.setSessionId(resolveTrackingId(request));  ← 세션 생성 시도 → 커밋 후라 에러
             //        현재: preHandle 이 attribute 에 넣어둔 값을 "읽기만" 한다 (커밋 이후에도 안전)
             String trackingId = (String) request.getAttribute(ATTR_TRACKING_ID);
-            dto.setSessionId(trackingId != null ? trackingId : "unknown");             // 세션 추적용 di
-            dto.setMemberNo(resolveMemberNo(request));                                 // resolveMemberNo() 호출 멤버 pk 추출
+            dto.setSession_id(trackingId != null ? trackingId : "unknown");             // 세션 추적용 di
+            dto.setMember_no(resolveMemberNo(request));                                 // resolveMemberNo() 호출 멤버 pk 추출
             //dto.setRequestUrl(request.getRequestURI());                              // request 쿼리스트링은 포함하지 않는다.
-            dto.setRequestUrl(truncate(buildLoggableUrl(request), 500));               // 화이트리스트 설정 후 요청 URL
-            dto.setRequestMethod(request.getMethod());                                 // request 요청 방식 get, post
-            dto.setHttpStatus(response.getStatus());                                   // response 응답 상태
-            dto.setRequestIp(resolveClientIp(request));                                // resolveClientIp() 호출 ip 추출
-            dto.setUserAgent(truncate(request.getHeader("User-Agent"), 500));          // 사용자 체널(크롬, 안드로이드) 저장
+            dto.setRequest_url(truncate(buildLoggableUrl(request), 500));               // 화이트리스트 설정 후 요청 URL
+            dto.setRequest_method(request.getMethod());                                 // request 요청 방식 get, post
+            dto.setHttp_status(response.getStatus());                                   // response 응답 상태
+            dto.setRequest_ip(resolveClientIp(request));                                // resolveClientIp() 호출 ip 추출
+            dto.setUser_agent(truncate(request.getHeader("User-Agent"), 500));          // 사용자 체널(크롬, 안드로이드) 저장
             // Referer 는 이전 페이지의 "전체 URL"이라 query string 에 민감정보가 섞일 수 있음 → stripQueryString() 에서 path 까지만 저장하도록 문자열 분리
             dto.setReferer(truncate(stripQueryString(request.getHeader("Referer")), 500)); // 이전 페이지 저장 -> 사용자 여정 연결
 

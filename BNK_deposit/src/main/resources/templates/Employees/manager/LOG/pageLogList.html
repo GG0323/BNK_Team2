@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>회원 페이지 로그 | 관리자</title>
+    
+    <link rel="stylesheet" th:href="@{/css/employee/logs/pageLogList.css}">
+
+</head>
+<body>
+	
+	
+	
+	<!-- 메인 -->
+	<div class="main">
+
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+
+		<div class="breadcrumb">
+			관리자 페이지 › <span class="current">고객 로그</span>
+		</div>
+
+		<div class="page-head">
+			<h1>고객 로그</h1>
+			<span class="total">총 <b id="totalCount">0</b> 건</span>
+		</div>
+
+		<!-- ── 검색 필터 ── submit 을 JS 가 가로채서(fetch) 페이지 이동 없이 목록만 갱신한다 -->
+		<form id="searchForm" class="filter">
+			<div class="field">
+				<label for="memberNo">회원번호</label>
+				<input type="number" id="memberNo" name="memberNo" placeholder="전체">
+			</div>
+			<div class="field">
+				<label for="fromDate">시작일</label>
+				<input type="date" id="fromDate" name="fromDate">
+			</div>
+			<div class="field">
+				<label for="toDate">종료일</label>
+				<input type="date" id="toDate" name="toDate">
+			</div>
+			<div class="field">
+				<label for="url">URL 검색</label>
+				<input type="text" id="url" name="url" placeholder="/products">
+			</div>
+			<button type="submit" class="btn-search">검색</button>
+			<button type="button" class="btn-reset" id="resetBtn">초기화</button>
+		</form>
+
+		<!-- ── 로그 테이블 ── -->
+		<div class="table-wrap">
+			<table id="logTable">
+				<thead>
+				<tr>
+					<th>NO</th>
+					<th>접속 시각</th>
+					<th>회원</th>
+					<th>METHOD</th>
+					<th>상태</th>
+					<th>URL</th>
+					<th>이전 페이지 (Referer)</th>
+					<th>세션</th>
+					<th>IP</th>
+				</tr>
+				</thead>
+				<tbody id="logTbody"> </tbody>
+			</table>
+		</div>
+
+		<!-- ── 페이지네이션 ── -->
+		<div class="paging" id="paging"></div>
+
+		<!-- ── 세션별 고객 여정 ── -->
+		<section id="journeyPanel" class="journey" hidden>
+			<div class="journey-head">
+				<h2>방문 여정</h2>
+				<span class="journey-meta">
+					세션 <code id="journeySession"></code> ·
+					회원 <b id="journeyMember"></b> ·
+					총 <b id="journeyPageCount">0</b>페이지 ·
+					소요 <b id="journeyTotalTime">-</b>
+				</span>
+				<button type="button" id="journeyCloseBtn">닫기</button>
+			</div>
+			<ol id="journeySteps" class="journey-steps">
+				<!-- JS 가 단계를 채운다 -->
+			</ol>
+		</section>
+
+	</div><!-- /.main -->
+	
+	
+	<script th:src="@{/js/pageLogs/pageLogList.js}"></script>
+	
+</body>
+</html>

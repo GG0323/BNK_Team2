@@ -13,17 +13,161 @@
             HTTP_STATUS, REQUEST_IP, USER_AGENT, REFERER, DURATION_MS
         ) 
         VALUES (
-			#{dto.sessionId},
-			#{dto.memberNo,      jdbcType=NUMERIC},
-			#{dto.requestUrl},
-			#{dto.requestMethod, jdbcType=VARCHAR},
-			#{dto.httpStatus,    jdbcType=NUMERIC},
-			#{dto.requestIp,     jdbcType=VARCHAR},
-			#{dto.userAgent,     jdbcType=VARCHAR},
+			#{dto.session_id},
+			#{dto.member_no,      jdbcType=NUMERIC},
+			#{dto.request_url},
+			#{dto.request_method, jdbcType=VARCHAR},
+			#{dto.http_status,    jdbcType=NUMERIC},
+			#{dto.request_ip,     jdbcType=VARCHAR},
+			#{dto.user_agent,     jdbcType=VARCHAR},
 			#{dto.referer,       jdbcType=VARCHAR},
-			#{dto.durationMs,    jdbcType=NUMERIC}
+			#{dto.duration_ms,    jdbcType=NUMERIC}
         )
     </insert>
+	
+	<!-- ===== -->
+	<!-- 검색 조건 공통부 (searchLogs / countLogs 가 같이 사용) -->
+	<sql id="searchCondition">
+	    <where>
+	        <if test="dto.memberNo != null">
+	            AND MEMBER_NO = #{dto.memberNo}
+	        </if>
+	        <if test="dto.fromDate != null and dto.fromDate != ''">
+	            AND ACCESSED_AT &gt;= TO_TIMESTAMP(#{dto.fromDate}, 'YYYY-MM-DD')
+	        </if>
+	        <if test="dto.toDate != null and dto.toDate != ''">
+	            <!-- 종료일 "포함" 검색: 종료일 + 1일 미만 -->
+	            AND ACCESSED_AT &lt; TO_TIMESTAMP(#{dto.toDate}, 'YYYY-MM-DD') + INTERVAL '1' DAY
+	        </if>
+	        <if test="dto.url != null and dto.url != ''">
+	            AND REQUEST_URL LIKE '%' || #{dto.url} || '%'
+	        </if>
+	    </where>
+	</sql>
+	
+	<!-- 조건 검색 + 페이징 목록 -->
+	<select id="searchLogs" resultType="com.example.bnk.dto.log.MemberPageLogDto">
+	    SELECT LOG_NO, SESSION_ID, MEMBER_NO, REQUEST_URL, REQUEST_METHOD,
+	           HTTP_STATUS, REQUEST_IP, USER_AGENT, REFERER, DURATION_MS, ACCESSED_AT
+	    FROM   MEMBER_PAGE_LOG
+	    
+	    <include refid="searchCondition"/> <!-- 검색 조건 -->
+	    
+	    ORDER  BY LOG_NO DESC
+	    
+	    OFFSET #{dto.offset} ROWS FETCH NEXT #{dto.size} ROWS ONLY <!-- 페이지 네이션 -->
+	</select>
+	
+	<!-- 같은 조건의 전체 건수 (페이지 수 계산용) -->
+	<select id="countLogs" resultType="int">
+	    SELECT COUNT(*)
+	    FROM   MEMBER_PAGE_LOG
+	    <include refid="searchCondition"/> <!-- 검색 조건 -->
+	</select>
+		
+	<!-- ===== -->
+	<select id="findBySessionId" resultType="com.example.bnk.dto.log.MemberPageLogJourneyDto">
+	    SELECT  LOG_NO,
+	            SESSION_ID,
+	            MEMBER_NO,
+	            REQUEST_URL,
+	            REQUEST_METHOD,
+	            HTTP_STATUS,
+	            REFERER,
+	            ACCESSED_AT,
+	            ROW_NUMBER() OVER (ORDER BY ACCESSED_AT, LOG_NO) AS STEP_NO,                 <!-- 순서대로 -->
+	            ROUND( ( CAST(LEAD(ACCESSED_AT) OVER (ORDER BY ACCESSED_AT, LOG_NO) AS DATE) 
+	                   - CAST(ACCESSED_AT AS DATE) ) * 86400 )    AS DWELL_SEC               <!-- LEAD 사용으로 시간차이 계산 -->
+	    FROM    MEMBER_PAGE_LOG
+	    WHERE   SESSION_ID = #{session_id}
+	    ORDER BY ACCESSED_AT, LOG_NO
+	</select>
+	
+	
+	<!-- ===== -->
+	
+	<!-- 통계 공통 기간 조건. 모든 통계 쿼리가 같은 조건을 공유한다 -->
+	<sql id="statPeriod">
+	    <where>
+	        <if test="from_date != null and from_date != ''">
+	            AND ACCESSED_AT &gt;= TO_TIMESTAMP(#{from_date}, 'YYYY-MM-DD')
+	        </if>
+	        <if test="to_date != null and to_date != ''">
+	            AND ACCESSED_AT &lt; TO_TIMESTAMP(#{to_date}, 'YYYY-MM-DD') + INTERVAL '1' DAY <!-- 종료일을 포함해서 검색 -->
+	        </if>
+	    </where>
+	</sql>
+	
+	<!-- [요약] 총 페이지뷰 / 방문 수 / 회원 수 / 방문당 평균 페이지 NULLIF: 데이터 0건일 때 0으로 나누기 오류 방지 -->
+	<!-- 전체 요약 통계 -->
+	<select id="logSummary" resultType="com.example.bnk.dto.log.LogSummaryDto">
+	    SELECT  COUNT(*)                                                  AS total_view,
+	            COUNT(DISTINCT SESSION_ID)                                AS total_session,
+	            COUNT(DISTINCT MEMBER_NO)                                 AS member_cnt,
+	            ROUND(COUNT(*) / NULLIF(COUNT(DISTINCT SESSION_ID), 0), 1) AS avg_pages_per_session
+	    FROM    MEMBER_PAGE_LOG
+	    <include refid="statPeriod"/>
+	</select>
+	
+	<!-- [페이지별] 조회수 + 체류 시간 (조회수 상위 30개)
+     · 체류 시간은 세션 내 다음 요청 시각과의 차이로 계산 (LEAD)
+     · CASE ... BETWEEN 0 AND 1800 : 마지막 페이지(NULL)와
+       30분 초과 이상치(자리 비움)는 체류 통계에서 제외
+     · 평균은 이상치에 끌려가므로 중앙값(MEDIAN)을 같이 본다 -->
+    <!-- 페이지별 조회수 / 체류 기간 -->
+	<select id="logPageStatSummary" resultType="com.example.bnk.dto.log.LogPageStatSummaryDto">
+	    WITH page_dwell AS (
+	        SELECT  REQUEST_URL,
+	                SESSION_ID,
+	                ROUND( ( CAST(LEAD(ACCESSED_AT) OVER (PARTITION BY SESSION_ID ORDER BY ACCESSED_AT, LOG_NO) AS DATE)
+	                       - CAST(ACCESSED_AT AS DATE) ) * 86400 ) AS DWELL_SEC <!-- 체류 시간 계산 -->
+	        FROM    MEMBER_PAGE_LOG
+	        <include refid="statPeriod"/>
+	    )
+	    SELECT  REQUEST_URL                                                          AS request_url,
+	            COUNT(*)                                                             AS view_cnt,
+	            COUNT(DISTINCT SESSION_ID)                                           AS session_cnt,
+	            ROUND(AVG(   CASE WHEN DWELL_SEC BETWEEN 0 AND 1800 THEN DWELL_SEC END), 1) AS avg_dwell_sec,   <!-- 체류시간 평균 -->
+	            ROUND(MEDIAN(CASE WHEN DWELL_SEC BETWEEN 0 AND 1800 THEN DWELL_SEC END), 1) AS median_dwell_sec <!-- 체류시간 중앙값 -->
+	    FROM    page_dwell
+	    GROUP BY REQUEST_URL
+	    ORDER BY view_cnt DESC
+	    FETCH FIRST 30 ROWS ONLY
+	</select>
+		
+	
+	<!-- [일자별] 방문 추이 -->
+	<!-- 날짜별 방문 추이 -->
+	<select id="logDailyStat" resultType="com.example.bnk.dto.log.LogDailyStatDto">
+	    SELECT  TO_CHAR(ACCESSED_AT, 'YYYY-MM-DD')  AS stat_date,
+	            COUNT(*)                            AS view_cnt,
+	            COUNT(DISTINCT SESSION_ID)          AS session_cnt  <!-- 날짜별 세션 수 -->
+	    FROM    MEMBER_PAGE_LOG
+	    <include refid="statPeriod"/>
+	    GROUP BY TO_CHAR(ACCESSED_AT, 'YYYY-MM-DD')
+	    ORDER BY stat_date
+	</select>
+	
+	<!-- [전환] A 페이지 → B 페이지 이동 빈도 TOP 20 "이 페이지 다음에 고객이 주로 어디로 가는가" -->
+	<!-- 페이지 이동 경로 top 20 -->
+	<select id="logTransitionStat" resultType="com.example.bnk.dto.log.LogTransitionStatDto">
+	    WITH t AS (
+	        SELECT  SESSION_ID,
+	                REQUEST_URL AS FROM_URL,
+	                LEAD(REQUEST_URL) OVER (PARTITION BY SESSION_ID ORDER BY ACCESSED_AT, LOG_NO) AS TO_URL <!-- 같은 세션의 다음 페이지 URL -->
+	        FROM    MEMBER_PAGE_LOG
+	        <include refid="statPeriod"/>
+	    )
+	    SELECT  FROM_URL        AS from_url,
+	            TO_URL          AS to_url,
+	            COUNT(*)        AS transition_cnt
+	    FROM     t
+	    WHERE    TO_URL IS NOT NULL
+	    GROUP BY FROM_URL, TO_URL
+	    ORDER BY transition_cnt DESC
+	    FETCH FIRST 20 ROWS ONLY <!-- 20개 만 가져오기 -->
+	</select>
+	
 	
 	
 	

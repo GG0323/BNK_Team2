@@ -1,0 +1,453 @@
+@charset "UTF-8";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 데이터 표시용 모노스페이스 (시각/URL/세션/IP) */
+.mono { font-family: ui-monospace, 'Consolas', monospace; font-size: 12px; }
+
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+/* ===== 페이지 헤더 ===== */
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-head h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+.total {
+  font-size: 12px;
+  color: #888;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #E8E8E8;
+}
+
+.total b { color: #E8282F; }
+
+/* ===== 검색 필터 ===== */
+.filter {
+  background: #fff;
+  border: 1px solid #E8E8E8;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field input {
+  padding: 9px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111;
+  background: #F8F8F8;
+  outline: none;
+  transition: all 0.15s;
+  width: 160px;
+}
+
+.field input:focus {
+  border-color: #111;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+
+.btn-search,
+.btn-reset {
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+
+.btn-search {
+  background: #111;
+  color: #fff;
+}
+
+.btn-search:hover { background: #333; }
+
+.btn-reset {
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  color: #555;
+}
+
+.btn-reset:hover { border-color: #111; color: #111; }
+
+/* ===== 로그 테이블 ===== */
+.table-wrap {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+}
+
+thead tr { background: #111; }
+
+thead th {
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFF5F5; }
+
+tbody td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* 행 안의 보조 표기들 (JS renderRows 가 생성) */
+td.num { color: #aaa; font-size: 12px; }
+td.guest { color: #bbb; }
+
+td.url {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 빈 상태 / 오류 (JS 가 생성) */
+td.empty, td.error {
+  text-align: center;
+  color: #bbb;
+  padding: 3rem;
+  font-size: 13px;
+  white-space: normal;
+}
+
+td.error { color: #E8282F; }
+
+/* ===== METHOD 뱃지 (JS badgeClass 가 클래스 결정) ===== */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge.get  { background: #EFF4FF; color: #2456C5; }
+.badge.post { background: #FFF0F0; color: #E8282F; }
+.badge.etc  { background: #F2F2F2; color: #777; }
+
+/* HTTP 상태 (JS statusClass 가 클래스 결정) */
+td.status-ok   { color: #22863a; font-weight: 600; }
+td.status-warn { color: #E8282F; font-weight: 600; }
+
+/* 세션 칩 — 클릭하면 여정 패널이 열린다 */
+.session-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid #E0E0E0;
+  background: #fff;
+  color: #555;
+  transition: all 0.15s;
+}
+
+.session-chip:hover {
+  border-color: #E8282F;
+  color: #E8282F;
+  background: #FFF5F5;
+}
+
+/* ===== 페이지네이션 (JS renderPaging 이 생성) ===== */
+.paging {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 1.25rem;
+}
+
+.page-btn {
+  min-width: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.page-btn:hover { background: #111; color: #fff; border-color: #111; }
+
+.page-now {
+  min-width: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  background: #E8282F;
+  color: #fff;
+  text-align: center;
+}
+
+/* ===== 방문 여정 패널 ===== */
+.journey {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.journey-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 12px;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.journey-head h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 페이지 타이틀과 구분되는 레드 마커 — 시스템의 active 보더와 같은 문법 */
+.journey-head h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: #E8282F;
+  border-radius: 2px;
+}
+
+.journey-meta {
+  font-size: 12px;
+  color: #888;
+  flex: 1;
+  min-width: 0;
+}
+
+.journey-meta code {
+  font-family: ui-monospace, 'Consolas', monospace;
+  font-size: 11px;
+  background: #F5F5F5;
+  border: 1px solid #EEEEEE;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #555;
+}
+
+.journey-meta b { color: #111; }
+
+#journeyCloseBtn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+#journeyCloseBtn:hover { border-color: #111; color: #111; }
+
+/* 단계 타임라인 (JS renderJourney 가 li 를 생성) */
+.journey-steps {
+  list-style: none;
+  position: relative;
+}
+
+/* 단계 번호들을 세로로 잇는 연결선 */
+.journey-steps::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: #F0F0F0;
+}
+
+.journey-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  position: relative;
+}
+
+.step-no {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;   /* 연결선 위에 올라오도록 */
+  z-index: 1;
+}
+
+.step-time { color: #888; flex-shrink: 0; width: 145px; }
+
+.step-url {
+  flex: 1;
+  min-width: 0;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.step-dwell {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #888;
+  background: #F8F8F8;
+  border: 1px solid #EEEEEE;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
