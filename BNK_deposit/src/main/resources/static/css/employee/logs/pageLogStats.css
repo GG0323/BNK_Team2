@@ -1,0 +1,357 @@
+@charset "UTF-8";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background: #F5F5F5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 데이터 표시용 모노스페이스 (URL/날짜) */
+.mono { font-family: ui-monospace, 'Consolas', monospace; font-size: 12px; }
+
+/* ===== 사이드바 ===== */
+.sidebar {
+  width: 190px;
+  background: #111111;
+  flex-shrink: 0;
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+}
+
+.sidebar .logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.25rem;
+  letter-spacing: -0.3px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.sidebar .logo span { color: #E8282F; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 1.25rem;
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.nav-item:hover { color: #fff; background: #1c1c1c; }
+
+.nav-item.active {
+  color: #fff;
+  background: #1c1c1c;
+  border-left-color: #E8282F;
+}
+
+/* ===== 메인 ===== */
+.main {
+  margin-left: 190px;
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.logout-btn {
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.logout-btn:hover { border-color: #111; color: #111; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb a { color: #aaa; text-decoration: none; }
+.breadcrumb a:hover { color: #111; }
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+/* ===== 페이지 헤더 ===== */
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.page-head h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+/* "로그 목록으로" 링크 — outline 버튼 모양 */
+.page-head a {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.page-head a:hover { border-color: #111; color: #111; }
+
+/* ===== 기간 필터 ===== */
+.filter {
+  background: #fff;
+  border: 1px solid #E8E8E8;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field input {
+  padding: 9px 12px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111;
+  background: #F8F8F8;
+  outline: none;
+  transition: all 0.15s;
+  width: 160px;
+}
+
+.field input:focus {
+  border-color: #111;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+
+.btn-search,
+.btn-reset {
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+
+.btn-search { background: #111; color: #fff; }
+.btn-search:hover { background: #333; }
+
+.btn-reset {
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  color: #555;
+}
+
+.btn-reset:hover { border-color: #111; color: #111; }
+
+/* ===== ① 요약 카드 ===== */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.summary-cards .card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.card-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1100px) {
+  .summary-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== 통계 섹션 (카드 + 테이블) ===== */
+.stat-section {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+
+.stat-section h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+/* 섹션 제목 레드 마커 — 사이드바 active 보더와 같은 문법 */
+.stat-section h2::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: #E8282F;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.stat-section h2 small {
+  font-size: 12px;
+  font-weight: 400;
+  color: #aaa;
+}
+
+/* ===== 테이블 공통 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+thead tr { background: #111; }
+
+thead th {
+  padding: 11px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* 숫자 컬럼은 헤더부터 우측 정렬 (URL 첫 컬럼 제외) */
+#pageStatTable th:not(:first-child),
+#dailyStatTable th:not(:first-child),
+#transitionTable th:last-child { text-align: right; }
+
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FFF5F5; }
+
+tbody td {
+  padding: 11px 16px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* 숫자 셀 (JS 가 .num 클래스로 생성) */
+td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* URL 셀 말줄임 */
+td.url {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 빈 상태 (JS 가 생성) */
+td.empty {
+  text-align: center;
+  color: #bbb;
+  padding: 3rem;
+  font-size: 13px;
+}
+
+/* 일자별 추이의 텍스트 막대 */
+td.bar {
+  color: #E8282F;
+  font-size: 11px;
+  letter-spacing: -1px;
+  width: 40%;
+}
+
+/* 추이 막대 헤더는 좌측 정렬 유지 */
+#dailyStatTable th:last-child { text-align: left; }
+
+/* 전환 TOP 의 화살표 */
+td.arrow {
+  color: #E8282F;
+  font-weight: 700;
+  text-align: center;
+  width: 40px;
+  padding: 11px 4px;
+}
+
+/* 각주 */
+.note {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.6;
+}
