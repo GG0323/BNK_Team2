@@ -329,6 +329,331 @@ button {
     font-weight: 900;
 }
 
+/* 챗봇
+-----------------------------------------------------------------------------------------------*/
+/* 챗봇 부분 */
+.custom-chatbot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: #E8282F;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 28px;
+    color: white;
+    
+    pointer-events: auto;
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.2s ease, 
+                visibility 0.2s ease;
+    will-change: transform, opacity;
+}
+
+.custom-chatbot.hidden {
+    opacity: 0;
+    pointer-events: none; /* 클릭 안되게 방어 */
+    visibility: hidden;   /* 완전히 공간에서 숨김 */
+    transform: translate3d(var(--target-x, 0px), var(--target-y, 0px), 0) scale(0); /* 슥 작아지며 사라지는 효과 */
+}
+
+
+/* 챗봇 예시 아이콘 */
+.custom-chatbot img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+/* 챗봇 대화창 기본 스타일 */
+.chatbot-window {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 360px;
+    height: 500px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    
+    /* 애니메이션 효과: 처음에는 투명하고 살짝 아래에 내려가 있음 */
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 🌟 대화창이 활성화되었을 때 붙을 클래스 */
+.chatbot-window.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* 챗봇 헤더 디자인 */
+.chatbot-header {
+    background: #E8282F; /* 부산은행 레드 */
+    color: white;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #00ff66;
+    border-radius: 50%;
+    display: inline-block;
+}
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.close-btn:hover { opacity: 1; }
+
+/* 챗봇 메시지 영역 */
+.chatbot-messages {
+    flex: 1;
+    padding: 16px;
+    background: #f8f9fa;
+    overflow-y: auto;
+}
+.message.system p {
+    background: #ffffff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border-top-left-radius: 2px;
+    font-size: 14px;
+    color: #333;
+    max-width: 85%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    line-height: 1.4;
+}
+
+/* 챗봇 입력 영역 */
+.chatbot-input-area {
+    padding: 12px;
+    background: white;
+    border-top: 1px solid #ededed;
+    display: flex;
+    gap: 8px;
+}
+.chatbot-input-area input {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+.chatbot-input-area input:focus {
+    border-color: #E8282F;
+}
+.chatbot-input-area button {
+    background: #222;
+    color: white;
+    border: none;
+    padding: 0 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.chatbot-input-area button:hover { background: #000; }
+
+
+/* ===================================================================
+   💙 부산은행 AI 부기 챗봇 커스텀 스타일 스펙
+   =================================================================== */
+
+/* 1. 둥둥 떠다니는 부기 아이콘 컨트롤 */
+.custom-chatbot {
+    position: fixed;
+    z-index: 9999;
+    cursor: pointer;
+    transition: transform 0.1s ease-out, opacity 0.3s ease;
+}
+.custom-chatbot img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+.custom-chatbot.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 2. 챗봇 본체 창 */
+.chatbot-window {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 380px;
+    height: 550px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: none; /* JS .active 토글로 제어 */
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10000;
+}
+.chatbot-window.active {
+    display: flex;
+}
+
+/* 3. 헤더 영역 (부산은행 컬러 매핑) */
+.chatbot-header {
+    background: linear-gradient(135deg, #ff0000, #ff1111);
+    color: #ffffff;
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatbot-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+}
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #26e6a1; /* 라이브 활성화 그린 닷 */
+    border-radius: 50%;
+    display: inline-block;
+}
+.close-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.close-btn:hover {
+    opacity: 1;
+}
+
+/* 4. 대화창 스크롤 구역 */
+.chatbot-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 5. 공통 말풍선 기초 체력 */
+.chatbot-messages .message {
+    display: flex;
+    max-width: 80%;
+}
+.chatbot-messages .message p {
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    word-break: break-all;
+}
+
+/* 6. 부기(시스템) 말풍선 - 좌측 배치 */
+.chatbot-messages .message.system {
+    align-self: flex-start;
+}
+.chatbot-messages .message.system p {
+    background-color: #ffffff;
+    color: #333333;
+    border-top-left-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 7. 유저 말풍선 - 우측 배치 */
+.chatbot-messages .message.user {
+    align-self: flex-end;
+}
+.chatbot-messages .message.user p {
+    background-color: #ffeb3b; /* 친근한 부산은행 포인트 옐로우 */
+    color: #111111;
+    border-top-right-radius: 2px;
+    box-shadow: 0 2px 5px rgba(255,235,59,0.2);
+}
+
+/* 8. 하단 인풋 타이핑 존 */
+.chatbot-input-area {
+    display: flex;
+    padding: 15px;
+    background-color: #ffffff;
+    border-top: 1px solid #eaeaea;
+    gap: 10px;
+}
+.chatbot-input-area input {
+    flex: 1;
+    border: 1px solid #dddddd;
+    border-radius: 26px;
+    padding: 10px 20px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.chatbot-input-area input:focus {
+    border-color: #0054a6;
+}
+.chatbot-input-area button {
+    background-color: #ff1111;
+    color: #ffffff;
+    border: none;
+    border-radius: 26px;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.chatbot-input-area button:hover {
+    background-color: #003b75;
+}
+
+/* 스크롤바 커스텀 예쁘게 다듬기 */
+.chatbot-messages::-webkit-scrollbar {
+    width: 6px;
+}
+.chatbot-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+.chatbot-messages::-webkit-scrollbar-thumb {
+    background: #ff1111;
+    border-radius: 4px;
+}
+
+
+
+/* 화면 크기 변경
+--------------------------------------------------------------------------------------------*/
 /* Responsive */
 @media (max-width: 1180px) {
     .main {
@@ -392,4 +717,6 @@ button {
     .service-card {
         min-height: 190px;
     }
+    
 }
+
