@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>페이지 로그 통계 | 관리자</title>
+    
+    <link rel="stylesheet" th:href="@{/css/employee/logs/pageLogStats.css}">
+    
+</head>
+<body>
+	
+	
+	<!-- 메인 -->
+	<div class="main">
+
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+
+		<div class="breadcrumb">
+			관리자 페이지 ›
+			<a th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a> ›
+			<span class="current">통계</span>
+		</div>
+
+		<div class="page-head">
+			<h1>고객 로그 통계</h1>
+			<a th:href="@{/employee/manager/LOG/pageLog/list}">로그 목록으로</a>
+		</div>
+
+		<!-- ── 기간 필터 ── -->
+		<form id="periodForm" class="filter">
+			<div class="field">
+				<label for="fromDate">시작일</label>
+				<input type="date" id="fromDate" name="fromDate">
+			</div>
+			<div class="field">
+				<label for="toDate">종료일</label>
+				<input type="date" id="toDate" name="toDate">
+			</div>
+			<button type="submit" class="btn-search">조회</button>
+			<button type="button" class="btn-reset" id="resetBtn">전체 기간</button>
+		</form>
+
+		<!-- ── 요약 카드 ── -->
+		<section class="summary-cards" id="summaryCards">
+			<div class="card"><span class="card-label">총 페이지뷰</span><b class="card-value" id="sumView">-</b></div>
+			<div class="card"><span class="card-label">총 방문(세션)</span><b class="card-value" id="sumSession">-</b></div>
+			<div class="card"><span class="card-label">방문 회원 수</span><b class="card-value" id="sumMember">-</b></div>
+			<div class="card"><span class="card-label">방문당 평균 페이지</span><b class="card-value" id="sumAvgPages">-</b></div>
+		</section>
+
+		<!-- ── 페이지별 통계 ── -->
+		<section class="stat-section">
+			<h2>페이지별 조회수 · 체류 시간 <small>(조회수 상위 30)</small></h2>
+			<table id="pageStatTable">
+				<thead>
+				<tr>
+					<th>페이지 URL</th>
+					<th>조회수</th>
+					<th>방문 세션</th>
+					<th>평균 체류</th>
+					<th>중앙값 체류</th>
+				</tr>
+				</thead>
+				<tbody id="pageStatTbody"></tbody>
+			</table>
+			<p class="note">체류 시간은 같은 방문에서 "다음 페이지로 이동하기까지 걸린 시간"으로 계산되며,
+				방문의 마지막 페이지와 30분 초과(자리 비움 추정)는 집계에서 제외됩니다.</p>
+		</section>
+
+		<!-- ── 일자별 추이 ── -->
+		<section class="stat-section">
+			<h2>일자별 방문 추이</h2>
+			<table id="dailyStatTable">
+				<thead>
+				<tr>
+					<th>날짜</th>
+					<th>페이지뷰</th>
+					<th>방문(세션)</th>
+					<th>추이</th>
+				</tr>
+				</thead>
+				<tbody id="dailyStatTbody"></tbody>
+			</table>
+		</section>
+
+		<!-- ── 페이지 전환 TOP ── -->
+		<section class="stat-section">
+			<h2>페이지 전환 TOP 20 <small>(어느 페이지에서 어디로 이동했나)</small></h2>
+			<table id="transitionTable">
+				<thead>
+				<tr>
+					<th>출발 페이지</th>
+					<th></th>
+					<th>도착 페이지</th>
+					<th>이동 횟수</th>
+				</tr>
+				</thead>
+				<tbody id="transitionTbody"></tbody>
+			</table>
+		</section>
+		
+		<!-- ── 페르소나 별 인기상품 ── -->
+		<section class="stat-section">
+		    <h2>페르소나별 인기 상품 <small>(상품 상세 조회 기준 · 로그인 회원만)</small></h2>
+		    <table id="personaTable">
+		        <thead>
+		        <tr>
+		            <th>페르소나</th>
+		            <th>상품명</th>
+		            <th>유형</th>
+		            <th>조회수</th>
+		            <th>조회 회원수</th>
+		        </tr>
+		        </thead>
+		        <tbody id="personaTbody"></tbody>
+		    </table>
+		    <p class="note">페르소나 기준(연령 경계·라벨)은 서버 쿼리의 personaCase 조각에서 관리합니다.</p>
+		</section>
+
+	</div><!-- /.main -->
+
+
+	
+	<script th:src="@{/js/pageLogs/pageLogStats.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.inquiry.IInquiryMsgDao">
+
+	<!-- 메세지~~~~~  -->
+	
+	<!-- 메세지 등록 -->
+	<insert id="insertMsg" >
+	    INSERT INTO TB_INQUIRY_MSG (
+	        INQUIRY_NO,
+	        SENDER_TYPE,
+	        SENDER_ID,
+	        MSG_CONTENT
+	    ) VALUES (
+	        #{inquiryNo},
+	        #{senderType},
+	        #{senderId},
+	        #{msgContent}
+	    )
+	</insert>
+	
+	<!-- 메세지 불러오기 -->
+	<select id="callMsg" resultType="com.example.bnk.dto.inquiry.InquiryMsgDto">
+		SELECT * FROM TB_INQUIRY_MSG WHERE INQUIRY_NO = #{inquiryNo} ORDER BY msg_no
+	</select>
+
+
+
+
+
+
+
+
+
+</mapper>

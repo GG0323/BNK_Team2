@@ -1,28 +1,147 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" class="product-list-fullpage">
 <head>
     <meta charset="UTF-8">
     <title>BNK 상품 목록</title>
-	
+	<link rel="stylesheet" th:href="@{/css/product/productList.css}">
+	<link rel="stylesheet" th:href="@{/css/product/recommendedPassbook.css}">
 	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
     
-    <link rel="stylesheet" th:href="@{/css/productView.css}">
-	
-	<script th:src="@{/js/productView.js}" defer></script>
-	<script th:src="@{/js/productViewMember.js}" defer></script>
+	<script th:src="@{/js/product/productList.js}" defer></script>
+	<script th:src="@{/js/product/productViewMember.js}" defer></script>
 </head>
-<body>
+<body class="product-list-page">
 	<div th:replace="~{fragments/header :: header_default}"></div>
 
-<div class="page-wrap">
 
-    <header class="product-header">
-        <div>
-            <h1>BNK 예금/적금 상품</h1>
-            <p>비회원도 예금·적금 상품을 조회하고 비교할 수 있습니다.</p>
+<section class="recommended-passbook-hero product-fullpage-section product-hero-section"
+         id="recommendedPassbookHero"
+         th:if="${recommendedProducts != null and !#lists.isEmpty(recommendedProducts)}">
+
+    <div class="rpb-bg rpb-bg-single"></div>
+    <div class="rpb-bg rpb-bg-split rpb-bg-split-top"></div>
+    <div class="rpb-bg rpb-bg-split rpb-bg-split-bottom"></div>
+
+    <div class="rpb-effect-layer" aria-hidden="true">
+        <div class="rpb-light-ring rpb-light-ring-1"></div>
+        <div class="rpb-light-ring rpb-light-ring-2"></div>
+        <div class="rpb-energy-line rpb-energy-line-1"></div>
+        <div class="rpb-energy-line rpb-energy-line-2"></div>
+        <div class="rpb-energy-line rpb-energy-line-3"></div>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+
+    <div class="rpb-word rpb-word-1">RECOMMENDED</div>
+    <div class="rpb-word rpb-word-2">OPEN PASSBOOK</div>
+    <div class="rpb-word rpb-word-3">BNK PRODUCT</div>
+
+    <div class="rpb-inner">
+        <div class="rpb-intro">
+            <span th:text="${recommendationMode == 'MEMBER' ? '회원 맞춤 추천' : '인기 추천'}">인기 추천</span>
+            <strong th:text="${recommendationMessage}">지금 고객들이 가장 많이 선택한 인기 예적금 상품입니다.</strong>
+
+            <div class="rpb-quick-actions" aria-label="상품 목록 바로가기">
+                <button type="button" class="rpb-search-start-btn">상품 검색하기</button>
+                <button type="button" class="rpb-list-start-btn rpb-scroll-next">전체 상품 보기 <strong>↓</strong></button>
+            </div>
         </div>
-    </header>
+
+        <div class="rpb-stage">
+            <div class="rpb-fan" aria-label="추천 예적금 통장 선택">
+                <button type="button"
+                        class="rpb-fan-card"
+                        th:each="product, stat : ${recommendedProducts}"
+                        th:classappend="${stat.index == 0 ? ' rpb-fan-left rpb-theme-growth' : (stat.index == 1 ? ' rpb-fan-center rpb-theme-custom' : ' rpb-fan-right rpb-theme-challenge')}"
+                        th:attr="data-product-no=${product.product_no},
+                                 data-product-name=${product.product_name},
+                                 data-product-type=${product.product_type},
+                                 data-subtitle=${product.subtitle},
+                                 data-min-rate=${product.min_interest_rate},
+                                 data-max-rate=${product.max_interest_rate},
+                                 data-mobile-yn=${product.mobile_join_yn},
+                                 data-internet-yn=${product.internet_join_yn},
+                                 data-branch-yn=${product.branch_join_yn},
+                                 data-theme=${stat.index == 0 ? 'growth' : (stat.index == 1 ? 'custom' : 'challenge')},
+                                 data-rate-effect=${stat.index == 0 ? 'rolling' : (stat.index == 1 ? 'flip' : 'flip-roll')},
+                                 data-detail-url=@{/products/detail(product_no=${product.product_no})}">
+
+                    <span class="rpb-fan-kicker"
+                          th:text="${product.product_type == 'DEPOSIT' ? '정기예금' : '적금'}">정기예금</span>
+                    <span class="rpb-fan-title" th:text="${product.product_name}">추천 상품명</span>
+                    <span class="rpb-fan-hint">CLICK TO OPEN</span>
+                </button>
+            </div>
+
+            <div class="rpb-scene" aria-live="polite">
+                <div class="rpb-shadow"></div>
+
+                <div class="rpb-paper">
+                    <div class="rpb-paper-topbar"></div>
+                    <div class="rpb-product-content">
+                        <span class="rpb-type-badge">정기예금</span>
+                        <h2 class="rpb-product-name">추천 상품명</h2>
+                        <p class="rpb-product-desc">상품 설명</p>
+
+                        <div class="rpb-rate-area">
+                            <div class="rpb-rate-label">연 <small>(세전)</small></div>
+                            <div class="rpb-rate" data-rate="0.00% ~ 0.00%">0.00% ~ 0.00%</div>
+                        </div>
+
+                        <div class="rpb-channel-chips">
+                            <span class="rpb-chip rpb-chip-branch">영업점</span>
+                            <span class="rpb-chip rpb-chip-internet">인터넷</span>
+                            <span class="rpb-chip rpb-chip-mobile">모바일</span>
+                        </div>
+
+                        <div class="rpb-actions">
+                            <a class="rpb-detail-btn" href="#">상세보기</a>
+                            <button type="button"
+                                    class="rpb-compare-btn compare-btn"
+                                    data-id=""
+                                    data-name="">
+                                비교함 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rpb-stack rpb-stack-1"></div>
+                <div class="rpb-stack rpb-stack-2"></div>
+
+                <div class="rpb-pages">
+                    <div class="rpb-page rpb-page-1"></div>
+                    <div class="rpb-page rpb-page-2"></div>
+                    <div class="rpb-page rpb-page-3"></div>
+                    <div class="rpb-page rpb-page-4"></div>
+                    <div class="rpb-page rpb-page-5"></div>
+                </div>
+
+                <div class="rpb-hinge"></div>
+                <div class="rpb-cover">
+                    <div class="rpb-cover-front">
+                        <div class="rpb-cover-bank">BNK<br>부산은행</div>
+                        <div class="rpb-cover-body">
+                            <div class="rpb-cover-icon">🌱</div>
+                            <div class="rpb-cover-title">추천 예적금</div>
+                        </div>
+                    </div>
+                    <div class="rpb-cover-back"></div>
+                </div>
+            </div>
+
+            <button type="button" class="rpb-close-btn">← 다른 상품 보기</button>
+
+            <a href="#productListSection" class="rpb-scroll-next" aria-label="상품 목록 섹션으로 이동">
+                <span>상품 목록 보기</span>
+                <strong>↓</strong>
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="page-wrap product-fullpage-section product-list-section" id="productListSection">
 
     <section class="search-section">
         <form th:action="@{/products/search}" method="get" class="search-box">
@@ -35,7 +154,7 @@
         </form>
     </section>
 
-    <section class="product-section">
+    <section class="product-section" id="productResultSection">
 
 		<div class="section-title">
 
@@ -47,7 +166,7 @@
 		    <form th:action="@{/products}" method="get" class="sort-form">
 		        <label for="sort">정렬</label>
 
-		        <select name="sort" id="sort" onchange="this.form.submit()">
+		        <select name="sort" id="sort">
 		            <option value="baseRateDesc"
 		                    th:selected="${sort == null or sort == 'baseRateDesc'}">
 		                기본금리 높은 순
@@ -138,10 +257,10 @@
 </div>
 
 <!-- 상품 비교함 -->
-<div class="compare-bar expanded" id="compareBar">
+<div class="compare-bar collapsed" id="compareBar">
 
     <!-- 닫기 / 열기 버튼 -->
-    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">×</button>
+    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">상품 비교함 열기</button>
 
     <!-- 펼친 상태에서 보이는 비교함 -->
     <div class="compare-expanded-area" id="compareExpandedArea">

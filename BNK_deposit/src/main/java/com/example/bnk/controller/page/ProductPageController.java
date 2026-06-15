@@ -39,24 +39,30 @@ public class ProductPageController {
     // 조건: product_type = DEPOSIT / SAVINGS, product_status = SALE
     @GetMapping
     public String productList(Model model,
-            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort) {
+                              Principal principal,
+                              @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort) {
 
         model.addAttribute("productList", productViewService.getProductList(sort));
         model.addAttribute("sort", sort);
 
+        addRecommendationAttributes(model, principal);
+
         return "product/productList";
     }
-    
+
     // 상품 검색
     // TB_KEYWORD.normalized_keyword 활용
     @GetMapping("/search")
     public String searchProductList(@RequestParam(value = "keyword", required = false) String keyword,
-                                    Model model) {
+                                    Model model,
+                                    Principal principal) {
 
         List<ProductListViewDto> productList = productViewService.searchProductList(keyword);
 
         model.addAttribute("productList", productList);
         model.addAttribute("keyword", keyword);
+
+        addRecommendationAttributes(model, principal);
 
         return "product/productList";
     }
@@ -109,32 +115,8 @@ public class ProductPageController {
         List<ProductCompareViewDto> compareList = productViewService.getCompareProducts(ids);
 
         model.addAttribute("compareList", compareList);
-        model.addAttribute("ids", ids);
-
-        // 페이지 최초 진입 시 Ollama를 자동 호출하지 않음
-        // AI 요약은 버튼 클릭 시 /products/compare-ai-summary API로 별도 호출
-        model.addAttribute("aiSummary", null);
 
         return "product/productCompare";
-    }
-
-    // 상품 비교 AI 요약 API
-    // 예: /products/compare-ai-summary?ids=1,2,3
-    @GetMapping("/compare-ai-summary")
-    @ResponseBody
-    public String compareAiSummary(@RequestParam(value = "ids", required = false) String ids) {
-
-        return productViewService.getCompareAiSummary(ids);
-    }
-
-    // 비교 페이지 상품 1개 AI 요약 API
-    // 예: /products/compare-product-ai-summary?ids=1,2,3&product_no=1
-    @GetMapping("/compare-product-ai-summary")
-    @ResponseBody
-    public String compareProductAiSummary(@RequestParam(value = "ids", required = false) String ids,
-                                          @RequestParam("product_no") long product_no) {
-
-        return productViewService.getCompareProductAiSummary(ids, product_no);
     }
 
     // 모바일 상품 가입 QR 안내 페이지
@@ -151,13 +133,12 @@ public class ProductPageController {
     }
 
     // 모바일 상품 가입 QR 이미지 생성
-    // 예: /products/mobile-qr-image?product_no=1
+    // 기존 화면 URL 호환을 위해 유지
+    // API 전용 URL은 /api/products/mobile-qr-image 사용 가능
     @GetMapping(value = "/mobile-qr-image", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseBody
     public byte[] productMobileQrImage(@RequestParam("product_no") long product_no) throws Exception {
 
-        // 실제 앱 연동 전 임시 앱 이동 주소
-        // 나중에 실제 앱 딥링크 주소로 바꾸면 됨
         String qrContent = "bnkapp://product/join?product_no=" + product_no;
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -176,16 +157,49 @@ public class ProductPageController {
         return outputStream.toByteArray();
     }
 
-    // 사용자 정보 기반 맞춤 상품 추천
-    // 현재는 시연용으로 member_no = 1 회원 기준 추천
+    // 추천 화면 테스트 URL
+    // /products와 같은 화면을 사용하되 추천 영역을 확인하기 위한 용도
     @GetMapping("/recommend")
-    public String recommendProductList(Model model) {
+    public String recommendProductList(Model model,
+                                       Principal principal,
+                                       @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort) {
 
-        List<ProductListViewDto> productList = productViewService.getRecommendProductList();
-
-        model.addAttribute("productList", productList);
+        model.addAttribute("productList", productViewService.getProductList(sort));
+        model.addAttribute("sort", sort);
         model.addAttribute("recommendMode", true);
 
+        addRecommendationAttributes(model, principal);
+
         return "product/productList";
+    }
+
+    private void addRecommendationAttributes(Model model, Principal principal) {
+        BankMemberDto member = getLoginMember(principal);
+
+        List<ProductListViewDto> recommendedProducts;
+        String recommendationMode;
+        String recommendationMessage;
+
+        if (member != null && productViewService.isPersonalRecommendationTarget(member)) {
+            recommendedProducts = productViewService.getRecommendedProductsForMember(member);
+            recommendationMode = productViewService.getRecommendationMode(member);
+            recommendationMessage = productViewService.getRecommendationMessage(member);
+        } else {
+            recommendedProducts = productViewService.getPopularRecommendedProducts();
+            recommendationMode = "POPULAR";
+            recommendationMessage = productViewService.getRecommendationMessage(null);
+        }
+
+        model.addAttribute("recommendedProducts", recommendedProducts);
+        model.addAttribute("recommendationMode", recommendationMode);
+        model.addAttribute("recommendationMessage", recommendationMessage);
+    }
+
+    private BankMemberDto getLoginMember(Principal principal) {
+        if (principal == null) {
+            return null;
+        }
+
+        return bankMemberService.getMemberInfo(principal.getName());
     }
 }

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>주소 → 좌표 추출 도구 (BNK 영업점용)</title>
+<style>
+    body { font-family: "Noto Sans KR", sans-serif; max-width: 880px; margin: 30px auto; padding: 0 20px; color: #111; }
+    h1 { font-size: 20px; }
+    p.desc { color: #666; font-size: 14px; line-height: 1.6; }
+    textarea { width: 100%; height: 160px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; font-size: 14px; font-family: inherit; box-sizing: border-box; }
+    button { margin-top: 10px; height: 44px; padding: 0 24px; border: none; border-radius: 8px; background: #d71920; color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; }
+    button:hover { background: #b81218; }
+    #map { width: 100%; height: 320px; margin-top: 16px; border: 1px solid #eee; border-radius: 8px; }
+    .result { margin-top: 20px; }
+    .result h2 { font-size: 16px; }
+    pre { background: #f6f6f6; border: 1px solid #eee; border-radius: 8px; padding: 14px; font-size: 13px; overflow-x: auto; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    th, td { border: 1px solid #eee; padding: 8px 10px; text-align: left; }
+    th { background: #fafafa; }
+    .fail { color: #d71920; font-weight: 700; }
+</style>
+<!-- 카카오 SDK : services 라이브러리 필수. YOUR_KAKAO_JS_KEY 에 본인 JS 키를 넣으세요 -->
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d00526dc42dee7213d7735d0540d205b&libraries=services&autoload=false"></script>
+</head>
+<body>
+
+<h1>주소 → 좌표 추출 도구 (BNK 영업점용)</h1>
+<p class="desc">
+    아래에 <b>한 줄에 하나씩</b> 입력하세요. 형식: <code>영업점명 | 도로명주소</code> (구분자는 세로줄 |)<br>
+    예: <code>BNK 부산은행 본점 | 부산 남구 문현금융로 30</code><br>
+    영업점명을 빼고 주소만 넣어도 됩니다. 버튼을 누르면 좌표와 INSERT 문이 생성됩니다.
+</p>
+
+<textarea id="input" placeholder="BNK 부산은행 본점 | 부산 남구 문현금융로 30
+BNK 서면금융센터 | 부산 부산진구 중앙대로 668"></textarea>
+<br>
+<button onclick="run()">좌표 변환 + INSERT 문 생성</button>
+
+<div id="map"></div>
+
+<div class="result" id="result"></div>
+
+<script>
+let map, geocoder, bounds;
+
+kakao.maps.load(function () {
+    map = new kakao.maps.Map(document.getElementById('map'), {
+        center: new kakao.maps.LatLng(35.1796, 129.0756),
+        level: 7
+    });
+    geocoder = new kakao.maps.services.Geocoder();
+});
+
+function run() {
+    const lines = document.getElementById('input').value
+        .split('\n').map(s => s.trim()).filter(s => s.length > 0);
+
+    if (!geocoder) { alert('지도가 아직 준비되지 않았습니다. 잠시 후 다시 시도하세요.'); return; }
+    if (lines.length === 0) { alert('주소를 입력하세요.'); return; }
+
+    bounds = new kakao.maps.LatLngBounds();
+    const rows = [];
+    const inserts = [];
+    let done = 0;
+    let code = 1;
+
+    lines.forEach(function (line, idx) {
+        let name = '', addr = '';
+        if (line.includes('|')) {
+            const parts = line.split('|');
+            name = parts[0].trim();
+            addr = parts[1].trim();
+        } else {
+            addr = line.trim();
+            name = '(이름미입력)';
+        }
+
+        geocoder.addressSearch(addr, function (result, status) {
+            done++;
+            if (status === kakao.maps.services.Status.OK && result[0]) {
+                const lat = parseFloat(result[0].y).toFixed(7); // 위도
+                const lng = parseFloat(result[0].x).toFixed(7); // 경도
+                const pos = new kakao.maps.LatLng(lat, lng);
+                new kakao.maps.Marker({ map: map, position: pos });
+                bounds.extend(pos);
+
+                const codeStr = 'BR-' + String(code).padStart(3, '0');
+                code++;
+
+                rows.push('<tr><td>' + name + '</td><td>' + addr + '</td><td>' + lat + '</td><td>' + lng + '</td></tr>');
+
+                inserts.push(
+                    "INSERT INTO TB_BRANCH (branch_id, branch_name, branch_code, address, phone_number, latitude, longitude, status)\n" +
+                    "VALUES (SEQ_TB_BRANCH.NEXTVAL, '" + name + "', '" + codeStr + "', '" + addr + "', NULL, " + lat + ", " + lng + ", 'ACTIVE');"
+                );
+            } else {
+                rows.push('<tr><td>' + name + '</td><td>' + addr + '</td><td colspan="2" class="fail">검색 실패 — 주소를 확인하세요</td></tr>');
+            }
+
+            if (done === lines.length) {
+                render(rows, inserts);
+                if (rows.length > 0) map.setBounds(bounds);
+            }
+        });
+    });
+}
+
+function render(rows, inserts) {
+    let html = '<h2>좌표 결과</h2>';
+    html += '<table><thead><tr><th>영업점명</th><th>주소</th><th>위도(latitude)</th><th>경도(longitude)</th></tr></thead><tbody>';
+    html += rows.join('');
+    html += '</tbody></table>';
+
+    html += '<h2>INSERT 문 (복사해서 실행 + COMMIT)</h2>';
+    html += '<pre>' + inserts.join('\n\n') + (inserts.length ? '\n\nCOMMIT;' : '') + '</pre>';
+
+    document.getElementById('result').innerHTML = html;
+}
+</script>
+
+</body>
+</html>

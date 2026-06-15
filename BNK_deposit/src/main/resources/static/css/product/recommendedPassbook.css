@@ -1,0 +1,1416 @@
+@charset "UTF-8";
+
+/* =========================================================
+   추천 통장 Hero 영역
+   ========================================================= */
+.recommended-passbook-hero {
+    --rpb-main: #1554c8;
+    --rpb-cover-from: #2a6fd6;
+    --rpb-cover-to: #053898;
+    --rpb-bg-gradient: linear-gradient(135deg, #ffe96b 0%, #ffd43b 50%, #ffc107 100%);
+    position: relative;
+    min-height: 760px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 48%, rgba(255,255,255,0.52), transparent 38%),
+        linear-gradient(135deg, #fff6b8 0%, #ffe878 48%, #ffd43b 100%);
+    color: #111827;
+}
+
+.recommended-passbook-hero.theme-growth {
+    --rpb-main: #1554c8;
+    --rpb-cover-from: #2a6fd6;
+    --rpb-cover-to: #053898;
+    --rpb-bg-gradient: linear-gradient(135deg, #ffe96b 0%, #ffd43b 50%, #ffc107 100%);
+}
+
+.recommended-passbook-hero.theme-custom {
+    --rpb-main: #08796f;
+    --rpb-cover-from: #2ec4a6;
+    --rpb-cover-to: #08796f;
+    --rpb-bg-gradient: linear-gradient(135deg, #d9f8ef 0%, #86ead7 50%, #35c7ae 100%);
+}
+
+.recommended-passbook-hero.theme-challenge {
+    --rpb-main: #df4d31;
+    --rpb-cover-from: #ff8a62;
+    --rpb-cover-to: #df4d31;
+    --rpb-bg-gradient: linear-gradient(135deg, #ffe1d4 0%, #ff9d7a 50%, #f05a3d 100%);
+}
+
+.rpb-bg {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    background: var(--rpb-bg-gradient);
+}
+
+.rpb-bg-single {
+    inset: 0;
+    transform: translateY(105%);
+    transition: transform 0.72s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.recommended-passbook-hero.theme-growth.is-bg-active .rpb-bg-single {
+    transform: translateY(0);
+}
+
+.recommended-passbook-hero.theme-custom .rpb-bg-single {
+    transform: translateY(-105%);
+}
+
+.recommended-passbook-hero.theme-custom.is-bg-active .rpb-bg-single {
+    transform: translateY(0);
+}
+
+.recommended-passbook-hero.theme-challenge .rpb-bg-single {
+    display: none;
+}
+
+.rpb-bg-split {
+    left: 0;
+    right: 0;
+    height: 50%;
+    display: none;
+    transition: transform 0.62s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.rpb-bg-split-top {
+    top: 0;
+    transform: translateX(-105%);
+}
+
+.rpb-bg-split-bottom {
+    bottom: 0;
+    transform: translateX(105%);
+}
+
+.recommended-passbook-hero.theme-challenge .rpb-bg-split {
+    display: block;
+}
+
+.recommended-passbook-hero.theme-challenge.is-bg-active .rpb-bg-split-top {
+    transform: translateX(0);
+}
+
+.recommended-passbook-hero.theme-challenge.is-bg-active .rpb-bg-split-bottom {
+    transform: translateX(0);
+    transition-delay: 0.12s;
+}
+
+.recommended-passbook-hero.theme-challenge.is-closing .rpb-bg-split-bottom {
+    transition-delay: 0s;
+}
+
+.recommended-passbook-hero.theme-challenge.is-closing .rpb-bg-split-top {
+    transition-delay: 0.12s;
+}
+
+.rpb-word {
+    position: absolute;
+    z-index: 1;
+    color: rgba(17, 24, 39, 0.08);
+    font-size: clamp(44px, 7vw, 104px);
+    font-weight: 900;
+    letter-spacing: -4px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.rpb-word-1 { top: 9%; left: 4%; }
+.rpb-word-2 { top: 27%; right: 4%; }
+.rpb-word-3 { bottom: 10%; left: 6%; }
+
+.rpb-inner {
+    position: relative;
+    z-index: 5;
+    width: min(1180px, calc(100% - 80px));
+    margin: 0 auto;
+    padding: 54px 0 58px;
+}
+
+.rpb-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.rpb-intro span {
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    color: #d71920;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.rpb-intro strong {
+    font-size: 28px;
+    line-height: 1.3;
+    letter-spacing: -1.2px;
+    font-weight: 900;
+}
+
+.rpb-stage {
+    position: relative;
+    width: min(900px, 100%);
+    height: 560px;
+    margin: 0 auto;
+}
+
+.rpb-fan {
+    position: absolute;
+    left: 50%;
+    top: 78px;
+    width: min(820px, 94vw);
+    height: 330px;
+    transform: translateX(-50%);
+}
+
+.rpb-fan-card {
+    --rpb-fan-from: #2a6fd6;
+    --rpb-fan-to: #053898;
+    --rpb-base-transform: translateX(-50%) rotate(0deg);
+    --rpb-hover-transform: translateX(-50%) translateY(-18px) rotate(0deg);
+    position: absolute;
+    left: 50%;
+    top: 70px;
+    width: 285px;
+    height: 190px;
+    border: none;
+    border-radius: 26px 26px 16px 16px;
+    padding: 28px 30px;
+    text-align: left;
+    color: rgba(255,246,200,0.96);
+    background:
+        radial-gradient(ellipse at 22% 18%, rgba(255,255,255,0.26), transparent 52%),
+        linear-gradient(148deg, var(--rpb-fan-from), var(--rpb-fan-to));
+    box-shadow: 0 26px 64px rgba(8,38,108,0.26), inset 0 1px 0 rgba(255,255,255,0.28);
+    transform: var(--rpb-base-transform);
+    transform-origin: bottom center;
+    transition:
+        transform 0.75s cubic-bezier(0.2,0.9,0.2,1),
+        opacity 0.42s ease,
+        filter 0.42s ease,
+        box-shadow 0.42s ease;
+    cursor: pointer;
+}
+
+.rpb-fan-card::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: 13px;
+    border: 1px solid rgba(255,255,255,0.22);
+    pointer-events: none;
+}
+
+.rpb-fan-card::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -22px;
+    width: 74%;
+    height: 24px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: rgba(0,0,0,0.18);
+    filter: blur(18px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.rpb-fan-left {
+    --rpb-base-transform: translateX(-108%) rotate(-15deg);
+    --rpb-hover-transform: translateX(-108%) translateY(-20px) rotate(-15deg);
+    z-index: 1;
+}
+
+.rpb-fan-center {
+    --rpb-base-transform: translateX(-50%) translateY(-32px) rotate(0deg);
+    --rpb-hover-transform: translateX(-50%) translateY(-52px) rotate(0deg);
+    z-index: 3;
+}
+
+.rpb-fan-right {
+    --rpb-base-transform: translateX(8%) rotate(15deg);
+    --rpb-hover-transform: translateX(8%) translateY(-20px) rotate(15deg);
+    z-index: 2;
+}
+
+.rpb-theme-growth { --rpb-fan-from: #2a6fd6; --rpb-fan-to: #053898; }
+.rpb-theme-custom { --rpb-fan-from: #2ec4a6; --rpb-fan-to: #08796f; }
+.rpb-theme-challenge { --rpb-fan-from: #ff8a62; --rpb-fan-to: #df4d31; }
+
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:hover,
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:focus-visible {
+    transform: var(--rpb-hover-transform) scale(1.03);
+    box-shadow: 0 34px 86px rgba(8,38,108,0.34), inset 0 1px 0 rgba(255,255,255,0.28);
+}
+
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:hover::before,
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:focus-visible::before {
+    opacity: 1;
+}
+
+.rpb-fan-kicker,
+.rpb-fan-title,
+.rpb-fan-hint {
+    position: relative;
+    z-index: 2;
+    display: block;
+}
+
+.rpb-fan-kicker {
+    display: inline-flex;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.rpb-fan-title {
+    margin-top: 30px;
+    font-size: 21px;
+    line-height: 1.25;
+    letter-spacing: -0.9px;
+    font-weight: 900;
+    word-break: keep-all;
+}
+
+.rpb-fan-hint {
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.rpb-fan-card:hover .rpb-fan-hint,
+.rpb-fan-card:focus-visible .rpb-fan-hint {
+    opacity: 0.88;
+    transform: translateY(0);
+}
+
+.recommended-passbook-hero.is-selected .rpb-fan-card:not(.selected) {
+    opacity: 0;
+    filter: blur(8px);
+    pointer-events: none;
+}
+
+.recommended-passbook-hero.is-selected .rpb-fan-card.selected {
+    transform: translateX(-50%) translateY(-18px) rotate(0deg) scale(1.08);
+    z-index: 20;
+}
+
+.recommended-passbook-hero.is-open .rpb-fan-card.selected,
+.recommended-passbook-hero.is-closing .rpb-fan-card.selected {
+    opacity: 0;
+    filter: blur(4px);
+    pointer-events: none;
+}
+
+.rpb-scene {
+    position: absolute;
+    left: 50%;
+    top: 104px;
+    width: min(560px, 88vw);
+    height: 420px;
+    transform: translateX(-50%) translateY(26px) scale(0.96);
+    perspective: 1300px;
+    perspective-origin: 50% 50%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.38s ease, transform 0.55s cubic-bezier(0.2,0.9,0.2,1);
+}
+
+.recommended-passbook-hero.is-open .rpb-scene,
+.recommended-passbook-hero.is-closing .rpb-scene {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.rpb-shadow {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    width: 400px;
+    height: 28px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: rgba(0,0,0,0.16);
+    filter: blur(16px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.recommended-passbook-hero.is-open .rpb-shadow,
+.recommended-passbook-hero.is-closing .rpb-shadow { opacity: 1; }
+
+.rpb-paper {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 520px;
+    transform: translateX(-50%);
+    z-index: 2;
+    background: #fff;
+    border-radius: 22px 22px 26px 26px;
+    box-shadow: 0 18px 56px rgba(0,0,0,0.13);
+    overflow: hidden;
+}
+
+.rpb-paper-topbar {
+    height: 6px;
+    background: linear-gradient(90deg, var(--rpb-main), rgba(255,255,255,0.6));
+}
+
+.rpb-product-content {
+    padding: 26px 48px 30px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(14px);
+}
+
+.recommended-passbook-hero.is-detail-active .rpb-product-content {
+    animation: rpbFadeUp 0.55s ease forwards;
+}
+
+.recommended-passbook-hero.is-closing .rpb-product-content {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+}
+
+.rpb-type-badge {
+    display: inline-flex;
+    height: 28px;
+    padding: 0 16px;
+    align-items: center;
+    border: 1.5px solid var(--rpb-main);
+    border-radius: 999px;
+    color: var(--rpb-main);
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.rpb-product-name {
+    margin: 14px 0 10px;
+    color: var(--rpb-main);
+    font-size: 30px;
+    line-height: 1.16;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    word-break: keep-all;
+}
+
+.rpb-product-desc {
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0,0,0,0.07);
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 700;
+}
+
+.rpb-rate-area {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(0,0,0,0.12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    min-height: 62px;
+}
+
+.rpb-rate-label { color: #4b5563; font-size: 15px; font-weight: 800; }
+.rpb-rate-label small { font-size: 12px; }
+.rpb-rate { color: var(--rpb-main); font-size: 40px; font-weight: 900; letter-spacing: -1.6px; }
+
+.rpb-channel-chips {
+    min-height: 34px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.rpb-chip {
+    display: none;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.06);
+    color: #374151;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.rpb-chip.show { display: inline-flex; }
+
+.rpb-actions {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.rpb-detail-btn,
+.rpb-compare-btn {
+    width: 118px;
+    height: 38px;
+    border: none;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.rpb-detail-btn {
+    background: var(--rpb-main);
+    color: white;
+}
+
+.rpb-compare-btn {
+    background: #111827;
+    color: white;
+}
+
+.rpb-stack {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 16px 16px;
+}
+
+.rpb-stack-1 { width: 504px; height: 14px; z-index: 1; top: 262px; background: #edeef4; box-shadow: 0 5px 12px rgba(0,0,0,0.08); }
+.rpb-stack-2 { width: 486px; height: 14px; z-index: 0; top: 273px; background: #e2e3ea; }
+
+.rpb-hinge {
+    position: absolute;
+    left: 50%;
+    top: -5px;
+    width: 520px;
+    height: 10px;
+    transform: translateX(-50%);
+    z-index: 30;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(3,28,100,0.65), rgba(100,150,240,0.4), rgba(3,28,100,0.65));
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.recommended-passbook-hero.is-open .rpb-hinge,
+.recommended-passbook-hero.is-closing .rpb-hinge { opacity: 1; }
+
+.rpb-cover {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 520px;
+    height: 290px;
+    transform: translateX(-50%) rotateX(0deg);
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    z-index: 20;
+}
+
+.recommended-passbook-hero.is-open .rpb-cover {
+    animation: rpbCoverFlip 1.08s cubic-bezier(0.45,0.05,0.2,1) forwards 0.14s;
+}
+
+.recommended-passbook-hero.is-closing .rpb-cover {
+    animation: rpbCoverClose 0.72s cubic-bezier(0.45,0.05,0.2,1) forwards;
+}
+
+.rpb-cover-front {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px 24px 14px 14px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background:
+        radial-gradient(ellipse at 22% 20%, rgba(255,255,255,0.26), transparent 50%),
+        linear-gradient(148deg, var(--rpb-cover-from) 0%, var(--rpb-cover-to) 100%);
+    box-shadow: 0 24px 60px rgba(8,38,108,0.36), inset 0 1px 0 rgba(255,255,255,0.28);
+}
+
+.rpb-cover-front::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.rpb-cover-bank {
+    position: absolute;
+    top: 26px;
+    left: 30px;
+    color: rgba(255,246,200,0.95);
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1.35;
+}
+
+.rpb-cover-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(255,246,200,0.95);
+}
+
+.rpb-cover-icon { font-size: 38px; }
+.rpb-cover-title { font-size: 19px; font-weight: 900; letter-spacing: -0.5px; }
+
+.rpb-cover-back {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px 14px 24px 24px;
+    transform: rotateX(180deg);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: linear-gradient(170deg, #eef2fc 0%, #dce4f5 100%);
+}
+
+.rpb-cover-back::before {
+    content: "";
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    top: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background: #b4c4e4;
+}
+
+.rpb-cover-back::after {
+    content: "";
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    top: 34px;
+    height: 1px;
+    background: #cad4ee;
+}
+
+.rpb-pages {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 520px;
+    height: 290px;
+    transform: translateX(-50%);
+    transform-style: preserve-3d;
+    z-index: 12;
+    pointer-events: none;
+}
+
+.rpb-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 520px;
+    height: 278px;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    opacity: 0;
+    border-radius: 20px 20px 14px 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,248,255,0.98));
+    box-shadow: 0 12px 26px rgba(0,0,0,0.08), inset 0 -1px 0 rgba(0,0,0,0.06);
+    border: 1px solid rgba(220,225,235,0.9);
+}
+
+.rpb-page::before {
+    content: "";
+    position: absolute;
+    left: 34px;
+    right: 34px;
+    top: 34px;
+    height: 1px;
+    background: rgba(120,140,170,0.18);
+    box-shadow:
+        0 18px 0 rgba(120,140,170,0.14),
+        0 36px 0 rgba(120,140,170,0.12),
+        0 54px 0 rgba(120,140,170,0.10);
+}
+
+.rpb-page-1 { z-index: 17; }
+.rpb-page-2 { z-index: 16; }
+.rpb-page-3 { z-index: 15; }
+.rpb-page-4 { z-index: 14; }
+.rpb-page-5 { z-index: 13; }
+
+.recommended-passbook-hero.is-open .rpb-page {
+    animation: rpbPageFlip 0.5s cubic-bezier(0.42,0.02,0.18,1) forwards;
+}
+
+.recommended-passbook-hero.is-open .rpb-page-1 { animation-delay: 0.36s; }
+.recommended-passbook-hero.is-open .rpb-page-2 { animation-delay: 0.43s; }
+.recommended-passbook-hero.is-open .rpb-page-3 { animation-delay: 0.50s; }
+.recommended-passbook-hero.is-open .rpb-page-4 { animation-delay: 0.57s; }
+.recommended-passbook-hero.is-open .rpb-page-5 { animation-delay: 0.64s; }
+
+.recommended-passbook-hero.is-closing .rpb-page {
+    opacity: 0.16;
+    transform: rotateX(180deg);
+    animation: rpbPageClose 0.42s ease forwards;
+}
+
+.rpb-close-btn {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 40;
+    height: 48px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 999px;
+    background: #111827;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(12px);
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.recommended-passbook-hero.is-detail-active .rpb-close-btn {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.recommended-passbook-hero.is-closing .rpb-close-btn { opacity: 0; pointer-events: none; }
+
+/* 추천 금리 애니메이션 */
+.rpb-rolling-rate,
+.rpb-flip-rate,
+.rpb-flip-roll-rate {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.055em;
+    font-variant-numeric: tabular-nums;
+}
+
+.rpb-rate-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.18em);
+}
+
+.rpb-rate-char.space { width: 0.3em; }
+
+.rpb-rolling-rate.start .rpb-rate-char,
+.rpb-flip-rate.start .rpb-rate-char,
+.rpb-flip-roll-rate.start .rpb-rate-char {
+    animation: rpbCharShow 0.16s ease forwards;
+    animation-delay: var(--delay);
+}
+
+.rpb-digit-reel {
+    display: inline-block;
+    width: 0.62em;
+    height: 1em;
+    overflow: hidden;
+    line-height: 1em;
+}
+
+.rpb-digit-track {
+    display: block;
+    transform: translateY(0);
+    transition: transform 0.58s cubic-bezier(0.18,0.9,0.22,1);
+    transition-delay: var(--delay);
+}
+
+.rpb-digit-track span {
+    display: block;
+    height: 1em;
+    line-height: 1em;
+    text-align: center;
+}
+
+.rpb-rolling-rate.start .rpb-digit-track {
+    transform: translateY(calc(var(--target) * -1em));
+}
+
+.rpb-flip-digit,
+.rpb-flip-roll-digit {
+    position: relative;
+    display: inline-block;
+    width: 0.72em;
+    height: 1.08em;
+    perspective: 520px;
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+}
+
+.rpb-flip-rate.start .rpb-flip-digit,
+.rpb-flip-roll-digit.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+    transition-delay: var(--delay);
+}
+
+.rpb-flip-half,
+.rpb-flip-flap,
+.rpb-single-flap {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    background: #fff;
+    color: var(--rpb-main);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+.rpb-flip-half span,
+.rpb-flip-flap span,
+.rpb-single-flap span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    line-height: 1.08em;
+    text-align: center;
+    font-weight: 900;
+}
+
+.rpb-top { top: 0; border-radius: 0.18em 0.18em 0 0; border-bottom: 1px solid rgba(0,0,0,0.12); }
+.rpb-top span { top: 0; }
+.rpb-bottom { bottom: 0; border-radius: 0 0 0.18em 0.18em; }
+.rpb-bottom span { bottom: 0; }
+.rpb-old-top { top: 0; z-index: 4; transform-origin: bottom center; backface-visibility: hidden; }
+.rpb-new-bottom { bottom: 0; z-index: 5; transform-origin: top center; transform: rotateX(90deg); backface-visibility: hidden; }
+
+.rpb-flip-rate.start .rpb-old-top { animation: rpbFlipTop 0.22s ease-in forwards; animation-delay: var(--delay); }
+.rpb-flip-rate.start .rpb-new-bottom { animation: rpbFlipBottom 0.25s ease-out forwards; animation-delay: calc(var(--delay) + 0.22s); }
+.rpb-flip-roll-digit.flipping .rpb-old-top { animation: rpbFlipTop 0.04s ease-in forwards; }
+.rpb-flip-roll-digit.flipping .rpb-new-bottom { animation: rpbFlipBottom 0.055s ease-out forwards 0.04s; }
+
+@keyframes rpbFadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes rpbCoverFlip { 0% { transform: translateX(-50%) rotateX(0deg); } 100% { transform: translateX(-50%) rotateX(180deg); } }
+@keyframes rpbCoverClose { 0% { transform: translateX(-50%) rotateX(180deg); } 100% { transform: translateX(-50%) rotateX(0deg); } }
+@keyframes rpbPageFlip { 0% { transform: rotateX(0deg); opacity: 1; } 100% { transform: rotateX(180deg) translateY(-2px); opacity: 0.92; } }
+@keyframes rpbPageClose { to { transform: rotateX(0deg); opacity: 0; } }
+@keyframes rpbCharShow { to { opacity: 1; transform: translateY(0); } }
+@keyframes rpbFlipTop { from { transform: rotateX(0deg); } to { transform: rotateX(-90deg); } }
+@keyframes rpbFlipBottom { from { transform: rotateX(90deg); } to { transform: rotateX(0deg); } }
+
+@media (max-width: 980px) {
+    .recommended-passbook-hero { min-height: 700px; }
+    .rpb-inner { width: min(100% - 32px, 760px); }
+    .rpb-intro strong { font-size: 22px; }
+    .rpb-stage { height: 520px; }
+    .rpb-fan { top: 70px; width: min(620px, 100%); }
+    .rpb-fan-card { width: 230px; height: 164px; padding: 24px 22px; }
+    .rpb-fan-title { font-size: 17px; }
+    .rpb-paper, .rpb-cover, .rpb-hinge, .rpb-pages, .rpb-page { width: min(520px, 86vw); }
+    .rpb-product-name { font-size: 25px; }
+    .rpb-rate { font-size: 32px; }
+}
+
+
+/* =========================================================
+   추천 통장 Hero: 독립된 첫 섹션처럼 보이게 하는 보정
+   ========================================================= */
+.product-list-page .recommended-passbook-hero.product-hero-section {
+    height: 100vh;
+    min-height: 760px;
+    max-height: none;
+    overflow: hidden;
+}
+
+.product-list-page .recommended-passbook-hero.product-hero-section .rpb-inner {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 44px;
+    padding-bottom: 76px;
+}
+
+.product-list-page .recommended-passbook-hero.product-hero-section .rpb-stage {
+    flex: 0 0 auto;
+}
+
+.rpb-scroll-next {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    z-index: 45;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: rgba(17, 24, 39, 0.88);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    transform: translateX(-50%);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.rpb-scroll-next:hover {
+    background: #d71920;
+    transform: translateX(-50%) translateY(-3px);
+}
+
+.rpb-scroll-next strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 15px;
+    line-height: 1;
+    animation: rpbScrollArrow 1.15s ease-in-out infinite;
+}
+
+.recommended-passbook-hero.is-selected .rpb-scroll-next,
+.recommended-passbook-hero.is-open .rpb-scroll-next,
+.recommended-passbook-hero.is-closing .rpb-scroll-next {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(8px);
+}
+
+.product-list-page.is-section-moving .recommended-passbook-hero .rpb-inner {
+    transition: transform 0.72s cubic-bezier(0.2, 0.9, 0.2, 1), opacity 0.72s ease;
+}
+
+@keyframes rpbScrollArrow {
+    0%, 100% {
+        transform: translateY(-1px);
+    }
+
+    50% {
+        transform: translateY(3px);
+    }
+}
+
+@media (max-width: 768px) {
+    .product-list-page .recommended-passbook-hero.product-hero-section {
+        height: 100dvh;
+        min-height: 700px;
+    }
+
+    .product-list-page .recommended-passbook-hero.product-hero-section .rpb-inner {
+        padding-top: 38px;
+        padding-bottom: 66px;
+    }
+
+    .rpb-scroll-next {
+        bottom: 18px;
+        height: 42px;
+        padding: 0 16px;
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   추천 통장 Hero: 테마/순서/클릭 보정 v2
+   ========================================================= */
+.recommended-passbook-hero.theme-growth {
+    --rpb-main: #1456d9;
+    --rpb-cover-from: #2a6fd6;
+    --rpb-cover-to: #063a9e;
+    --rpb-bg-gradient: linear-gradient(135deg, #eef6ff 0%, #9ed0ff 46%, #2f6fe4 100%);
+}
+
+.recommended-passbook-hero.theme-custom {
+    --rpb-main: #08796f;
+    --rpb-cover-from: #2ec4a6;
+    --rpb-cover-to: #08796f;
+    --rpb-bg-gradient: linear-gradient(135deg, #e9fff7 0%, #8af0dc 46%, #16aa94 100%);
+}
+
+.recommended-passbook-hero.theme-challenge {
+    --rpb-main: #d94325;
+    --rpb-cover-from: #ff8a62;
+    --rpb-cover-to: #df4d31;
+    --rpb-bg-gradient: linear-gradient(135deg, #fff0e9 0%, #ffad8c 48%, #e24a2c 100%);
+}
+
+.recommended-passbook-hero .rpb-bg-single {
+    transition: transform 1.02s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.recommended-passbook-hero.theme-challenge .rpb-bg-split {
+    display: block;
+    background: var(--rpb-bg-gradient);
+    transition: transform 1.04s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.recommended-passbook-hero.theme-challenge:not(.is-bg-active) .rpb-bg-split-top {
+    transform: translateX(-105%);
+}
+
+.recommended-passbook-hero.theme-challenge:not(.is-bg-active) .rpb-bg-split-bottom {
+    transform: translateX(105%);
+}
+
+.recommended-passbook-hero.theme-challenge.is-bg-active .rpb-bg-split-top {
+    transform: translateX(0);
+}
+
+.recommended-passbook-hero.theme-challenge.is-bg-active .rpb-bg-split-bottom {
+    transform: translateX(0);
+    transition-delay: 0.16s;
+}
+
+.rpb-word {
+    transition: opacity 0.38s ease, transform 0.38s ease;
+}
+
+.rpb-word.is-word-changing {
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+/* 통장 내부 버튼을 실제로 클릭할 수 있게 한다. */
+.recommended-passbook-hero.is-open .rpb-scene,
+.recommended-passbook-hero.is-detail-active .rpb-scene,
+.recommended-passbook-hero.is-closing .rpb-scene {
+    pointer-events: auto;
+}
+
+.rpb-detail-btn,
+.rpb-compare-btn {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* 금리는 상품 정보가 등장한 뒤 별도 단계에서만 보인다. */
+.rpb-rate-area {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.34s ease, transform 0.34s ease;
+}
+
+.recommended-passbook-hero.is-rate-active .rpb-rate-area {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.recommended-passbook-hero.is-closing .rpb-rate-area {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+/* =========================================================
+   추천 통장 Hero: 패널 전환 최종 보정
+   ========================================================= */
+.product-list-page .recommended-passbook-hero.product-hero-section {
+    height: 100vh;
+    min-height: 760px;
+    max-height: none;
+    overflow: hidden;
+}
+
+.product-list-page .recommended-passbook-hero.product-hero-section .rpb-inner {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 44px;
+    padding-bottom: 76px;
+}
+
+.product-list-page .recommended-passbook-hero.product-hero-section .rpb-stage {
+    flex: 0 0 auto;
+}
+
+/* 통장이 열렸을 때 상세보기/비교함 버튼 클릭 가능 */
+.recommended-passbook-hero.is-open .rpb-scene,
+.recommended-passbook-hero.is-detail-active .rpb-scene,
+.recommended-passbook-hero.is-closing .rpb-scene {
+    pointer-events: auto;
+}
+
+.rpb-detail-btn,
+.rpb-compare-btn {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* 금리 영역은 is-rate-active 단계에서만 보인다. */
+.rpb-rate-area {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.34s ease, transform 0.34s ease;
+}
+
+.recommended-passbook-hero.is-rate-active .rpb-rate-area {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.recommended-passbook-hero.is-closing .rpb-rate-area {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+/* 배경 문구 변경 효과 */
+.rpb-word {
+    transition: opacity 0.38s ease, transform 0.38s ease;
+}
+
+.rpb-word.is-word-changing {
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+/* 상품 목록 보기 버튼 */
+.rpb-scroll-next {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    z-index: 45;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: rgba(17, 24, 39, 0.88);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+    transform: translateX(-50%);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.rpb-scroll-next:hover {
+    background: #d71920;
+    transform: translateX(-50%) translateY(-3px);
+}
+
+.rpb-scroll-next strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 15px;
+    line-height: 1;
+    animation: rpbScrollArrow 1.15s ease-in-out infinite;
+}
+
+.recommended-passbook-hero.is-selected .rpb-scroll-next,
+.recommended-passbook-hero.is-open .rpb-scroll-next,
+.recommended-passbook-hero.is-closing .rpb-scroll-next {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(8px);
+}
+
+@keyframes rpbScrollArrow {
+    0%, 100% { transform: translateY(-1px); }
+    50% { transform: translateY(3px); }
+}
+
+@media (max-width: 768px) {
+    .product-list-page .recommended-passbook-hero.product-hero-section {
+        height: 100dvh;
+        min-height: 700px;
+    }
+
+    .product-list-page .recommended-passbook-hero.product-hero-section .rpb-inner {
+        padding-top: 38px;
+        padding-bottom: 66px;
+    }
+
+    .rpb-scroll-next {
+        bottom: 18px;
+        height: 42px;
+        padding: 0 16px;
+        font-size: 13px;
+    }
+}
+
+
+
+/* =========================================================
+   보편 추천 슬롯 연출 v3
+   - 상품명이 아니라 추천 순위/슬롯 의미에 맞춘 연출
+   ========================================================= */
+.rpb-effect-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+    overflow: hidden;
+    transition: opacity 0.35s ease;
+}
+
+.recommended-passbook-hero.is-bursting .rpb-effect-layer,
+.recommended-passbook-hero.is-bg-active .rpb-effect-layer {
+    opacity: 1;
+}
+
+.rpb-light-ring {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    transform: translate(-50%, -50%) scale(0.45);
+    opacity: 0;
+}
+
+.rpb-light-ring-2 {
+    width: 390px;
+    height: 390px;
+    border-color: rgba(255, 255, 255, 0.36);
+}
+
+.recommended-passbook-hero.is-bursting .rpb-light-ring-1 {
+    animation: rpbRingBurst 1.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.recommended-passbook-hero.is-bursting .rpb-light-ring-2 {
+    animation: rpbRingBurst 1.55s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s;
+}
+
+.rpb-energy-line {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 360px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.88), transparent);
+    opacity: 0;
+    transform-origin: center;
+}
+
+.rpb-energy-line-1 { --angle: -18deg; transform: translate(-50%, -50%) rotate(-18deg) scaleX(0.2); }
+.rpb-energy-line-2 { --angle: 18deg; transform: translate(-50%, -50%) rotate(18deg) scaleX(0.2); }
+.rpb-energy-line-3 { --angle: 90deg; transform: translate(-50%, -50%) rotate(90deg) scaleX(0.2); }
+
+.recommended-passbook-hero.is-bursting .rpb-energy-line {
+    animation: rpbEnergySweep 0.95s cubic-bezier(0.22, 1, 0.36, 1) both 0.18s;
+}
+
+.rpb-effect-layer i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 18px rgba(255,255,255,0.72);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+}
+
+.recommended-passbook-hero.theme-growth .rpb-effect-layer i {
+    background: #eaf5ff;
+    box-shadow: 0 0 18px rgba(75, 144, 255, 0.72);
+}
+
+.recommended-passbook-hero.theme-custom .rpb-effect-layer i {
+    background: #d9fff4;
+    box-shadow: 0 0 18px rgba(35, 214, 174, 0.72);
+    border-radius: 4px;
+}
+
+.recommended-passbook-hero.theme-challenge .rpb-effect-layer i {
+    background: #fff1d6;
+    box-shadow: 0 0 22px rgba(255, 118, 74, 0.86);
+    border-radius: 2px;
+}
+
+.rpb-effect-layer i:nth-child(6)  { --x: -340px; --y: -170px; --r: -24deg; --d: 0ms; }
+.rpb-effect-layer i:nth-child(7)  { --x: -250px; --y:  120px; --r:  18deg; --d: 70ms; }
+.rpb-effect-layer i:nth-child(8)  { --x: -150px; --y: -230px; --r:  42deg; --d: 130ms; }
+.rpb-effect-layer i:nth-child(9)  { --x:  -60px; --y:  210px; --r: -18deg; --d: 30ms; }
+.rpb-effect-layer i:nth-child(10) { --x:   80px; --y: -240px; --r:  36deg; --d: 100ms; }
+.rpb-effect-layer i:nth-child(11) { --x:  180px; --y:  180px; --r: -42deg; --d: 180ms; }
+.rpb-effect-layer i:nth-child(12) { --x:  270px; --y: -130px; --r:  12deg; --d: 60ms; }
+.rpb-effect-layer i:nth-child(13) { --x:  350px; --y:   90px; --r: -30deg; --d: 160ms; }
+.rpb-effect-layer i:nth-child(14) { --x: -390px; --y:   20px; --r:  26deg; --d: 220ms; }
+.rpb-effect-layer i:nth-child(15) { --x:  390px; --y:  -20px; --r: -16deg; --d: 240ms; }
+.rpb-effect-layer i:nth-child(16) { --x: -110px; --y:   40px; --r:  70deg; --d: 90ms; }
+.rpb-effect-layer i:nth-child(17) { --x:  115px; --y:  -40px; --r: -70deg; --d: 120ms; }
+
+.recommended-passbook-hero.is-bursting .rpb-effect-layer i {
+    animation: rpbParticleBurst 1.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d);
+}
+
+/* 부채꼴은 유지하되 세 번째 통장이 덜 가려지도록 살짝 펼친다. */
+.rpb-fan-left {
+    --rpb-base-transform: translateX(-116%) rotate(-15deg);
+    --rpb-hover-transform: translateX(-116%) translateY(-24px) rotate(-15deg);
+}
+
+.rpb-fan-right {
+    --rpb-base-transform: translateX(16%) rotate(15deg);
+    --rpb-hover-transform: translateX(16%) translateY(-24px) rotate(15deg);
+}
+
+.recommended-passbook-hero:not(.is-selected) .rpb-fan.has-hover .rpb-fan-card:not(.is-hovered),
+.recommended-passbook-hero:not(.is-selected).has-hover-card .rpb-fan-card:not(.is-hovered) {
+    opacity: 0.72;
+    filter: saturate(0.88) brightness(0.94);
+}
+
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card.is-hovered,
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:hover,
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:focus-visible {
+    z-index: 80 !important;
+    transform: var(--rpb-hover-transform) scale(1.075);
+    box-shadow:
+        0 40px 96px rgba(8,38,108,0.42),
+        0 0 0 1px rgba(255,255,255,0.18) inset,
+        inset 0 1px 0 rgba(255,255,255,0.32);
+}
+
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card.is-hovered::before,
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:hover::before,
+.recommended-passbook-hero:not(.is-selected) .rpb-fan-card:focus-visible::before {
+    opacity: 1;
+}
+
+/* Hero 안에서 검색/목록 진입점을 명확하게 보이게 한다. */
+.rpb-quick-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.rpb-search-start-btn,
+.rpb-list-start-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.rpb-search-start-btn {
+    background: #111827;
+    color: #ffffff;
+}
+
+.rpb-list-start-btn {
+    position: static;
+    left: auto;
+    bottom: auto;
+    z-index: auto;
+    background: rgba(255, 255, 255, 0.82);
+    color: #111827;
+    transform: none;
+}
+
+.rpb-search-start-btn:hover,
+.rpb-list-start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
+}
+
+.rpb-search-start-btn:hover {
+    background: #d71920;
+}
+
+/* 통장 오픈 중에는 검색/목록 진입 버튼도 숨긴다. */
+.recommended-passbook-hero.is-selected .rpb-quick-actions,
+.recommended-passbook-hero.is-open .rpb-quick-actions,
+.recommended-passbook-hero.is-closing .rpb-quick-actions {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes rpbRingBurst {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.36); }
+    22% { opacity: 0.95; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.92); }
+}
+
+@keyframes rpbEnergySweep {
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) scaleX(0.08); }
+    25% { opacity: 0.9; }
+    100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) scaleX(1.36); }
+}
+
+@keyframes rpbParticleBurst {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(0deg) scale(0.4);
+    }
+    18% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(var(--r)) scale(1.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .rpb-quick-actions {
+        margin-top: 2px;
+    }
+
+    .rpb-search-start-btn,
+    .rpb-list-start-btn {
+        height: 40px;
+        padding: 0 16px;
+        font-size: 13px;
+    }
+
+    .rpb-fan-left {
+        --rpb-base-transform: translateX(-103%) rotate(-13deg);
+        --rpb-hover-transform: translateX(-103%) translateY(-20px) rotate(-13deg);
+    }
+
+    .rpb-fan-right {
+        --rpb-base-transform: translateX(3%) rotate(13deg);
+        --rpb-hover-transform: translateX(3%) translateY(-20px) rotate(13deg);
+    }
+}
