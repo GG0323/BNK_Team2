@@ -126,13 +126,27 @@ public class FinanceDictionaryApiController {
                     dictionaryService.searchCategoryDictionariesForChat(question);
 
             if (categoryResults != null && !categoryResults.isEmpty()) {
-                String llmAnswer =
-                        dictionaryService.generateLlmAnswerForMultiFound(question, categoryResults);
+                StringBuilder answer = new StringBuilder();
+
+                answer.append("질문과 관련된 금융용어 목록입니다.\n\n");
+
+                for (int i = 0; i < categoryResults.size(); i++) {
+                    FinanceDictionaryDto dto = categoryResults.get(i);
+
+                    answer.append(i + 1)
+                            .append(". ")
+                            .append(dto.getDictionary_nm())
+                            .append(" - ")
+                            .append(dto.getDictionary_category())
+                            .append("\n");
+                }
+
+                answer.append("\n더 자세히 알고 싶은 용어를 입력해 주세요.");
 
                 return ResponseEntity.ok(
                         ApiResponse.ok(
                                 FinanceDictionaryChatResponseDto.multiFound(
-                                        llmAnswer,
+                                        answer.toString(),
                                         categoryResults
                                 )
                         )
@@ -167,12 +181,29 @@ public class FinanceDictionaryApiController {
 
         // 여러 용어가 검색됐지만 차이 질문은 아닌 경우
         if (results.size() >= 2) {
-            String llmAnswer =
-                    dictionaryService.generateLlmAnswerForMultiFound(question, results);
+            StringBuilder answer = new StringBuilder();
+
+            answer.append("질문과 관련된 금융용어가 여러 개 있습니다.\n\n");
+
+            for (int i = 0; i < results.size(); i++) {
+                FinanceDictionaryDto dto = results.get(i);
+
+                answer.append(i + 1)
+                        .append(". ")
+                        .append(dto.getDictionary_nm())
+                        .append(" - ")
+                        .append(dto.getDictionary_category())
+                        .append("\n");
+            }
+
+            answer.append("\n더 자세히 알고 싶은 용어를 입력해 주세요.");
 
             return ResponseEntity.ok(
                     ApiResponse.ok(
-                            FinanceDictionaryChatResponseDto.multiFound(llmAnswer, results)
+                            FinanceDictionaryChatResponseDto.multiFound(
+                                    answer.toString(),
+                                    results
+                            )
                     )
             );
         }

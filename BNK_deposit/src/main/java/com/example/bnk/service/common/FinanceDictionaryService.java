@@ -12,19 +12,20 @@ import com.example.bnk.dto.common.FinanceDictionaryDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class FinanceDictionaryService {
 
 	private final IFinanceDictionaryDao financeDictionaryDao;
-	private final OpenAiLlmService openAiLlmService;
+	private final DictionaryLlmService dictionaryLlmService;
 	
 	// 금융용어사전 리스트 출력
+	@Transactional(readOnly = true)
 	public List<FinanceDictionaryDto> getAllDictionarys(){
 		return financeDictionaryDao.selectAllDictionarys();
 	}
 	
 	// 금융용어 상세보기 페이지 (✨ 로직 업그레이드!)
+	@Transactional
 	public FinanceDictionaryDto getDictionary(long dictionary_no) {
 	    // 해당 용어의 조회수를 DB에서 먼저 1 증가. (UPDATE)
 	    financeDictionaryDao.updateViewCount(dictionary_no);
@@ -34,31 +35,37 @@ public class FinanceDictionaryService {
 	}
 	
 	// 검색 로직 추가
+	@Transactional(readOnly = true)
 	public List<FinanceDictionaryDto> searchDictionary(String keyword) {
 		return financeDictionaryDao.searchDictionary(keyword);
 	}
 	
 	// ✨ 수정 화면용 데이터 불러오기 (조회수 증가 없음!)
+	@Transactional(readOnly = true)
     public FinanceDictionaryDto getDictionaryForEdit(long dictionary_no) {
         return financeDictionaryDao.selectDictionaryByNo(dictionary_no);
     }
 
 	// ✨ 용어 등록
+	@Transactional
 	public void addDictionary(FinanceDictionaryDto dto) {
 		financeDictionaryDao.insertDictionary(dto);
 	}
 	
 	// ✨ 용어 수정
+	@Transactional
 	public void modifyDictionary(FinanceDictionaryDto dto) {
 		financeDictionaryDao.updateDictionary(dto);
 	}
 	
 	// ✨ 용어 삭제
+	@Transactional
 	public void removeDictionary(long dictionary_no) {
 		financeDictionaryDao.deleteDictionary(dictionary_no);
 	}
 	
 	// 검색 분류
+	@Transactional(readOnly = true)
 	public List<FinanceDictionaryDto> searchDictionaryByType(String searchType, String keyword) {
 
 	    if (keyword == null || keyword.trim().isEmpty()) {
@@ -104,6 +111,7 @@ public class FinanceDictionaryService {
 	}
 	
 	// 챗봇용 여러 금융용어 검색
+	@Transactional(readOnly = true)
 	public List<FinanceDictionaryDto> searchDictionariesForChat(String question) {
 
 	    String keyword = extractKeyword(question);
@@ -127,6 +135,7 @@ public class FinanceDictionaryService {
 	}
 
 	// 조회수 증가용 메서드
+	@Transactional
 	public void increaseViewCount(long dictionaryNo) {
 	    financeDictionaryDao.updateViewCount(dictionaryNo);
 	}
@@ -211,6 +220,7 @@ public class FinanceDictionaryService {
 	            || ch == '랑';
 	}
 	
+	@Transactional(readOnly = true)
 	public List<FinanceDictionaryDto> searchCategoryDictionariesForChat(String question) {
 	    if (question == null || question.trim().isEmpty()) {
 	        return new ArrayList<>();
@@ -282,8 +292,12 @@ public class FinanceDictionaryService {
 
 	            [답변 지시]
 	            위 DB 검색 결과만 사용해서 답변해라.
-	            사용자가 이해하기 쉽게 2~4문장으로 설명해라.
 	            DB에 없는 추가 금융정보는 말하지 마라.
+	            답변은 한국어로 자연스럽고 문법에 맞게 작성해라.
+	            사용자가 이해하기 쉽게 2문장으로 설명해라.
+	            첫 문장은 용어의 뜻을 설명해라.
+	            두 번째 문장은 조건, 주의점, 특징 중 DB 설명에 있는 내용을 바탕으로 설명해라.
+	            말투는 친절한 설명체로 작성해라.
 	            """.formatted(
 	            question,
 	            dto.getDictionary_nm(),
@@ -291,7 +305,7 @@ public class FinanceDictionaryService {
 	            dto.getDictionary_content()
 	    );
 
-	    return openAiLlmService.generateDictionaryAnswer(prompt);
+	    return dictionaryLlmService.generateDictionaryAnswer(prompt);
 	}
 
 	public String generateLlmAnswerForCompare(String question, List<FinanceDictionaryDto> results) {
@@ -317,7 +331,7 @@ public class FinanceDictionaryService {
 	            DB에 없는 내용은 추측하지 마라.
 	            """.formatted(question, dbText.toString());
 
-	    return openAiLlmService.generateDictionaryAnswer(prompt);
+	    return dictionaryLlmService.generateDictionaryAnswer(prompt);
 	}
 
 	public String generateLlmAnswerForMultiFound(String question, List<FinanceDictionaryDto> results) {
@@ -344,6 +358,6 @@ public class FinanceDictionaryService {
 	            DB에 없는 용어는 추가하지 마라.
 	            """.formatted(question, dbText.toString());
 
-	    return openAiLlmService.generateDictionaryAnswer(prompt);
+	    return dictionaryLlmService.generateDictionaryAnswer(prompt);
 	}
 }
