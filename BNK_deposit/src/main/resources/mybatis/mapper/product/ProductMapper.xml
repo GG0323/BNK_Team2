@@ -72,7 +72,7 @@
 	  ORDER BY p.created_at DESC
 	</select>
 	<!-- 대기 상품 승인 -->
-	<select id="selectProductDetail" resultType="com.example.bnk.dto.product.PendingProductDetailDto">
+	<select id="selectPendingProductDetail" resultType="com.example.bnk.dto.product.PendingProductDetailDto">
 	  SELECT
 	    p.product_no,
 	    p.product_name,
