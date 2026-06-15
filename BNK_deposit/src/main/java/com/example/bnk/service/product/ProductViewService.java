@@ -1,5 +1,7 @@
 package com.example.bnk.service.product;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,26 +27,7 @@ public class ProductViewService {
     // 상품 목록 조회 + 정렬
     public List<ProductListViewDto> getProductList(String sort) {
         List<ProductListViewDto> list = productViewDao.selectProductList();
-
-        // 최대금리 높은 순
-        if ("maxRateDesc".equals(sort)) {
-            list.sort(Comparator
-            				.comparingDouble(ProductListViewDto::getMax_interest_rate)
-            				.reversed()
-            );
-         // 상품명 순
-        } else if ("nameAsc".equals(sort)) {
-            list.sort(Comparator
-            		.comparing(ProductListViewDto::getProduct_name,
-            				Comparator.nullsLast(String::compareTo)));
-         
-        // 기본금리 높은 순
-        } else {
-            list.sort(
-                Comparator.comparingDouble(ProductListViewDto::getMin_interest_rate)
-                          .reversed()
-            );
-        }
+        sortProductList(list, sort);
         return list;
     }
 
@@ -56,7 +39,6 @@ public class ProductViewService {
     // 상품 검색
     public List<ProductListViewDto> searchProductList(String keyword) {
 
-        // 검색어가 비어 있으면 전체 상품 목록 조회
         if (keyword == null || keyword.trim().equals("")) {
             return productViewDao.selectProductList();
         }
@@ -64,87 +46,109 @@ public class ProductViewService {
         return productViewDao.searchProductList(keyword.trim());
     }
 
-    // 사용자 정보 기반 맞춤 상품 추천
-    // 현재는 시연용으로 사용자 정보를 하드코딩해서 추천 점수를 계산함
-    public List<ProductListViewDto> getRecommendProductList() {
-
-        // 시연용 사용자 정보
-        // 추후에는 로그인한 회원의 TB_BANK_MEMBER 정보를 가져와서 사용하면 됨
-        int age = 25;
-        int creditScore = 850;
-        String memberType = "PERSONAL";
-
-        List<ProductListViewDto> productList = productViewDao.selectProductList();
-
-        productList.sort((p1, p2) -> {
-            int score1 = getRecommendScore(p1, age, creditScore, memberType);
-            int score2 = getRecommendScore(p2, age, creditScore, memberType);
-
-            // 점수가 높은 상품이 먼저 오도록 정렬
-            return score2 - score1;
-        });
-
-        return productList;
+    // 비회원/공통 추천 상품 TOP 3
+    // 기준: DRAFT 제외 가입 이력 + 판매중/판매기간 유효 상품
+    public List<ProductListViewDto> getPopularRecommendedProducts() {
+        return productViewDao.selectPopularRecommendedProducts();
     }
 
-    // 상품별 추천 점수 계산
-    @Transactional
-    private int getRecommendScore(ProductListViewDto product,
-                                  int age,
-                                  int creditScore,
-                                  String memberType) {
+    // 로그인 회원 맞춤 추천 상품 TOP 3
+    // 추천 불가능한 회원이면 비회원 인기 상품으로 대체
+    public List<ProductListViewDto> getRecommendedProductsForMember(BankMemberDto member) {
 
-        int score = 0;
-
-        String productName = product.getProduct_name();
-        String productType = product.getProduct_type();
-        String mobileJoinYn = product.getMobile_join_yn();
-
-        // 개인 회원이면 기본 추천 점수
-        if ("PERSONAL".equals(memberType)) {
-            score += 10;
+        if (!isPersonalRecommendationTarget(member)) {
+            return getPopularRecommendedProducts();
         }
 
-        // 20~30대면 청년 상품 우선
-        if (age >= 19 && age <= 34) {
-            if (productName != null && productName.contains("청년")) {
-                score += 60;
-            }
+        int age = calculateAge(member.getBirth_date());
+        String groupCode = getMemberGroupCode(age, member.getGender());
 
-            if ("SAVINGS".equals(productType)) {
-                score += 20;
-            }
+        if (groupCode == null) {
+            return getPopularRecommendedProducts();
         }
 
-        // 신용점수가 높은 고객이면 우대/주거래 상품 우선
-        if (creditScore >= 800) {
-            if (productName != null && productName.contains("우대")) {
-                score += 30;
-            }
+        List<ProductListViewDto> recommendedList =
+                productViewDao.selectRecommendedProductsForMember(
+                        age,
+                        member.getGender(),
+                        member.getMember_type(),
+                        groupCode
+                );
 
-            if (productName != null && productName.contains("주거래")) {
-                score += 30;
-            }
+        if (recommendedList == null || recommendedList.isEmpty()) {
+            return getPopularRecommendedProducts();
         }
 
-        // 모바일 가입 가능 상품 우선
-        if ("Y".equals(mobileJoinYn)) {
-            score += 15;
+        return recommendedList;
+    }
+
+    // 기존 /products/recommend 테스트 URL 호환용
+    // 현재는 비회원 인기 추천으로 동작시킴
+    public List<ProductListViewDto> getRecommendProductList() {
+        return getPopularRecommendedProducts();
+    }
+
+    // 회원 추천 가능 여부
+    public boolean isPersonalRecommendationTarget(BankMemberDto member) {
+        if (member == null) return false;
+        if (!"PERSONAL".equals(member.getMember_type())) return false;
+        if (member.getBirth_date() == null) return false;
+        if (member.getGender() == null || member.getGender().trim().equals("")) return false;
+
+        String status = member.getMember_status();
+        return "ASSOCIATE".equals(status) || "REGULAR".equals(status);
+    }
+
+    // 화면 문구용 추천 유형
+    public String getRecommendationMode(BankMemberDto member) {
+        return isPersonalRecommendationTarget(member) ? "MEMBER" : "POPULAR";
+    }
+
+    // 화면 문구용 추천 메시지
+    public String getRecommendationMessage(BankMemberDto member) {
+        if (!isPersonalRecommendationTarget(member)) {
+            return "지금 고객들이 가장 많이 선택한 인기 예적금 상품입니다.";
         }
 
-        // 최고금리가 높은 상품 가산점
-        if (product.getMax_interest_rate() >= 4.0) {
-            score += 25;
-        } else if (product.getMax_interest_rate() >= 3.0) {
-            score += 15;
+        int age = calculateAge(member.getBirth_date());
+        String groupCode = getMemberGroupCode(age, member.getGender());
+
+        if ("YOUTH".equals(groupCode)) {
+            return "청년층 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
+        }
+        if ("MIDDLE_MALE".equals(groupCode)) {
+            return "중장년층 남성 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
+        }
+        if ("MIDDLE_FEMALE".equals(groupCode)) {
+            return "중장년층 여성 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
+        }
+        if ("SENIOR".equals(groupCode)) {
+            return "노년층 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
         }
 
-        // 파킹통장 같은 쉬운 접근 상품 가산점
-        if (productName != null && productName.contains("파킹")) {
-            score += 10;
+        return "회원님의 가입 가능 조건을 반영한 추천 상품입니다.";
+    }
+
+    private int calculateAge(LocalDate birthDate) {
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+
+    private String getMemberGroupCode(int age, String gender) {
+        if (age >= 19 && age <= 39) {
+            return "YOUTH";
         }
 
-        return score;
+        if (age >= 40 && age <= 64) {
+            if ("M".equals(gender)) return "MIDDLE_MALE";
+            if ("F".equals(gender)) return "MIDDLE_FEMALE";
+            return null;
+        }
+
+        if (age >= 65) {
+            return "SENIOR";
+        }
+
+        return null;
     }
 
     // 상품 비교 조회
@@ -152,7 +156,6 @@ public class ProductViewService {
 
         List<Long> productNoList = new ArrayList<>();
 
-        // ids 예시: "1,2,3"
         if (ids == null || ids.trim().equals("")) {
             return new ArrayList<>();
         }
@@ -168,18 +171,33 @@ public class ProductViewService {
             }
         }
 
-        // 비교할 상품이 없으면 빈 리스트 반환
         if (productNoList.size() == 0) {
             return new ArrayList<>();
         }
 
         return productViewDao.selectCompareProducts(productNoList);
     }
-    
-	// 로그인 회원 유형별 상품 목록 조회
+
+    // 로그인 회원 유형별 상품 목록 조회
     public List<ProductListViewDto> getProductListForMember(String memberType, String sort) {
 
         List<ProductListViewDto> list = productViewDao.selectProductListForMember(memberType);
+        sortProductList(list, sort);
+        return list;
+    }
+
+    // 로그인 회원 유형별 상품 검색
+    public List<ProductListViewDto> searchProductListForMember(String memberType, String keyword) {
+
+        if (keyword == null || keyword.trim().equals("")) {
+            return productViewDao.selectProductListForMember(memberType);
+        }
+
+        return productViewDao.searchProductListForMember(memberType, keyword.trim());
+    }
+
+    private void sortProductList(List<ProductListViewDto> list, String sort) {
+        if (list == null) return;
 
         if ("maxRateDesc".equals(sort)) {
             list.sort(Comparator
@@ -196,18 +214,5 @@ public class ProductViewService {
                     .comparingDouble(ProductListViewDto::getMin_interest_rate)
                     .reversed());
         }
-
-        return list;
-    }
-    
-    // 로그인 회원 유형별 상품 검색
-    public List<ProductListViewDto> searchProductListForMember(String memberType, String keyword) {
-
-        if (keyword == null || keyword.trim().equals("")) {
-            return productViewDao.selectProductListForMember(memberType);
-        }
-
-        return productViewDao.searchProductListForMember(memberType, keyword.trim());
     }
 }
-
