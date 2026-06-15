@@ -258,10 +258,15 @@ public class EmployeePageController {
 	// 상품 가입 조건 등록 페이지
 	// /employee/staff/product/condition
 	@GetMapping("/staff/product/condition")
-	public String goWriteToCondition(Model model) {
+	public String goWriteToCondition(Model model,
+				@RequestParam("suggestion_no") long suggestion_no) {
 
-		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
-		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		model.addAttribute("suggestion_no", suggestion_no);
+		ProductConditionDto dto = prdForEmpService.selectConditionPrd(suggestion_no);
+		model.addAttribute("condition", dto);
+		
+		ApprovedSuggestionDetailDto approvedSug = prdForEmpService.selectApprovedSug(suggestion_no);
+		model.addAttribute("approvedSug", approvedSug);
 
 		return "Employees/staff/productConditionWrite";
 	}
@@ -295,9 +300,6 @@ public class EmployeePageController {
 		ApprovedSuggestionDetailDto approvedSug = prdForEmpService.selectApprovedSug(suggestion_no);
 		model.addAttribute("approvedSug", approvedSug);
 		
-		
-		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
-		model.addAttribute("approvedSuggestion", approvedSuggestion);
 
 		return "Employees/staff/productRateWrite";
 	}
@@ -321,10 +323,15 @@ public class EmployeePageController {
 	// 약관 등록 페이지 이동
 	// employee/staff/product/terms
 	@GetMapping("/staff/product/terms")
-	public String goWriteToTerms(Model model) {
+	public String goWriteToTerms(Model model,
+				@RequestParam("suggestion_no") long suggestion_no) {
 		
-		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
-		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		model.addAttribute("suggestion_no", suggestion_no);
+		ProductConditionDto dto = prdForEmpService.selectConditionPrd(suggestion_no);
+		model.addAttribute("condition", dto);
+		
+		ApprovedSuggestionDetailDto approvedSug = prdForEmpService.selectApprovedSug(suggestion_no);
+		model.addAttribute("approvedSug", approvedSug);
 		
 		return "Employees/staff/productTermsWrite";
 	}
@@ -368,10 +375,16 @@ public class EmployeePageController {
 	// 상품 설명 관리 페이지
 	// /employee/staff/product/description
 	@GetMapping("/staff/product/description")
-	public String goWriteToDescription(Model model) {
+	public String goWriteToDescription(Model model,
+				@RequestParam("suggestion_no") long suggestion_no) {
 
-		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
-		model.addAttribute("approvedSuggestion", approvedSuggestion);
+		model.addAttribute("suggestion_no", suggestion_no);
+		ProductRateDto dto = prdForEmpService.selectRatePrd(suggestion_no);
+		model.addAttribute("rate", dto);
+		
+		
+		ApprovedSuggestionDetailDto approvedSug = prdForEmpService.selectApprovedSug(suggestion_no);
+		model.addAttribute("approvedSug", approvedSug);
 
 		return "Employees/staff/productDescriptionWrite";
 	}

@@ -75,6 +75,7 @@ form {
 	flex-direction: column;
 	gap: 1.5rem; /* 항목 간 간격 넉넉히 확보 */
 }
+
 .form-div{
 	width: 100%;
 	padding: 11px 14px;
@@ -91,7 +92,7 @@ form {
 	flex-direction: column;
 	gap: 8px;
 }
-
+ 
 label {
 	font-size: 12.5px;
 	font-weight: 600;

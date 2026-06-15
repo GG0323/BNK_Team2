@@ -1,0 +1,220 @@
+@charset "UTF-8";
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+.main {
+	flex: 1;
+	padding: 2rem;
+	min-width: 0;
+}
+
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current {
+	color: #111;
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
+	letter-spacing: -0.5px;
+	margin-bottom: 1.5rem;
+}
+
+/* ===== 가입 조건 등록 카드 스타일 매칭 ===== */
+.card {
+	background: #fff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 2rem;
+	max-width: 780px;
+}
+
+.card-title-group {
+	margin-bottom: 1.5rem;
+}
+
+.card-title {
+	font-size: 14px;
+	font-weight: 700;
+	color: #111;
+}
+
+/* ===== 폼 그리드 시스템 ===== */
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+}
+
+.form-div{
+	width: 100%;
+	padding: 11px 14px;
+	font-size: 13.5px;
+	border: 1px solid #D0D0D0;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.form-group.full-width {
+	grid-column: 1/-1;
+}
+
+.form-group label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #555;
+}
+
+.form-group label .required {
+	color: #E8282F;
+	margin-left: 2px;
+}
+
+.form-group input[type="text"], .form-group select, .form-group textarea
+	{
+	padding: 9px 12px;
+	border: 1px solid #E0E0E0;
+	border-radius: 8px;
+	font-size: 13px;
+	color: #111;
+	background: #fff;
+	outline: none;
+	transition: border-color 0.15s;
+	width: 100%;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus
+	{
+	border-color: #111;
+}
+
+.form-group textarea {
+	resize: vertical;
+	font-family: inherit;
+	line-height: 1.6;
+}
+
+/* ===== 파일 업로드 박스 모던 디자인 정립 ===== */
+.file-upload-box {
+	border: 1.5px dashed #D0D0D0;
+	border-radius: 8px;
+	padding: 1rem;
+	background: #FAFAFA;
+	transition: all 0.15s;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 90px;
+}
+
+.file-upload-box:hover {
+	border-color: #111;
+	background: #FDFDFD;
+}
+
+.file-upload-box input[type="file"] {
+	display: none; /* 실제 파일 인풋은 숨김 */
+}
+
+.file-upload-inner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	color: #999;
+	font-size: 12px;
+	text-align: center;
+}
+
+.file-upload-icon {
+	font-size: 20px;
+	margin-bottom: 2px;
+}
+
+.file-name {
+	font-size: 12px;
+	color: #22863a;
+	font-weight: 600;
+	margin-top: 2px;
+	word-break: break-all;
+}
+
+/* 유효성 에러 메시지 스타일 */
+.field-error {
+	font-size: 11px;
+	color: #E8282F;
+	display: none;
+	margin-top: 2px;
+}
+
+.field-error.show {
+	display: block;
+}
+
+/* ===== 버튼 그룹 ===== */
+.btn-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 1.75rem;
+}
+
+.btn {
+	padding: 10px 24px;
+	font-size: 13px;
+	font-weight: 600;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.15s;
+	border: none;
+}
+
+.btn-secondary {
+	border: 1px solid #E0E0E0;
+	background: #fff;
+	color: #555;
+}
+
+.btn-secondary:hover {
+	border-color: #111;
+	color: #111;
+}
+
+.btn-primary {
+	background: #E8282F;
+	color: #fff;
+}
+
+.btn-primary:hover {
+	background: #C5202A;
+}

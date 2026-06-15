@@ -15,8 +15,8 @@
 		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
 
 		<div class="breadcrumb">
-			직원 페이지 › 상품 통합 관리 › <span class="current">가입 조건 등록</span>
-		</div>	
+			직원 페이지 › 승인된 제안서 리스트 › 제안서 상세보기 › <span class="current">조건 등록</span>
+		</div>
 
 		<div class="page-title">가입 조건 등록</div>
 
@@ -30,15 +30,10 @@
 
 				<div class="form-grid">
 					
-					<div class="form-group full-width">
-						<label for="suggestion_no"><span class="required">*</span> 연결할 승인 상품 제안서</label>
-						<select id="suggestion_no" name="suggestion_no" required>
-							<option value="">-- 사양이 승인되어 조건 조립을 대기 중인 상품 제안서를 선택하세요 --</option>
-							<option th:each="aprsug : ${approvedSuggestion}"
-								th:value="${aprsug.suggestion_no}"
-								th:text="| [No.${aprsug.suggestion_no}] ${aprsug.product_name} |">
-							</option>
-						</select>
+					<input type="hidden" th:value="@{suggestion_no}">
+					
+					<div class="form-div">
+						<span th:text="| [No.${suggestion_no}] / 상품명: ${approvedSug.product_name} |"></span>
 					</div>
 
 					<div class="form-group">
