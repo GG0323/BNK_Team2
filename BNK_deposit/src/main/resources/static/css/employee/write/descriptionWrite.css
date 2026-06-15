@@ -88,6 +88,17 @@ body {
 	gap: 1.25rem 1.5rem;
 }
 
+.form-div{
+	width: 100%;
+	padding: 11px 14px;
+	font-size: 13.5px;
+	border: 1px solid #D0D0D0;
+	border-radius: 6px;
+	background: #fff;
+	color: #222;
+	transition: border-color 0.15s, box-shadow 0.15s;
+}
+
 .form-group {
 	display: flex;
 	flex-direction: column;

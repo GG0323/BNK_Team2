@@ -34,6 +34,9 @@ public class AiOrchestratorController {
         
         String finalAnswer;
         
+        
+        // 여기서 각 파트 맡은 부분에 따라서 자기 호출 주소 작성해넣으시면 됩니다.
+        // 예시포트 그런거 생각하실 필요 없고, 이왕이면 자기가 만든 챗봇이 뭐 넘겨줄 때 json 형식으로 넘겨주는게 더 좋아요.
         // 2단계: 파악된 의도에 따라 담당 팀원의 AI 마이크로서비스 API 호출
         switch (intent) {
             case "COMPARE":
