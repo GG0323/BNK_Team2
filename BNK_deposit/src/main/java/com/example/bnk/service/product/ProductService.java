@@ -36,6 +36,12 @@ public class ProductService {
 		System.out.println("대기 상품 상세 : " + dto);
 		return dto;
 	}
+
+	public int approvePending(Long product_no) {
+		int result = dao.approvePendingProduct(product_no);
+		System.out.println("1이면 등록 성공 " + result);
+		return result;
+	}
 	
 	
 	
