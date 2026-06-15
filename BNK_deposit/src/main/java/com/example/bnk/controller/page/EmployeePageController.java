@@ -284,8 +284,18 @@ public class EmployeePageController {
 	// 상품 금리 등록 페이지
 	// /employee/staff/product/rate
 	@GetMapping("/staff/product/rate")
-	public String goWriteToRate(Model model) {
-
+	public String goWriteToRate(Model model,
+			@RequestParam("suggestion_no") long suggestion_no) {
+		
+		model.addAttribute("suggestion_no", suggestion_no);
+		ProductRateDto dto = prdForEmpService.selectRatePrd(suggestion_no);
+		model.addAttribute("rate", dto);
+		
+		
+		ApprovedSuggestionDetailDto approvedSug = prdForEmpService.selectApprovedSug(suggestion_no);
+		model.addAttribute("approvedSug", approvedSug);
+		
+		
 		List<ApprovedSuggestionDetailDto> approvedSuggestion = prdForEmpService.showAllApprovedSuggestionList();
 		model.addAttribute("approvedSuggestion", approvedSuggestion);
 
@@ -295,7 +305,8 @@ public class EmployeePageController {
 	// 상품 금리 등록하기
 	// employee/staff/product/rate/save
 	@PostMapping("/staff/product/rate/save")
-	public String saveProductRate(ProductRateDto prdRateDto, @RequestParam("suggestion_no") long suggestion_no) {
+	public String saveProductRate(ProductRateDto prdRateDto, 
+			@RequestParam("suggestion_no") long suggestion_no) {
 
 //		System.out.println(prdRateDto);
 
