@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class FinanceDictionaryService {
 
 	private final IFinanceDictionaryDao financeDictionaryDao;
-	private final DictionaryLlmService dictionaryLlmService;
+	private final OpenAiDictionaryLlmService dictionaryLlmService;
 	
 	// 금융용어사전 리스트 출력
 	@Transactional(readOnly = true)
