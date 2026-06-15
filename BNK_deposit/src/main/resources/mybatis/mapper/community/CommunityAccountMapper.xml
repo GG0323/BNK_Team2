@@ -3,5 +3,20 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.community.ICommunityAccountDao">
-
+	
+	<!-- 이미 가입한 사람인지 확인하기 -->
+	<select id="searchMember" resultType="com.example.bnk.dto.community.CommunityAccountDto">
+		SELECT * FROM TB_COMMUNITY_ACCOUNT WHERE member_no = #{member_no}
+	</select>
+	
+	<!-- 닉네임 중복 방지 -->
+	<select id="searchNickname" resultType="com.example.bnk.dto.community.CommunityAccountDto">
+		SELECT * FROM TB_COMMUNITY_ACCOUNT WHERE nickname = #{nickname}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="registComuAccount">
+		INSERT INTO TB_COMMUNITY_ACCOUNT (member_no, nickname, account_role)
+		VALUES (#{member_no}, #{nickname}, #{account_role})
+	</insert>
 </mapper>
