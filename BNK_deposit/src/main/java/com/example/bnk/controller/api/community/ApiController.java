@@ -1,7 +1,7 @@
 package com.example.bnk.controller.api.community;
 
 import java.util.Map;
-import com.example.bnk.utils.JwtUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.dto.community.CommunityAccountDto;
 import com.example.bnk.service.community.CommunityService;
+import com.example.bnk.service.product.ProductSalesService;
+import com.example.bnk.utils.JwtUtil;
 
 @RestController
 @RequestMapping("/api/community")
@@ -26,9 +28,12 @@ public class ApiController {
 	
 	@Autowired
 	public CommunityService communityService;
-
-
-    ApiController(JwtUtil jwtUtil) {
+	
+	@Autowired
+	public ProductSalesService productSalesService;
+    
+	
+	ApiController(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
@@ -87,8 +92,8 @@ public class ApiController {
 			result = communityService.registComuAccount(dto);
 			if(result == 1) {
 				System.out.println("회원가입 최종까지 성공!");
-				// 여기에 우대금리 높이는 코드 작성.
-				
+				// 상품 만들어지면 주석 해제(커뮤니티 가입 시 우대금리 상승 코드임)
+//				productSalesService.upTermscommunityRegist(member_no);
 				return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "회원가입 성공!"));
 			}
 		}

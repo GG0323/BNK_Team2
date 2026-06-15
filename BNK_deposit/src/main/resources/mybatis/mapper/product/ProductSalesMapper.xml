@@ -32,4 +32,11 @@
         ORDER BY s.subscribed_at DESC
     </select>
     
+    <update id="upTermsCommunityRegist">
+    	UPDATE TB_PRODUCT_SALES
+    	SET applied_interest_rate = applied_interest_rate + 0.1
+    	WHERE member_no = #{member_no}
+    	AND product_no = 상품 번호 고정(product_no);
+    </update>
+    
 </mapper>
