@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +56,18 @@ public class ManagerProductApiController {
 		PendingProductDetailDto dto = serv.pendingDetail(product_no);
 		
 		return dto;
+	}
+	
+	@PostMapping("/approvePending")
+	@Transactional
+	public Map<String, Object> approvePending(
+			@RequestBody Map<String, Object> body
+			) {
+	    Long product_no = Long.parseLong(body.get("product_no").toString());
+	    System.out.println("승인 요청 product_no : " + product_no);
+
+	    int updated = serv.approvePending(product_no);   // 서비스가 0 또는 1 반환
+	    return Map.of("result", updated);
 	}
 	
 	

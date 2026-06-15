@@ -27,4 +27,5 @@ public interface IProductDao {
 	public int approvePendingProduct(@Param("product_no")Long product_no);
 	
 	
+	
 }
