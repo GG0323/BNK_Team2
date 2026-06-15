@@ -302,12 +302,30 @@
        			</div>
       		</a>
       		
-      		<!-- // 페이지 로그 정보 조회 -->
+      		<!-- // 페이지 로그 정보를 가동한 페이지 조회 -->
       		<a class="menu-card primary" th:href="@{/employee/manager/LOG/pageLog/stats}">
         		<div class="card-icon"><!-- 아이콘 --></div>
         		<div>
         			<p class="card-title">세션 ID별 로그 정리</p>
         			<p class="card-sub">세션 로그 정보를 다듬어 정리합니다.</p>
+       			</div>
+      		</a>
+      		
+      		<!-- // 수정된 상품 등록 로직 -->
+      		<a class="menu-card primary" th:href="@{/employee/manager/writeProduct}">
+        		<div class="card-icon"><!-- 아이콘 --></div>
+        		<div>
+        			<p class="card-title">상품 등록 PENDING</p>
+        			<p class="card-sub">새롭게 상품을 등록 합니다.</p>
+       			</div>
+      		</a>
+      		
+      		<!-- // 대기상품 확인 리스트 -->
+      		<a class="menu-card primary" th:href="@{/employee/manager/pendingProductList}">
+        		<div class="card-icon"><!-- 아이콘 --></div>
+        		<div>
+        			<p class="card-title">PENDING 상품 확인</p>
+        			<p class="card-sub">대기중인 상품의 준비 상태를 확인합니다.</p>
        			</div>
       		</a>
       		
