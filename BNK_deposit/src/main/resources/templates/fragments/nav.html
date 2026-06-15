@@ -50,6 +50,12 @@
         4. 가입 상품
     </button>
 
+    <button th:class="${currentTab == 'myreservation'} ? 'tab-btn active' : 'tab-btn'"
+            data-tab="myreservation"
+            onclick="location.href='/member/reservation/list'">
+        5. 영업점 예약
+    </button>
+
 </nav>
 
 </body>

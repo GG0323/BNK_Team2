@@ -16,17 +16,16 @@
 <body>
 	<div th:replace="~{fragments/header :: header_default}"></div>
     <header class="top-header">
-        <div class="header-inner">
-            <div class="header-left">
-                <h1>BNK</h1>
-                <div class="header-title-group">
-                    <h2>내 정보 조회</h2>
-                    <p>회원 기본 정보 확인</p>
-                </div>
-            </div>
-            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
-        </div>
-    </header>
+	    <div class="header-inner">
+	        <div class="header-left">
+	            <div class="header-title-group">
+	                <h2>마이페이지</h2>
+	                <p>회원 정보 · 계좌 · 상품 가입 내역</p>
+	            </div>
+	        </div>
+	        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+	    </div>
+	</header>
 
     <div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
 
