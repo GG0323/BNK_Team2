@@ -8,7 +8,7 @@
 	<!-- DB 저장 -->
 	<!-- jdbcType 쓰는 이유 : null 값이 들어갈때 오류방지 -->
 	<insert id="insertLog">
-        INSERT INTO MEMBER_PAGE_LOG (
+        INSERT INTO TB_MEMBER_PAGE_LOG (
             SESSION_ID, MEMBER_NO, REQUEST_URL, REQUEST_METHOD,
             HTTP_STATUS, REQUEST_IP, USER_AGENT, REFERER, DURATION_MS
         ) 
@@ -49,7 +49,7 @@
 	<select id="searchLogs" resultType="com.example.bnk.dto.log.MemberPageLogDto">
 	    SELECT LOG_NO, SESSION_ID, MEMBER_NO, REQUEST_URL, REQUEST_METHOD,
 	           HTTP_STATUS, REQUEST_IP, USER_AGENT, REFERER, DURATION_MS, ACCESSED_AT
-	    FROM   MEMBER_PAGE_LOG
+	    FROM   TB_MEMBER_PAGE_LOG
 	    
 	    <include refid="searchCondition"/> <!-- 검색 조건 -->
 	    
@@ -61,7 +61,7 @@
 	<!-- 같은 조건의 전체 건수 (페이지 수 계산용) -->
 	<select id="countLogs" resultType="int">
 	    SELECT COUNT(*)
-	    FROM   MEMBER_PAGE_LOG
+	    FROM   TB_MEMBER_PAGE_LOG
 	    <include refid="searchCondition"/> <!-- 검색 조건 -->
 	</select>
 		
@@ -78,7 +78,7 @@
 	            ROW_NUMBER() OVER (ORDER BY ACCESSED_AT, LOG_NO) AS STEP_NO,                 <!-- 순서대로 -->
 	            ROUND( ( CAST(LEAD(ACCESSED_AT) OVER (ORDER BY ACCESSED_AT, LOG_NO) AS DATE) 
 	                   - CAST(ACCESSED_AT AS DATE) ) * 86400 )    AS DWELL_SEC               <!-- LEAD 사용으로 시간차이 계산 -->
-	    FROM    MEMBER_PAGE_LOG
+	    FROM    TB_MEMBER_PAGE_LOG
 	    WHERE   SESSION_ID = #{session_id}
 	    ORDER BY ACCESSED_AT, LOG_NO
 	</select>
@@ -105,7 +105,7 @@
 	            COUNT(DISTINCT SESSION_ID)                                AS total_session,
 	            COUNT(DISTINCT MEMBER_NO)                                 AS member_cnt,
 	            ROUND(COUNT(*) / NULLIF(COUNT(DISTINCT SESSION_ID), 0), 1) AS avg_pages_per_session
-	    FROM    MEMBER_PAGE_LOG
+	    FROM    TB_MEMBER_PAGE_LOG
 	    <include refid="statPeriod"/>
 	</select>
 	
@@ -121,7 +121,7 @@
 	                SESSION_ID,
 	                ROUND( ( CAST(LEAD(ACCESSED_AT) OVER (PARTITION BY SESSION_ID ORDER BY ACCESSED_AT, LOG_NO) AS DATE)
 	                       - CAST(ACCESSED_AT AS DATE) ) * 86400 ) AS DWELL_SEC <!-- 체류 시간 계산 -->
-	        FROM    MEMBER_PAGE_LOG
+	        FROM    TB_MEMBER_PAGE_LOG
 	        <include refid="statPeriod"/>
 	    )
 	    SELECT  REQUEST_URL                                                          AS request_url,
@@ -142,7 +142,7 @@
 	    SELECT  TO_CHAR(ACCESSED_AT, 'YYYY-MM-DD')  AS stat_date,
 	            COUNT(*)                            AS view_cnt,
 	            COUNT(DISTINCT SESSION_ID)          AS session_cnt  <!-- 날짜별 세션 수 -->
-	    FROM    MEMBER_PAGE_LOG
+	    FROM    TB_MEMBER_PAGE_LOG
 	    <include refid="statPeriod"/>
 	    GROUP BY TO_CHAR(ACCESSED_AT, 'YYYY-MM-DD')
 	    ORDER BY stat_date
@@ -155,7 +155,7 @@
 	        SELECT  SESSION_ID,
 	                REQUEST_URL AS FROM_URL,
 	                LEAD(REQUEST_URL) OVER (PARTITION BY SESSION_ID ORDER BY ACCESSED_AT, LOG_NO) AS TO_URL <!-- 같은 세션의 다음 페이지 URL -->
-	        FROM    MEMBER_PAGE_LOG
+	        FROM    TB_MEMBER_PAGE_LOG
 	        <include refid="statPeriod"/>
 	    )
 	    SELECT  FROM_URL        AS from_url,
@@ -186,7 +186,7 @@
 	    WITH product_view AS (
 	        SELECT  MEMBER_NO,
 	                TO_NUMBER(REGEXP_SUBSTR(REQUEST_URL, 'product_no=([0-9]+)', 1, 1, NULL, 1)) AS PRODUCT_NO
-	        FROM    MEMBER_PAGE_LOG
+	        FROM    TB_MEMBER_PAGE_LOG
 	        WHERE   REQUEST_URL LIKE '/products/detail%'   <!-- ★ 조정 지점 5: 분석 대상 URL. QR 가입 등도 보려면 LIKE '/products/%' -->
 	          AND   MEMBER_NO IS NOT NULL
 	        <if test="from_date != null and from_date != ''">
@@ -244,7 +244,7 @@
 	                   - CAST(MIN(ACCESSED_AT) AS DATE) ) * 86400 ) AS duration_sec,
 	            MIN(REQUEST_URL) KEEP (DENSE_RANK FIRST ORDER BY ACCESSED_AT, LOG_NO) AS first_url,
 	            MAX(REQUEST_URL) KEEP (DENSE_RANK LAST  ORDER BY ACCESSED_AT, LOG_NO) AS last_url
-	    FROM    MEMBER_PAGE_LOG
+	    FROM    TB_MEMBER_PAGE_LOG
 	    <include refid="sessionCondition"/>
 	    GROUP BY SESSION_ID
 	    ORDER BY MAX(ACCESSED_AT) DESC
@@ -254,7 +254,7 @@
 	<!-- 같은 조건의 세션 수 (페이지네이션 계산용) -->
 	<select id="countSessions" resultType="int">
 	    SELECT COUNT(DISTINCT SESSION_ID)
-	    FROM   MEMBER_PAGE_LOG
+	    FROM   TB_MEMBER_PAGE_LOG
 	    <include refid="sessionCondition"/>
 	</select>
 	
