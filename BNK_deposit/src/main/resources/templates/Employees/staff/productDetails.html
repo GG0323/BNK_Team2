@@ -3,215 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <title>제안서 상세보기 및 사양 관리</title>
-<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
-<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
-<style>
-/* ===== 리스트 보관용 폼 카드 크기 맞춤 ===== */
-.form-card {
-	background: #fff;
-	border-radius: 12px;
-	border: 1px solid #E8E8E8;
-	padding: 2rem;
-	max-width: 1100px;
-	margin-bottom: 2rem;
-}
 
-.section-title {
-	font-size: 11px;
-	font-weight: 700;
-	color: #E8282F;
-	letter-spacing: 0.5px;
-	text-transform: uppercase;
-	margin-bottom: 1.5rem;
-	padding-bottom: 8px;
-	border-bottom: 1px solid #F0F0F0;
-}
+	<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+	<link rel="stylesheet" th:href="@{/css/employee/staff_CommonPlace.css}" />
+	<link rel="stylesheet" th:href="@{/css/employee/productDetails.css}" />
+	
+	<script th:src="@{/js/employees/productDetails.js}" defer></script>
 
-/* ===== 테이블 고급화 서식 ===== */
-.table-responsive {
-	width: 100%;
-	overflow-x: auto;
-	margin-bottom: 2rem;
-}
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-	text-align: left;
-	font-size: 13px;
-}
-
-th {
-	color: #555;
-	font-weight: 600;
-	font-size: 12px;
-	padding: 12px 10px;
-	border-bottom: 2px solid #E0E0E0;
-	background: #fff;
-}
-
-td {
-	padding: 14px 10px;
-	color: #333;
-	border-bottom: 1px solid #EEEEEE;
-	vertical-align: middle;
-}
-
-tr:last-child td {
-	border-bottom: none;
-}
-
-.text-id {
-	font-size: 12px;
-	font-weight: 500;
-	color: #888;
-}
-
-.text-name {
-	font-size: 13px;
-	font-weight: 600;
-	color: #111;
-}
-
-.text-rate {
-	font-weight: 600;
-	color: #222;
-}
-
-/* ===== 관제탑 전용 한 행 정렬 컴포넌트 서식 ===== */
-.comp-row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 1rem 10px;
-	border-bottom: 1px solid #EEEEEE;
-}
-
-.comp-row:last-child {
-	border-bottom: none;
-}
-
-.comp-info {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-}
-
-.comp-label {
-	font-size: 13px;
-	font-weight: 600;
-	color: #111;
-	min-width: 150px;
-}
-
-/* ===== 컴포넌트 상태 뱃지 ===== */
-.comp-status {
-	display: inline-block;
-	padding: 4px 10px;
-	border-radius: 6px;
-	font-size: 11px;
-	font-weight: 600;
-	text-align: center;
-}
-
-.status-assigned {
-	background: #EAF7EE;
-	color: #1E7E34;
-}
-
-.status-empty {
-	background: #FDF2F2;
-	color: #E8282F;
-}
-
-.sub-no {
-	font-size: 11px;
-	color: #999;
-}
-
-/* ===== 상세보기 및 액션 버튼 가이드 ===== */
-.btn-action {
-	display: inline-block;
-	padding: 6px 14px;
-	font-size: 12px;
-	font-weight: 600;
-	border: 1px solid #E0E0E0;
-	border-radius: 6px;
-	background: #fff;
-	color: #555;
-	cursor: pointer;
-	transition: all 0.15s;
-	text-decoration: none;
-	text-align: center;
-	white-space: nowrap;
-}
-
-.btn-action:hover {
-	border-color: #111;
-	color: #111;
-	background: #FAFAFA;
-}
-
-.btn-action.assign-trigger {
-	border-color: #E8282F;
-	color: #E8282F;
-	background: #FFFBFB;
-}
-
-.btn-action.assign-trigger:hover {
-	background: #E8282F;
-	color: #fff;
-}
-
-.btn-row-bottom {
-	display: flex;
-	justify-content: flex-end;
-	max-width: 1100px;
-	margin-top: 1.5rem;
-}
-
-/* ===== 하단 수정 인라인 섹션 서식 보정 ===== */
-.modify-box {
-	width: 100%;
-	max-width: 1100px;
-	margin-top: 2rem;
-	padding: 2rem;
-	background: #fff;
-	border-radius: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-}
-
-.form-inline-group {
-	margin-bottom: 12px;
-}
-
-.form-inline-group label {
-	font-size: 12px;
-	font-weight: 600;
-	color: #555;
-}
-
-.form-inline-group input, .form-inline-group textarea {
-	width: 100%;
-	padding: 8px 12px;
-	font-size: 13px;
-	border: 1px solid #D0D0D0;
-	border-radius: 6px;
-	margin-top: 4px;
-}
-</style>
 </head>
 <body>
-
+	
 	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
 
-	<input type="hidden" id="suggestion_no"
-		th:value="${aprSugDto.suggestion_no}" />
+	<input type="hidden" id="suggestion_no" th:value="${aprSugDto.suggestion_no}" />
 	<input type="hidden" id="rate_no" th:value="${aprSugDto.rate_no}" />
-	<input type="hidden" id="condition_no"
-		th:value="${aprSugDto.condition_no}" />
-	<input type="hidden" id="description_no"
-		th:value="${aprSugDto.description_no}" />
+	<input type="hidden" id="condition_no" th:value="${aprSugDto.condition_no}" />
+	<input type="hidden" id="description_no" th:value="${aprSugDto.description_no}" />
 	<input type="hidden" id="terms_no" th:value="${aprSugDto.terms_no}" />
 
 	<div class="main">
@@ -239,12 +46,9 @@ tr:last-child td {
 					<tbody>
 						<tr>
 							<td class="text-id" th:text="${aprSugDto.suggestion_no}">1</td>
-							<td class="text-name" th:text="${aprSugDto.product_name}">기본
-								상품 제안명</td>
-							<td class="text-rate"
-								th:text="|${aprSugDto.proposed_min_interest_rate}%|">0.00%</td>
-							<td class="text-rate"
-								th:text="|${aprSugDto.proposed_max_interest_rate}%|">0.00%</td>
+							<td class="text-name" th:text="${aprSugDto.product_name}">기본 상품 제안명</td>
+							<td class="text-rate" th:text="|${aprSugDto.proposed_min_interest_rate}%|">0.00%</td>
+							<td class="text-rate" th:text="|${aprSugDto.proposed_max_interest_rate}%|">0.00%</td>
 						</tr>
 					</tbody>
 				</table>
@@ -255,25 +59,25 @@ tr:last-child td {
 			<div class="comp-row">
 				<div class="comp-info">
 					<span class="comp-label">상품 금리 사양</span>
-					<th:block
-						th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}">
+					<th:block th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}">
 						<span class="comp-status status-assigned">구성 완료</span>
 						<span class="sub-no" th:text="|No. ${aprSugDto.rate_no}|"></span>
 					</th:block>
-					<th:block
-						th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}">
+					<th:block th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}">
 						<span class="comp-status status-empty">미등록</span>
 					</th:block>
 				</div>
 				<div>
-					<button
-						th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}"
-						class="btn-action assign-trigger" onclick="rateWrite()">상품
-						금리 작성하기</button>
-					<button
-						th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}"
-						class="btn-action" th:onclick="ratePage([[${aprSugDto.rate_no}]])">자세히
-						보기</button>
+					<button th:if="${aprSugDto.rate_no == null or aprSugDto.rate_no == 0}" 
+							class="btn-action assign-trigger" 
+							onclick="rateWrite()">
+							상품 금리 작성하기
+					</button>
+					
+					<button	th:if="${aprSugDto.rate_no != null and aprSugDto.rate_no != 0}"
+							class="btn-action" th:onclick="ratePage([[${aprSugDto.rate_no}]])">
+							자세히 보기
+					</button>
 				</div>
 			</div>
 
@@ -441,48 +245,5 @@ tr:last-child td {
 
 	</div>
 
-	<script>
-		const suggestion_no = document.getElementById("suggestion_no").value;
-		const rate_no = document.getElementById("rate_no").value;
-		const terms_no = document.getElementById("terms_no").value;
-		const condition_no = document.getElementById("condition_no").value;
-		const description_no = document.getElementById("description_no").value;
-
-		// PK 데이터가 안들어 있을 때.
-		function rateWrite() {
-			location.href = '/employee/staff/product/rate?suggestion_no='
-					+ suggestion_no;
-		}
-		function termsWrite() {
-			location.href = '/employee/staff/productTerm?suggestion_no='
-					+ suggestion_no;
-		}
-		function descWrite() {
-			location.href = '/employee/staff/product/description?suggestion_no='
-					+ suggestion_no;
-		}
-		function condWrite() {
-			location.href = '/employee/staff/product/condition?suggestion_no='
-					+ suggestion_no;
-		}
-
-		// PK데이터가 들어와 있을 때 -> Detail 페이지로 이동
-		function ratePage(no) {
-			location.href = '/employee/staff/product/approved/rate/detail?suggestion_no='
-					+ suggestion_no + '&no=' + rate_no;
-		}
-		function termsPage(no) {
-			location.href = '/employee/staff/product/approved/term/detail?suggestion_no='
-					+ suggestion_no + '&no=' + terms_no;
-		}
-		function descPage(no) {
-			location.href = '/employee/staff/product/approved/description/detail?suggestion_no='
-					+ suggestion_no + '&no=' + description_no;
-		}
-		function condPage(no) {
-			location.href = '/employee/staff/product/approved/condition/detail?suggestion_no='
-					+ suggestion_no + '&no=' + condition_no;
-		}
-	</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.example.bnk.service.product;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,4 +27,17 @@ public class ProductSalesService {
     public List<MemberProductDto> getSubscribedProducts(String username) {
         return productSalesDao.findSubscribedProductsByMemberNo(username);
     }
+    
+	
+    // 커뮤니티 가입 시 우대금리 상승 서비스
+	public int upTermscommunityRegist(@Param("member_no") long member_no) {
+		int result = productSalesDao.upTermsCommunityRegist(member_no);
+		
+		if(result == 1) {
+			System.out.println("우대금리 상승 성공");
+			return 1;
+		}
+		System.out.println("우대금리 상승 실패");
+		return 0;
+	}
 }
