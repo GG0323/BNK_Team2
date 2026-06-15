@@ -111,7 +111,8 @@ public class EmployeePageController {
 	public String approvedDetail(@AuthenticationPrincipal String username) {
 		return "Employees/manager/SUG/approvedSuggestionDetail";
 	}
-
+	
+	
 	// 매니저 상세 페이지 -> 상품 디테일의 디테일
 	// 브라우저 호출 주소:
 	// /manager/SUG/approvedDetail/productDetail?type=rate&suggestion_no=5
@@ -449,4 +450,31 @@ public class EmployeePageController {
         logService.build(username, "PAGEVIEW", "TB_RESERVATION", null, "예약 관리 페이지 접근");
         return "Employees/staff/reservation";
     }
+    
+    
+    /** 수정된 상품 등록 로직 */  //  /employee/manager/writeProduct    /employee/manager/pendingProductDetail
+    @GetMapping("/manager/writeProduct")
+    public String writeProduct() {
+    	return "Employees/manager/writeProductTemp";
+    }
+    @GetMapping("/manager/pendingProductList")
+    public String pendingProductList() {
+    	return "Employees/manager/pendingProductList";
+    }
+    @GetMapping("/manager/pendingProductDetail")
+    public String pendingProductDetail() {
+    	return "Employees/manager/pendingProductDetail";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

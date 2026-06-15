@@ -24,4 +24,96 @@
 		SET product_status = #{product_status}, updated_at = SYSDATE
 		WHERE product_no = #{product_no}
 	</update>
+	
+	
+	
+	<!-- 상품 등록 (대기)-->
+	<insert id="insertProduct" parameterType="com.example.bnk.dto.product.ProductDto"
+        useGeneratedKeys="true" keyProperty="product_no" keyColumn="PRODUCT_NO">
+	  INSERT INTO TB_PRODUCT (
+	    PRODUCT_NAME, PRODUCT_TYPE,
+	    MIN_INTEREST_RATE, MAX_INTEREST_RATE,
+	    INTEREST_PAYMENT_TYPE, INTEREST_CALC_TYPE,
+	    SALE_START_DATE, SALE_END_DATE,
+	    PRODUCT_STATUS,
+	    BRANCH_JOIN_YN, INTERNET_JOIN_YN, MOBILE_JOIN_YN
+	  ) 
+	  VALUES (
+	    #{dto.product_name}, #{dto.product_type},
+	    #{dto.min_interest_rate}, #{dto.max_interest_rate},
+	    #{dto.interest_payment_type}, #{dto.interest_calc_type},
+	    #{dto.sale_start_date}, #{dto.sale_end_date},
+	    'PENDING',
+	    #{dto.branch_join_yn}, #{dto.internet_join_yn}, #{dto.mobile_join_yn}
+	  )
+	</insert>
+	
+	<!-- 대기 상품 조회 -->
+	<select id="selectPendingProductList" resultType="com.example.bnk.dto.product.PendingProductListDto">
+	  SELECT
+	    p.product_no,
+	    p.product_name,
+	    p.product_type,
+	    p.created_at,
+	    CASE WHEN c.cnt > 0 THEN 'Y' ELSE 'N' END AS has_join_condition,
+	    CASE WHEN d.cnt > 0 THEN 'Y' ELSE 'N' END AS has_description,
+	    CASE WHEN r.cnt > 0 THEN 'Y' ELSE 'N' END AS has_interest_rate,
+	    CASE WHEN t.cnt > 0 THEN 'Y' ELSE 'N' END AS has_terms
+	  FROM tb_product p
+	  LEFT JOIN (SELECT product_no, COUNT(*) cnt FROM tb_product_condition   GROUP BY product_no) c
+	         ON p.product_no = c.product_no
+	  LEFT JOIN (SELECT product_no, COUNT(*) cnt FROM tb_product_description GROUP BY product_no) d
+	         ON p.product_no = d.product_no
+	  LEFT JOIN (SELECT product_no, COUNT(*) cnt FROM tb_product_rate        GROUP BY product_no) r
+	         ON p.product_no = r.product_no
+	  LEFT JOIN (SELECT product_no, COUNT(*) cnt FROM tb_product_terms       GROUP BY product_no) t
+	         ON p.product_no = t.product_no
+	  WHERE p.product_status = 'PENDING'
+	  ORDER BY p.created_at DESC
+	</select>
+	<!-- 대기 상품 승인 -->
+	<select id="selectProductDetail" resultType="com.example.bnk.dto.product.PendingProductDetailDto">
+	  SELECT
+	    p.product_no,
+	    p.product_name,
+	    p.product_type,
+	    p.min_interest_rate,
+	    p.max_interest_rate,
+	    p.interest_payment_type,
+	    p.interest_calc_type,
+	    p.sale_start_date,
+	    p.sale_end_date,
+	    p.product_status,
+	    p.branch_join_yn,
+	    p.internet_join_yn,
+	    p.mobile_join_yn,
+	    p.created_at,
+	    p.updated_at,
+	    r.rate_no,
+	    t.terms_no,
+	    d.description_no,
+	    c.condition_no
+	  FROM tb_product p
+	  LEFT JOIN (SELECT product_no, MIN(rate_no)        AS rate_no        FROM tb_product_rate        GROUP BY product_no) r ON p.product_no = r.product_no
+	  LEFT JOIN (SELECT product_no, MIN(terms_no)       AS terms_no       FROM tb_product_terms       GROUP BY product_no) t ON p.product_no = t.product_no
+	  LEFT JOIN (SELECT product_no, MIN(description_no) AS description_no FROM tb_product_description GROUP BY product_no) d ON p.product_no = d.product_no
+	  LEFT JOIN (SELECT product_no, MIN(condition_no)   AS condition_no   FROM tb_product_condition   GROUP BY product_no) c ON p.product_no = c.product_no
+	  WHERE p.product_no = #{product_no}
+	</select>
+	
+	<update id="approvePendingProduct">
+	  UPDATE tb_product
+	     SET product_status = 'SALE',
+	         updated_at = SYSDATE
+	   WHERE product_no = #{product_no}
+	     AND product_status = 'PENDING'
+	     AND EXISTS (SELECT 1 FROM tb_product_rate        WHERE product_no = #{product_no})
+	     AND EXISTS (SELECT 1 FROM tb_product_terms       WHERE product_no = #{product_no})
+	     AND EXISTS (SELECT 1 FROM tb_product_description WHERE product_no = #{product_no})
+	     AND EXISTS (SELECT 1 FROM tb_product_condition   WHERE product_no = #{product_no})
+	</update>
+		
+	
+	
+	
 </mapper>
