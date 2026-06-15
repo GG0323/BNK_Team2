@@ -83,10 +83,12 @@ public class ApiController {
 					    .body(Map.of("message", "이미 존재하는 닉네임입니다.."));
 			}
 			
-			// INSERT
+			// INSERT - 회원가입 완료 확인
 			result = communityService.registComuAccount(dto);
 			if(result == 1) {
 				System.out.println("회원가입 최종까지 성공!");
+				// 여기에 우대금리 높이는 코드 작성.
+				
 				return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "회원가입 성공!"));
 			}
 		}
