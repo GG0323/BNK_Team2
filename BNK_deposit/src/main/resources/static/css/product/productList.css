@@ -115,6 +115,77 @@ button {
     margin-top: 10px;
 }
 
+/* 목록 공통 안내 */
+.product-common-guide {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 18px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    background: #161a20;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.product-common-guide::before {
+    content: "QR";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 24px;
+    border-radius: 999px;
+    background: #d71920;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+/* 카테고리 필터 */
+.product-filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.category-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 76px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    color: #333333;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.18s ease;
+}
+
+.category-chip:hover {
+    border-color: #d71920;
+    color: #d71920;
+}
+
+.category-chip.active {
+    border-color: #111111;
+    background: #111111;
+    color: #ffffff;
+}
+
 /* 상품 목록 상단 제목 + 정렬 */
 .section-title {
     display: flex;
@@ -335,14 +406,9 @@ button {
     color: white;
 }
 
+/* 기존 mobile-guide는 HTML에서 제거됨. 혹시 남아 있어도 화면에 튀지 않게 유지 */
 .mobile-guide {
-    margin-top: 14px;
-    padding: 11px 12px;
-    border-radius: 12px;
-    background: #fff1f1;
-    color: #b81218;
-    font-size: 13px;
-    border: 1px solid #ffd6d8;
+    display: none;
 }
 
 /* 빈 목록 */
@@ -1422,7 +1488,6 @@ body.compare-page-body {
     }
 }
 
-
 .official-rate-table td {
     color: #111111;
 }
@@ -1580,8 +1645,6 @@ body.product-list-page.is-product-list-view .product-list-section.is-section-ent
     }
 }
 
-
-
 /* =========================================================
    추천 패널 UX 보정: 외부 진입/검색 진입은 전환 없이 바로 목록 표시
    ========================================================= */
@@ -1593,4 +1656,547 @@ body.product-list-page.is-panel-jump .product-list-section {
 
 body.product-list-page.is-product-list-view .compare-bar.collapsed {
     z-index: 90;
+}
+
+@media (max-width: 640px) {
+    .product-filter-row {
+        align-items: flex-start;
+    }
+
+    .category-chip {
+        min-width: 64px;
+        height: 34px;
+        padding: 0 12px;
+        font-size: 13px;
+    }
+
+    .product-common-guide {
+        align-items: flex-start;
+        font-size: 13px;
+        line-height: 1.45;
+    }
+}
+
+/* =========================================================
+   AI 맞춤 상품 추천 카드
+   ========================================================= */
+
+.product-list-page .product-list-section > .ai-persona-recommend-section {
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ai-persona-recommend-section {
+    margin-bottom: 18px;
+}
+
+.ai-persona-card {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 22px;
+
+    padding: 22px 24px;
+    border-radius: 20px;
+
+    background:
+        radial-gradient(circle at 12% 20%, rgba(215, 25, 32, 0.22), transparent 32%),
+        linear-gradient(135deg, #111111 0%, #171b22 58%, #2b1113 100%);
+
+    color: #ffffff;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ai-persona-card::after {
+    content: "";
+    position: absolute;
+    right: -44px;
+    top: -58px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 28px solid rgba(255, 255, 255, 0.05);
+}
+
+.ai-persona-left {
+    position: relative;
+    z-index: 1;
+}
+
+.ai-persona-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 28px;
+    padding: 0 12px;
+    margin-bottom: 10px;
+
+    border-radius: 999px;
+    background: #d71920;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.ai-persona-left h3 {
+    margin: 0 0 8px;
+    font-size: 21px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+.ai-persona-left p {
+    margin: 0;
+    max-width: 720px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.ai-persona-right {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.ai-persona-start-btn {
+    min-width: 120px;
+    height: 44px;
+    padding: 0 22px;
+
+    border: none;
+    border-radius: 14px;
+
+    background: #d71920;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 900;
+
+    box-shadow: 0 10px 22px rgba(215, 25, 32, 0.34);
+    transition: 0.18s ease;
+}
+
+.ai-persona-start-btn:hover {
+    background: #b81218;
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   AI 맞춤 상품 추천 모달
+   ========================================================= */
+
+.ai-persona-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.56);
+    backdrop-filter: blur(4px);
+}
+
+.ai-persona-modal-backdrop.active {
+    display: flex;
+}
+
+.ai-persona-modal {
+    width: min(920px, 100%);
+    max-height: 88vh;
+    overflow-y: auto;
+
+    border-radius: 26px;
+    background: #ffffff;
+    color: #111111;
+
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
+    border: 1px solid #eeeeee;
+}
+
+.ai-persona-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+
+    padding: 26px 28px 22px;
+    background:
+        radial-gradient(circle at 12% 20%, rgba(215, 25, 32, 0.2), transparent 30%),
+        linear-gradient(135deg, #111111 0%, #181c23 62%, #d71920 100%);
+    color: #ffffff;
+}
+
+.ai-persona-modal-kicker {
+    display: inline-flex;
+    height: 26px;
+    align-items: center;
+    padding: 0 11px;
+    margin-bottom: 10px;
+
+    border-radius: 999px;
+    background: #d71920;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.ai-persona-modal-header h2 {
+    margin: 0 0 6px;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.ai-persona-modal-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+}
+
+.ai-persona-modal-close {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.ai-persona-modal-close:hover {
+    background: #d71920;
+}
+
+.ai-persona-form {
+    padding: 26px 28px 22px;
+}
+
+.ai-persona-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.ai-persona-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #333333;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.ai-persona-field input {
+    width: 100%;
+    height: 44px;
+
+    padding: 0 13px;
+    border: 1px solid #dddddd;
+    border-radius: 13px;
+
+    font-size: 14px;
+    outline: none;
+}
+
+.ai-persona-field input:focus {
+    border-color: #d71920;
+    box-shadow: 0 0 0 3px rgba(215, 25, 32, 0.12);
+}
+
+.ai-persona-choice-block {
+    margin-top: 16px;
+    padding: 17px 18px;
+
+    border-radius: 18px;
+    background: #fafafa;
+    border: 1px solid #eeeeee;
+}
+
+.ai-persona-choice-block > strong {
+    display: block;
+    margin-bottom: 12px;
+    color: #111111;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.ai-persona-choice-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.ai-persona-choice-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    min-height: 34px;
+    padding: 7px 12px;
+
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+
+    color: #333333;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ai-persona-choice-row input {
+    accent-color: #d71920;
+}
+
+.ai-persona-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.ai-persona-cancel-btn,
+.ai-persona-submit-btn {
+    min-width: 118px;
+    height: 44px;
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 13px;
+
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.ai-persona-cancel-btn {
+    background: #eeeeee;
+    color: #333333;
+}
+
+.ai-persona-submit-btn {
+    background: #d71920;
+    color: #ffffff;
+}
+
+.ai-persona-submit-btn:hover {
+    background: #b81218;
+}
+
+.ai-persona-result-area {
+    margin: 0 28px 28px;
+    padding: 22px;
+
+    border-radius: 22px;
+    background: #fff8f8;
+    border: 1px solid #ffd6d8;
+}
+
+.ai-persona-result-title {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.ai-persona-result-title span {
+    color: #d71920;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.ai-persona-result-title strong {
+    color: #111111;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.ai-persona-result-list {
+    display: grid;
+    gap: 12px;
+}
+
+.ai-persona-result-card {
+    padding: 17px 18px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+}
+
+.ai-persona-result-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.ai-persona-result-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 46px;
+    height: 28px;
+    border-radius: 999px;
+
+    background: #111111;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.ai-persona-result-score {
+    color: #d71920;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.ai-persona-result-card h4 {
+    margin: 0 0 8px;
+    color: #111111;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.ai-persona-result-card p {
+    margin: 0 0 12px;
+    color: #555555;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.65;
+}
+
+.ai-persona-result-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 13px;
+}
+
+.ai-persona-result-evidence span {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 27px;
+    padding: 5px 9px;
+    border-radius: 999px;
+
+    background: #f1f1f1;
+    color: #333333;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.ai-persona-result-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-persona-result-actions a,
+.ai-persona-result-actions button {
+    flex: 1;
+    min-height: 38px;
+
+    border-radius: 11px;
+    border: none;
+
+    font-size: 13px;
+    font-weight: 900;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-persona-result-actions a {
+    background: #d71920;
+    color: #ffffff;
+}
+
+.ai-persona-result-actions button {
+    background: #111111;
+    color: #ffffff;
+}
+
+@media (max-width: 900px) {
+    .ai-persona-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 760px) {
+    .ai-persona-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .ai-persona-right,
+    .ai-persona-start-btn {
+        width: 100%;
+    }
+
+    .ai-persona-modal-backdrop {
+        padding: 14px;
+    }
+
+    .ai-persona-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-persona-modal-actions {
+        flex-direction: column;
+    }
+
+    .ai-persona-cancel-btn,
+    .ai-persona-submit-btn {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   AI 추천 결과 카드 지표 표시
+   ========================================================= */
+
+.ai-persona-result-metrics {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.ai-persona-result-benefit {
+    color: #111111;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+@media (max-width: 640px) {
+    .ai-persona-result-card-top {
+        align-items: flex-start;
+    }
+
+    .ai-persona-result-metrics {
+        align-items: flex-start;
+    }
 }

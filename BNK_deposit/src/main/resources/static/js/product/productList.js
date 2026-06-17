@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // 이벤트 위임: AJAX로 새로 그려진 .compare-btn도 자동으로 동작한다.
     document.addEventListener("click", function (e) {
         const button = e.target.closest(".compare-btn");
         if (!button) return;
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
         addCompareProduct(productNo, productName || "상품명");
     });
 
-    // 비교함 열기 / 닫기 버튼
     if (toggleCompareBtn) {
         toggleCompareBtn.addEventListener("click", function () {
             compareBar.classList.toggle("expanded");
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 비교함 비우기
     if (clearCompareBtn) {
         clearCompareBtn.addEventListener("click", function () {
             compareProducts = [];
@@ -52,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 비교하기 버튼 클릭 -> 작은 새 창 팝업 열기
     if (openCompareModalBtn) {
         openCompareModalBtn.addEventListener("click", function () {
             if (compareProducts.length < 2) {
@@ -66,11 +62,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const url = "/products/compare?ids=" + ids;
 
-            // 팝업 크기
             const popupWidth = 950;
             const popupHeight = 760;
 
-            // 현재 브라우저 화면 기준 가운데 위치
             const left = window.screenX + (window.outerWidth - popupWidth) / 2;
             const top = window.screenY + (window.outerHeight - popupHeight) / 2;
 
@@ -86,11 +80,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 비교함에 상품 추가
     function addCompareProduct(productNo, productName) {
         productNo = String(productNo);
 
-        // 이미 담긴 상품인지 확인
         const exists = compareProducts.some(function (product) {
             return product.productNo === productNo;
         });
@@ -100,7 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // 최대 3개까지만 담기
         if (compareProducts.length >= 3) {
             alert("상품 비교는 최대 3개까지 가능합니다.");
             return;
@@ -113,20 +104,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         renderCompareBar();
 
-        // 상품을 담으면 비교함 자동 펼침
         compareBar.classList.remove("collapsed");
         compareBar.classList.add("expanded");
-        if (toggleCompareBtn) toggleCompareBtn.textContent = "×";
+
+        if (toggleCompareBtn) {
+            toggleCompareBtn.textContent = "×";
+        }
     }
 
-    // 비교함 화면 다시 그리기
     function renderCompareBar() {
         compareItems.innerHTML = "";
         compareSlotWrap.innerHTML = "";
 
         compareCount.textContent = compareProducts.length + "/3";
 
-        // 숨김 영역 관리용
         if (compareProducts.length === 0) {
             const emptyText = document.createElement("span");
             emptyText.className = "empty-compare";
@@ -134,9 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
             compareItems.appendChild(emptyText);
         }
 
-        // 담긴 상품 슬롯 출력
         compareProducts.forEach(function (product) {
-            // 숨김 영역용 태그
             const item = document.createElement("div");
             item.className = "compare-item";
 
@@ -155,7 +144,6 @@ document.addEventListener("DOMContentLoaded", function () {
             item.appendChild(removeBtn);
             compareItems.appendChild(item);
 
-            // 실제 화면에 보이는 슬롯
             const slot = document.createElement("div");
             slot.className = "compare-slot selected";
 
@@ -175,7 +163,6 @@ document.addEventListener("DOMContentLoaded", function () {
             compareSlotWrap.appendChild(slot);
         });
 
-        // 남은 빈 슬롯 채우기
         const emptyCount = 3 - compareProducts.length;
 
         for (let i = 0; i < emptyCount; i++) {
@@ -187,7 +174,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 비교함에서 상품 삭제
     function removeCompareProduct(productNo) {
         compareProducts = compareProducts.filter(function (product) {
             return product.productNo !== String(productNo);
@@ -196,7 +182,6 @@ document.addEventListener("DOMContentLoaded", function () {
         renderCompareBar();
     }
 
-    // 다른 스크립트에서 필요할 때 사용할 수 있게 노출
     window.addCompareProduct = addCompareProduct;
 });
 
@@ -274,9 +259,11 @@ function initRecommendedPassbookHero() {
 
         card.addEventListener("mouseleave", function () {
             if (hero.classList.contains("is-selected") || isAnimating) return;
+
             card.classList.remove("is-hovered");
 
             const hovered = hero.querySelector(".rpb-fan-card.is-hovered");
+
             if (!hovered) {
                 hero.classList.remove("has-hover-card");
                 setBackgroundWords(themeMeta.default.words);
@@ -303,7 +290,6 @@ function initRecommendedPassbookHero() {
         isAnimating = true;
         selectedCard = card;
 
-        // 이전 상태를 완전히 제거해서 CSS animation이 매번 처음부터 재생되도록 한다.
         hero.classList.remove(
             "is-selected",
             "is-open",
@@ -328,29 +314,22 @@ function initRecommendedPassbookHero() {
 
         card.classList.add("selected");
         applyProductData(card);
-        applyTheme(card.dataset.theme || "growth", card);
+        applyTheme(card.dataset.theme || "growth");
 
-        // 테마 클래스가 먼저 브라우저에 반영된 뒤 배경 전환을 시작해야
-        // 세 번째 split 배경도 진입 애니메이션이 안정적으로 재생된다.
         await rpbNextFrame();
 
-        // 1. 상품별 배경 전환 + 장식 효과 시작
         hero.classList.add("is-bg-active", "is-bursting");
         await rpbSleep(760);
 
-        // 2. 선택 통장 중앙 이동 + 나머지 통장 제거
         hero.classList.add("is-selected");
         await rpbSleep(500);
 
-        // 3. 통장 표지/속지 오픈
         hero.classList.add("is-open");
         await rpbSleep(1040);
 
-        // 4. 상품 데이터 영역 등장
         hero.classList.add("is-detail-active");
         await rpbSleep(340);
 
-        // 5. 금리 영역 등장 후 숫자 애니메이션 시작
         hero.classList.add("is-rate-active");
         await rpbNextFrame();
         playRateAnimation(rateEl, card.dataset.rateEffect || "rolling");
@@ -363,7 +342,6 @@ function initRecommendedPassbookHero() {
 
         isAnimating = true;
 
-        // 닫을 때도 순서 고정: 금리 숨김 → 데이터 숨김 → 배경 퇴장 → 통장 닫힘 → 초기화
         hero.classList.add("is-closing");
         hero.classList.remove("is-rate-active", "is-bursting");
         await rpbSleep(140);
@@ -402,9 +380,11 @@ function initRecommendedPassbookHero() {
         const productNo = card.dataset.productNo;
         const productName = card.dataset.productName || "추천 상품";
         const productType = card.dataset.productType || "DEPOSIT";
+
         const subtitle = card.dataset.subtitle && card.dataset.subtitle !== "null"
             ? card.dataset.subtitle
             : "BNK 추천 금융상품입니다.";
+
         const minRate = formatRate(card.dataset.minRate);
         const maxRate = formatRate(card.dataset.maxRate);
         const rateText = minRate + "% ~ " + maxRate + "%";
@@ -426,10 +406,11 @@ function initRecommendedPassbookHero() {
         toggleChip(mobileChip, card.dataset.mobileYn === "Y");
     }
 
-    function applyTheme(themeName, card) {
+    function applyTheme(themeName) {
         hero.classList.remove("theme-growth", "theme-custom", "theme-challenge");
 
         const meta = themeMeta[themeName] || themeMeta.growth;
+
         hero.classList.add(meta.className);
         coverIcon.textContent = meta.icon;
         coverTitle.textContent = meta.title;
@@ -498,8 +479,10 @@ function initProductFullPageSections() {
 
     function shouldStartInListView() {
         const params = new URLSearchParams(location.search);
+
         const hasSearchIntent = params.has("keyword")
             || params.has("sort")
+            || params.has("productType")
             || location.pathname.includes("/products/search")
             || location.hash === "#productListSection"
             || location.hash === "#productResultSection";
@@ -554,7 +537,10 @@ function initProductFullPageSections() {
         if (instant) {
             body.classList.add("is-panel-jump");
             body.classList.add("is-product-list-view");
-            if (resetScroll) listSection.scrollTop = 0;
+
+            if (resetScroll) {
+                listSection.scrollTop = 0;
+            }
 
             requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
@@ -562,10 +548,12 @@ function initProductFullPageSections() {
                     if (focusSearch) focusProductSearch();
                 });
             });
+
             return;
         }
 
         lockMove();
+
         body.classList.add("is-product-list-view");
         listSection.classList.add("is-section-entering");
 
@@ -618,36 +606,35 @@ function initProductFullPageSections() {
             return;
         }
 
-        // Hero 화면에서 아래로 휠 → 상품 목록 패널로 전환
         if (!isProductListView() && e.deltaY > 0) {
             e.preventDefault();
             showProductListView({ resetScroll: true });
             return;
         }
 
-        // 상품 목록 화면의 맨 위에서 위로 휠 → Hero 패널로 전환
         if (isProductListView() && e.deltaY < 0 && isListScrollTop()) {
             e.preventDefault();
             showHeroView();
         }
     }, { passive: false });
 
-    // 검색 결과/상세 복귀/해시 진입은 연출 없이 바로 상품 목록 패널로 진입한다.
     if (shouldStartInListView()) {
         showProductListView({ resetScroll: true, instant: true });
     }
 
-    // header 검색 / AJAX 검색 쪽에서 호출할 수 있게 열어둔다.
     window.moveToProductListSection = function (options = {}) {
         showProductListView({ resetScroll: true, ...options });
     };
+
     window.showProductListView = showProductListView;
     window.showHeroView = showHeroView;
 }
 
 function resetRateAnimation(rateEl) {
     if (!rateEl) return;
+
     const rateText = rateEl.dataset.rate || rateEl.textContent || "0.00% ~ 0.00%";
+
     rateEl.className = "rpb-rate";
     rateEl.textContent = rateText;
 }
@@ -662,26 +649,33 @@ function playRateAnimation(rateEl, effectType) {
     if (effectType === "flip") {
         rateEl.classList.add("rpb-flip-rate");
         buildSingleFlipRate(rateEl, rateText);
+
         requestAnimationFrame(function () {
             rateEl.classList.add("start");
         });
+
         return;
     }
 
     if (effectType === "flip-roll") {
         rateEl.classList.add("rpb-flip-roll-rate");
+
         const digitItems = buildFlipRollRate(rateEl, rateText);
+
         requestAnimationFrame(function () {
             rateEl.classList.add("start");
+
             digitItems.forEach(function (item) {
                 rollFlipDigitToTarget(item.digit, item.target, item.order);
             });
         });
+
         return;
     }
 
     rateEl.classList.add("rpb-rolling-rate");
     buildRollingRate(rateEl, rateText);
+
     requestAnimationFrame(function () {
         rateEl.classList.add("start");
     });
@@ -714,7 +708,10 @@ function buildRollingRate(el, value) {
             order++;
         } else {
             appendRateChar(el, char, order, "rpb-rate-char");
-            if (char !== " ") order++;
+
+            if (char !== " ") {
+                order++;
+            }
         }
     });
 }
@@ -729,17 +726,22 @@ function buildSingleFlipRate(el, value) {
             const digit = document.createElement("span");
             digit.className = "rpb-flip-digit";
             digit.style.setProperty("--delay", (order * 82) + "ms");
+
             digit.innerHTML = `
                 <span class="rpb-flip-half rpb-top"><span>${char}</span></span>
                 <span class="rpb-flip-half rpb-bottom"><span>${char}</span></span>
                 <span class="rpb-single-flap rpb-top rpb-old-top"><span>0</span></span>
                 <span class="rpb-single-flap rpb-bottom rpb-new-bottom"><span>${char}</span></span>
             `;
+
             el.appendChild(digit);
             order++;
         } else {
             appendRateChar(el, char, order, "rpb-rate-char");
-            if (char !== " ") order++;
+
+            if (char !== " ") {
+                order++;
+            }
         }
     });
 }
@@ -758,7 +760,10 @@ function buildFlipRollRate(el, value) {
             order++;
         } else {
             appendRateChar(el, char, order, "rpb-rate-char");
-            if (char !== " ") order++;
+
+            if (char !== " ") {
+                order++;
+            }
         }
     });
 
@@ -826,6 +831,7 @@ async function flipDigitToNumber(digit, nextNumber) {
 
     digit.classList.remove("flipping");
     digit.dataset.current = nextNumber;
+
     currentTop.textContent = nextNumber;
     currentBottom.textContent = nextNumber;
     oldTop.textContent = nextNumber;
@@ -853,3 +859,433 @@ function rpbSleep(ms) {
         setTimeout(resolve, ms);
     });
 }
+
+/* =========================================================
+   AI 맞춤 상품 추천 모달
+   - 현재 단계: 화면 동작 + API 추천 결과 표시
+   - API 실패 시 현재 목록 기반 임시 추천
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", function () {
+    const openBtn = document.getElementById("openPersonaRecommendBtn");
+    const modal = document.getElementById("aiPersonaModal");
+    const closeBtn = document.getElementById("closePersonaRecommendBtn");
+    const cancelBtn = document.getElementById("cancelPersonaRecommendBtn");
+    const form = document.getElementById("aiPersonaRecommendForm");
+    const resultArea = document.getElementById("aiPersonaResultArea");
+    const resultSummary = document.getElementById("aiPersonaResultSummary");
+    const resultList = document.getElementById("aiPersonaResultList");
+
+    if (!openBtn || !modal || !form || !resultArea || !resultSummary || !resultList) {
+        return;
+    }
+
+    openBtn.addEventListener("click", function () {
+        openPersonaModal();
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closePersonaModal);
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", closePersonaModal);
+    }
+
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+            closePersonaModal();
+        }
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+            closePersonaModal();
+        }
+    });
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const requestData = collectPersonaRecommendData();
+
+        resultArea.style.display = "block";
+        resultSummary.textContent = "AI가 조건에 맞는 상품을 분석하고 있습니다.";
+        resultList.innerHTML = `
+            <div class="ai-persona-result-card">
+                <p style="margin:0;">추천 결과를 불러오는 중입니다...</p>
+            </div>
+        `;
+
+        try {
+            const apiResult = await requestPersonaRecommendApi(requestData);
+            renderPersonaApiResult(apiResult);
+        } catch (error) {
+            console.warn("개인화 추천 API 연결 전이거나 요청 실패:", error);
+            renderLocalPersonaPreview(requestData);
+        }
+    });
+
+    function openPersonaModal() {
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closePersonaModal() {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+    }
+
+    function collectPersonaRecommendData() {
+        const formData = new FormData(form);
+
+        return {
+            age: Number(formData.get("age") || 0),
+            balance: Number(formData.get("balance") || 0),
+            monthlyAmount: Number(formData.get("monthlyAmount") || 0),
+            periodMonths: Number(formData.get("periodMonths") || 0),
+            purpose: formData.get("purpose") || "MAKE_MONEY",
+            preferredProductType: formData.get("preferredProductType") || "ALL",
+            preferredChannel: formData.get("preferredChannel") || "ALL",
+            interestConditions: formData.getAll("interestConditions")
+        };
+    }
+
+    async function requestPersonaRecommendApi(requestData) {
+        const response = await fetch("/api/products/ai/recommend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(requestData)
+        });
+
+        if (!response.ok) {
+            throw new Error("추천 API 요청 실패");
+        }
+
+        return response.json();
+    }
+
+    function renderPersonaApiResult(apiResult) {
+        const data = apiResult.data || apiResult;
+        const products = data.recommendedProducts || data.products || [];
+
+        resultSummary.textContent =
+            data.summary || "입력한 조건을 기준으로 추천 상품을 찾았습니다.";
+
+        if (!products || products.length === 0) {
+            resultList.innerHTML = `
+                <div class="ai-persona-result-card">
+                    <p style="margin:0;">추천 가능한 상품이 없습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        resultList.innerHTML = products.map(function (product, index) {
+            return buildPersonaResultCard({
+                rank: index + 1,
+                productNo: product.productNo || product.product_no,
+                productName: product.productName || product.product_name,
+                score: product.fitPercent || product.score || product.fit_percent || 80,
+                benefitChancePercent: product.benefitChancePercent || product.benefit_chance_percent || 0,
+                reason: product.reason || "사용자 조건과 비교적 잘 맞는 상품입니다.",
+                evidence: product.evidence || [],
+                detailUrl: product.detailUrl || product.detail_url || (
+                    product.productNo
+                        ? "/products/detail?product_no=" + encodeURIComponent(product.productNo)
+                        : product.product_no
+                            ? "/products/detail?product_no=" + encodeURIComponent(product.product_no)
+                            : "#"
+                )
+            });
+        }).join("");
+
+        bindPersonaCompareButtons();
+    }
+
+    function renderLocalPersonaPreview(requestData) {
+        const candidates = getVisibleProductCandidates(requestData);
+
+        resultSummary.textContent =
+            "현재 상품 목록 데이터를 기준으로 추천 예시를 생성했습니다.";
+
+        if (candidates.length === 0) {
+            resultList.innerHTML = `
+                <div class="ai-persona-result-card">
+                    <p style="margin:0;">
+                        현재 조건에 맞는 상품을 찾지 못했습니다.
+                        조건을 완화해 다시 시도해 주세요.
+                    </p>
+                </div>
+            `;
+            return;
+        }
+
+        resultList.innerHTML = candidates.slice(0, 3).map(function (product, index) {
+            return buildPersonaResultCard({
+                rank: index + 1,
+                productNo: product.productNo,
+                productName: product.productName,
+                score: product.score,
+                benefitChancePercent: product.benefitChancePercent || 70,
+                reason: product.reason,
+                evidence: product.evidence,
+                detailUrl: product.detailUrl
+            });
+        }).join("");
+
+        bindPersonaCompareButtons();
+    }
+
+    function getVisibleProductCandidates(requestData) {
+        const cards = Array.from(document.querySelectorAll(".product-card"));
+
+        const candidates = cards.map(function (card) {
+            const typeText = card.querySelector(".type-badge")?.textContent.trim() || "";
+            const productType = typeText.includes("예금") ? "DEPOSIT" : "SAVINGS";
+
+            const productName = card.querySelector("h3")?.textContent.trim() || "상품명";
+
+            const maxRateText = card.querySelector(".max-rate strong")?.textContent || "0";
+            const minRateText = card.querySelector(".min-rate strong")?.textContent || "0";
+
+            const joinText = card.querySelector(".join-info")?.textContent || "";
+            const detailUrl = card.querySelector(".detail-btn")?.getAttribute("href") || "#";
+            const compareBtn = card.querySelector(".compare-btn");
+
+            const productNo = compareBtn?.dataset.id || "";
+            const maxRate = Number(maxRateText.replace("%", "").trim()) || 0;
+            const minRate = Number(minRateText.replace("%", "").trim()) || 0;
+
+            let score = 50;
+            let benefitChancePercent = 58;
+            const evidence = [];
+
+            if (requestData.preferredProductType === productType) {
+                score += 18;
+                evidence.push(productType === "DEPOSIT" ? "선호 유형: 예금" : "선호 유형: 적금");
+            }
+
+            if (requestData.preferredProductType === "ALL") {
+                score += 6;
+            }
+
+            if (requestData.purpose === "MAKE_MONEY" && productType === "SAVINGS") {
+                score += 15;
+                evidence.push("목돈 만들기 목적에 적합");
+            }
+
+            if (requestData.purpose === "ROLL_MONEY" && productType === "DEPOSIT") {
+                score += 15;
+                evidence.push("목돈 굴리기 목적에 적합");
+            }
+
+            if (requestData.purpose === "HIGH_RATE") {
+                score += Math.min(Math.round(maxRate * 4), 20);
+                evidence.push("최고금리 연 " + maxRate.toFixed(2) + "%");
+            } else {
+                score += Math.min(Math.round(maxRate * 3), 15);
+                evidence.push("최고금리 연 " + maxRate.toFixed(2) + "%");
+            }
+
+            if (requestData.preferredChannel === "MOBILE" && joinText.includes("모바일")) {
+                score += 14;
+                benefitChancePercent += 8;
+                evidence.push("모바일 가입 가능");
+            }
+
+            if (requestData.preferredChannel === "INTERNET" && joinText.includes("인터넷")) {
+                score += 10;
+                evidence.push("인터넷 가입 가능");
+            }
+
+            if (requestData.preferredChannel === "BRANCH" && joinText.includes("영업점")) {
+                score += 10;
+                evidence.push("영업점 가입 가능");
+            }
+
+            if (requestData.interestConditions.includes("MOBILE") && joinText.includes("모바일")) {
+                score += 8;
+                benefitChancePercent += 8;
+            }
+
+            if (requestData.interestConditions.includes("HIGH_RATE")) {
+                score += Math.min(Math.round(maxRate * 2), 10);
+            }
+
+            if (requestData.interestConditions.includes("LOW_AMOUNT")) {
+                score += 5;
+                benefitChancePercent += 6;
+                evidence.push("소액 시작 선호 반영");
+            }
+
+            if (requestData.interestConditions.includes("PREFERENTIAL_RATE")) {
+                score += 5;
+                benefitChancePercent += 7;
+                evidence.push("우대금리 관심 조건 반영");
+            }
+
+            if (requestData.interestConditions.includes("PROTECTION")) {
+                score += 4;
+                evidence.push("예금자보호 관심 조건 반영");
+            }
+
+            score = Math.min(score, 98);
+            benefitChancePercent = Math.min(benefitChancePercent, 95);
+
+            const reason = buildLocalPersonaReason(
+                productName,
+                productType,
+                maxRate,
+                joinText,
+                requestData
+            );
+
+            return {
+                productNo,
+                productName,
+                productType,
+                maxRate,
+                minRate,
+                joinText,
+                score,
+                benefitChancePercent,
+                reason,
+                evidence,
+                detailUrl
+            };
+        });
+
+        return candidates
+            .filter(function (product) {
+                if (requestData.preferredProductType === "ALL") return true;
+                return product.productType === requestData.preferredProductType;
+            })
+            .sort(function (a, b) {
+                return b.score - a.score;
+            });
+    }
+
+    function buildLocalPersonaReason(productName, productType, maxRate, joinText, requestData) {
+        const typeLabel = productType === "DEPOSIT" ? "예금" : "적금";
+
+        let reason =
+            productName + "은/는 " + typeLabel + " 상품이며, 최고금리 연 "
+            + maxRate.toFixed(2) + "%를 기준으로 비교해볼 만합니다. ";
+
+        if (requestData.purpose === "MAKE_MONEY" && productType === "SAVINGS") {
+            reason += "월 납입을 통해 목돈을 만드는 목적과 잘 맞습니다. ";
+        } else if (requestData.purpose === "ROLL_MONEY" && productType === "DEPOSIT") {
+            reason += "이미 보유한 목돈을 일정 기간 굴리는 목적과 잘 맞습니다. ";
+        } else if (requestData.purpose === "HIGH_RATE") {
+            reason += "높은 금리를 우선으로 보는 조건에 맞춰 추천 후보로 볼 수 있습니다. ";
+        } else if (requestData.purpose === "EMERGENCY") {
+            reason += "비상금 마련 목적이라면 가입금액과 해지 조건을 함께 확인하는 것이 좋습니다. ";
+        }
+
+        if (requestData.preferredChannel === "MOBILE" && joinText.includes("모바일")) {
+            reason += "모바일 가입이 가능해 비대면 가입을 선호하는 고객에게 적합합니다.";
+        } else if (requestData.preferredChannel === "BRANCH" && joinText.includes("영업점")) {
+            reason += "영업점 가입이 가능해 상담을 받고 가입하려는 경우에 적합합니다.";
+        } else if (requestData.preferredChannel === "INTERNET" && joinText.includes("인터넷")) {
+            reason += "인터넷 가입이 가능해 온라인 가입을 선호하는 고객에게 적합합니다.";
+        } else {
+            reason += "가입 전 우대조건과 가입채널을 함께 확인하는 것이 좋습니다.";
+        }
+
+        return reason;
+    }
+
+    function buildPersonaResultCard(product) {
+        const evidenceHtml = product.evidence && product.evidence.length > 0
+            ? product.evidence.map(function (item) {
+                return `<span>${personaEscapeHtml(item)}</span>`;
+            }).join("")
+            : `<span>조건 기반 추천</span>`;
+
+        const detailUrl = product.detailUrl || (
+            product.productNo
+                ? `/products/detail?product_no=${encodeURIComponent(product.productNo)}`
+                : "#"
+        );
+
+        const fitPercent = Number(product.score || 80);
+        const benefitChancePercent = Number(product.benefitChancePercent || 0);
+
+        const benefitHtml = benefitChancePercent > 0
+            ? `<span class="ai-persona-result-benefit">우대조건 가능성 ${benefitChancePercent}%</span>`
+            : "";
+
+        return `
+            <div class="ai-persona-result-card">
+
+                <div class="ai-persona-result-card-top">
+                    <span class="ai-persona-result-rank">${product.rank}위</span>
+
+                    <div class="ai-persona-result-metrics">
+                        <span class="ai-persona-result-score">적합도 ${fitPercent}%</span>
+                        ${benefitHtml}
+                    </div>
+                </div>
+
+                <h4>${personaEscapeHtml(product.productName || "추천 상품")}</h4>
+
+                <p>${personaEscapeHtml(product.reason || "사용자 조건과 잘 맞는 상품입니다.")}</p>
+
+                <div class="ai-persona-result-evidence">
+                    ${evidenceHtml}
+                </div>
+
+                <div class="ai-persona-result-actions">
+                    <a href="${detailUrl}">상세보기</a>
+
+                    <button type="button"
+                            class="ai-persona-compare-add-btn"
+                            data-id="${personaEscapeHtml(product.productNo || "")}"
+                            data-name="${personaEscapeHtml(product.productName || "추천 상품")}">
+                        비교함 담기
+                    </button>
+                </div>
+
+            </div>
+        `;
+    }
+
+    function bindPersonaCompareButtons() {
+        const buttons = resultList.querySelectorAll(".ai-persona-compare-add-btn");
+
+        buttons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                const productNo = button.dataset.id;
+                const productName = button.dataset.name;
+
+                if (!productNo) {
+                    alert("상품 번호를 찾을 수 없습니다.");
+                    return;
+                }
+
+                if (typeof window.addCompareProduct === "function") {
+                    window.addCompareProduct(productNo, productName);
+                } else {
+                    alert("비교함 기능을 찾을 수 없습니다.");
+                }
+            });
+        });
+    }
+
+    function personaEscapeHtml(value) {
+        if (value === null || value === undefined) return "";
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+});

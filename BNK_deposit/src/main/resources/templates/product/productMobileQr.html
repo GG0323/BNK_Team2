@@ -2,98 +2,95 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>모바일 상품 가입 안내</title>
+    <title>BNK 모바일 가입 QR</title>
+
     <link rel="stylesheet" th:href="@{/css/product/productMobileQr.css}">
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 </head>
+
 <body>
 <div th:replace="~{fragments/header :: header_default}"></div>
-<div class="page-wrap">
 
-    <header class="product-header">
-        <div>
-            <h1>모바일 상품 가입 안내</h1>
-            <p>모바일 전용 상품은 QR을 통해 앱에서 가입을 진행할 수 있습니다.</p>
-        </div>
-    </header>
+<div class="qr-page-wrap">
 
-    <section class="detail-section">
+    <section class="qr-hero">
 
-        <div class="detail-card">
+        <div class="qr-hero-left">
+            <span class="qr-kicker">BNK 모바일 가입</span>
 
-            <div class="card-top">
-                <span class="type-badge"
-                      th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
-                    예금
-                </span>
+            <h1>QR로 모바일 앱에서<br>상품 가입을 이어가세요</h1>
 
-                <span class="mobile-badge">모바일 가입 가능</span>
-            </div>
+            <p>
+                모든 상품은 상세 화면에서 QR을 통해 BNK 모바일 앱 가입 화면으로 이동할 수 있습니다.
+                스마트폰으로 QR 코드를 스캔하면 선택한 상품의 모바일 가입 화면으로 연결됩니다.
+            </p>
 
-            <h2 th:text="${product.product_name}">상품명</h2>
+            <div class="qr-product-summary">
+                <div class="qr-product-top">
+                    <span class="type-badge"
+                          th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                        예금
+                    </span>
 
-            <div class="detail-grid">
-                <div>
-                    <span>최고금리</span>
-                    <strong th:text="${product.max_interest_rate} + '%'">0.00%</strong>
+                    <span class="mobile-badge"
+                          th:if="${product.mobile_join_yn == 'Y' and product.branch_join_yn != 'Y' and product.internet_join_yn != 'Y'}">
+                        모바일 전용
+                    </span>
                 </div>
 
-                <div>
-                    <span>최저금리</span>
-                    <strong style="color:#111111;" th:text="${product.min_interest_rate} + '%'">0.00%</strong>
-                </div>
+                <h2 th:text="${product.product_name}">상품명</h2>
 
-                <div>
-                    <span>상품구분</span>
-                    <strong th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">예금</strong>
-                </div>
-
-                <div>
-                    <span>가입방법</span>
-                    <strong>모바일 앱</strong>
-                </div>
-            </div>
-
-            <div class="info-block">
-                <h3>안내</h3>
-                <p>
-                    이 상품은 모바일 가입 가능 상품입니다.
-                    QR 코드를 스캔하면 BNK 앱 이동 화면으로 연결됩니다.
+                <p th:text="${product.subtitle != null ? product.subtitle : 'BNK 금융상품'}">
+                    상품 설명
                 </p>
-            </div>
 
+                <div class="qr-rate-row">
+                    <div>
+                        <span>최저금리</span>
+                        <strong th:text="${product.min_interest_rate} + '%'">0.00%</strong>
+                    </div>
+
+                    <div>
+                        <span>최고금리</span>
+                        <strong th:text="${product.max_interest_rate} + '%'">0.00%</strong>
+                    </div>
+                </div>
+
+                <div class="qr-channel-row">
+                    <span th:if="${product.branch_join_yn == 'Y'}">영업점</span>
+                    <span th:if="${product.internet_join_yn == 'Y'}">인터넷</span>
+                    <span th:if="${product.mobile_join_yn == 'Y'}">모바일</span>
+                    <span class="qr-channel-main">QR 모바일 가입</span>
+                </div>
+            </div>
         </div>
 
-        <div class="detail-card">
+        <div class="qr-card">
 
-            <h2>QR 앱 이동</h2>
+            <div class="qr-card-header">
+                <span>QR CODE</span>
+                <strong>모바일 가입 이동</strong>
+            </div>
+
+            <div class="qr-image-box">
+                <img class="qr-image"
+                     th:src="@{/products/mobile-qr-image(product_no=${product.product_no})}"
+                     alt="모바일 가입 QR 코드">
+            </div>
 
             <div class="qr-guide-box">
-				<div class="qr-guide-box">
-				    <img class="qr-image"
-					     th:src="@{/api/products/mobile-qr-image(product_no=${product.product_no})}"
-					     alt="모바일 상품 가입 QR 코드">
-				
-				    <p>
-				        QR 코드를 스캔하면 BNK 앱 이동 화면으로 연결됩니다.<br>
-				        실제 앱 연동 전에는 테스트용 앱 이동 주소가 들어갑니다.
-				    </p>
-				</div>
-
+                <strong>스마트폰 카메라 또는 BNK 앱으로 스캔</strong>
                 <p>
-                    현재 단계에서는 QR 이미지 생성 전입니다.<br>
-                    다음 단계에서 실제 QR 코드 이미지를 연결합니다.
+                    QR 코드를 스캔하면 선택한 상품의 모바일 가입 화면으로 이동합니다.
+                    앱이 설치되어 있지 않은 경우 앱 설치 안내 화면으로 연결될 수 있습니다.
                 </p>
             </div>
 
-            <div class="detail-actions">
-                <a th:href="@{/products/detail(product_no=${product.product_no})}" class="detail-btn">
-                    상세로 돌아가기
-                </a>
-
-                <a th:href="@{/products}" class="compare-btn">
-                    목록으로
+            <div class="qr-mobile-link-area">
+                <a class="qr-app-link"
+                   th:href="|bnkapp://product/join?product_no=${product.product_no}|">
+                    모바일 앱으로 바로 열기
                 </a>
             </div>
 
@@ -101,7 +98,45 @@
 
     </section>
 
+    <section class="qr-info-section">
+
+        <div class="qr-info-card">
+            <h3>이용 안내</h3>
+
+            <ul>
+                <li>QR 코드는 현재 선택한 상품 정보를 기준으로 생성됩니다.</li>
+                <li>모바일 앱에서 본인 인증 후 상품 가입 절차를 진행할 수 있습니다.</li>
+                <li>상품 가입 가능 여부는 회원 유형, 가입 조건, 판매 상태에 따라 달라질 수 있습니다.</li>
+            </ul>
+        </div>
+
+        <div class="qr-info-card">
+            <h3>가입 전 확인사항</h3>
+
+            <ul>
+                <li>상품설명서와 약관을 확인한 뒤 가입을 진행해 주세요.</li>
+                <li>금리는 가입 시점의 고시 금리에 따라 달라질 수 있습니다.</li>
+                <li>영업점 가입 가능 상품은 방문 예약을 통해 상담을 받을 수 있습니다.</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <div class="qr-actions">
+        <a th:href="@{/products/detail(product_no=${product.product_no})}"
+           class="qr-btn qr-btn-dark">
+            상품 상세로 돌아가기
+        </a>
+
+        <a th:href="@{/products}"
+           class="qr-btn qr-btn-red">
+            상품 목록 보기
+        </a>
+    </div>
+
 </div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
 </html>
