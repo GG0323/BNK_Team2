@@ -24,7 +24,7 @@ public class ProductSalesDto {
 	private long subscription_months;     //p 가입 개월 수
 	private long subscription_amount;     //p 가입 금액
 	private long auto_transfer_amount;    //p 자동이체 금액
-	private long linked_account_no;       //p 자동이체 출금 계좌번호
+	private long linked_account_id;       //p 자동이체 출금 계좌 FK(TB_ACCOUNT.account_no)
 	private LocalDate subscribed_at;      //  가입일시
 	private LocalDate maturity_date;      //  만기일
 	private String subscription_status;   //p 가입상태 DEFAULT 'DRAFT'  ('DRAFT','COMPLETE','EXPIRED')

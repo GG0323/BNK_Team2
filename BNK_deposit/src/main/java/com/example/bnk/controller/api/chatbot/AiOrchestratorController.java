@@ -53,7 +53,7 @@ public class AiOrchestratorController {
                 
             case "DICTIONARY":
                 // 금융용어사전 AI 서버 호출 (예시 포트: 8082)
-                finalAnswer = callTargetAiServer("http://localhost:8082/api/ai/dictionary", userMessage);
+                finalAnswer = callTargetAiServer("http://localhost:8080/api/ai/dictionary", userMessage);
                 System.out.println("DICTIONARY");
                 break;
                 

@@ -17,17 +17,16 @@
 <body>
 	<div th:replace="~{fragments/header :: header_default}"></div>
     <header class="top-header">
-        <div class="header-inner">
-            <div class="header-left">
-                <h1>BNK</h1>
-                <div class="header-title-group">
-                    <h2>계좌 상세 / 거래내역 조회</h2>
-                    <p>선택 계좌 상세 정보 및 최근 거래내역</p>
-                </div>
-            </div>
-            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
-        </div>
-    </header>
+	    <div class="header-inner">
+	        <div class="header-left">
+	            <div class="header-title-group">
+	                <h2>마이페이지</h2>
+	                <p>회원 정보 · 계좌 · 상품 가입 내역</p>
+	            </div>
+	        </div>
+	        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+	    </div>
+	</header>
     
 	<div th:replace="~{fragments/nav :: member_mypage('myaccounts')}"></div>
 

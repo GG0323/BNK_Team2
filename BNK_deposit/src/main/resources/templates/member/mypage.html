@@ -4,24 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 마이페이지</title>
+
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
-    
-    <link rel="stylesheet" href="/css/member/mypage.css">
-    <link rel="stylesheet" href="/css/member/member-nav.css">
-    
+
+	<link rel="stylesheet" href="/css/member/member-nav.css">
+    <link rel="stylesheet" href="/css/member/mypage.css">  
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script src="/js/members/common.js" defer></script>
     <script src="/js/members/mypage.js" defer></script>
 </head>
-<body>
-	<div th:replace="~{fragments/header :: header_default}"></div>
 
+<body>
+    <div th:replace="~{fragments/header :: header_default}"></div>
+
+    <!-- 검은 상단 바: 항상 고정 표시 -->
     <header class="top-header">
         <div class="header-inner">
             <div class="header-left">
-                <h1>BNK</h1>
                 <div class="header-title-group">
                     <h2>마이페이지</h2>
                     <p>회원 정보 · 계좌 · 상품 가입 내역</p>
@@ -31,20 +33,24 @@
         </div>
     </header>
 
-    <!-- 서브 네비게이션: pageName 분기는 더 이상 서버가 안 하므로
-         현재 페이지(data-page="mypage") 버튼에 JS가 active 를 붙인다. -->
-    <div th:replace="~{fragments/nav :: member_mypage('mypage')}"></div>
+    <!-- 서브 네비게이션: 첫 번째 등장 행 -->
+    <div class="motion-row motion-row-1">
+        <div th:replace="~{fragments/nav :: member_mypage('mypage')}"></div>
+    </div>
 
     <main class="mypage-container">
 
-        <section class="page-header">
+        <!-- 페이지 제목: 두 번째 등장 행 -->
+        <section class="page-header motion-row motion-row-2">
             <h3>마이페이지 확인</h3>
             <p>로그인한 회원의 금융 이용 현황을 요약해서 보여줍니다.</p>
         </section>
 
-        <section class="welcome-box">
+        <!-- 환영 박스: 세 번째 등장 행 -->
+        <section class="welcome-box motion-row motion-row-3">
             <h4 id="welcomeName">불러오는 중...</h4>
             <p>최근 로그인 정보와 보유 계좌, 가입 상품, 최근 접속 기록을 한눈에 확인할 수 있습니다.</p>
+
             <div class="badge-group">
                 <span class="badge red" id="badgeMemberType">-</span>
                 <span class="badge black" id="badgeMemberStatus">-</span>
@@ -52,53 +58,65 @@
             </div>
         </section>
 
-        <section class="summary-stats">
+        <!-- 요약 카드 3개: 네 번째 등장 행 -->
+        <section class="summary-stats motion-row motion-row-4">
             <div class="stat-card">
                 <span class="stat-title">보유 계좌</span>
-                <strong class="stat-value" id="statAccountCount">-</strong>
+                <strong class="stat-value roulette-number" id="statAccountCount">-</strong>
+                <span class="stat-hint">현재 보유 중인 계좌 수</span>
             </div>
-            <div class="stat-card">
-                <span class="stat-title">총 잔액</span>
-                <strong class="stat-value highlight-red" id="statTotalBalance">-</strong>
+
+            <div class="stat-card main-balance-card">
+                <div class="stat-title-row">
+                    <span class="stat-title">총 잔액</span>
+                    <span class="vault-label">VAULT</span>
+                </div>
+                <strong class="stat-value highlight-red roulette-number" id="statTotalBalance">-</strong>
+                <span class="stat-hint">모든 계좌의 잔액 합산</span>
             </div>
+
             <div class="stat-card">
                 <span class="stat-title">가입 상품</span>
-                <strong class="stat-value" id="statProductCount">-</strong>
+                <strong class="stat-value roulette-number" id="statProductCount">-</strong>
+                <span class="stat-hint">예금·적금 가입 상품 수</span>
             </div>
         </section>
 
-        <section class="action-cards">
-		    <a href="/member/myinfo" class="action-card">
-		        <div class="icon-wrapper"><i class="fa-regular fa-id-card"></i></div>
-		        <h5>내 정보 조회</h5>
-		        <p>회원 기본정보와 연락처,<br>회원상태를 확인합니다.</p>
-		    </a>
-		    <a href="/member/myaccounts" class="action-card">
-		        <div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div>
-		        <h5>계좌 조회</h5>
-		        <p>보유 계좌 목록과 현재 잔액을 확인합니다.</p>
-		    </a>
-		    <a href="/member/myaccounts" class="action-card">
-		        <div class="icon-wrapper"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-		        <h5>거래내역 조회</h5>
-		        <p>계좌를 선택해 입금, 출금,<br>이체 내역을 확인합니다.</p>
-		    </a>
-		    <a href="/member/myproducts" class="action-card">
-		        <div class="icon-wrapper"><i class="fa-solid fa-box-archive"></i></div>
-		        <h5>가입 상품 내역</h5>
-		        <p>가입한 예금·적금 상품 정보를 확인합니다.</p>
-		    </a>
-		    <!-- 예약 카드 추가 -->
-		    <a href="/member/reservation/list" class="action-card">
-		        <div class="icon-wrapper"><i class="fa-solid fa-calendar-check"></i></div>
-		        <h5>영업점 예약 내역</h5>
-		        <p>영업점 방문 예약 내역을<br>확인하고 관리합니다.</p>
-		    </a>
-		</section>
-        
-    </main>
-    
-    <div th:replace="~{fragments/footer :: footer}"></div>
+        <!-- 이동 패널 5개: 다섯 번째 등장 행 -->
+        <section class="action-cards motion-row motion-row-5">
+            <a href="/member/myinfo" class="action-card">
+                <div class="icon-wrapper"><i class="fa-regular fa-id-card"></i></div>
+                <h5>내 정보 조회</h5>
+                <p>회원 기본정보와 연락처,<br>회원상태를 확인합니다.</p>
+            </a>
 
+            <a href="/member/myaccounts" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-wallet"></i></div>
+                <h5>계좌 조회</h5>
+                <p>보유 계좌 목록과 현재 잔액을 확인합니다.</p>
+            </a>
+
+            <a href="/member/myaccounts" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                <h5>거래내역 조회</h5>
+                <p>계좌를 선택해 입금, 출금,<br>이체 내역을 확인합니다.</p>
+            </a>
+
+            <a href="/member/myproducts" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-box-archive"></i></div>
+                <h5>가입 상품 내역</h5>
+                <p>가입한 예금·적금 상품 정보를 확인합니다.</p>
+            </a>
+
+            <a href="/member/reservation/list" class="action-card">
+                <div class="icon-wrapper"><i class="fa-solid fa-calendar-check"></i></div>
+                <h5>영업점 예약 내역</h5>
+                <p>영업점 방문 예약 내역을<br>확인하고 관리합니다.</p>
+            </a>
+        </section>
+
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

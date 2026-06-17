@@ -103,5 +103,50 @@
 	        )
 	    ORDER BY DICTIONARY_NO DESC
 	</select>
+	
+	<!-- 챗봇용 금융용어 검색 -->
+	<select id="searchDictionaryForChat" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+	    SELECT *
+	    FROM (
+	        SELECT
+	            dictionary_no,
+	            dictionary_nm,
+	            dictionary_content,
+	            dictionary_category,
+	            view_count,
+	            created_at,
+	            updated_at
+	        FROM tb_finance_dictionary
+	        WHERE INSTR(#{question}, dictionary_nm) > 0
+	           OR dictionary_nm LIKE '%' || #{keyword} || '%'
+	           OR DBMS_LOB.INSTR(dictionary_content, #{keyword}) > 0
+	        ORDER BY
+	            CASE
+	                WHEN dictionary_nm = #{keyword} THEN 1
+	                WHEN INSTR(#{question}, dictionary_nm) > 0 THEN 2
+	                WHEN dictionary_nm LIKE '%' || #{keyword} || '%' THEN 3
+	                WHEN DBMS_LOB.INSTR(dictionary_content, #{keyword}) > 0 THEN 4
+	                ELSE 5
+	            END,
+	            view_count DESC
+	    )
+	    WHERE ROWNUM &lt;= 5
+	</select>
+	
+	<!-- 카테고리 기준 용어 조회 -->
+	<select id="selectDictionaryByCategory" resultType="com.example.bnk.dto.common.FinanceDictionaryDto">
+	    SELECT
+	        dictionary_no,
+	        dictionary_nm,
+	        dictionary_content,
+	        dictionary_category,
+	        view_count,
+	        created_at,
+	        updated_at
+	    FROM tb_finance_dictionary
+	    WHERE dictionary_category = #{category}
+  		AND dictionary_nm != #{category}
+	    ORDER BY dictionary_no ASC
+	</select>
     
 </mapper>
