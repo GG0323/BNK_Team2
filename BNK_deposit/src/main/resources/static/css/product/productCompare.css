@@ -1437,3 +1437,596 @@ body.compare-page-body {
     color: #111111;
     font-weight: 800;
 }
+
+/* =========================================================
+   AI 상품 비교 요약
+   ========================================================= */
+
+.ai-compare-summary-box {
+    margin-top: 22px;
+    padding: 22px 24px;
+    border-radius: 18px;
+    background: #fff8f8;
+    border: 1px solid #ffd6d8;
+    box-shadow: 0 8px 22px rgba(215, 25, 32, 0.08);
+}
+
+.ai-summary-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ai-summary-title h3 {
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.ai-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: #d71920;
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.ai-compare-summary-box p {
+    margin: 0;
+    color: #333333;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+.product-ai-summary-box {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #fff8f8;
+    border: 1px solid #ffd6d8;
+    text-align: left;
+}
+
+.product-ai-summary-text {
+    margin: 0;
+    color: #333333;
+    font-size: 13px;
+    line-height: 1.7;
+    font-weight: 500;
+    white-space: pre-line;
+}
+
+.ai-summary-btn:disabled,
+#compareAiSummaryBtn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+/* =========================================================
+   AI 요약 닫기 버튼 / 로딩 애니메이션
+   ========================================================= */
+
+.ai-compare-summary-box,
+.product-ai-summary-box {
+    position: relative;
+}
+
+.ai-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+
+    background: #111827;
+    color: white;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ai-close-btn:hover {
+    background: #d71920;
+    transform: scale(1.05);
+}
+
+.ai-compare-summary-box {
+    padding-right: 52px;
+}
+
+.product-ai-summary-box {
+    padding-right: 42px;
+}
+
+/* 로딩 중 버튼 글자 하나씩 순서대로 위로 움직이는 효과 */
+.loading-text-wave {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.loading-text-wave span {
+    display: inline-block;
+    animation-name: loadingWaveOneByOne;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes loadingWaveOneByOne {
+    0% {
+        transform: translateY(0);
+    }
+
+    4% {
+        transform: translateY(-4px);
+    }
+
+    8% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+
+/* 6월 16일 추가 */
+
+/* =========================================================
+   2026-06-16 비교 팝업 전용 보정
+   - 공통 헤더 제거 후 팝업 여백 정리
+   - 예금/적금 뱃지 크기 축소
+   - 기존 전체 CSS 유지한 채 compare 화면만 override
+   ========================================================= */
+
+body.compare-page-body {
+    margin: 0;
+    padding: 0 !important;
+    background: #ffffff;
+    overflow-x: hidden;
+}
+
+body.compare-page-body .compare-page-wrap {
+    max-width: none;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+}
+
+/* 비교 팝업 전용 빨간 헤더 */
+body.compare-page-body .compare-page-header {
+    min-height: 92px;
+    padding: 24px 30px;
+    background: #d50017;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+body.compare-page-body .compare-page-header .logo-text {
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+body.compare-page-body .compare-page-header h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.8px;
+}
+
+body.compare-page-body .compare-page-header p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+/* 비교 영역 여백 */
+body.compare-page-body .compare-page-section {
+    padding: 24px 30px 30px;
+    background: #ffffff;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+body.compare-page-body .compare-page-section .section-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #d50017;
+}
+
+body.compare-page-body .compare-page-section .section-title h2 {
+    margin: 0 0 6px;
+    color: #111827;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+}
+
+body.compare-page-body .compare-page-section .section-title p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+body.compare-page-body .compare-page-section .section-title span {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* 비교 테이블 */
+body.compare-page-body .compare-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #d8dee8;
+    background: #ffffff;
+}
+
+body.compare-page-body .compare-table {
+    width: 100%;
+    min-width: 840px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #ffffff;
+}
+
+body.compare-page-body .compare-table th,
+body.compare-page-body .compare-table td {
+    border: 1px solid #d8dee8;
+    padding: 17px 14px;
+    text-align: center;
+    vertical-align: middle;
+    word-break: keep-all;
+}
+
+body.compare-page-body .compare-table thead th {
+    background: #ffffff;
+    color: #111827;
+    font-weight: 900;
+}
+
+body.compare-page-body .compare-table thead th:first-child,
+body.compare-page-body .compare-table tbody th {
+    width: 130px;
+    background: #f3f4f6;
+    color: #111827;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+body.compare-page-body .compare-table tbody td {
+    background: #ffffff;
+    color: #123869;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+body.compare-page-body .compare-product-head {
+    position: relative;
+    padding: 4px 4px 2px;
+}
+
+body.compare-page-body .compare-product-name {
+    margin: 10px 0 8px;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: -0.4px;
+}
+
+/* 예금 / 적금 뱃지 축소 */
+body.compare-page-body .compare-product-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 25px;
+    min-width: 46px;
+    padding: 0 11px;
+    border-radius: 999px;
+
+    background: #d71920;
+    color: #ffffff;
+
+    font-size: 13px !important;
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* 금리 강조 */
+body.compare-page-body .compare-table tbody tr:nth-child(2) td,
+body.compare-page-body .compare-table tbody tr:nth-child(3) td {
+    color: #e00018;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+/* AI 버튼 */
+body.compare-page-body .ai-summary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 76px;
+    height: 30px;
+    padding: 0 12px;
+
+    border: none;
+    border-radius: 999px;
+    background: #111827;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 900;
+
+    transition: 0.18s ease;
+}
+
+body.compare-page-body .ai-summary-btn:hover {
+    background: #d71920;
+}
+
+body.compare-page-body .ai-summary-btn:disabled {
+    cursor: wait;
+    opacity: 0.8;
+}
+
+/* 상품별 AI 요약 박스 */
+body.compare-page-body .product-ai-summary-box {
+    position: relative;
+    margin: 12px auto 0;
+    padding: 14px 15px 14px;
+    max-width: 260px;
+
+    border-radius: 14px;
+    border: 1px solid #ffd6d8;
+    background: #fff7f7;
+    color: #333333;
+
+    text-align: left;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+body.compare-page-body .product-ai-summary-text {
+    margin: 0;
+    padding-right: 18px;
+    color: #333333;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.65;
+}
+
+/* 전체 AI 비교 요약 박스 */
+body.compare-page-body .ai-compare-summary-box {
+    position: relative;
+    margin-top: 18px;
+    padding: 22px 24px;
+
+    border-radius: 18px;
+    border: 1px solid #ffd6d8;
+    background: linear-gradient(135deg, #fff7f7 0%, #ffffff 100%);
+    box-shadow: 0 12px 24px rgba(215, 25, 32, 0.1);
+}
+
+body.compare-page-body .ai-summary-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+body.compare-page-body .ai-summary-title h3 {
+    margin: 0;
+    color: #111827;
+    font-size: 19px;
+    font-weight: 900;
+}
+
+body.compare-page-body .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 26px;
+    border-radius: 999px;
+
+    background: #111827;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+body.compare-page-body #aiCompareSummaryText {
+    margin: 0;
+    color: #333333;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.8;
+}
+
+/* AI 닫기 버튼 */
+body.compare-page-body .ai-close-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    width: 24px;
+    height: 24px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #111827;
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.compare-page-body .ai-close-btn:hover {
+    background: #d71920;
+}
+
+/* 안내 박스 */
+body.compare-page-body .compare-notice {
+    margin-top: 18px;
+    padding: 16px 18px;
+
+    border-left: 4px solid #d71920;
+    background: #fff1f1;
+    color: #64748b;
+
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.75;
+}
+
+/* 하단 버튼 */
+body.compare-page-body .compare-bottom-actions {
+    margin-top: 22px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+body.compare-page-body .compare-bottom-actions button,
+body.compare-page-body .compare-bottom-actions a {
+    min-width: 108px;
+    height: 42px;
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #d71920;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 900;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.18s ease;
+}
+
+body.compare-page-body .compare-bottom-actions button:hover,
+body.compare-page-body .compare-bottom-actions a:hover {
+    background: #b81218;
+    transform: translateY(-1px);
+}
+
+body.compare-page-body .compare-bottom-actions .dark-btn {
+    background: #111827;
+}
+
+body.compare-page-body .compare-bottom-actions .dark-btn:hover {
+    background: #374151;
+}
+
+/* 로딩 텍스트 */
+body.compare-page-body .loading-text-wave {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+}
+
+body.compare-page-body .loading-text-wave span {
+    display: inline-block;
+    animation-name: compareLoadingWave;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes compareLoadingWave {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.65;
+    }
+
+    35% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+
+    70% {
+        transform: translateY(0);
+        opacity: 0.85;
+    }
+}
+
+@media (max-width: 760px) {
+    body.compare-page-body .compare-page-header {
+        padding: 22px 20px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    body.compare-page-body .compare-page-header h1 {
+        font-size: 26px;
+    }
+
+    body.compare-page-body .compare-page-section {
+        padding: 20px 16px 26px;
+    }
+
+    body.compare-page-body .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    body.compare-page-body .compare-table {
+        min-width: 780px;
+    }
+}
+
+
