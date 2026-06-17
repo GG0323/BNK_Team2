@@ -1,24 +1,86 @@
+/* ================================
+   서브 네비게이션 (마이페이지 계열 공통)
+   - 모든 회원 페이지가 이 파일을 로드하므로
+     여기에 두면 전 페이지가 동일한 모양이 된다.
+================================ */
+
 .sub-nav {
+    width: min(1000px, calc(100% - 48px));
+    max-width: 1000px;
+    margin: 32px auto 42px;
+    padding: 8px;
+
     display: flex;
-    gap: 12px;
-    width: 100%;
-    margin: 30px 0;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 999px;
+    border: 1px solid #eeeeee;
+    background-color: #fff;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.sub-nav::before {
+    display: none;
 }
 
 .tab-btn {
     flex: 1;
-    padding: 12px 0;
+    height: 42px;
     border: none;
-    border-radius: 25px;
-    background-color: var(--bg-light);
+    border-radius: 999px;
+    background-color: transparent;
     color: var(--text-gray);
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 13px;
+    font-weight: 800;
     cursor: pointer;
-    transition: all 0.2s;
+    transition:
+        transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.26s ease,
+        color 0.26s ease;
+}
+
+.tab-btn:hover {
+    transform: translate3d(0, -2px, 0);
 }
 
 .tab-btn.active {
-    background-color: #e60012;
-    color: white;
+    background-color: #e3000f;
+    color: #fff;
+}
+
+/* ===== 페이지 간 전환 (View Transitions) ===== */
+@view-transition {
+  navigation: auto;
+}
+
+/* 활성 탭(빨간 알약)이 탭 사이를 미끄러지듯 이동 */
+.sub-nav .tab-btn.active {
+  view-transition-name: active-tab;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 768px) {
+    .sub-nav {
+        width: min(100% - 32px, 1000px);
+        justify-content: flex-start;
+        overflow-x: auto;
+        border-radius: 18px;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        min-width: 150px;
+    }
 }
