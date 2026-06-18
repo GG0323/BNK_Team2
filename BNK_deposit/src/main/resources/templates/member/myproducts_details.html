@@ -15,35 +15,34 @@
 	<script src="/js/members/myproducts_details.js" defer></script>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header_default}"></div>
-<header class="top-header">
-    <div class="header-inner">
-        <div class="header-left">
-            <h1>BNK</h1>
-            <div class="header-title-group">
-                <h2>가입상품 상세</h2>
-                <p>내가 가입한 상품의 현재 상태 확인</p>
-            </div>
-        </div>
-        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
-    </div>
-</header>
-
-<div th:replace="~{fragments/nav :: member_mypage('myproducts')}"></div>
-
-<main class="products-container">
-
-    <section class="page-header">
-        <h3>가입상품 상세</h3>
-        <p>가입 상품의 만기일, 남은 기간, 예상 수령액을 확인합니다.</p>
-    </section>
-
-    <section id="productDetail">
-        <div class="empty-state">불러오는 중...</div>
-    </section>
-
-</main>
-<div th:replace="~{fragments/footer :: footer}"></div>
+	<div th:replace="~{fragments/header :: header_default}"></div>
+	<header class="top-header">
+	    <div class="header-inner">
+	        <div class="header-left">
+	            <div class="header-title-group">
+	                <h2>마이페이지</h2>
+	                <p>회원 정보 · 계좌 · 상품 가입 내역</p>
+	            </div>
+	        </div>
+	        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+	    </div>
+	</header>
+	
+	<div th:replace="~{fragments/nav :: member_mypage('myproducts')}"></div>
+	
+	<main class="products-container">
+	
+	    <section class="page-header">
+	        <h3>가입상품 상세</h3>
+	        <p>가입 상품의 만기일, 남은 기간, 예상 수령액을 확인합니다.</p>
+	    </section>
+	
+	    <section id="productDetail">
+	        <div class="empty-state">불러오는 중...</div>
+	    </section>
+	
+	</main>
+	<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

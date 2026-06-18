@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 비교</title>
+
     <link rel="stylesheet" th:href="@{/css/product/productCompare.css}">
-    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
-    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+    <script th:src="@{/js/product/productCompare.js}" defer></script>
 </head>
+
 <body class="compare-page-body">
-<div th:replace="~{fragments/header :: header_default}"></div>
 
 <div class="compare-page-wrap">
 
-    <!-- 상단 헤더 -->
+    <!-- 비교 팝업 전용 헤더 -->
     <header class="compare-page-header">
         <div>
             <div class="logo-text">BNK 부산은행</div>
@@ -25,6 +25,8 @@
     <!-- 비교 영역 -->
     <section class="compare-page-section">
 
+        <input type="hidden" id="compareIds" th:value="${ids}">
+
         <div class="section-title">
             <div>
                 <h2>선택 상품 비교 결과</h2>
@@ -32,7 +34,7 @@
             </div>
 
             <span th:text="'기준일: ' + ${#temporals.format(#temporals.createToday(), 'yyyy.MM.dd')}">
-                기준일: 2026.05.20
+                기준일: 2026.06.16
             </span>
         </div>
 
@@ -45,124 +47,150 @@
             <table class="compare-table">
 
                 <thead>
-                    <tr>
-                        <th style="font-size: 22px;">구분</th>
+                <tr>
+                    <th class="compare-row-label">구분</th>
 
-                        <th th:each="product : ${compareList}">
-                            <div style="font-size: 20px;">
-                                <span class="compare-product-type"
-                                      th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}"
-                                      style="font-size: 22px;">
-                                    예금
-                                </span>
-                            </div>
+                    <th th:each="product : ${compareList}">
+                        <div class="compare-product-head">
+                            <span class="compare-product-type"
+                                  th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                                예금
+                            </span>
 
                             <div class="compare-product-name"
-                                 th:text="${product.product_name}"
-                                 style="font-size: 21px;">
+                                 th:text="${product.product_name}">
                                 상품명
                             </div>
 
-                            <button type="button" class="ai-summary-btn">
+                            <button type="button"
+                                    class="ai-summary-btn"
+                                    th:attr="data-product-no=${product.product_no}">
                                 AI 요약 보기
                             </button>
-                        </th>
-                    </tr>
+
+                            <div class="product-ai-summary-box" style="display: none;">
+                                <button type="button"
+                                        class="ai-close-btn product-ai-close-btn">
+                                    ×
+                                </button>
+
+                                <p class="product-ai-summary-text">
+                                    AI가 이 상품을 요약합니다.
+                                </p>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
                 </thead>
 
                 <tbody>
 
-                    <tr>
-                        <th style="font-size: 20px;">상품명</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="${product.product_name}"
-                            style="font-size: 20px;">
-                            상품명
-                        </td>
-                    </tr>
+                <tr>
+                    <th>상품명</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="${product.product_name}">
+                        상품명
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">최저금리</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="'연 ' + ${product.min_interest_rate} + '%'">
-                            연 0.00%
-                        </td>
-                    </tr>
+                <tr>
+                    <th>최저금리</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="'연 ' + ${product.min_interest_rate} + '%'">
+                        연 0.00%
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">최고금리</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="'연 ' + ${product.max_interest_rate} + '%'">
-                            연 0.00%
-                        </td>
-                    </tr>
+                <tr>
+                    <th>최고금리</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="'연 ' + ${product.max_interest_rate} + '%'">
+                        연 0.00%
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">가입단위</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="${product.min_join_amount != null ? #numbers.formatInteger(product.min_join_amount, 0, 'COMMA') + '원' : '-'}"
-                            style="font-size: 20px;">
-                            10,000원
-                        </td>
-                    </tr>
+                <tr>
+                    <th>가입단위</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="${product.min_join_amount != null ? #numbers.formatInteger(product.min_join_amount, 0, 'COMMA') + '원' : '-'}">
+                        10,000원
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">상품구분</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}"
-                            style="font-size: 20px;">
-                            예금
-                        </td>
-                    </tr>
+                <tr>
+                    <th>상품구분</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
+                        예금
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">가입방법</th>
-                        <td th:each="product : ${compareList}">
-                            <span th:if="${product.join_method_desc != null}"
-                                  th:text="${product.join_method_desc}"
-                                  style="font-size: 20px;">
-                                인터넷/영업점
-                            </span>
+                <tr>
+                    <th>가입방법</th>
 
-                            <span th:if="${product.join_method_desc == null}">
-                                <span th:if="${product.branch_join_yn == 'Y'}">영업점</span>
-                                <span th:if="${product.branch_join_yn == 'Y' and product.internet_join_yn == 'Y'}">/</span>
-                                <span th:if="${product.internet_join_yn == 'Y'}">인터넷</span>
-                                <span th:if="${(product.branch_join_yn == 'Y' or product.internet_join_yn == 'Y') and product.mobile_join_yn == 'Y'}">/</span>
-                                <span th:if="${product.mobile_join_yn == 'Y'}">모바일</span>
-                            </span>
-                        </td>
-                    </tr>
+                    <td th:each="product : ${compareList}">
+                        <span th:if="${product.join_method_desc != null}"
+                              th:text="${product.join_method_desc}">
+                            인터넷/영업점
+                        </span>
 
-                    <tr>
-                        <th style="font-size: 20px;">우대조건</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="${product.condition_note != null ? product.condition_note : '-'}">
-                            우대조건
-                        </td>
-                    </tr>
+                        <span th:if="${product.join_method_desc == null}">
+                            <span th:if="${product.branch_join_yn == 'Y'}">영업점</span>
+                            <span th:if="${product.branch_join_yn == 'Y' and product.internet_join_yn == 'Y'}">/</span>
+                            <span th:if="${product.internet_join_yn == 'Y'}">인터넷</span>
+                            <span th:if="${(product.branch_join_yn == 'Y' or product.internet_join_yn == 'Y') and product.mobile_join_yn == 'Y'}">/</span>
+                            <span th:if="${product.mobile_join_yn == 'Y'}">모바일</span>
+                        </span>
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">예금자보호</th>
-                        <td th:each="product : ${compareList}"
-                            th:text="${product.depositor_protection_yn == 'Y' ? '예금자보호 대상' : '해당 없음'}"
-                            style="font-size: 20px;">
-                            예금자보호 대상
-                        </td>
-                    </tr>
+                <tr>
+                    <th>우대조건</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="${product.condition_note != null ? product.condition_note : '-'}">
+                        우대조건
+                    </td>
+                </tr>
 
-                    <tr>
-                        <th style="font-size: 20px;">중도해지</th>
-                        <td th:each="product : ${compareList}"
-                        style="font-size: 20px;">
-                            중도해지 시 약정금리보다 낮은 금리 적용 가능
-                        </td>
-                    </tr>
+                <tr>
+                    <th>예금자보호</th>
+                    <td th:each="product : ${compareList}"
+                        th:text="${product.depositor_protection_yn == 'Y' ? '예금자보호 대상' : '해당 없음'}">
+                        예금자보호 대상
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>중도해지</th>
+                    <td th:each="product : ${compareList}">
+                        중도해지 시 약정금리보다 낮은 금리 적용 가능
+                    </td>
+                </tr>
 
                 </tbody>
 
             </table>
 
+        </div>
+
+        <!-- AI 비교 요약 -->
+        <div class="ai-compare-summary-box"
+             id="aiCompareSummaryBox"
+             th:if="${!#lists.isEmpty(compareList)}"
+             style="display: none;">
+
+            <button type="button" class="ai-close-btn compare-ai-close-btn">
+                ×
+            </button>
+
+            <div class="ai-summary-title">
+                <span class="ai-badge">AI</span>
+                <h3>상품 비교 AI 요약</h3>
+            </div>
+
+            <p id="aiCompareSummaryText">
+                선택한 상품들의 금리, 가입 조건, 가입 방법을 기준으로 AI가 비교 요약을 제공합니다.
+            </p>
         </div>
 
         <!-- 안내 문구 -->
@@ -173,10 +201,12 @@
 
         <!-- 하단 버튼 -->
         <div class="compare-bottom-actions">
-            <button type="button" onclick="window.print()">인쇄</button>
+            <button type="button" onclick="window.print()">
+                인쇄
+            </button>
 
-            <button type="button" onclick="alert('맞춤 혜택 확인 기능은 추후 AI 추천 기능과 연결 예정입니다.')">
-                내 맞춤 혜택 확인
+            <button type="button" id="compareAiSummaryBtn">
+                AI 비교 요약 보기
             </button>
 
             <button type="button" class="dark-btn" onclick="window.close()">
@@ -187,8 +217,6 @@
     </section>
 
 </div>
-
-<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

@@ -26,8 +26,16 @@ public class ProductViewService {
 
     // 상품 목록 조회 + 정렬
     public List<ProductListViewDto> getProductList(String sort) {
+        return getProductList(sort, "ALL");
+    }
+
+    // 상품 목록 조회 + 카테고리 필터 + 정렬
+    public List<ProductListViewDto> getProductList(String sort, String productType) {
         List<ProductListViewDto> list = productViewDao.selectProductList();
+
+        filterProductListByType(list, productType);
         sortProductList(list, sort);
+
         return list;
     }
 
@@ -38,12 +46,24 @@ public class ProductViewService {
 
     // 상품 검색
     public List<ProductListViewDto> searchProductList(String keyword) {
+        return searchProductList(keyword, "baseRateDesc", "ALL");
+    }
+
+    // 상품 검색 + 카테고리 필터 + 정렬
+    public List<ProductListViewDto> searchProductList(String keyword, String sort, String productType) {
+
+        List<ProductListViewDto> list;
 
         if (keyword == null || keyword.trim().equals("")) {
-            return productViewDao.selectProductList();
+            list = productViewDao.selectProductList();
+        } else {
+            list = productViewDao.searchProductList(keyword.trim());
         }
 
-        return productViewDao.searchProductList(keyword.trim());
+        filterProductListByType(list, productType);
+        sortProductList(list, sort);
+
+        return list;
     }
 
     // 비회원/공통 추천 상품 TOP 3
@@ -96,6 +116,7 @@ public class ProductViewService {
         if (member.getGender() == null || member.getGender().trim().equals("")) return false;
 
         String status = member.getMember_status();
+
         return "ASSOCIATE".equals(status) || "REGULAR".equals(status);
     }
 
@@ -116,12 +137,15 @@ public class ProductViewService {
         if ("YOUTH".equals(groupCode)) {
             return "청년층 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
         }
+
         if ("MIDDLE_MALE".equals(groupCode)) {
             return "중장년층 남성 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
         }
+
         if ("MIDDLE_FEMALE".equals(groupCode)) {
             return "중장년층 여성 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
         }
+
         if ("SENIOR".equals(groupCode)) {
             return "노년층 고객의 가입 가능 조건과 인기 흐름을 반영한 추천 상품입니다.";
         }
@@ -180,20 +204,75 @@ public class ProductViewService {
 
     // 로그인 회원 유형별 상품 목록 조회
     public List<ProductListViewDto> getProductListForMember(String memberType, String sort) {
+        return getProductListForMember(memberType, sort, "ALL");
+    }
 
-        List<ProductListViewDto> list = productViewDao.selectProductListForMember(memberType);
+    // 로그인 회원 유형별 상품 목록 조회 + 카테고리 필터 + 정렬
+    public List<ProductListViewDto> getProductListForMember(String memberType, String sort, String productType) {
+
+        List<ProductListViewDto> list =
+                productViewDao.selectProductListForMember(memberType);
+
+        filterProductListByType(list, productType);
         sortProductList(list, sort);
+
         return list;
     }
 
     // 로그인 회원 유형별 상품 검색
     public List<ProductListViewDto> searchProductListForMember(String memberType, String keyword) {
+        return searchProductListForMember(memberType, keyword, "baseRateDesc", "ALL");
+    }
+
+    // 로그인 회원 유형별 상품 검색 + 카테고리 필터 + 정렬
+    public List<ProductListViewDto> searchProductListForMember(String memberType,
+                                                               String keyword,
+                                                               String sort,
+                                                               String productType) {
+
+        List<ProductListViewDto> list;
 
         if (keyword == null || keyword.trim().equals("")) {
-            return productViewDao.selectProductListForMember(memberType);
+            list = productViewDao.selectProductListForMember(memberType);
+        } else {
+            list = productViewDao.searchProductListForMember(
+                    memberType,
+                    keyword.trim()
+            );
         }
 
-        return productViewDao.searchProductListForMember(memberType, keyword.trim());
+        filterProductListByType(list, productType);
+        sortProductList(list, sort);
+
+        return list;
+    }
+
+    // productType 필터
+    // ALL이면 전체, DEPOSIT이면 예금, SAVINGS면 적금
+    private void filterProductListByType(List<ProductListViewDto> list, String productType) {
+        if (list == null) return;
+
+        String normalizedProductType = normalizeProductType(productType);
+
+        if ("ALL".equals(normalizedProductType)) {
+            return;
+        }
+
+        list.removeIf(product ->
+                !normalizedProductType.equals(product.getProduct_type())
+        );
+    }
+
+    private String normalizeProductType(String productType) {
+        if ("DEPOSIT".equals(productType)) {
+            return "DEPOSIT";
+        }
+
+        if ("SAVINGS".equals(productType)) {
+            return "SAVINGS";
+        }
+
+        return "ALL";
     }
 
     private void sortProductList(List<ProductListViewDto> list, String sort) {
@@ -206,8 +285,10 @@ public class ProductViewService {
 
         } else if ("nameAsc".equals(sort)) {
             list.sort(Comparator
-                    .comparing(ProductListViewDto::getProduct_name,
-                            Comparator.nullsLast(String::compareTo)));
+                    .comparing(
+                            ProductListViewDto::getProduct_name,
+                            Comparator.nullsLast(String::compareTo)
+                    ));
 
         } else {
             list.sort(Comparator

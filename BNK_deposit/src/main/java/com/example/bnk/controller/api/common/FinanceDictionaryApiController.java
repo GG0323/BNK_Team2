@@ -2,6 +2,7 @@ package com.example.bnk.controller.api.common;
 
 import java.util.List;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.dao.DuplicateKeyException;
 
 import com.example.bnk.dto.common.ApiResponse;
 import com.example.bnk.dto.common.FinanceDictionaryDto;
 import com.example.bnk.service.common.FinanceDictionaryService;
+import com.example.bnk.dto.common.FinanceDictionaryChatResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -107,5 +108,130 @@ public class FinanceDictionaryApiController {
         dictionaryService.removeDictionary(dictionaryNo);
 
         return ResponseEntity.ok(ApiResponse.success("금융용어가 삭제되었습니다."));
+    }
+    
+    // 챗봇용 api
+    @GetMapping("/financedictionary/chat")
+    public ResponseEntity<ApiResponse<?>> chatDictionary(
+            @RequestParam("question") String question) {
+
+        if (question == null || question.trim().isEmpty()) {
+            return ResponseEntity.ok(
+                    ApiResponse.ok(FinanceDictionaryChatResponseDto.notFound())
+            );
+        }
+        
+        if (dictionaryService.isCategoryListQuestion(question)) {
+            List<FinanceDictionaryDto> categoryResults =
+                    dictionaryService.searchCategoryDictionariesForChat(question);
+
+            if (categoryResults != null && !categoryResults.isEmpty()) {
+                StringBuilder answer = new StringBuilder();
+
+                answer.append("질문과 관련된 금융용어 목록입니다.\n\n");
+
+                for (int i = 0; i < categoryResults.size(); i++) {
+                    FinanceDictionaryDto dto = categoryResults.get(i);
+
+                    answer.append(i + 1)
+                            .append(". ")
+                            .append(dto.getDictionary_nm())
+                            .append(" - ")
+                            .append(dto.getDictionary_category())
+                            .append("\n");
+                }
+
+                answer.append("\n더 자세히 알고 싶은 용어를 입력해 주세요.");
+
+                return ResponseEntity.ok(
+                        ApiResponse.ok(
+                                FinanceDictionaryChatResponseDto.multiFound(
+                                        answer.toString(),
+                                        categoryResults
+                                )
+                        )
+                );
+            }
+        }
+
+        List<FinanceDictionaryDto> results =
+                dictionaryService.searchDictionariesForChat(question);
+
+        if (results == null || results.isEmpty()) {
+            return ResponseEntity.ok(
+                    ApiResponse.ok(FinanceDictionaryChatResponseDto.notFound())
+            );
+        }
+
+        // 여러 용어의 차이를 물어본 경우
+        if (results.size() >= 2 && isCompareQuestion(question)) {
+            for (FinanceDictionaryDto dto : results) {
+                dictionaryService.increaseViewCount(dto.getDictionary_no());
+            }
+
+            String llmAnswer =
+                    dictionaryService.generateLlmAnswerForCompare(question, results);
+
+            return ResponseEntity.ok(
+                    ApiResponse.ok(
+                            FinanceDictionaryChatResponseDto.compare(llmAnswer, results)
+                    )
+            );
+        }
+
+        // 여러 용어가 검색됐지만 차이 질문은 아닌 경우
+        if (results.size() >= 2) {
+            StringBuilder answer = new StringBuilder();
+
+            answer.append("질문과 관련된 금융용어가 여러 개 있습니다.\n\n");
+
+            for (int i = 0; i < results.size(); i++) {
+                FinanceDictionaryDto dto = results.get(i);
+
+                answer.append(i + 1)
+                        .append(". ")
+                        .append(dto.getDictionary_nm())
+                        .append(" - ")
+                        .append(dto.getDictionary_category())
+                        .append("\n");
+            }
+
+            answer.append("\n더 자세히 알고 싶은 용어를 입력해 주세요.");
+
+            return ResponseEntity.ok(
+                    ApiResponse.ok(
+                            FinanceDictionaryChatResponseDto.multiFound(
+                                    answer.toString(),
+                                    results
+                            )
+                    )
+            );
+        }
+
+        // 하나만 검색된 경우
+        FinanceDictionaryDto result = results.get(0);
+
+        dictionaryService.increaseViewCount(result.getDictionary_no());
+
+        FinanceDictionaryChatResponseDto response =
+                FinanceDictionaryChatResponseDto.found(result);
+
+        String llmAnswer =
+                dictionaryService.generateLlmAnswerForSingle(question, result);
+
+        response.setAnswer(llmAnswer);
+
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    private boolean isCompareQuestion(String question) {
+        if (question == null) {
+            return false;
+        }
+
+        return question.contains("차이")
+                || question.contains("비교")
+                || question.contains("다른")
+                || question.contains("달라");
     }
 }

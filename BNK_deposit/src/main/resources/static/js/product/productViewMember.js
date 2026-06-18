@@ -1,7 +1,7 @@
 /**
  * productViewMember.js
  *
- * 상품 목록 페이지에서 검색/정렬 결과를 AJAX로 다시 불러와 상품 목록 영역만 교체한다.
+ * 상품 목록 페이지에서 검색/정렬/카테고리 결과를 AJAX로 다시 불러와 상품 목록 영역만 교체한다.
  *
  * - 로그인 회원: /api/products/member, /api/products/member/search 우선 사용
  * - 비로그인 사용자: /api/products, /api/products/search 사용
@@ -51,6 +51,47 @@ function getQueryParam(name) {
 
 function getCurrentSort() {
   return getQueryParam("sort") || document.getElementById("sort")?.value || "baseRateDesc";
+}
+
+function normalizeProductType(productType) {
+  if (productType === "DEPOSIT") return "DEPOSIT";
+  if (productType === "SAVINGS") return "SAVINGS";
+  return "ALL";
+}
+
+function getCurrentProductType() {
+  const activeChip = document.querySelector(".category-chip.active");
+
+  return normalizeProductType(
+    getQueryParam("productType") || activeChip?.dataset.productType || "ALL"
+  );
+}
+
+function buildQueryString(params) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== null && value !== undefined && value !== "") {
+      searchParams.set(key, value);
+    }
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : "";
+}
+
+function updateCategoryActive(productType) {
+  const selectedType = normalizeProductType(productType);
+
+  document.querySelectorAll(".category-chip").forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.productType === selectedType);
+  });
+
+  document
+    .querySelectorAll("input[name='productType']")
+    .forEach((input) => {
+      input.value = selectedType;
+    });
 }
 
 function productResultSection() {
@@ -116,6 +157,11 @@ function productCard(product) {
   const internetJoinYn = product.internet_join_yn;
   const mobileJoinYn = product.mobile_join_yn;
 
+  const isMobileOnly =
+    mobileJoinYn === "Y" &&
+    branchJoinYn !== "Y" &&
+    internetJoinYn !== "Y";
+
   return `
     <div class="product-card">
 
@@ -125,8 +171,8 @@ function productCard(product) {
         </span>
 
         ${
-          mobileJoinYn === "Y"
-            ? `<span class="mobile-badge">모바일 가입 가능</span>`
+          isMobileOnly
+            ? `<span class="mobile-badge">모바일 전용</span>`
             : ""
         }
       </div>
@@ -168,12 +214,6 @@ function productCard(product) {
           비교함 담기
         </button>
       </div>
-
-      ${
-        mobileJoinYn === "Y"
-          ? `<div class="mobile-guide">모바일 전용 상품은 QR로 앱 이동을 지원합니다.</div>`
-          : ""
-      }
 
     </div>
   `;
@@ -242,72 +282,91 @@ async function fetchJson(url) {
   return body.data;
 }
 
-async function fetchMemberProductList(sort) {
-  const query = sort ? `?sort=${encodeURIComponent(sort)}` : "";
+async function fetchMemberProductList(sort, productType) {
+  const query = buildQueryString({
+    sort,
+    productType: normalizeProductType(productType),
+  });
+
   return fetchJson(`/api/products/member${query}`);
 }
 
-async function fetchPublicProductList(sort) {
-  const query = sort ? `?sort=${encodeURIComponent(sort)}` : "";
+async function fetchPublicProductList(sort, productType) {
+  const query = buildQueryString({
+    sort,
+    productType: normalizeProductType(productType),
+  });
+
   return fetchJson(`/api/products${query}`);
 }
 
-async function fetchMemberProductSearch(keyword) {
-  const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : "";
+async function fetchMemberProductSearch(keyword, sort, productType) {
+  const query = buildQueryString({
+    keyword,
+    sort,
+    productType: normalizeProductType(productType),
+  });
+
   return fetchJson(`/api/products/member/search${query}`);
 }
 
-async function fetchPublicProductSearch(keyword) {
-  const query = keyword ? `?keyword=${encodeURIComponent(keyword)}` : "";
+async function fetchPublicProductSearch(keyword, sort, productType) {
+  const query = buildQueryString({
+    keyword,
+    sort,
+    productType: normalizeProductType(productType),
+  });
+
   return fetchJson(`/api/products/search${query}`);
 }
 
-async function fetchProductList(sort) {
-  const memberList = await fetchMemberProductList(sort);
+async function fetchProductList(sort, productType) {
+  const memberList = await fetchMemberProductList(sort, productType);
 
   if (memberList !== null) {
     return memberList;
   }
 
-  return fetchPublicProductList(sort);
+  return fetchPublicProductList(sort, productType);
 }
 
-async function fetchProductSearch(keyword) {
-  const memberList = await fetchMemberProductSearch(keyword);
+async function fetchProductSearch(keyword, sort, productType) {
+  const memberList = await fetchMemberProductSearch(keyword, sort, productType);
 
   if (memberList !== null) {
     return memberList;
   }
 
-  return fetchPublicProductSearch(keyword);
+  return fetchPublicProductSearch(keyword, sort, productType);
 }
 
 /* =========================
-   검색/정렬 적용
+   검색/정렬/카테고리 적용
 ========================= */
 
 async function applyProductSearch(keyword, options = {}) {
   const normalizedKeyword = keyword ? keyword.trim() : "";
+  const selectedSort = options.sort || getCurrentSort();
+  const selectedProductType = normalizeProductType(options.productType || getCurrentProductType());
   const shouldUpdateUrl = options.updateUrl !== false;
   const shouldScroll = options.scroll !== false;
 
   setListLoading(true);
 
   try {
-    let list;
-
-    if (normalizedKeyword) {
-      list = await fetchProductSearch(normalizedKeyword);
-    } else {
-      list = await fetchProductList(getCurrentSort());
-    }
+    const list = normalizedKeyword
+      ? await fetchProductSearch(normalizedKeyword, selectedSort, selectedProductType)
+      : await fetchProductList(selectedSort, selectedProductType);
 
     renderProductList(list);
+    updateCategoryActive(selectedProductType);
 
     if (shouldUpdateUrl) {
-      const newUrl = normalizedKeyword
-        ? `/products/search?keyword=${encodeURIComponent(normalizedKeyword)}`
-        : "/products";
+      const newUrl = `/products${buildQueryString({
+        keyword: normalizedKeyword,
+        productType: selectedProductType,
+        sort: selectedSort,
+      })}`;
 
       history.pushState(null, "", newUrl);
     }
@@ -329,17 +388,31 @@ async function applyProductSearch(keyword, options = {}) {
 
 async function applyProductSort(sort, options = {}) {
   const selectedSort = sort || "baseRateDesc";
+  const selectedProductType = normalizeProductType(options.productType || getCurrentProductType());
+  const keyword = options.keyword !== undefined
+    ? options.keyword
+    : (getQueryParam("keyword") || document.querySelector(".search-box input[name='keyword']")?.value || "");
+
+  const normalizedKeyword = keyword ? keyword.trim() : "";
   const shouldUpdateUrl = options.updateUrl !== false;
   const shouldScroll = options.scroll === true;
 
   setListLoading(true);
 
   try {
-    const list = await fetchProductList(selectedSort);
+    const list = normalizedKeyword
+      ? await fetchProductSearch(normalizedKeyword, selectedSort, selectedProductType)
+      : await fetchProductList(selectedSort, selectedProductType);
+
     renderProductList(list);
+    updateCategoryActive(selectedProductType);
 
     if (shouldUpdateUrl) {
-      history.pushState(null, "", `/products?sort=${encodeURIComponent(selectedSort)}`);
+      history.pushState(null, "", `/products${buildQueryString({
+        keyword: normalizedKeyword,
+        productType: selectedProductType,
+        sort: selectedSort,
+      })}`);
     }
 
     if (shouldScroll) {
@@ -350,6 +423,21 @@ async function applyProductSort(sort, options = {}) {
   } finally {
     setListLoading(false);
   }
+}
+
+async function applyProductType(productType, options = {}) {
+  const selectedProductType = normalizeProductType(productType);
+  const selectedSort = options.sort || getCurrentSort();
+
+  const keyword = options.keyword !== undefined
+    ? options.keyword
+    : (getQueryParam("keyword") || document.querySelector(".search-box input[name='keyword']")?.value || "");
+
+  return applyProductSort(selectedSort, {
+    ...options,
+    keyword,
+    productType: selectedProductType,
+  });
 }
 
 // header.js에서 호출한다.
@@ -363,6 +451,7 @@ window.searchProductListFromHeader = async function (keyword) {
 // 다른 스크립트에서도 필요할 수 있으므로 명시적으로 노출한다.
 window.renderProductList = renderProductList;
 window.scrollToProductResult = scrollToProductResult;
+window.applyProductType = applyProductType;
 
 /* =========================
    이벤트 연결
@@ -413,6 +502,30 @@ function bindSortSelect() {
   });
 }
 
+function bindCategoryFilter() {
+  const categoryChips = document.querySelectorAll(".category-chip");
+
+  if (categoryChips.length === 0) return;
+
+  categoryChips.forEach((chip) => {
+    chip.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const productType = chip.dataset.productType || "ALL";
+
+      try {
+        await applyProductType(productType, {
+          updateUrl: true,
+          scroll: false,
+        });
+      } catch (err) {
+        console.error(err);
+        alert(err.message || "상품 카테고리 필터 적용 중 오류가 발생했습니다.");
+      }
+    });
+  });
+}
+
 /* =========================
    초기 실행
 ========================= */
@@ -420,20 +533,28 @@ function bindSortSelect() {
 document.addEventListener("DOMContentLoaded", async () => {
   bindSearchForm();
   bindSortSelect();
+  bindCategoryFilter();
 
   const keyword = getQueryParam("keyword");
   const sort = getCurrentSort();
+  const productType = getCurrentProductType();
+
+  updateCategoryActive(productType);
+
   const shouldScrollToResult = window.location.hash === PRODUCT_RESULT_HASH;
 
   try {
     // 서버 렌더링 결과가 먼저 보이므로, API 실패 시에도 화면은 유지된다.
     if (keyword) {
       await applyProductSearch(keyword, {
+        productType,
+        sort,
         updateUrl: false,
         scroll: false,
       });
     } else {
       await applyProductSort(sort, {
+        productType,
         updateUrl: false,
         scroll: false,
       });

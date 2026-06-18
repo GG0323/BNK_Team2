@@ -28,7 +28,7 @@ public class MyProductDto {
     private BigDecimal subscription_amount;
     private BigDecimal auto_transfer_amount;
 
-    private Long linked_account_no;
+    private Long linked_account_id;
 
     private LocalDate subscribed_at;
     private LocalDate maturity_date;

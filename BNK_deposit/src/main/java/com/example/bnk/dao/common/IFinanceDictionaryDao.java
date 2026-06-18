@@ -22,8 +22,19 @@ public interface IFinanceDictionaryDao {
 	// 검색 로직
 	List<FinanceDictionaryDto> searchDictionary(String keyword);
 	
+	// 챗봇용 금융용어 검색
+	List<FinanceDictionaryDto> searchDictionaryForChat(
+	        @Param("question") String question,
+	        @Param("keyword") String keyword
+	);
+	
+	// 카테고리 기준 용어 조회
+	List<FinanceDictionaryDto> selectDictionaryByCategory(
+	        @Param("category") String category
+	);
+	
 	// ✨ 용어 등록 (Create)
-		int insertDictionary(FinanceDictionaryDto dto);
+	int insertDictionary(FinanceDictionaryDto dto);
 		
 	// ✨ 용어 수정 (Update)
 	int updateDictionary(FinanceDictionaryDto dto);
@@ -36,4 +47,5 @@ public interface IFinanceDictionaryDao {
 	        @Param("searchType") String searchType,
 	        @Param("keyword") String keyword
 	);
+	
 }

@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>BNK 상품 목록</title>
-	<link rel="stylesheet" th:href="@{/css/product/productList.css}">
-	<link rel="stylesheet" th:href="@{/css/product/recommendedPassbook.css}">
-	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
-    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
-    
-	<script th:src="@{/js/product/productList.js}" defer></script>
-	<script th:src="@{/js/product/productViewMember.js}" defer></script>
-</head>
-<body class="product-list-page">
-	<div th:replace="~{fragments/header :: header_default}"></div>
 
+    <link rel="stylesheet" th:href="@{/css/product/productList.css}">
+    <link rel="stylesheet" th:href="@{/css/product/recommendedPassbook.css}">
+
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+
+    <script th:src="@{/js/product/productList.js}" defer></script>
+    <script th:src="@{/js/product/productViewMember.js}" defer></script>
+</head>
+
+<body class="product-list-page">
+<div th:replace="~{fragments/header :: header_default}"></div>
 
 <section class="recommended-passbook-hero product-fullpage-section product-hero-section"
          id="recommendedPassbookHero"
@@ -38,17 +40,26 @@
     <div class="rpb-word rpb-word-3">BNK PRODUCT</div>
 
     <div class="rpb-inner">
+
         <div class="rpb-intro">
-            <span th:text="${recommendationMode == 'MEMBER' ? '회원 맞춤 추천' : '인기 추천'}">인기 추천</span>
-            <strong th:text="${recommendationMessage}">지금 고객들이 가장 많이 선택한 인기 예적금 상품입니다.</strong>
+            <span th:text="${recommendationMode == 'MEMBER' ? '회원 맞춤 추천' : '인기 추천'}">
+                인기 추천
+            </span>
+
+            <strong th:text="${recommendationMessage}">
+                지금 고객들이 가장 많이 선택한 인기 예적금 상품입니다.
+            </strong>
 
             <div class="rpb-quick-actions" aria-label="상품 목록 바로가기">
                 <button type="button" class="rpb-search-start-btn">상품 검색하기</button>
-                <button type="button" class="rpb-list-start-btn rpb-scroll-next">전체 상품 보기 <strong>↓</strong></button>
+                <button type="button" class="rpb-list-start-btn rpb-scroll-next">
+                    전체 상품 보기 <strong>↓</strong>
+                </button>
             </div>
         </div>
 
         <div class="rpb-stage">
+
             <div class="rpb-fan" aria-label="추천 예적금 통장 선택">
                 <button type="button"
                         class="rpb-fan-card"
@@ -68,25 +79,40 @@
                                  data-detail-url=@{/products/detail(product_no=${product.product_no})}">
 
                     <span class="rpb-fan-kicker"
-                          th:text="${product.product_type == 'DEPOSIT' ? '정기예금' : '적금'}">정기예금</span>
-                    <span class="rpb-fan-title" th:text="${product.product_name}">추천 상품명</span>
+                          th:text="${product.product_type == 'DEPOSIT' ? '정기예금' : '적금'}">
+                        정기예금
+                    </span>
+
+                    <span class="rpb-fan-title" th:text="${product.product_name}">
+                        추천 상품명
+                    </span>
+
                     <span class="rpb-fan-hint">CLICK TO OPEN</span>
                 </button>
             </div>
 
             <div class="rpb-scene" aria-live="polite">
+
                 <div class="rpb-shadow"></div>
 
                 <div class="rpb-paper">
                     <div class="rpb-paper-topbar"></div>
+
                     <div class="rpb-product-content">
                         <span class="rpb-type-badge">정기예금</span>
+
                         <h2 class="rpb-product-name">추천 상품명</h2>
+
                         <p class="rpb-product-desc">상품 설명</p>
 
                         <div class="rpb-rate-area">
-                            <div class="rpb-rate-label">연 <small>(세전)</small></div>
-                            <div class="rpb-rate" data-rate="0.00% ~ 0.00%">0.00% ~ 0.00%</div>
+                            <div class="rpb-rate-label">
+                                연 <small>(세전)</small>
+                            </div>
+
+                            <div class="rpb-rate" data-rate="0.00% ~ 0.00%">
+                                0.00% ~ 0.00%
+                            </div>
                         </div>
 
                         <div class="rpb-channel-chips">
@@ -97,6 +123,7 @@
 
                         <div class="rpb-actions">
                             <a class="rpb-detail-btn" href="#">상세보기</a>
+
                             <button type="button"
                                     class="rpb-compare-btn compare-btn"
                                     data-id=""
@@ -119,24 +146,32 @@
                 </div>
 
                 <div class="rpb-hinge"></div>
+
                 <div class="rpb-cover">
                     <div class="rpb-cover-front">
                         <div class="rpb-cover-bank">BNK<br>부산은행</div>
+
                         <div class="rpb-cover-body">
                             <div class="rpb-cover-icon">🌱</div>
                             <div class="rpb-cover-title">추천 예적금</div>
                         </div>
                     </div>
+
                     <div class="rpb-cover-back"></div>
                 </div>
             </div>
 
-            <button type="button" class="rpb-close-btn">← 다른 상품 보기</button>
+            <button type="button" class="rpb-close-btn">
+                ← 다른 상품 보기
+            </button>
 
-            <a href="#productListSection" class="rpb-scroll-next" aria-label="상품 목록 섹션으로 이동">
+            <a href="#productListSection"
+               class="rpb-scroll-next"
+               aria-label="상품 목록 섹션으로 이동">
                 <span>상품 목록 보기</span>
                 <strong>↓</strong>
             </a>
+
         </div>
     </div>
 </section>
@@ -144,53 +179,125 @@
 <div class="page-wrap product-fullpage-section product-list-section" id="productListSection">
 
     <section class="search-section">
-        <form th:action="@{/products/search}" method="get" class="search-box">
+        <form th:action="@{/products}" method="get" class="search-box">
+            <input type="hidden"
+                   name="productType"
+                   th:value="${productType != null ? productType : 'ALL'}">
+
+            <input type="hidden"
+                   name="sort"
+                   th:value="${sort != null ? sort : 'baseRateDesc'}">
+
             <input type="text"
                    name="keyword"
                    th:value="${keyword}"
                    placeholder="상품명, 예금, 적금, 키워드 검색">
+
             <button type="submit">검색</button>
+
             <a th:href="@{/products}" class="reset-btn">전체보기</a>
         </form>
     </section>
 
+    <!-- AI 맞춤 상품 추천 카드 -->
+    <section class="ai-persona-recommend-section" id="aiPersonaRecommendSection">
+        <div class="ai-persona-card">
+
+            <div class="ai-persona-left">
+                <span class="ai-persona-badge">AI 맞춤 추천</span>
+
+                <h3>나에게 맞는 예·적금 상품을 추천받아보세요</h3>
+
+                <p>
+                    나이, 잔고, 가입 목적, 선호 상품 유형, 우대조건 충족 가능성을 바탕으로
+                    개인화된 상품 추천을 제공합니다.
+                </p>
+            </div>
+
+            <div class="ai-persona-right">
+                <button type="button"
+                        class="ai-persona-start-btn"
+                        id="openPersonaRecommendBtn">
+                    추천받기
+                </button>
+            </div>
+
+        </div>
+    </section>
+
     <section class="product-section" id="productResultSection">
 
-		<div class="section-title">
+        <div class="product-common-guide">
+            모든 상품은 상세 화면에서 QR을 통해 모바일 가입이 가능합니다.
+        </div>
 
-		    <div class="title-left">
-		        <h2>판매중인 상품</h2>
-		        <span th:text="${#lists.size(productList)} + '개 상품 조회됨'">0개 상품 조회됨</span>
-		    </div>
+        <div class="product-filter-row">
+            <div class="category-filter" aria-label="상품 카테고리 필터">
 
-		    <form th:action="@{/products}" method="get" class="sort-form">
-		        <label for="sort">정렬</label>
+                <a th:href="@{/products(productType='ALL', sort=${sort}, keyword=${keyword})}"
+                   class="category-chip"
+                   data-product-type="ALL"
+                   th:classappend="${productType == null or productType == 'ALL'} ? ' active' : ''">
+                    전체
+                </a>
 
-		        <select name="sort" id="sort">
-		            <option value="baseRateDesc"
-		                    th:selected="${sort == null or sort == 'baseRateDesc'}">
-		                기본금리 높은 순
-		            </option>
+                <a th:href="@{/products(productType='DEPOSIT', sort=${sort}, keyword=${keyword})}"
+                   class="category-chip"
+                   data-product-type="DEPOSIT"
+                   th:classappend="${productType == 'DEPOSIT'} ? ' active' : ''">
+                    예금
+                </a>
 
-		            <option value="maxRateDesc"
-		                    th:selected="${sort == 'maxRateDesc'}">
-		                최대금리 높은 순
-		            </option>
+                <a th:href="@{/products(productType='SAVINGS', sort=${sort}, keyword=${keyword})}"
+                   class="category-chip"
+                   data-product-type="SAVINGS"
+                   th:classappend="${productType == 'SAVINGS'} ? ' active' : ''">
+                    적금
+                </a>
 
-		            <option value="nameAsc"
-		                    th:selected="${sort == 'nameAsc'}">
-		                상품명 순
-		            </option>
-		        </select>
-		    </form>
+            </div>
+        </div>
 
-		</div>
+        <div class="section-title">
+
+            <div class="title-left">
+                <h2>판매중인 상품</h2>
+                <span th:text="${#lists.size(productList)} + '개 상품 조회됨'">
+                    0개 상품 조회됨
+                </span>
+            </div>
+
+            <form th:action="@{/products}" method="get" class="sort-form">
+                <input type="hidden" name="keyword" th:value="${keyword}">
+                <input type="hidden" name="productType" th:value="${productType != null ? productType : 'ALL'}">
+
+                <label for="sort">정렬</label>
+
+                <select name="sort" id="sort">
+                    <option value="baseRateDesc"
+                            th:selected="${sort == null or sort == 'baseRateDesc'}">
+                        기본금리 높은 순
+                    </option>
+
+                    <option value="maxRateDesc"
+                            th:selected="${sort == 'maxRateDesc'}">
+                        최대금리 높은 순
+                    </option>
+
+                    <option value="nameAsc"
+                            th:selected="${sort == 'nameAsc'}">
+                        상품명 순
+                    </option>
+                </select>
+            </form>
+
+        </div>
 
         <div class="empty-box" th:if="${#lists.isEmpty(productList)}">
             조회된 상품이 없습니다.
         </div>
 
-        <div class="product-grid" th:if="${!#lists.isEmpty(productList)}">
+        <div class="product-grid">
 
             <div class="product-card" th:each="product : ${productList}">
 
@@ -201,12 +308,14 @@
                     </span>
 
                     <span class="mobile-badge"
-                          th:if="${product.mobile_join_yn == 'Y'}">
-                        모바일 가입 가능
+                          th:if="${product.mobile_join_yn == 'Y' and product.branch_join_yn != 'Y' and product.internet_join_yn != 'Y'}">
+                        모바일 전용
                     </span>
                 </div>
 
-                <h3 th:text="${product.product_name}">상품명</h3>
+                <h3 th:text="${product.product_name}">
+                    상품명
+                </h3>
 
                 <p class="subtitle"
                    th:text="${product.subtitle != null ? product.subtitle : 'BNK 금융상품'}">
@@ -216,12 +325,16 @@
                 <div class="rate-box">
                     <div class="max-rate">
                         <span>최고금리</span>
-                        <strong th:text="${product.max_interest_rate} + '%'">0.00%</strong>
+                        <strong th:text="${product.max_interest_rate} + '%'">
+                            0.00%
+                        </strong>
                     </div>
 
                     <div class="min-rate">
                         <span>최저금리</span>
-                        <strong th:text="${product.min_interest_rate} + '%'">0.00%</strong>
+                        <strong th:text="${product.min_interest_rate} + '%'">
+                            0.00%
+                        </strong>
                     </div>
                 </div>
 
@@ -244,10 +357,6 @@
                     </button>
                 </div>
 
-                <div class="mobile-guide" th:if="${product.mobile_join_yn == 'Y'}">
-                    모바일 전용 상품은 QR로 앱 이동을 지원합니다.
-                </div>
-
             </div>
 
         </div>
@@ -256,13 +365,223 @@
 
 </div>
 
+<!-- AI 맞춤 상품 추천 모달 -->
+<div class="ai-persona-modal-backdrop" id="aiPersonaModal" aria-hidden="true">
+    <div class="ai-persona-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="aiPersonaModalTitle">
+
+        <div class="ai-persona-modal-header">
+            <div>
+                <span class="ai-persona-modal-kicker">AI PERSONAL RECOMMEND</span>
+
+                <h2 id="aiPersonaModalTitle">AI 맞춤 상품 추천</h2>
+
+                <p>
+                    사용자 조건을 입력하면 예·적금 상품을 개인화 추천합니다.
+                </p>
+            </div>
+
+            <button type="button"
+                    class="ai-persona-modal-close"
+                    id="closePersonaRecommendBtn"
+                    aria-label="AI 맞춤 추천 닫기">
+                ×
+            </button>
+        </div>
+
+        <form class="ai-persona-form" id="aiPersonaRecommendForm">
+
+            <div class="ai-persona-form-grid">
+
+                <div class="ai-persona-field">
+                    <label for="personaAge">나이</label>
+                    <input type="number"
+                           id="personaAge"
+                           name="age"
+                           min="1"
+                           max="100"
+                           placeholder="예: 24">
+                </div>
+
+                <div class="ai-persona-field">
+                    <label for="personaBalance">현재 사용 가능 금액</label>
+                    <input type="number"
+                           id="personaBalance"
+                           name="balance"
+                           min="0"
+                           step="10000"
+                           placeholder="예: 500000">
+                </div>
+
+                <div class="ai-persona-field">
+                    <label for="personaMonthlyAmount">월 납입 가능 금액</label>
+                    <input type="number"
+                           id="personaMonthlyAmount"
+                           name="monthlyAmount"
+                           min="0"
+                           step="10000"
+                           placeholder="예: 300000">
+                </div>
+
+                <div class="ai-persona-field">
+                    <label for="personaPeriodMonths">희망 가입 기간</label>
+                    <input type="number"
+                           id="personaPeriodMonths"
+                           name="periodMonths"
+                           min="1"
+                           max="60"
+                           placeholder="예: 12">
+                </div>
+
+            </div>
+
+            <div class="ai-persona-choice-block">
+                <strong>가입 목적</strong>
+
+                <div class="ai-persona-choice-row">
+                    <label>
+                        <input type="radio" name="purpose" value="MAKE_MONEY" checked>
+                        목돈 만들기
+                    </label>
+
+                    <label>
+                        <input type="radio" name="purpose" value="ROLL_MONEY">
+                        목돈 굴리기
+                    </label>
+
+                    <label>
+                        <input type="radio" name="purpose" value="HIGH_RATE">
+                        고금리 우선
+                    </label>
+
+                    <label>
+                        <input type="radio" name="purpose" value="EMERGENCY">
+                        비상금 마련
+                    </label>
+                </div>
+            </div>
+
+            <div class="ai-persona-choice-block">
+                <strong>선호 상품 유형</strong>
+
+                <div class="ai-persona-choice-row">
+                    <label>
+                        <input type="radio" name="preferredProductType" value="ALL" checked>
+                        상관없음
+                    </label>
+
+                    <label>
+                        <input type="radio" name="preferredProductType" value="DEPOSIT">
+                        예금
+                    </label>
+
+                    <label>
+                        <input type="radio" name="preferredProductType" value="SAVINGS">
+                        적금
+                    </label>
+                </div>
+            </div>
+
+            <div class="ai-persona-choice-block">
+                <strong>선호 가입 방식</strong>
+
+                <div class="ai-persona-choice-row">
+                    <label>
+                        <input type="radio" name="preferredChannel" value="ALL" checked>
+                        상관없음
+                    </label>
+
+                    <label>
+                        <input type="radio" name="preferredChannel" value="MOBILE">
+                        모바일
+                    </label>
+
+                    <label>
+                        <input type="radio" name="preferredChannel" value="INTERNET">
+                        인터넷
+                    </label>
+
+                    <label>
+                        <input type="radio" name="preferredChannel" value="BRANCH">
+                        영업점
+                    </label>
+                </div>
+            </div>
+
+            <div class="ai-persona-choice-block">
+                <strong>관심 조건</strong>
+
+                <div class="ai-persona-choice-row">
+                    <label>
+                        <input type="checkbox" name="interestConditions" value="HIGH_RATE" checked>
+                        높은 금리
+                    </label>
+
+                    <label>
+                        <input type="checkbox" name="interestConditions" value="LOW_AMOUNT">
+                        소액 시작
+                    </label>
+
+                    <label>
+                        <input type="checkbox" name="interestConditions" value="MOBILE">
+                        모바일 가입
+                    </label>
+
+                    <label>
+                        <input type="checkbox" name="interestConditions" value="PREFERENTIAL_RATE">
+                        우대금리
+                    </label>
+
+                    <label>
+                        <input type="checkbox" name="interestConditions" value="PROTECTION">
+                        예금자보호
+                    </label>
+                </div>
+            </div>
+
+            <div class="ai-persona-modal-actions">
+                <button type="button"
+                        class="ai-persona-cancel-btn"
+                        id="cancelPersonaRecommendBtn">
+                    취소
+                </button>
+
+                <button type="submit"
+                        class="ai-persona-submit-btn">
+                    AI 추천받기
+                </button>
+            </div>
+
+        </form>
+
+        <div class="ai-persona-result-area"
+             id="aiPersonaResultArea"
+             style="display: none;">
+
+            <div class="ai-persona-result-title">
+                <span>AI 추천 결과</span>
+
+                <strong id="aiPersonaResultSummary">
+                    조건에 맞는 상품을 추천합니다.
+                </strong>
+            </div>
+
+            <div class="ai-persona-result-list" id="aiPersonaResultList"></div>
+
+        </div>
+
+    </div>
+</div>
+
 <!-- 상품 비교함 -->
 <div class="compare-bar collapsed" id="compareBar">
 
-    <!-- 닫기 / 열기 버튼 -->
-    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">상품 비교함 열기</button>
+    <button type="button" class="compare-toggle-btn" id="toggleCompareBtn">
+        상품 비교함 열기
+    </button>
 
-    <!-- 펼친 상태에서 보이는 비교함 -->
     <div class="compare-expanded-area" id="compareExpandedArea">
 
         <div class="compare-expanded-top">
@@ -296,7 +615,6 @@
 
     </div>
 
-    <!-- JS에서 개수 관리용으로만 쓰는 숨김 영역 -->
     <div class="compare-summary-hidden">
         <span id="compareCount">0/3</span>
         <div id="compareItems"></div>

@@ -110,11 +110,11 @@
     from { opacity: 0; transform: translate3d(0, 26px, 0); }
     to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
-/* 
-모션 줄이기 설정 시 즉시 표시
+
+/* 모션 줄이기 설정 시 즉시 표시 */
 @media (prefers-reduced-motion: reduce) {
     .reveal-row {
         opacity: 1;
         animation: none;
     }
-} */
+}

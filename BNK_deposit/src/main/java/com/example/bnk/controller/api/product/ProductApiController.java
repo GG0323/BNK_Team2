@@ -34,7 +34,7 @@ public class ProductApiController {
     private final ProductViewService productViewService;
     private final BankMemberService bankMemberService;
 
-    // 공통 응답 생성
+    // 공통 성공 응답
     private Map<String, Object> success(Object data) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("success", true);
@@ -42,6 +42,7 @@ public class ProductApiController {
         return body;
     }
 
+    // 공통 실패 응답
     private Map<String, Object> fail(String message) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("success", false);
@@ -50,32 +51,39 @@ public class ProductApiController {
     }
 
     // 비회원/공통 상품 목록 API
+    // 예: /api/products?sort=baseRateDesc&productType=ALL
     @GetMapping
     public Map<String, Object> productList(
-            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort) {
+            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort,
+            @RequestParam(value = "productType", required = false, defaultValue = "ALL") String productType) {
 
         List<ProductListViewDto> productList =
-                productViewService.getProductList(sort);
+                productViewService.getProductList(sort, productType);
 
         return success(productList);
     }
 
     // 비회원/공통 상품 검색 API
+    // 예: /api/products/search?keyword=적금&sort=maxRateDesc&productType=SAVINGS
     @GetMapping("/search")
     public Map<String, Object> searchProductList(
-            @RequestParam(value = "keyword", required = false) String keyword) {
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort,
+            @RequestParam(value = "productType", required = false, defaultValue = "ALL") String productType) {
 
         List<ProductListViewDto> productList =
-                productViewService.searchProductList(keyword);
+                productViewService.searchProductList(keyword, sort, productType);
 
         return success(productList);
     }
 
     // 로그인 회원 맞춤 상품 목록 API
+    // 예: /api/products/member?sort=baseRateDesc&productType=DEPOSIT
     @GetMapping("/member")
     public ResponseEntity<Map<String, Object>> memberProductList(
             Principal principal,
-            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort) {
+            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort,
+            @RequestParam(value = "productType", required = false, defaultValue = "ALL") String productType) {
 
         if (principal == null) {
             return ResponseEntity
@@ -93,16 +101,23 @@ public class ProductApiController {
         }
 
         List<ProductListViewDto> productList =
-                productViewService.getProductListForMember(member.getMember_type(), sort);
+                productViewService.getProductListForMember(
+                        member.getMember_type(),
+                        sort,
+                        productType
+                );
 
         return ResponseEntity.ok(success(productList));
     }
 
     // 로그인 회원 맞춤 상품 검색 API
+    // 예: /api/products/member/search?keyword=예금&sort=nameAsc&productType=DEPOSIT
     @GetMapping("/member/search")
     public ResponseEntity<Map<String, Object>> memberProductSearch(
             Principal principal,
-            @RequestParam(value = "keyword", required = false) String keyword) {
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "sort", required = false, defaultValue = "baseRateDesc") String sort,
+            @RequestParam(value = "productType", required = false, defaultValue = "ALL") String productType) {
 
         if (principal == null) {
             return ResponseEntity
@@ -122,7 +137,9 @@ public class ProductApiController {
         List<ProductListViewDto> productList =
                 productViewService.searchProductListForMember(
                         member.getMember_type(),
-                        keyword
+                        keyword,
+                        sort,
+                        productType
                 );
 
         return ResponseEntity.ok(success(productList));
@@ -163,7 +180,7 @@ public class ProductApiController {
 
         boolean joinAvailable =
                 "ALL".equals(customerType)
-                || memberType.equals(customerType);
+                        || memberType.equals(customerType);
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("product", product);
@@ -177,6 +194,7 @@ public class ProductApiController {
     }
 
     // QR 이미지 생성 API
+    // 예: /api/products/mobile-qr-image?product_no=1
     @GetMapping(value = "/mobile-qr-image", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] productMobileQrImage(
             @RequestParam("product_no") long product_no) throws Exception {
