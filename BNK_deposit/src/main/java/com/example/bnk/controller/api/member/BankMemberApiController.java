@@ -167,21 +167,21 @@ public class BankMemberApiController {
 	    return ResponseEntity.ok(ApiResponse.ok(historyData));
 	}
 
-	// 가입 상품 내역 조회
-	@GetMapping("/myproducts")
-	public ResponseEntity<ApiResponse<?>> getMyProducts(Principal principal) {
-
-	    if (principal == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                .body(ApiResponse.fail("로그인이 필요합니다."));
-	    }
-
-	    String currentLoginId = principal.getName();
-
-	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentLoginId);
-
-	    return ResponseEntity.ok(ApiResponse.ok(productList));
-	}
+//	// 가입 상품 내역 조회
+//	@GetMapping("/myproducts")
+//	public ResponseEntity<ApiResponse<?>> getMyProducts(Principal principal) {
+//
+//	    if (principal == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//	                .body(ApiResponse.fail("로그인이 필요합니다."));
+//	    }
+//
+//	    String currentLoginId = principal.getName();
+//
+//	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentLoginId);
+//
+//	    return ResponseEntity.ok(ApiResponse.ok(productList));
+//	}
 
 	// 내 정보 수정
 	@PostMapping("/myinfo/update")

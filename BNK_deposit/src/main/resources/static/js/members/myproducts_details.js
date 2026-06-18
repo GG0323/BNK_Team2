@@ -1,7 +1,7 @@
 /**
  * myproducts_details.js
  * 가입상품 상세 화면 렌더링
- * URL 예시: /myproducts/detail?subNo=1
+ * URL 예시: /member/myproducts/detail?subNo=1
  */
 
 function getSubNo() {
@@ -63,7 +63,10 @@ function renderDetail(p) {
   const container = document.getElementById("productDetail");
 
   if (!p) {
-    container.innerHTML = `<div class="empty-state">가입상품 상세 정보가 없습니다.</div>`;
+    container.innerHTML = `
+      <div class="member-empty member-content-panel">
+        <p>가입상품 상세 정보가 없습니다.</p>
+      </div>`;
     return;
   }
 
@@ -80,7 +83,7 @@ function renderDetail(p) {
   const expectedTotalAmount = p.expected_total_amount || 0;
 
   container.innerHTML = `
-    <article class="detail-card">
+    <article class="detail-card motion-card" style="--card-delay:0ms">
 
       <div class="detail-top">
         <div class="detail-title-area">
@@ -103,7 +106,7 @@ function renderDetail(p) {
 
         <div class="summary-box">
           <span>적용금리</span>
-          <strong>연 ${p.applied_interest_rate || 0}%</strong>
+          <strong>연 ${escapeHtml(p.applied_interest_rate || 0)}%</strong>
         </div>
 
         <div class="summary-box">
@@ -144,7 +147,7 @@ function renderDetail(p) {
           </tr>
           <tr>
             <th>가입개월 수</th>
-            <td>${p.subscription_months || "-"}개월</td>
+            <td>${escapeHtml(p.subscription_months || "-")}개월</td>
           </tr>
           <tr>
             <th>자동이체 금액</th>
@@ -186,17 +189,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   const subNo = getSubNo();
 
   if (!subNo) {
-    document.getElementById("productDetail").innerHTML =
-      `<div class="empty-state">가입상품 번호가 없습니다.</div>`;
+    document.getElementById("productDetail").innerHTML = `
+      <div class="member-empty member-content-panel">
+        <p>가입상품 번호가 없습니다.</p>
+      </div>`;
     return;
   }
 
   try {
-    const body = await fetchApi(`/api/myproducts/${subNo}`);
+    const body = await fetchApi(`/api/myproducts/${encodeURIComponent(subNo)}`);
     renderDetail(body.data);
   } catch (e) {
-    document.getElementById("productDetail").innerHTML =
-      `<div class="empty-state">가입상품 상세 정보를 불러오지 못했습니다.</div>`;
+    document.getElementById("productDetail").innerHTML = `
+      <div class="member-empty member-content-panel">
+        <p>가입상품 상세 정보를 불러오지 못했습니다.</p>
+      </div>`;
     console.error(e);
   }
 });

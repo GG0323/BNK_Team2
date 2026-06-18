@@ -3,13 +3,12 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    
 </head>
 
 <body>
 
 <nav th:fragment="member_top_mypage" class="header-right">
-	<ul>
+    <ul>
         <li><a href="/">메인</a></li>
         <li><a href="/member/myaccounts">계좌조회</a></li>
         <li><a href="/member/myaccounts">거래내역</a></li>
@@ -20,7 +19,6 @@
         마이페이지
     </button>
 </nav>
-
 
 <nav th:fragment="member_mypage(currentTab)"
      class="sub-nav"

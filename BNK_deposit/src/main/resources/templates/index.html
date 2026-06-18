@@ -14,12 +14,11 @@
 
 <div th:replace="~{fragments/header :: header_default}"></div>
 
-
-
 <!-- 챗봇 -->
 <div class="custom-chatbot" id="trailChatbot">
     <img src="/images/buggi.png" alt="챗봇" onerror="this.style.display='none'; this.parentNode.innerText='🤖';">
 </div>
+
 <div class="chatbot-window" id="chatbotWindow">
     <div class="chatbot-header">
         <div class="chatbot-title">
@@ -28,20 +27,18 @@
         </div>
         <button type="button" class="close-btn" id="closeChatbot">✕</button>
     </div>
-    
+
     <div class="chatbot-messages">
         <div class="message system">
             <p>안녕하세요! BNK 부산은행 스마트 챗봇 부기입니다. 무엇을 도와드릴까요?</p>
         </div>
     </div>
-    
+
     <div class="chatbot-input-area">
         <input type="text" placeholder="질문 내용을 입력해주세요..." id="chatbotInput">
         <button type="button" id="sendBtn">전송</button>
     </div>
 </div>
-
-
 
 <main class="main">
 
@@ -102,9 +99,6 @@
             </div>
         </div>
     </section>
-	
-
-
 
     <!-- Main Services -->
     <section class="service-section">
@@ -127,11 +121,11 @@
                 <p>예금, 적금, 대출 등 전체 상품을 한눈에 확인할 수 있어요.</p>
             </a>
 
-            <button type="button" class="service-card" onclick="alert('준비중입니다.')">
-                <span class="service-badge">AI</span>
-                <strong>AI 맞춤 상품 찾기</strong>
-                <p>내 조건과 목적에 맞는 상품을 추천받을 수 있어요.</p>
-            </button>
+            <a th:href="@{/finance/financedictionary}" class="service-card">
+                <span class="service-badge">Dictionary</span>
+                <strong>금융 용어 사전</strong>
+                <p>어려운 예금·적금·금리 용어를 쉽고 빠르게 확인해보세요.</p>
+            </a>
 
             <button type="button" class="service-card" onclick="openCalculatorPopup()">
                 <span class="service-badge">Calc</span>
@@ -144,10 +138,10 @@
 
     <!-- Quick Links -->
     <section class="quick-section">
-        <a href="javascript:void(0)" class="quick-link" onclick="alert('준비중입니다.')">
+        <a th:href="@{/member/reservation}" class="quick-link">
             <div>
-                <strong>빠른조회 서비스</strong>
-                <p>계좌와 금융정보를 간편하게 확인</p>
+                <strong>예약 페이지</strong>
+                <p>상담 또는 방문 예약을 간편하게 신청</p>
             </div>
             <span>→</span>
         </a>
@@ -160,16 +154,14 @@
             <span>→</span>
         </a>
 
-        <a th:href="@{/inquiry/faqPage}" class="quick-link" onclick="alert('준비중입니다.')">
+        <a th:href="@{/inquiry/faqPage}" class="quick-link">
             <div>
-                <strong>FaQ</strong>
-                <p>안전한 금융생활을 위한 안내</p>
+                <strong>FAQ</strong>
+                <p>자주 묻는 질문과 이용 안내 확인</p>
             </div>
             <span>→</span>
         </a>
     </section>
-    
-
 
 </main>
 

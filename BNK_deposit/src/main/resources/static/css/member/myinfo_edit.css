@@ -1,291 +1,342 @@
 @charset "UTF-8";
 
-/**
- * ==========================================
- * [1] 기본 초기화 및 공통 색상 변수
- * ==========================================
- */
-:root {
-    --primary-red: #e3000f;
-    --text-dark: #222;
-    --text-gray: #666;
-    --border-color: #eaeaea;
-    --bg-light: #f8f9fa;
-    --bg-pink: #fdf5f6;
+/* ================================
+   개인정보 수정 페이지 전용
+================================ */
+
+.edit-container .page-header {
+    margin-bottom: 28px;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+.form-section,
+.security-section {
+    margin-bottom: 32px;
+    padding: 30px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background-color: #fff;
+    box-shadow: var(--shadow-panel);
 }
 
-body {
-    background-color: #ffffff;
-    color: var(--text-dark);
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 28px;
+    margin-bottom: 15px;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-ul {
-    list-style: none;
+.full-width {
+    grid-column: 1 / -1;
 }
 
-/**
- * ==========================================
- * [2] 최상단 회원 헤더 영역
- * mypage.css 기준으로 통일
- * ==========================================
- */
-.top-header {
-    background-color: #000;
-    color: #fff;
-    padding: 20px 0;
+.form-group label {
+    font-size: 14px;
+    font-weight: 800;
+    color: #333;
 }
 
-.header-inner {
-    max-width: 1000px;
-    margin: 0 auto;
+.form-group label.required::after {
+    content: ' *';
+    color: var(--primary-red);
+}
+
+.form-control {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 16px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background-color: #fff;
+    color: #333;
+
+    font-size: 14px;
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: rgba(227, 0, 15, 0.4);
+    box-shadow: 0 0 0 4px rgba(227, 0, 15, 0.06);
+}
+
+.form-control.readonly {
+    background-color: var(--bg-readonly);
+    color: var(--text-gray);
+    cursor: not-allowed;
+}
+
+.form-control.readonly:focus {
+    border-color: var(--border-color);
+    box-shadow: none;
+}
+
+.help-text {
+    font-size: 12px;
+    color: var(--primary-red);
+    margin-top: 2px;
+}
+
+.email-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.address-row {
+    display: flex;
+    gap: 10px;
+}
+
+.security-section h4 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    font-weight: 900;
+}
+
+.security-box {
+    padding: 26px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 22px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background-color: var(--bg-light);
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-left h1 {
-    font-size: 24px;
+.sec-info h5 {
+    font-size: 15px;
+    margin-bottom: 8px;
     font-weight: 900;
-    letter-spacing: 1px;
 }
 
-.header-title-group h2 {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-
-.header-title-group p {
-    font-size: 11px;
-    color: #aaa;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.header-right ul {
-    display: flex;
-    gap: 15px;
+.sec-info p {
     font-size: 13px;
-    color: #ccc;
+    color: var(--text-gray);
+    line-height: 1.55;
 }
 
-.header-right ul li::after {
-    content: '|';
-    margin-left: 15px;
-    color: #555;
-}
-
-.header-right ul li:last-child::after {
-    display: none;
-}
-
-.btn-mypage-header {
-    background-color: #fff;
-    color: #000;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.header-title-group h2 {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 2px;
-    color: #fff;
-}
-
-.header-title-group p {
-    font-size: 11px;
-    color: #aaa;
-}
-
-/* fragments/nav :: member_top_mypage 에서 출력되는 오른쪽 메뉴 */
-.header-right {
+.bottom-btn-group {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.header-right ul {
-    display: flex;
-    gap: 15px;
-    font-size: 13px;
-    color: #ccc;
-}
-
-.header-right ul li::after {
-    content: '|';
-    margin-left: 15px;
-    color: #555;
-}
-
-.header-right ul li:last-child::after {
-    display: none;
-}
-
-.header-right a {
-    color: #ccc;
-    text-decoration: none;
-}
-
-.header-right a:hover {
-    color: #fff;
-}
-
-.btn-mypage-header {
-    background-color: #fff;
-    color: #000;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/**
- * ==========================================
- * [3] 정보 수정 폼 영역
- * ==========================================
- */
-.edit-container { max-width: 800px; margin: 0 auto 100px; }
-.page-header { margin-bottom: 40px; }
-.page-header h3 { font-size: 22px; margin-bottom: 10px; }
-.page-header p { font-size: 14px; color: var(--text-gray); }
-
-.form-section { margin-bottom: 50px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px 30px; margin-bottom: 15px; }
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-.full-width { grid-column: 1 / -1; }
-
-.form-group label { font-size: 14px; font-weight: 600; color: #333; }
-.form-group label.required::after { content: ' *'; color: var(--primary-red); }
-
-/* 입력창 공통 스타일 */
-.form-control {
-    width: 100%; padding: 14px 16px; border: 1px solid var(--border-color);
-    border-radius: 6px; font-size: 14px; color: #333; outline: none; transition: border-color 0.2s;
-}
-.form-control:focus { border-color: #555; }
-.form-control.readonly { background-color: var(--bg-readonly); color: var(--text-gray); cursor: not-allowed; }
-.form-control.readonly:focus { border-color: var(--border-color); }
-
-.help-text { font-size: 12px; color: var(--text-light); margin-top: 2px; }
-
-/* 주소 찾기 행 */
-.address-row { display: flex; gap: 10px; }
-
-
-/**
- * ==========================================
- * [4] 보안 설정 박스 (비밀번호 변경 안내)
- * ==========================================
- */
-.security-section { margin-bottom: 40px; }
-.security-section h4 { font-size: 16px; margin-bottom: 15px; }
-.security-box {
-    border: 1px solid var(--border-color); border-radius: 8px; padding: 30px;
-    display: flex; justify-content: space-between; align-items: center; background-color: #fafafa;
-}
-.sec-info h5 { font-size: 15px; margin-bottom: 8px; }
-.sec-info p { font-size: 13px; color: var(--text-gray); line-height: 1.5; }
-
-
-/**
- * ==========================================
- * [5] 버튼 공통 스타일
- * ==========================================
- */
-/* 기본 폼 하단 버튼 그룹 */
-.bottom-btn-group { display: flex; justify-content: center; gap: 15px; }
 .bottom-btn-group button {
-    padding: 16px 0; border: none; border-radius: 8px; 
-    font-size: 15px; font-weight: bold; cursor: pointer; transition: filter 0.2s;
-}
-.bottom-btn-group button:hover { filter: brightness(0.9); }
+    min-height: 46px;
+    padding: 0 24px;
 
-.btn-gray { background-color: #f0f0f0; color: #333; width: 120px; }
-.btn-red { background-color: var(--primary-red); color: #fff; width: 150px; }
-.btn-black { background-color: #222; color: #fff; width: 180px; }
-.btn-black-small { background-color: #000; color: #fff; border: none; padding: 0 25px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-.btn-black-outline { background-color: #000; color: #fff; border: 1px solid #000; padding: 12px 25px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer; }
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+
+    transition:
+        transform 0.26s var(--ease-soft),
+        box-shadow 0.26s var(--ease-soft),
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.bottom-btn-group button:hover {
+    transform: translate3d(0, -2px, 0);
+}
+
+.btn-gray {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    min-width: 120px;
+}
+
+.btn-red {
+    background-color: var(--primary-red);
+    color: #fff;
+    border: none;
+    min-width: 140px;
+}
+
+.btn-red:hover {
+    background-color: var(--primary-red-dark);
+    box-shadow: 0 12px 24px rgba(227, 0, 15, 0.16);
+}
+
+.btn-black {
+    background-color: #222;
+    color: #fff;
+    border: none;
+    min-width: 170px;
+}
+
+.btn-black:hover {
+    background-color: #000;
+}
+
+.btn-black-small {
+    flex: 0 0 auto;
+    min-height: 48px;
+    padding: 0 24px;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: #000;
+    color: #fff;
+
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-black-outline {
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 0 22px;
+
+    border: 1px solid #000;
+    border-radius: 999px;
+
+    background-color: #000;
+    color: #fff;
+
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
 .btn-withdraw {
     background-color: #fff;
     color: var(--primary-red);
     border: 1px solid var(--primary-red) !important;
-    width: 150px;
+    min-width: 140px;
 }
 
-/**
- * ==========================================
- * [6] 모달(Modal) 팝업창 스타일
- * ==========================================
- */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); z-index: 9999;
-    display: flex; justify-content: center; align-items: center;
+.btn-withdraw:hover {
+    background-color: var(--bg-pink);
 }
+
+/* ================================
+   모달
+================================ */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    background-color: rgba(0, 0, 0, 0.5);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .modal-content {
-    background-color: #fff; width: 90%; max-width: 500px; 
-    border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    display: flex; flex-direction: column;
+    width: 90%;
+    max-width: 500px;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+    overflow: hidden;
 }
 
 .modal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 20px; background-color: #f8f9fa; border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 20px;
+    background-color: var(--bg-light);
+    border-bottom: 1px solid var(--border-color);
 }
-.modal-header h4 { font-size: 16px; color: #333; }
-.btn-close { background: none; border: none; font-size: 24px; color: #999; cursor: pointer; transition: color 0.2s; }
-.btn-close:hover { color: #e3000f; }
 
-/* 주소검색 모달 바디 */
-.modal-body { width: 100%; height: 450px; }
+.modal-header h4 {
+    font-size: 16px;
+    color: #333;
+}
 
-/* 비밀번호 모달 전용 바디 */
-.pw-body { height: auto; padding: 25px 30px; }
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
 
+.btn-close:hover {
+    color: var(--primary-red);
+}
 
-/**
- * ==========================================
- * [7] 유틸리티 클래스 (여백 및 알림)
- * ==========================================
- */
-.mb-10 { margin-bottom: 15px; }
-.mb-20 { margin-bottom: 25px; }
+.modal-body {
+    width: 100%;
+    height: 450px;
+}
+
+.pw-body {
+    height: auto;
+    padding: 25px 30px;
+}
+
+.mb-10 {
+    margin-bottom: 15px;
+}
+
+.mb-20 {
+    margin-bottom: 25px;
+}
 
 .error-text {
-    color: var(--primary-red); font-size: 12px; margin-top: 5px; display: block; 
+    color: var(--primary-red);
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
 }
+
 .alert-box {
-    padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 900;
 }
+
 .alert-box.error {
-    background-color: #fff0f0; color: #cc2b35; border: 1px solid #cc2b35;
+    background-color: #fff0f0;
+    color: #cc2b35;
+    border: 1px solid #cc2b35;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .email-row,
+    .address-row,
+    .security-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

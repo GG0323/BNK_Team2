@@ -40,19 +40,21 @@ function getDdayText(p) {
 
   return "-";
 }
-function productCard(p) {
+
+function productCard(p, index = 0) {
   const isSavings = p.product_type === "SAVINGS";
   const typeClass = isSavings ? "badge-red" : "badge-black";
   const typeText = isSavings ? "적금" : "예금";
 
-  const rate = p.applied_interest_rate;
+  const rate = p.applied_interest_rate ?? "-";
   const maturity = formatDateDot(p.maturity_date);
   const displayStatus = getDisplayStatus(p);
   const ddayText = getDdayText(p);
 
   return `
-    <div class="product-card" style="cursor: pointer;"
-         onclick="location.href='/member/myproducts/detail?subNo=${p.subscription_no}'">
+    <div class="product-card motion-card shine-card"
+         style="cursor: pointer; --card-delay:${index * 70}ms"
+         onclick="location.href='/member/myproducts/detail?subNo=${encodeURIComponent(p.subscription_no)}'">
 
       <div class="prod-info-sec">
         <span class="type-badge ${typeClass}">${escapeHtml(typeText)}</span>
@@ -69,7 +71,7 @@ function productCard(p) {
 
       <div class="prod-data-sec">
         <span class="data-label">적용금리 / 만기일</span>
-        <strong class="data-value">연 ${rate}% / ${maturity}</strong>
+        <strong class="data-value">연 ${escapeHtml(rate)}% / ${maturity}</strong>
       </div>
 
       <div class="prod-status-sec">
@@ -82,22 +84,27 @@ function renderProducts(list) {
   const container = document.getElementById("productList");
 
   if (!list || list.length === 0) {
-    container.innerHTML = `<div class="empty-state">가입하신 상품 내역이 없습니다.</div>`;
+    container.innerHTML = `
+      <div class="member-empty">
+        <p>가입하신 상품 내역이 없습니다.</p>
+      </div>`;
     return;
   }
 
-  container.innerHTML = list.map(productCard).join("");
+  container.innerHTML = list.map((product, index) => productCard(product, index)).join("");
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   activateTab();
-  
+
   try {
     const body = await fetchApi("/api/myproducts");
-    renderProducts(body.data);
+    renderProducts(body.data || []);
   } catch (e) {
-    document.getElementById("productList").innerHTML =
-      `<div class="empty-state">상품 정보를 불러오지 못했습니다.</div>`;
+    document.getElementById("productList").innerHTML = `
+      <div class="member-empty">
+        <p>상품 정보를 불러오지 못했습니다.</p>
+      </div>`;
     console.error(e);
   }
 });
