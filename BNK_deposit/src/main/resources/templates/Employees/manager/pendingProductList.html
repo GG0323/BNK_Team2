@@ -22,51 +22,13 @@
 
 	<tbody id="listBody"></tbody>
 </table>
+	
 
-	<script>
-		fetch('/api/manager/product/pendingList', {
-			method: "GET"
-		})
-		.then((res) => {
-			if (!res.ok) {
-				throw new Error(res.status);
-			}
 
-			return res.json();
-		})
-		.then((rows) => {
-			const tbody = document.getElementById('listBody');
-
-			if (rows.length === 0) {
-				tbody.innerHTML = '<tr><td colspan="9">대기 중인 상품이 없습니다.</td></tr>';
-				return;
-			}
-
-			rows.forEach((row) => {
-				const tr = document.createElement('tr');
-
-				tr.innerHTML = `
-					<td>${row.product_no}</td>
-					<td>${row.product_name}</td>
-					<td>${row.product_type}</td>
-					<td>${row.created_at ?? ''}</td>
-					<td>${row.has_join_condition}</td>
-					<td>${row.has_description}</td>
-					<td>${row.has_interest_rate}</td>
-					<td>${row.has_terms}</td>
-					<td>
-						<a href="/employee/manager/pendingProductDetail?product_no=${row.product_no}">보기</a>
-					</td>
-				`;
-
-				tbody.appendChild(tr);
-			});
-			
-		})
-		.catch((err) => {
-			alert('조회 오류: ' + err.message);
-		});
-		
-	</script>
+	<script th:src="@{/js/employees/manager/pendingProductList.js}"></script>
+	
+	
+	
+	
 </body>
 </html>
