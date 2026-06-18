@@ -25,21 +25,20 @@
 
         <!-- Navigation -->
         <nav class="nav">
-            <a th:href="@{/}">홈</a>
-            <a th:href="@{/products}">금융상품</a>
-            <a th:href="@{/}">고객센터</a>
-
-            <!-- 상품검색 아이콘 버튼 -->
-            <button type="button"
-                    class="nav-search-btn"
-                    onclick="productSearch()"
-                    aria-label="상품검색">
-                <svg class="nav-search-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="10.5" cy="10.5" r="6.5"></circle>
-                    <line x1="15.5" y1="15.5" x2="21" y2="21"></line>
-                </svg>
-            </button>
-        </nav>
+		    <a th:href="@{/}">홈</a>
+		    <a th:href="@{/products}">금융상품</a>
+		    <a th:href="@{/finance/financedictionary}">금융용어사전</a>
+		
+		    <button type="button"
+		            class="nav-search-btn"
+		            onclick="productSearch()"
+		            aria-label="상품검색">
+		        <svg class="nav-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+		            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+		            <line x1="15.5" y1="15.5" x2="21" y2="21"></line>
+		        </svg>
+		    </button>
+		</nav>
 
         <!-- Header Utils -->
         <div class="header-utils">
