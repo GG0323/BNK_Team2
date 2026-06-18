@@ -4,39 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 내 정보 조회</title>
+
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
-    
-    <link rel="stylesheet" href="/css/member/myinfo.css">
+
+    <link rel="stylesheet" href="/css/member/member-common.css">
     <link rel="stylesheet" href="/css/member/member-nav.css">
-    
+    <link rel="stylesheet" href="/css/member/myinfo.css">
+
     <script src="/js/members/common.js" defer></script>
     <script src="/js/members/myinfo.js" defer></script>
+    <script th:src="@{/js/members/member-ui.js}" defer></script>
 </head>
 <body>
-	<div th:replace="~{fragments/header :: header_default}"></div>
+    <div th:replace="~{fragments/header :: header_default}"></div>
+
     <header class="top-header">
-	    <div class="header-inner">
-	        <div class="header-left">
-	            <div class="header-title-group">
-	                <h2>마이페이지</h2>
-	                <p>회원 정보 · 계좌 · 상품 가입 내역</p>
-	            </div>
-	        </div>
-	        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
-	    </div>
-	</header>
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="header-title-group">
+                    <h2>마이페이지</h2>
+                    <p>회원 정보 · 계좌 · 상품 가입 내역</p>
+                </div>
+            </div>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+        </div>
+    </header>
 
     <div th:replace="~{fragments/nav :: member_mypage('myinfo')}"></div>
 
     <main class="myinfo-container">
-
-        <section class="page-header">
+        <section class="page-header page-motion-row">
             <h3>내 정보 조회</h3>
             <p>로그인한 회원의 기본 정보를 조회합니다.</p>
         </section>
 
-        <section class="info-section">
+        <section class="info-section page-motion-row">
             <table class="info-table">
                 <tbody>
                     <tr><th>아이디</th><td id="f_login_id">-</td></tr>
@@ -54,12 +57,11 @@
             </table>
         </section>
 
-        <div class="btn-wrap">
+        <div class="btn-wrap page-motion-row">
             <button type="button" class="btn-black-large" onclick="location.href='/member/myinfo/edit'">개인정보 수정하기</button>
         </div>
-
     </main>
+
     <div th:replace="~{fragments/footer :: footer}"></div>
-    
 </body>
 </html>

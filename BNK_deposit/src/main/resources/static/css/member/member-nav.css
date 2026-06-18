@@ -22,45 +22,49 @@
     overflow: hidden;
 }
 
-.sub-nav::before { display: none; }
+.sub-nav::before {
+    display: none;
+}
 
 .tab-btn {
     flex: 1;
     height: 42px;
+
     border: none;
     border-radius: 999px;
+
     background-color: transparent;
     color: var(--text-gray);
+
     font-size: 13px;
     font-weight: 800;
     cursor: pointer;
+
     transition:
-        transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.32s var(--ease-soft),
         background-color 0.26s ease,
         color 0.26s ease;
 }
 
-.tab-btn:hover { transform: translate3d(0, -2px, 0); }
-.tab-btn.active { background-color: #e3000f; color: #fff; }
+.tab-btn:hover {
+    transform: translate3d(0, -2px, 0);
+}
 
-@media (max-width: 768px) {
-    .sub-nav {
-        width: min(100% - 32px, 1000px);
-        justify-content: flex-start;
-        overflow-x: auto;
-        border-radius: 18px;
-    }
-    .tab-btn { flex: 0 0 auto; min-width: 150px; }
+.tab-btn.active {
+    background-color: var(--primary-red);
+    color: #fff;
 }
 
 /* ================================
-   1) 페이지 전환 — 나갈 때 본문 페이드 아웃
-      member-ui.js 가 <html>.is-leaving 을 토글한다.
-      헤더·서브네비는 고정하고 본문(main)만 전환해서 새로고침 티를 줄인다.
+   페이지 이동 — 나갈 때 main 페이드 아웃
+   들어올 때 애니메이션은 member-common.css의
+   .page-motion-row가 담당한다.
 ================================ */
 
 main {
-    transition: opacity 0.22s ease, transform 0.22s ease;
+    transition:
+        opacity 0.24s ease,
+        transform 0.24s ease;
 }
 
 html.is-leaving main {
@@ -69,42 +73,19 @@ html.is-leaving main {
 }
 
 /* ================================
-   2) 첫 로드 진입 애니메이션 (페이드 인)
-      "효과" 정의는 여기 한 곳에만 둔다.
-      데이터 도착에 맞춘 개별 reveal 이 필요한 페이지(예: 마이페이지)는
-      각 페이지 JS 에서 따로 처리한다.
-      ※ fill-mode 는 both 가 아니라 backwards.
-        both 로 두면 끝난 뒤 opacity:1 을 계속 붙들어서
-        나갈 때 페이드 아웃(opacity:0)이 먹히지 않는다.
+   반응형
 ================================ */
 
-.myinfo-container,
-.edit-container,
-.accounts-container,
-.history-container,
-.products-container,
-.reservation-main {
-    animation: pageEnter 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
+@media (max-width: 768px) {
+    .sub-nav {
+        width: min(100% - 32px, 1000px);
+        justify-content: flex-start;
+        overflow-x: auto;
+        border-radius: 18px;
+    }
 
-@keyframes pageEnter {
-    from { opacity: 0; transform: translate3d(0, 22px, 0); }
-    to   { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-/* ================================
-   모션 줄이기 설정 시 전부 비활성
-================================ */
-
-@media (prefers-reduced-motion: reduce) {
-    main { transition: none; }
-
-    .myinfo-container,
-    .edit-container,
-    .accounts-container,
-    .history-container,
-    .products-container,
-    .reservation-main {
-        animation: none;
+    .tab-btn {
+        flex: 0 0 auto;
+        min-width: 150px;
     }
 }

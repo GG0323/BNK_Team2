@@ -1,165 +1,60 @@
 @charset "UTF-8";
 
-:root {
-    --primary-red: #e3000f;
-    --text-dark: #222;
-    --text-gray: #666;
-    --border-color: #eaeaea;
-    --bg-light: #f8f9fa;
-    --bg-pink: #fdf5f6;
-}
+/* ================================
+   내 정보 조회 페이지 전용
+================================ */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-}
-
-body {
-    background-color: #ffffff;
-    color: var(--text-dark);
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-ul {
-    list-style: none;
-}
-
-/* 1. 최상단 헤더 */
-.top-header {
-    background-color: #000;
-    color: #fff;
-    padding: 20px 0;
-}
-
-.header-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-left h1 {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 1px;
-}
-
-.header-title-group h2 {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-
-.header-title-group p {
-    font-size: 11px;
-    color: #aaa;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.header-right ul {
-    display: flex;
-    gap: 15px;
-    font-size: 13px;
-    color: #ccc;
-}
-
-.header-right ul li::after {
-    content: '|';
-    margin-left: 15px;
-    color: #555;
-}
-
-.header-right ul li:last-child::after {
-    display: none;
-}
-
-.btn-mypage-header {
-    background-color: #fff;
-    color: #000;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-
-/* 2. 메인 컨테이너 */
-.myinfo-container {
-    max-width: 1000px;
-    margin: 0 auto 100px;
-}
-
-.page-header {
-    margin-bottom: 30px;
-}
-
-.page-header h3 {
-    font-size: 20px;
-    margin-bottom: 8px;
-}
-
-.page-header p {
-    font-size: 13px;
-    color: var(--text-gray);
-}
-
-/* 3. 내 정보 테이블 */
 .info-section {
-    margin-bottom: 40px;
+    margin-bottom: 34px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    background-color: #fff;
+    box-shadow: var(--shadow-panel);
+    overflow: hidden;
 }
 
 .info-table {
     width: 100%;
-    border-top: 2px solid #222;
     border-collapse: collapse;
 }
 
-.info-table th, 
+.info-table th,
 .info-table td {
-    padding: 18px 20px;
+    padding: 18px 22px;
     font-size: 14px;
     border-bottom: 1px solid var(--border-color);
     text-align: left;
 }
 
+.info-table tr:last-child th,
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
 .info-table th {
-    width: 200px;
-    background-color: #fafafa;
+    width: 210px;
+    background-color: var(--bg-light);
     color: var(--text-gray);
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .info-table td {
     color: #333;
+    font-weight: 600;
 }
 
-/* 뱃지 스타일 (회원상태용) */
 .badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 26px;
     padding: 4px 12px;
-    border-radius: 20px;
+
+    border-radius: 999px;
     font-size: 11px;
-    font-weight: bold;
+    font-weight: 900;
 }
 
 .badge.red {
@@ -167,24 +62,51 @@ ul {
     color: #fff;
 }
 
-/* 4. 버튼 및 하단 노트 */
 .btn-wrap {
     text-align: center;
     margin-bottom: 60px;
 }
 
 .btn-black-large {
+    min-width: 180px;
+    height: 48px;
+    padding: 0 34px;
+
+    border: none;
+    border-radius: 999px;
+
     background-color: #222;
     color: #fff;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 25px;
+
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 900;
     cursor: pointer;
-    transition: background-color 0.2s;
+
+    transition:
+        transform 0.28s var(--ease-soft),
+        box-shadow 0.28s var(--ease-soft),
+        background-color 0.2s ease;
 }
 
 .btn-black-large:hover {
+    transform: translate3d(0, -2px, 0);
     background-color: #000;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 768px) {
+    .info-table th,
+    .info-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .info-table th {
+        padding-bottom: 8px;
+        border-bottom: none;
+    }
+
+    .info-table td {
+        padding-top: 8px;
+    }
 }
