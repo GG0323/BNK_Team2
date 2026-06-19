@@ -1,0 +1,256 @@
+@charset "UTF-8";
+
+/* ================================
+   마이페이지 - 문의 상세 (대화형)
+   - 변수/레이아웃/패널/버튼은 member-common.css 사용
+================================ */
+
+/* 목록으로 돌아가기 */
+.detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding: 8px 14px;
+
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+
+    color: var(--text-gray);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+
+    transition:
+        transform 0.26s var(--ease-soft),
+        color 0.22s ease,
+        border-color 0.22s ease;
+}
+
+.detail-back:hover {
+    transform: translate3d(0, -2px, 0);
+    color: var(--primary-red);
+    border-color: rgba(227, 0, 15, 0.3);
+}
+
+/* ================================
+   문의 헤더 카드
+================================ */
+
+.inquiry-detail-head-panel {
+    margin-bottom: 18px;
+}
+
+.detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.detail-category {
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+.detail-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.5;
+    color: var(--text-dark);
+}
+
+/* 상태 배지 (목록과 동일 규칙) */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.status-badge.is-done {
+    background-color: rgba(0, 179, 74, 0.12);
+    color: var(--badge-green);
+}
+
+.status-badge.is-progress {
+    background-color: var(--bg-pink);
+    color: var(--primary-red);
+    border: 1px solid rgba(227, 0, 15, 0.28);
+}
+
+.status-badge.is-received {
+    background-color: #f1f1f1;
+    color: #555;
+}
+
+/* ================================
+   메시지 스레드 (말풍선)
+================================ */
+
+.msg-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.msg-row {
+    display: flex;
+    animation: msgIn 0.4s var(--ease-soft) both;
+}
+
+.msg-row.is-user {
+    justify-content: flex-end;
+}
+
+.msg-row.is-staff {
+    justify-content: flex-start;
+}
+
+@keyframes msgIn {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 10px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.msg-col {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 74%;
+}
+
+.is-user .msg-col {
+    align-items: flex-end;
+}
+
+.is-staff .msg-col {
+    align-items: flex-start;
+}
+
+.msg-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+
+    font-size: 14px;
+    line-height: 1.65;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+/* 사용자(본인) = 오른쪽 빨강 말풍선 */
+.is-user .msg-bubble {
+    background-color: var(--primary-red);
+    color: #fff;
+    border-bottom-right-radius: 5px;
+}
+
+/* 담당자 = 왼쪽 흰색 말풍선 */
+.is-staff .msg-bubble {
+    background-color: #fff;
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 5px;
+}
+
+.msg-meta {
+    font-size: 11px;
+    color: var(--text-light-gray);
+}
+
+/* 시스템 안내문 (대기중 / 해결 등) */
+.msg-system {
+    margin: 14px 0 4px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-light-gray);
+}
+
+/* ================================
+   만족도 박스
+================================ */
+
+.satisfaction-box {
+    margin-top: 22px;
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background-color: var(--bg-light);
+    text-align: center;
+}
+
+.satisfaction-box p {
+    margin: 0 0 14px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.satisfaction-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ================================
+   추가 문의 입력창
+================================ */
+
+.msg-input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.msg-input-row input {
+    flex: 1;
+    height: 46px;
+    padding: 0 16px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    font-size: 14px;
+    color: var(--text-dark);
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.msg-input-row input::placeholder {
+    color: var(--text-light-gray);
+}
+
+.msg-input-row input:focus {
+    outline: none;
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 3px rgba(227, 0, 15, 0.16);
+}
+
+.msg-input-row .btn-member-red {
+    min-width: 96px;
+    height: 46px;
+}
+
+/* ================================
+   반응형
+================================ */
+
+@media (max-width: 768px) {
+    .msg-col {
+        max-width: 86%;
+    }
+}

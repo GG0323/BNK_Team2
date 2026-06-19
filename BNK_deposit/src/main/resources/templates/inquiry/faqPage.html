@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>BNK FAQ</title>
+	<link rel="stylesheet" th:href="@{/css/inquiry/faqPage.css}">
+	<th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+	<th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+	<script th:src="@{/js/inquiry/faqPage.js}"></script>
 </head>
 <body>
+<div th:replace="~{fragments/header :: header_default}"></div>
 
+<header class="faq-header">
+  <p class="eyebrow">고객지원</p>
+  <h1>자주 묻는 질문</h1>
+  <p class="sub">궁금한 점을 빠르게 찾아보세요</p>
+</header>
 
-
-
-faq리스트 불러오기까지 해둠, css 만들면 완성
-	
-	
 <div id="faqList"></div>
 <div class="pagination" id="pagination"></div>
 
 
-	
-	<script th:src:="@{/js/inquiry/faqPage.js}"></script>
-
-
-
-
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

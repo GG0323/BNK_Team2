@@ -1,5 +1,7 @@
 package com.example.bnk.controller.page;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -34,18 +36,17 @@ public class ReservationPageController {
     // 영업점 방문 예약 화면 (껍데기만 반환)
     @GetMapping("/reservation")
     public String rootMembersReservation(
-            @AuthenticationPrincipal String username,
+            Principal principal,
             Model model
-            ) {
-        // 비로그인 차단: username 이 null 이거나 "anonymousUser" 면 로그인 화면으로
-        if (username == null || "anonymousUser".equals(username)) {
+    ) {
+        if (principal == null || principal.getName() == null || principal.getName().isBlank()) {
             return "redirect:/loginPage";
         }
 
-        // 접속 로그 (로그인 사용자만)
+        String username = principal.getName();
+
         logService.build(logService.findByUserID(username), "member/reservation");
-        
-        // 카카오맵 키를 화면으로 전달
+
         model.addAttribute("kakaoMapKey", kakaoMapKey);
 
         return "reservation/reservation";
@@ -54,12 +55,14 @@ public class ReservationPageController {
     // 내 예약 목록 (추가)
     @GetMapping("/reservation/list")
     public String rootMembersReservationList(
-            @AuthenticationPrincipal String username,
-            Model model) {
-
-        if (username == null || "anonymousUser".equals(username)) {
+            Principal principal,
+            Model model
+    ) {
+        if (principal == null || principal.getName() == null || principal.getName().isBlank()) {
             return "redirect:/loginPage";
         }
+
+        String username = principal.getName();
 
         logService.build(logService.findByUserID(username), "member/reservation/list");
         model.addAttribute("pageName", "myreservation");

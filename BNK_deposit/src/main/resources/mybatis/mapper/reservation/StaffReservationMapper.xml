@@ -48,23 +48,26 @@
            AND status IN ('PENDING', 'CONFIRMED')
     </update>
 
-    <!-- 처리 로그 INSERT -->
-    <insert id="insertReservationLog" parameterType="map">
-        INSERT INTO TB_RESERVATION_LOG (
-            log_id, reservation_id,
-            actor_type, actor_no, employee_no,
-            action, after_status, reason,
-            new_branch_id, new_reserved_at,
-            created_at
-        ) VALUES (
-            SEQ_TB_RESERVATION_LOG.NEXTVAL,
-            #{reservationId},
-            'EMPLOYEE', #{employeeNo}, #{employeeNo},
-            #{action}, #{afterStatus}, #{reason},
-            #{newBranchId, jdbcType=NUMERIC},
-            #{newReservedAt, jdbcType=TIMESTAMP},
-            SYSDATE
-        )
-    </insert>
+    <insert id="insertReservationLog">
+	    INSERT INTO TB_RESERVATION_LOG (
+	        log_id, reservation_id,
+	        actor_type, actor_no, employee_no,
+	        action, after_status, reason,
+	        new_branch_id, new_reserved_at,
+	        created_at
+	    ) VALUES (
+	        SEQ_TB_RESERVATION_LOG.NEXTVAL,
+	        #{reservationId, jdbcType=NUMERIC},
+	        'EMPLOYEE',
+	        #{actorNo, jdbcType=NUMERIC},
+	        #{employeeNo, jdbcType=NUMERIC},
+	        #{action, jdbcType=VARCHAR},
+	        #{afterStatus, jdbcType=VARCHAR},
+	        #{reason, jdbcType=VARCHAR},
+	        #{newBranchId, jdbcType=NUMERIC},
+	        #{newReservedAt, jdbcType=TIMESTAMP},
+	        SYSDATE
+	    )
+	</insert>
 
 </mapper>
