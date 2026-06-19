@@ -1,34 +1,60 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>미승인 상품 리스트</title>
+	<meta charset="UTF-8">
+	<title>미승인 상품 리스트</title>
+	
+	<link rel="stylesheet" th:href="@{/css/employee/manager/pendingProductList.css}">
+
 </head>
 <body>
-<table border="1" cellpadding="6">
-	<thead>
-		<tr>
-			<th>상품번호</th>
-			<th>상품명</th>
-			<th>유형</th>
-			<th>등록일</th>
-			<th>가입조건</th>
-			<th>설명</th>
-			<th>금리</th>
-			<th>약관</th>
-			<th>상세</th>
-		</tr>
-	</thead>
 
-	<tbody id="listBody"></tbody>
-</table>
-	
 
+
+	<div class="main">
+
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+
+		<div class="breadcrumb">
+			관리자 페이지 › <span class="current">미승인 상품 리스트</span>
+		</div>
+
+		<div class="page-header">
+			<div class="page-title">미승인 상품 리스트</div>
+			<span class="total-count" id="totalCount">전체 0건</span>
+		</div>
+
+		<div class="table-card">
+			<div class="table-wrap">
+				<table>
+					<thead>
+						<tr>
+							<th>상품번호</th>
+							<th>상품명</th>
+							<th>유형</th>
+							<th>등록일</th>
+							<th>금리</th>
+							<th>약관</th>
+							<th>설명</th>
+							<th>가입조건</th>
+							<th>상세</th>
+						</tr>
+					</thead>
+					<tbody id="listBody">
+						<tr class="empty-row">
+							<td colspan="9">데이터를 불러오는 중...</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
 
 	<script th:src="@{/js/employees/manager/pendingProductList.js}"></script>
-	
-	
-	
-	
+
 </body>
 </html>
+
