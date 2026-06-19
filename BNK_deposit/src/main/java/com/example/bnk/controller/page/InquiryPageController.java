@@ -33,7 +33,7 @@ public class InquiryPageController {
 	
 	
 	
-	// ==========================
+	// ========================== 직원용 페이지
 	@GetMapping("/inquiryAnswerList")
 	public String inquiryAnswerList() {
 		return "inquiry/inquiryAnswerList";
@@ -42,6 +42,13 @@ public class InquiryPageController {
 	@GetMapping("/inquiryAnswer")
 	public String inquiryAnswer() {
 		return "inquiry/inquiryAnswer";
+	}
+	
+	 
+	//============================ 직원 faq후보 조회 페이지 /inquiry/faqCandidateList
+	@GetMapping("/faqCandidateList")
+	public String  faqCandidateList() {
+		return "Employees/staff/faq/faqCandidateList";
 	}
 	
 	

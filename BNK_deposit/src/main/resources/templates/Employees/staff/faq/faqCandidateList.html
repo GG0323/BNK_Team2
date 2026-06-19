@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>FAQ 후보 검수</title>
+	<link rel="stylesheet" th:href="@{/css/employee/staff/faqCandidateList.css}">
+</head>
+<body>
+
+	<aside class="sidebar">
+		<div class="logo">BNK <span>직원</span> 페이지</div>
+		<a class="nav-item" th:href="@{/employee/staff/staffPage}">메인 페이지</a>
+		<a class="nav-item active" th:href="@{/inquiry/faqCandidateList}">FAQ 후보 검수</a>
+	</aside>
+
+	<div class="main">
+
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+
+		<div class="breadcrumb">
+			직원 페이지 › <span class="current">FAQ 후보 검수</span>
+		</div>
+
+		<div class="page-header">
+			<div class="page-title">FAQ 후보 검수 <span class="page-sub">대기</span></div>
+			<div class="header-actions">
+				<span class="total-count" id="totalCount">전체 0건</span>
+				<button class="btn-refresh" id="refreshBtn" onclick="refresh()">
+					FAQ 후보 갱신
+				</button>
+			</div>
+		</div>
+
+		<div class="notice-box" id="spinner" style="display:none;">
+			<span class="spin">⟳</span> 문의를 분석하는 중입니다... (수십 초 소요될 수 있어요)
+		</div>
+
+		<div class="table-card">
+			<div class="table-wrap">
+				<table>
+					<thead>
+						<tr>
+							<th>대표 질문</th>
+							<th>카테고리</th>
+							<th>문의 건수</th>
+							<th>등록일</th>
+							<th>처리</th>
+						</tr>
+					</thead>
+					<tbody id="candidateBody">
+						<tr class="empty-row">
+							<td colspan="4">불러오는 중...</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="toast" id="toast"></div>
+	
+	<div class="modal-overlay" id="approveModal" style="display:none;">
+	    <div class="modal">
+	        <h3>FAQ로 등록</h3>
+	        <label>질문</label>
+	        <input type="text" id="modalQuestion" readonly>
+	        <label>답변 작성</label>
+	        <textarea id="modalAnswer" rows="5" placeholder="고객에게 보여줄 답변을 작성하세요"></textarea>
+	        <div class="modal-actions">
+	            <button class="btn-cancel" onclick="closeApprove()">취소</button>
+	            <button class="btn-submit" id="approveSubmit" onclick="submitApprove()">등록</button>
+	        </div>
+	    </div>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', loadList);
+
+		function showToast(msg, type = 'success') {
+			const t = document.getElementById('toast');
+			t.textContent = msg;
+			t.className = `toast ${type} show`;
+			setTimeout(() => { t.className = 'toast'; }, 3000);
+		}
+
+		function loadList() {
+			fetch('/api/inquiry/faqCandidates', { method: 'GET' })
+				.then(res => res.json())
+				.then(rows => {
+					console.log('목록불러오기!');
+
+					const body = document.getElementById('candidateBody');
+					const countEl = document.getElementById('totalCount');
+					countEl.textContent = `전체 ${rows.length}건`;
+
+					if (rows.length === 0) {
+						body.innerHTML = '<tr class="empty-row"><td colspan="4">대기 중인 후보가 없습니다.</td></tr>';
+						return;
+					}
+
+					body.innerHTML = rows.map(c => `
+						<tr>
+							<td>${c.repQuestion}</td>
+							<td>${c.category ? `<span class="category-badge">${c.category}</span>` : '-'}</td>
+							<td class="count-val">${c.inquiryCount}</td>
+							<td class="date-val">${(c.createdAt ?? '').substring(0, 10)}</td>
+							<td>
+								<button class="btn-approve" onclick="openApprove(${c.candidateNo}, '${c.repQuestion.replace(/'/g, "\\'")}')">승인</button>
+				            	<button class="btn-reject" onclick="reject(${c.candidateNo})">반려</button>
+							</td>
+						</tr>
+					`).join('');
+				})
+				.catch(e => {
+					console.error(e);
+					document.getElementById('candidateBody').innerHTML =
+						'<tr class="empty-row"><td colspan="4">데이터를 불러오지 못했습니다.</td></tr>';
+				});
+		}
+
+		function refresh() {
+			const btn = document.getElementById('refreshBtn');
+			const spinner = document.getElementById('spinner');
+			btn.disabled = true;
+			spinner.style.display = 'flex';
+
+			fetch('/api/inquiry/refresh', { method: 'POST' })
+			.then(res => res.json())
+			.then(() => {
+				loadList();
+				showToast('FAQ 후보 목록이 갱신되었습니다.', 'success');
+			})
+			.catch(() => {
+				showToast('갱신 중 오류가 발생했습니다.', 'error');
+			})
+			.finally(() => {
+				btn.disabled = false;
+				spinner.style.display = 'none';
+			});
+		}
+		
+		function reject(no) {
+			if(!confirm('이 후보를 반려할까요? 반려하면 목록에서 사라집니다.')) {
+				return;
+			}
+			
+			fetch(`/api/inquiry/faqCandidates/${no}/reject`, {
+				method: 'POST' 
+			})
+	        .then(res => res.json())
+	        .then(() => {
+	            loadList();   // 새로고침 → 반려된 건 '대기'가 아니라 목록에서 빠짐
+	            showToast('후보를 반려했습니다.', 'success');
+	        })
+	        .catch(() => {
+	            showToast('반려 중 오류가 발생했습니다.', 'error');
+	        });
+			
+		}
+		
+		// 승인용 
+		let approvingNo = null;
+
+		function openApprove(no, question) {
+		    approvingNo = no;
+		    document.getElementById('modalQuestion').value = question;
+		    document.getElementById('modalAnswer').value = '';
+		    document.getElementById('approveModal').style.display = 'flex';
+		}
+
+		function closeApprove() {
+		    document.getElementById('approveModal').style.display = 'none';
+		    approvingNo = null;
+		}
+
+		function submitApprove() {
+		    const question = document.getElementById('modalQuestion').value;
+		    const answer = document.getElementById('modalAnswer').value.trim();
+		    if (!answer) {
+		        showToast('답변을 입력해주세요.', 'error');
+		        return;
+		    }
+
+		    const btn = document.getElementById('approveSubmit');
+		    btn.disabled = true;   // 처리 중 중복클릭 방지 (파이썬 호출이라 몇 초 걸림)
+
+		    fetch(`/api/inquiry/faqCandidates/${approvingNo}/approve`, {
+		        method: 'POST',
+		        headers: { 'Content-Type': 'application/json' },
+		        body: JSON.stringify({ question, answer })
+		    })
+	        .then(res => res.json())
+	        .then(data => {
+	            if (data.ok) {
+	                closeApprove();
+	                loadList();
+	                showToast('FAQ로 등록되었습니다.', 'success');
+	            } else {
+	                showToast(data.message || '등록에 실패했습니다.', 'error');
+	            }
+	        })
+	        .catch(() => showToast('등록 중 오류가 발생했습니다.', 'error'))
+	        .finally(() => { btn.disabled = false; });
+		}
+		
+		
+		
+		
+		
+		
+	</script>
+
+
+
+
+
+</body>
+</html>

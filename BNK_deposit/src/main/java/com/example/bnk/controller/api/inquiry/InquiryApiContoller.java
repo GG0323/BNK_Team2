@@ -1,22 +1,26 @@
 package com.example.bnk.controller.api.inquiry;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.dto.inquiry.FaqCandidateDto;
 import com.example.bnk.dto.inquiry.FaqDto;
 import com.example.bnk.dto.inquiry.InquiryDto;
 import com.example.bnk.dto.inquiry.InquiryMsgDto;
 import com.example.bnk.dto.inquiry.InquiryMsgListDto;
+import com.example.bnk.service.inquiry.FaqCandidateService;
 import com.example.bnk.service.inquiry.FaqService;
 import com.example.bnk.service.inquiry.InquiryService;
 
@@ -28,6 +32,8 @@ public class InquiryApiContoller {
 	private FaqService faqService;
 	@Autowired
 	private InquiryService inquiryService;
+	@Autowired
+	private FaqCandidateService candidateService;
 	
 	// faq 페이지 진입시 faq 목록을 불러오는 컨트롤러
 	@GetMapping("/faq")
@@ -150,10 +156,39 @@ public class InquiryApiContoller {
 	}
 
 	
+	//문의 사항 모아서 정리하기   /api/inquiry
 	
+	// faq후보 DB 테이블 조회   
+	@GetMapping("/faqCandidates")
+	public List<FaqCandidateDto> getPendingCandidates() {
+        return candidateService.getPendingCandidates();
+    }
 	
+	// api 호출버튼 빙글빙글 파이선에서 DB값을 조회하고 ai에 넘겨서 목록 만들고 DB에 저장
+	@PostMapping("/refresh")
+    public Map<String, Object> refresh() {
+        return candidateService.triggerRefresh();
+    }
 	
+	// 반려 버튼
+	@PostMapping("/faqCandidates/{candidateNo}/reject")
+	public  Map<String, Object> reject(
+			@PathVariable("candidateNo") Long candidateNo
+			) {
+	    candidateService.rejectCandidate(candidateNo);
+	    return Map.of("ok", true, "candidateNo", candidateNo);
+	}
 	
+	// 승인 버튼
+	@PostMapping("/faqCandidates/{candidateNo}/approve")
+	public Map<String, Object> approve(
+	        @PathVariable("candidateNo") Long candidateNo,
+	        @RequestBody Map<String, String> req
+	        ) {
+	    String question = req.get("question");
+	    String answer = req.get("answer");
+	    return candidateService.approveCandidate(candidateNo, question, answer);
+	}
 	
 	
 	
