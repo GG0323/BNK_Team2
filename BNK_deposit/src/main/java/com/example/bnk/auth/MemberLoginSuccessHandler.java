@@ -1,7 +1,6 @@
 package com.example.bnk.auth;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.security.core.Authentication;
@@ -77,6 +76,7 @@ public class MemberLoginSuccessHandler implements AuthenticationSuccessHandler{
 		// Cookie에 토큰 저장
 		Cookie cookie = new Cookie("bnk_token", token);
 		cookie.setPath("/");
+		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
 		
 		// 로그인 성공 데이터 보내기

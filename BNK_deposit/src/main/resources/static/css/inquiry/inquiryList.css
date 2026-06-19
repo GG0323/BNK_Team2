@@ -1,0 +1,141 @@
+@charset "UTF-8";
+
+/* ================================
+   마이페이지 - 문의 내역 전용 스타일
+   - 변수/레이아웃/패널/버튼/빈 상태는 member-common.css 사용
+   - 여기서는 목록 행과 상태 배지만 정의
+================================ */
+
+/* 제목 + 새 문의 버튼 한 줄 배치 */
+.inquiry-head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.inquiry-head-row .btn-member-red {
+    flex-shrink: 0;
+}
+
+/* 목록 패널: 행이 모서리까지 채워지도록 패딩 제거 */
+.inquiry-list-panel {
+    padding: 0;
+}
+
+/* ================================
+   개별 문의 행
+================================ */
+
+.inquiry-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--border-color);
+
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.26s ease;
+
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    animation: inquiryItemIn 0.5s var(--ease-soft) forwards;
+    animation-delay: var(--item-delay, 0ms);
+}
+
+.inquiry-item:last-child {
+    border-bottom: none;
+}
+
+.inquiry-item:hover {
+    background-color: var(--bg-pink);
+}
+
+@keyframes inquiryItemIn {
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.inquiry-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.inquiry-category {
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+.inquiry-date {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-light-gray);
+}
+
+.inquiry-title {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.5;
+    color: var(--text-dark);
+}
+
+/* ================================
+   상태 배지
+================================ */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 4px 12px;
+
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* 답변 완료 */
+.status-badge.is-done {
+    background-color: rgba(0, 179, 74, 0.12);
+    color: var(--badge-green);
+}
+
+/* 처리 중 */
+.status-badge.is-progress {
+    background-color: var(--bg-pink);
+    color: var(--primary-red);
+    border: 1px solid rgba(227, 0, 15, 0.28);
+}
+
+/* 접수 완료(기본) */
+.status-badge.is-received {
+    background-color: #f1f1f1;
+    color: #555;
+}
+
+/* 빈 상태 안의 버튼 간격 */
+.member-empty .btn-member-red {
+    margin-top: 6px;
+}
+
+/* ================================
+   반응형
+================================ */
+
+@media (max-width: 768px) {
+    .inquiry-item {
+        padding: 18px;
+    }
+
+    .inquiry-date {
+        margin-left: 0;
+    }
+}

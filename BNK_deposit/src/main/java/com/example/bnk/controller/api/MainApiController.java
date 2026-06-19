@@ -1,5 +1,7 @@
 package com.example.bnk.controller.api;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.service.member.EmailVerificationService;
 import com.example.bnk.service.member.MemberService;
+import com.example.bnk.utils.JwtUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -21,6 +27,9 @@ public class MainApiController {
 	
 	@Autowired
 	private EmailVerificationService emailVerificationService;
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 	
 	@PostMapping("/2/member")
 	public ResponseEntity<Boolean> signup(BankMemberDto dto){
@@ -59,6 +68,38 @@ public class MainApiController {
 	@GetMapping("/1/auth")
 	public ResponseEntity<Boolean> checkAuth(@AuthenticationPrincipal String username){
 		return ResponseEntity.ok("anonymousUser".equals(username));
+	}
+	
+	@GetMapping("/auth/session-remaining")
+	public ResponseEntity<Map<String, Object>> sessionRemaining(HttpServletRequest request) {
+		String token = findTokenFromCookies(request, "bnk_token");
+		
+		if(token == null || !jwtUtil.isVaild(token)) {
+			return ResponseEntity.ok(Map.of(
+					"authenticated", false,
+					"remainingSeconds", 0
+			));
+		}
+		
+		return ResponseEntity.ok(Map.of(
+				"authenticated", true,
+				"remainingSeconds", jwtUtil.getRemainingSeconds(token)
+		));
+	}
+	
+	// 헤더 카운트다운에서 사용할 JWT 남은 시간 조회
+	private String findTokenFromCookies(HttpServletRequest request, String tokenName) {
+		Cookie[] cookies = request.getCookies();
+		
+		if(cookies == null) return null;
+		
+		for(Cookie ck : cookies) {
+			if(tokenName.equals(ck.getName())) {
+				return ck.getValue();
+			}
+		}
+		
+		return null;
 	}
 
 }

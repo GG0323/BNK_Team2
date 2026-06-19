@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.product.ProductSuggestionDto;
 import com.example.bnk.dto.product.suggestion.SuggestionListDto;
@@ -32,15 +33,15 @@ public class SuggestionReviewApiController {
 	// 나에게 온 제안서 리스트
 	@GetMapping("/suggestionList")
 	public List<SuggestionListDto> suggestionList(
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		
 		// 1. 내정보 가져오기 
-		EmployeeDto myInfo = empService.findByUsername(username);
+		EmployeeDto myInfo = empService.findByUsername(employeeD.getUsername());
 		
 		//로그 
 		String logKey = "사원 번호:"+myInfo.getEmployee_no();
-		logService.build(username, "SELECT", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 목록을 불러온다.");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 목록을 불러온다.");
 		// 2. 제안서 가져오기 
 		List<SuggestionListDto> list = sugService.mySuggestionList(myInfo.getEmployee_no());
 		
@@ -53,11 +54,11 @@ public class SuggestionReviewApiController {
 	@GetMapping("/suggestionReview")
 	public SuggestionListDto suggestionReview(
 			@RequestParam("suggestion_no")long suggestion_no,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		//로그
 		String logKey = "제안서 번호:"+suggestion_no;
-		logService.build(username, "SELECT", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 상세를 불러온다.");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 상세를 불러온다.");
 		
 		//제안서 번호로 검색 >> 작성한 사원의 정보 포함
 		SuggestionListDto view = sugService.suggestionReview(suggestion_no);
@@ -68,11 +69,11 @@ public class SuggestionReviewApiController {
 	@PostMapping("/approveSuggestion")
 	public int approveSuggestion(
 			@RequestBody ProductSuggestionDto dto,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		//로그
 		String logKey = "제안서 번호:"+dto.getSuggestion_no();
-		logService.build(username, "APPROVE", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 승인.");
+		logService.build(employeeD.getUsername(), "APPROVE", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 승인.");
 
 		int result = sugService.approveSuggestion(dto.getSuggestion_no());
 		return result;
@@ -84,11 +85,11 @@ public class SuggestionReviewApiController {
 	@PostMapping("/rejectSuggestion")
 	public int rejectSuggestion(
 			@RequestBody ProductSuggestionDto dto,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		//로그
 		String logKey = "제안서 번호:"+dto.getSuggestion_no();
-		logService.build(username, "REJECT", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 반려.");
+		logService.build(employeeD.getUsername(), "REJECT", "TB_PRODUCTS_SUGGESTION", logKey, " 제안서 반려.");
 		
 		int result = sugService.rejectSuggestion(dto.getSuggestion_no(), dto.getReject_reason());
 		return result;

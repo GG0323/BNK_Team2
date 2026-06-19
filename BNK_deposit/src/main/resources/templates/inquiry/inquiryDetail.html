@@ -1,39 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	
-	인쿼리 디테일스
-	http://localhost:8080/inquiry/inquiryList
-	<!-- 헤더 영역 -->
-	<div>
-	    <button onclick="history.back()">←</button>
-	    <div id="inquiryHeader"></div>
-	</div>
-	
-	<!-- 메시지 목록 -->
-	<div id="msgList"></div>
-	
-	
-	<!-- 답변 만족 여부 선택 (기본 숨김) -->
-	<div id="satisfactionBox" style="display:none">
-	    <p>답변이 도움이 되셨나요?</p>
-	    <button onclick="handleSatisfied()">✔ 해결됐어요</button>
-	    <button onclick="handleMoreInquiry()">✉ 추가 문의할게요</button>
-	</div>
-	<!-- 하단 입력창 -->
-	<div  id="inputBox" style="display:none">
-	    <input type="text" id="msgInput" placeholder="추가 문의 내용 입력...">
-	    <button onclick="sendMsg()">전송</button>
-	</div>
-	
-	
-	
-	<script th:src:="@{/js/inquiry/inquiryDetail.js}"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 문의 상세</title>
 
-	
+    <!-- 추가 문의(/api/inquiry/msg) POST에 필요한 CSRF 토큰 -->
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}">
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : ''}">
+
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+
+    <link rel="stylesheet" href="/css/member/member-common.css">
+    <link rel="stylesheet" href="/css/member/member-nav.css">
+    <link rel="stylesheet" href="/css/inquiry/inquiryDetail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="/js/members/common.js" defer></script>
+    <script th:src="@{/js/members/member-ui.js}" defer></script>
+    <script th:src="@{/js/inquiry/inquiryDetail.js}" defer></script>
+</head>
+
+<body>
+    <div th:replace="~{fragments/header :: header_default}"></div>
+
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="header-title-group">
+                    <h2>문의 상세</h2>
+                    <p>문의 내용과 답변</p>
+                </div>
+            </div>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+        </div>
+    </header>
+
+    <div th:replace="~{fragments/nav :: member_mypage('myinquiry')}"></div>
+
+    <main class="mypage-container">
+        <button type="button" class="detail-back" onclick="location.href='/inquiry/inquiryList'">
+            <i class="fa-solid fa-arrow-left"></i> 목록으로
+        </button>
+
+        <!-- 문의 헤더 (상태/카테고리/제목) : JS가 채움 -->
+        <section class="member-content-panel is-padding inquiry-detail-head-panel page-motion-row">
+            <div id="inquiryHeader"></div>
+        </section>
+
+        <!-- 대화 영역 -->
+        <section class="member-content-panel is-padding page-motion-row">
+            <div id="msgList" class="msg-thread"></div>
+
+            <!-- 답변 만족 여부 (기본 숨김) -->
+            <div id="satisfactionBox" class="satisfaction-box" style="display:none">
+                <p>답변이 도움이 되셨나요?</p>
+                <div class="satisfaction-actions">
+                    <button type="button" class="btn-member-red" onclick="handleSatisfied()">해결됐어요</button>
+                    <button type="button" class="btn-member-black" onclick="handleMoreInquiry()">추가 문의할게요</button>
+                </div>
+            </div>
+
+            <!-- 추가 문의 입력창 (기본 숨김) -->
+            <div id="inputBox" class="msg-input-row" style="display:none">
+                <input type="text" id="msgInput" placeholder="추가 문의 내용을 입력하세요">
+                <button type="button" class="btn-member-red" onclick="sendMsg()">전송</button>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

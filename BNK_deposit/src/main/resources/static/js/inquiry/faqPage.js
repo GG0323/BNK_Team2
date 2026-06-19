@@ -26,8 +26,6 @@ function renderFaq(){
 	const list = document.querySelector("#faqList");
 	list.innerHTML = `
 		<button onclick="location.href='/inquiry/inquiryForm'">문의하기</button>
-		// 스크립트 문법
-		// 토글 함수
 		${pageData.map((item, i) => `
 		  <div>
 		    <button onclick="toggleFaq(${i})">
