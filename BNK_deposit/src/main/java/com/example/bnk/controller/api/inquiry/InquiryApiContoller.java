@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,14 +45,25 @@ public class InquiryApiContoller {
 		return faqlist;
 	}
 	
+	@GetMapping("/test")
+	public String test(Authentication authentication) {
+	    System.out.println("authentication = " + authentication);
+	    System.out.println("principal = " + authentication.getPrincipal());
+	    System.out.println("principal class = " + authentication.getPrincipal().getClass());
+	    System.out.println("authorities = " + authentication.getAuthorities());
+	    System.out.println("name = " + authentication.getName());
+
+	    return "ok";
+	}
+	
 	// 문의사항 등록
 	@PostMapping("/form")
 	public ResponseEntity<String> form(
 	        @RequestParam("INQUIRY_CATEGORY") String inquiryCategory,
 	        @RequestParam("INQUIRY_TITLE") String inquiryTitle,
 	        @RequestParam("MSG_CONTENT") String msgContent,
-	        @AuthenticationPrincipal String username
-	        //@AuthenticationPrincipal
+	        @AuthenticationPrincipal String username,
+	        @AuthenticationPrincipal long pk
 	        ) {
 		// ++ authentication 에서 유저 pk 뽑아오기, id 뽑아오기
 		System.out.println("파라미터 확인 // " + inquiryCategory +", "+ inquiryTitle +", "+ msgContent );
