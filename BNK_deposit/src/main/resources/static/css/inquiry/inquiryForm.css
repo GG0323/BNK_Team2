@@ -69,6 +69,7 @@ body{
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 24px;
+  margin-bottom: 64px;         /* footer와의 간격 */
 }
 
 /* ---------- 카테고리 선택 (라디오 → 칩 버튼) ---------- */
