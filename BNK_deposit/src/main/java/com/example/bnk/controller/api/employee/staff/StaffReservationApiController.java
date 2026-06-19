@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.common.ApiResponse;
 import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.service.employees.EmployeeListService;
@@ -31,12 +32,12 @@ public class StaffReservationApiController {
     // 예약 목록 조회 (필터: 영업점·상태·날짜)
     @GetMapping("/list")
     public ResponseEntity<ApiResponse<?>> list(
-            @AuthenticationPrincipal String username,
+            @AuthenticationPrincipal EmployeeDetails employeeD,
             @RequestParam(value = "branchId", required = false) Long branchId,
             @RequestParam(value = "status",   required = false) String status,
             @RequestParam(value = "date",     required = false) String date) {
 
-        EmployeeDto emp = empService.findByUsername(username);
+        EmployeeDto emp = empService.findByUsername(employeeD.getUsername());
         if (emp == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.fail("로그인이 필요합니다."));
@@ -49,11 +50,11 @@ public class StaffReservationApiController {
     // 확정
     @PostMapping("/confirm")
     public ResponseEntity<ApiResponse<?>> confirm(
-            @AuthenticationPrincipal String username,
+            @AuthenticationPrincipal EmployeeDetails employeeD,
             @RequestParam("reservationId") long reservationId,
             @RequestParam(value = "reason", defaultValue = "") String reason) {
 
-        EmployeeDto emp = empService.findByUsername(username);
+        EmployeeDto emp = empService.findByUsername(employeeD.getUsername());
         if (emp == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.fail("로그인이 필요합니다."));
@@ -68,13 +69,13 @@ public class StaffReservationApiController {
     // 매장 사정 변경 (REASSIGN)
     @PostMapping("/reassign")
     public ResponseEntity<ApiResponse<?>> reassign(
-            @AuthenticationPrincipal String username,
+            @AuthenticationPrincipal EmployeeDetails employeeD,
             @RequestParam("reservationId") long reservationId,
             @RequestParam("reason")        String reason,
             @RequestParam("newBranchId")   long newBranchId,
             @RequestParam("newReservedAt") String newReservedAt) {
 
-        EmployeeDto emp = empService.findByUsername(username);
+        EmployeeDto emp = empService.findByUsername(employeeD.getUsername());
         if (emp == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.fail("로그인이 필요합니다."));
@@ -97,11 +98,11 @@ public class StaffReservationApiController {
     // 거절
     @PostMapping("/reject")
     public ResponseEntity<ApiResponse<?>> reject(
-            @AuthenticationPrincipal String username,
+            @AuthenticationPrincipal EmployeeDetails employeeD,
             @RequestParam("reservationId") long reservationId,
             @RequestParam("reason")        String reason) {
 
-        EmployeeDto emp = empService.findByUsername(username);
+        EmployeeDto emp = empService.findByUsername(employeeD.getUsername());
         if (emp == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.fail("로그인이 필요합니다."));

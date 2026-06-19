@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dao.product.IProductTermsDao;
 import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.product.ProductTermsDto;
@@ -63,15 +64,15 @@ public class ApprovedApiController {
 	// 승인한 제안서 목록 가져오기
 	@GetMapping("/approvedList")
 	public List<ApprovedSuggestionDetailDto> approvedList(
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		
 		// 1. 내정보 가져오기 
-		EmployeeDto myInfo = empService.findByUsername(username);
+		EmployeeDto myInfo = empService.findByUsername(employeeD.getUsername());
 		
 		//로그
 		String logKey = "사원 번호:"+myInfo.getEmployee_no();
-		logService.build(username, "SELECT", "TB_APPROVED_SUGGESTION", logKey, "승인된 제안서 목록을 불러온다.");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_APPROVED_SUGGESTION", logKey, "승인된 제안서 목록을 불러온다.");
 		
 		// 2. 내가 승인한 제안서
 		List<ApprovedSuggestionDetailDto> list = approvedService.approvedList(myInfo.getEmployee_no());
@@ -83,13 +84,13 @@ public class ApprovedApiController {
 	@GetMapping("/approvedDetail")
 	public ApprovedSuggestionDetailDto approvedDetail(
 			@RequestParam("suggestion_no") long suggestion_no,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		
 		ApprovedSuggestionDetailDto detail = approvedService.approvedDetail(suggestion_no);
 		//로그
 		String logKey = "제안서 번호:"+suggestion_no;
-		logService.build(username, "SELECT", "TB_APPROVED_SUGGESTION", logKey, "승인된 제안서 목록을 불러온다.");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_APPROVED_SUGGESTION", logKey, "승인된 제안서 목록을 불러온다.");
 		
 		return detail;
 	}

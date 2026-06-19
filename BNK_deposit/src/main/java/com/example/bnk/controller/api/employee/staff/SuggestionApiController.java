@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.product.ProductSuggestionDto;
 import com.example.bnk.dto.product.suggestion.SuggestionPageDto;
@@ -27,11 +28,11 @@ public class SuggestionApiController {
 	//2. 특정 권한 이상인 사람들을 찾아서 반환 
 	@GetMapping("/managers")
 	public SuggestionPageDto managers(
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		
 		// username 으로 유저 정보 검색 ??
-		EmployeeDto myInfo = empService.findByUsername(username);
+		EmployeeDto myInfo = empService.findByUsername(employeeD.getUsername());
 		
 		// 특정 권한 이상인 사람들을 찾아서 반환 
 		List<EmployeeDto> empDto = empService.managers();
