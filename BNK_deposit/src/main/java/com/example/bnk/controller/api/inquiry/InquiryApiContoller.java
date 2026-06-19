@@ -5,9 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.bnk.auth.MemberDetails;
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.inquiry.FaqCandidateDto;
 import com.example.bnk.dto.inquiry.FaqDto;
 import com.example.bnk.dto.inquiry.InquiryDto;
@@ -188,11 +186,12 @@ public class InquiryApiContoller {
 	public Map<String, Object> approve(
 	        @PathVariable("candidateNo") Long candidateNo,
 	        @RequestBody Map<String, String> req, 
-	        @AuthenticationPrincipal MemberDetails memberD
+	        @AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 	    String question = req.get("question");
 	    String answer = req.get("answer");
-	    long employeeNo = memberD.getPk();
+	    System.out.println("직원 pk  "+ employeeD.getPk());
+	    long employeeNo = employeeD.getPk();
 	    return candidateService.approveCandidate(candidateNo, question, answer, employeeNo);
 	}
 	
