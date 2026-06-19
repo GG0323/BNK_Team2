@@ -1,0 +1,137 @@
+@charset "UTF-8";
+/* =============================================
+   브레드크럼 / 페이지 타이틀 영역
+   ============================================= */ 
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+/* ===== 메인 본문 ===== */
+.main {
+	flex: 1;
+	padding: 2rem 2rem 5rem 2rem;
+	min-width: 0;
+}
+
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaa;
+	margin-bottom: 1.5rem;
+}
+.breadcrumb .current { color: #111; font-weight: 600; }
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
+	letter-spacing: -0.5px;
+	margin-bottom: 1.5rem;
+}
+
+/* ===== 테이블 카드 코어 ===== */
+.table-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E8E8E8;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  text-align: left;
+}
+
+/* 상단 헤더 어둡고 직관적인 금융 톤 */
+thead tr { background: #111111; }
+
+thead th {
+  padding: 14px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #F0F0F0;
+  transition: background 0.12s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+
+/* 행에 마우스 올렸을 때 은은한 BNK 레드 포인트 */
+tbody tr:hover { background: #FFF9F9; }
+
+tbody td {
+  padding: 15px 16px;
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* ===== 기존 JS와 완벽 연동되는 뱃지 서식 ===== */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px; /* 살짝 각진 전문적인 톤 */
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 등록 여부 (regBadge 연동) */
+.badge-ok { 
+  background: #EAF7EE; 
+  color: #1E7E34; 
+}
+.badge-no { 
+  background: #FDF2F2; 
+  color: #E8282F; /* 미등록일 때 적색 경고 톤 유도 */
+}
+
+/* 상품 유형 (typeBadge 연동) */
+.badge-DEPOSIT { background: #EFF6FF; color: #1D4ED8; }
+.badge-SAVINGS { background: #F3E8FF; color: #6B21A8; }
+
+/* ===== 상세보기 이동 버튼 ===== */
+.btn-view {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  background: #fff;
+  color: #555;
+  text-decoration: none;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.btn-view:hover { 
+  border-color: #111; 
+  color: #fff; 
+  background: #111; 
+}
+
+/* 빈 상태 */
+.empty-row td {
+  text-align: center;
+  color: #aaa;
+  padding: 4rem !important;
+  font-size: 13px;
+}

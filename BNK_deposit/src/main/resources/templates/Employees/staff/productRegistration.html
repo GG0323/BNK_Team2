@@ -2,12 +2,52 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>상품 등록하기</title>
+<title>미승인 상품 리스트</title>
 <link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/staff/ProductList.css}">
 </head>
 <body>
-	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
-	
-	상품 등록하기 페이지 입니다?
+
+    <div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+    <div class="main">
+        <div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+        <div class="breadcrumb">
+            직원 페이지 › <span class="current">제안서 리스트</span>
+        </div>	
+
+        <div class="page-header">
+            <div class="page-title" style="font-size: 20px; font-weight: 700; color: #111;">미승인 상품 관제 리스트</div>
+            <span class="total-count" id="totalCount" style="font-size: 12px; color: #888; background: #fff; padding: 4px 12px; border-radius: 20px; border: 1px solid #E8E8E8;">전체 0건</span>
+        </div>
+
+        <div class="table-card">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 90px;">상품번호</th>
+                            <th>상품명</th>
+                            <th style="width: 100px;">유형</th>
+                            <th style="width: 140px;">최초등록일</th>
+                            <th style="width: 90px;">금리</th>
+                            <th style="width: 90px;">약관</th>
+                            <th style="width: 90px;">설명</th>
+                            <th style="width: 100px;">가입조건</th>
+                            <th style="width: 90px;">관제제어</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listBody">
+                        <tr class="empty-row">
+                            <td colspan="9">데이터를 안전하게 불러오는 중입니다...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/employees/manager/pendingProductList.js}"></script>
 </body>
 </html>
