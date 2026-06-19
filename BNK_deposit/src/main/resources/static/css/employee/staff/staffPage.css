@@ -1,0 +1,146 @@
+@charset "UTF-8";
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+	background: #F5F5F5;
+	display: flex;
+	min-height: 100vh;
+}
+
+/* ===== 메인 콘텐츠 ===== */
+.main {
+	flex: 1;
+	padding: 2rem;
+	min-width: 0;
+}
+
+/* 상단 바 */
+.topbar {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 2rem;
+}
+
+.logout-btn {
+	font-size: 12px;
+	color: #555555;
+	background: #ffffff;
+	border: 1px solid #E0E0E0;
+	padding: 6px 16px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.15s;
+	text-decoration: none;
+}
+
+.logout-btn:hover {
+	border-color: #111111;
+	color: #111111;
+}
+
+/* 브레드크럼 */
+.breadcrumb {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #aaaaaa;
+	margin-bottom: 1.5rem;
+}
+
+.breadcrumb .current {
+	color: #111111;
+	font-weight: 600;
+}
+
+/* 페이지 헤더 */
+.page-header {
+	margin-bottom: 2rem;
+}
+
+.page-title {
+	font-size: 18px;
+	font-weight: 700;
+	color: #111111;
+	letter-spacing: -0.5px;
+	margin-bottom: 4px;
+}
+
+.page-desc {
+	font-size: 12.5px;
+	color: #999999;
+}
+
+/* ===== 메뉴 카드 그리드 ===== */
+.menu-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 14px;
+}
+
+.menu-card {
+	background: #ffffff;
+	border-radius: 12px;
+	border: 1px solid #E8E8E8;
+	padding: 1.5rem 1.25rem;
+	cursor: pointer;
+	transition: all 0.15s;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.menu-card:hover {
+	border-color: #111111;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 첫 번째 카드(신규사원 등록) 강조 */
+.menu-card.primary:hover {
+	border-color: #E8282F;
+}
+
+.menu-card.primary .card-icon {
+	background: #FFF0F0;
+}
+
+.menu-card.primary .card-icon i, .menu-card.primary .card-icon .icon {
+	color: #E8282F;
+}
+
+/* 카드 아이콘 */
+.card-icon {
+	width: 44px;
+	height: 44px;
+	border-radius: 10px;
+	background: #F0F0F0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.card-icon i, .card-icon .icon {
+	font-size: 20px;
+	color: #555555;
+}
+
+/* 카드 텍스트 */
+.card-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #111111;
+	margin-bottom: 3px;
+}
+
+.card-sub {
+	font-size: 12px;
+	color: #aaaaaa;
+}
