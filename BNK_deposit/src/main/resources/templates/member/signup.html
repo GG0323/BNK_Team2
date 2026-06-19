@@ -214,8 +214,22 @@
                             <option value="gmail.com">gmail.com</option>
                             <option value="daum.net">daum.net</option>
                         </select>
+                        <button type="button" class="btn-black-small" id="sendEmailCodeBtn">인증번호 발송</button>
                     </div>
 
+                    <!-- 인증번호 발송/입력/확인 UI -->
+                    <div class="email-verification-row">
+                        <input type="text"
+                               class="form-control"
+                               id="emailVerificationCode"
+                               maxlength="8"
+                               inputmode="numeric"
+                               placeholder="8자리 인증번호"
+                               autocomplete="off">
+                        <button type="button" class="btn-black-small" id="confirmEmailCodeBtn">인증확인</button>
+                    </div>
+
+                    <span id="emailCheckText" class="guide-text"></span>
                     <input type="hidden" name="email" id="email">
                 </div>
 
