@@ -67,13 +67,20 @@
 	    )
 	</update>
     
+    <!-- 가입 상태 해지하기로 바꾸기 -->
+    <update id="changeSubscriptionStatus">
+    	UPDATE TB_PRODUCT_SALES
+    	SET subscription_status = 'EXPIRED'
+    	WHERE account_no = #{account_no}
+    </update>
+    
     <!-- 환금 끝난 상품 계좌 비활성으로 변경 -->
     <update id="changeAccountStatus">
 	    UPDATE TB_ACCOUNT
-	    SET account_status = 'CLOSED', -- ◀ AND 대신 쉼표(,) 사용! (보통 해지는 INACTIVE보다 CLOSED를 많이 씁니다)
-	        balance = 0,               -- ◀ 쉼표(,) 사용
-	        closed_at = SYSDATE,       -- 해지일자 기록
-	        updated_at = SYSDATE       -- 수정일자 기록
+	    SET account_status = 'CLOSED',
+	        balance = 0,
+	        closed_at = SYSDATE,
+	        updated_at = SYSDATE
 	    WHERE account_no = #{account_no}
 	</update>
     
