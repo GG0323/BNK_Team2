@@ -1,4 +1,6 @@
 let id_check = true;
+let email_verified = false;
+let verified_email = "";
 
 document.addEventListener("DOMContentLoaded", () => {
     const loginId = document.getElementById("loginId");
@@ -6,6 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const pwCheck = document.getElementById("pwCheck");
     const memberTypeSelect = document.getElementById("memberType");
     const domainSelect = document.getElementById("domainSelect");
+    const emailId = document.getElementById("emailId");
+    const emailDomain = document.getElementById("emailDomain");
+    const emailCode = document.getElementById("emailVerificationCode");
+    const sendEmailCodeBtn = document.getElementById("sendEmailCodeBtn");
+    const confirmEmailCodeBtn = document.getElementById("confirmEmailCodeBtn");
 
     if (loginId) {
         loginId.addEventListener("input", () => {
@@ -30,6 +37,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (domainSelect) {
         domainSelect.addEventListener("change", changeDomain);
+    }
+    
+    // 이메일 입력값 변경 시 기존 인증 상태를 무효화
+    [emailId, emailDomain].forEach(input => {
+        if (!input) return;
+        input.addEventListener("input", resetEmailVerification);
+    });
+    
+    // 인증번호는 숫자 8자리만 입력
+    if (emailCode) {
+        emailCode.addEventListener("input", () => {
+            emailCode.value = emailCode.value.replace(/[^0-9]/g, "");
+        });
+    }
+    
+    // 인증번호 발송/확인 버튼 이벤트 연결
+    if (sendEmailCodeBtn) {
+        sendEmailCodeBtn.addEventListener("click", sendEmailVerificationCode);
+    }
+    
+    if (confirmEmailCodeBtn) {
+        confirmEmailCodeBtn.addEventListener("click", confirmEmailVerificationCode);
     }
 
     bindNumberOnlyInputs();
@@ -170,8 +199,7 @@ function validateResidentNumber(id1, id2) {
     // 4. 성별/세기 코드 검증
     // 1,2: 1900년대 내국인
     // 3,4: 2000년대 내국인
-    // 5,6: 1900년대 외국인
-    // 7,8: 2000년대 외국인
+
     if (genderCode === 1 || genderCode === 2 || genderCode === 5 || genderCode === 6) {
         fullYear = 1900 + yy;
     } else if (genderCode === 3 || genderCode === 4 || genderCode === 7 || genderCode === 8) {
@@ -181,14 +209,10 @@ function validateResidentNumber(id1, id2) {
         return false;
     }
 
-    // 내국인 주민등록번호만 허용하려면 아래 조건을 사용
-    // 외국인등록번호까지 허용하려면 이 조건은 주석 처리 유지
-    /*
     if (![1, 2, 3, 4].includes(genderCode)) {
         alert("주민등록번호 뒷자리 첫 번째 숫자가 올바르지 않습니다.");
         return false;
     }
-    */
 
     // 5. 실제 날짜인지 검증
     const birthDate = new Date(fullYear, mm - 1, dd);
@@ -211,7 +235,7 @@ function validateResidentNumber(id1, id2) {
         return false;
     }
 
-/*    // 7. 체크섬 검증
+    // 7. 체크섬 검증
     const weights = [2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5];
     let sum = 0;
 
@@ -224,7 +248,7 @@ function validateResidentNumber(id1, id2) {
     if (checkDigit !== Number(rrn[12])) {
         alert("유효하지 않은 주민등록번호입니다.");
         return false;
-    }*/
+    }
 
     return true;
 }
@@ -342,6 +366,8 @@ function autoHyphen(target) {
 function changeDomain() {
     const select = document.getElementById("domainSelect");
     const domainInput = document.getElementById("emailDomain");
+    
+    resetEmailVerification();
 
     if (select.value === "direct") {
         domainInput.value = "";
@@ -357,25 +383,165 @@ function changeDomain() {
 
 /* ========== 이메일 합치기 ========== */
 function combineEmail() {
-    const emailId = document.getElementById("emailId").value.trim();
-    const emailDomain = document.getElementById("emailDomain").value.trim();
+    const email = getCombinedEmail(true);
     const emailInput = document.getElementById("email");
 
-    if (emailId === "" || emailDomain === "") {
-        alert("이메일 주소를 정확히 입력해주세요.");
+    if (email === "") {
         return false;
+    }
+
+    emailInput.value = email;
+    return true;
+}
+
+function resetEmailVerification() {
+    email_verified = false;
+    verified_email = "";
+
+    const emailInput = document.getElementById("email");
+    const emailCode = document.getElementById("emailVerificationCode");
+    const text = document.getElementById("emailCheckText");
+
+    if (emailInput) {
+        emailInput.value = "";
+    }
+
+    if (emailCode) {
+        emailCode.value = "";
+    }
+
+    if (text) {
+        text.textContent = "이메일 인증이 필요합니다.";
+        text.className = "guide-text";
+    }
+}
+
+// 화면의 분리된 이메일 입력값을 하나의 이메일 주소로 조합
+function getCombinedEmail(showAlert) {
+    const emailId = document.getElementById("emailId").value.trim();
+    const emailDomain = document.getElementById("emailDomain").value.trim();
+
+    if (emailId === "" || emailDomain === "") {
+        if (showAlert) alert("이메일 주소를 정확히 입력해주세요.");
+        return "";
     }
 
     const idPattern = /^[a-zA-Z0-9._%+-]+$/;
     const domainPattern = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!idPattern.test(emailId) || !domainPattern.test(emailDomain)) {
-        alert("이메일 형식이 올바르지 않습니다.");
-        return false;
+        if (showAlert) alert("이메일 형식이 올바르지 않습니다.");
+        return "";
     }
 
-    emailInput.value = emailId + "@" + emailDomain;
-    return true;
+    return (emailId + "@" + emailDomain).toLowerCase();
+}
+
+// 이메일 중복 확인 후 8자리 인증번호 발송 요청
+function sendEmailVerificationCode() {
+    const email = getCombinedEmail(true);
+    const text = document.getElementById("emailCheckText");
+
+    if (email === "") {
+        return;
+    }
+
+    const params = new URLSearchParams();
+    params.append("email", email);
+
+    fetch("/api/signup/email/verification/send", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: params
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                email_verified = false;
+                verified_email = "";
+
+                if (text) {
+                    text.textContent = "인증번호를 발송했습니다. 5분 안에 입력해주세요.";
+                    text.className = "guide-text success";
+                }
+
+                alert("인증번호를 발송했습니다.");
+                document.getElementById("emailVerificationCode").focus();
+                return;
+            }
+
+            if (text) {
+                text.textContent = "이미 사용 중이거나 올바르지 않은 이메일입니다.";
+                text.className = "guide-text error";
+            }
+
+            alert("이미 사용 중이거나 올바르지 않은 이메일입니다.");
+        })
+        .catch(err => {
+            alert("이메일 인증번호 발송 중 오류가 발생했습니다.");
+            console.error(err);
+        });
+}
+
+// 사용자가 입력한 8자리 인증번호 확인
+function confirmEmailVerificationCode() {
+    const email = getCombinedEmail(true);
+    const code = document.getElementById("emailVerificationCode").value.trim();
+    const text = document.getElementById("emailCheckText");
+
+    if (email === "") {
+        return;
+    }
+
+    if (!/^[0-9]{8}$/.test(code)) {
+        alert("인증번호 8자리를 입력해주세요.");
+        document.getElementById("emailVerificationCode").focus();
+        return;
+    }
+
+    const params = new URLSearchParams();
+    params.append("email", email);
+    params.append("code", code);
+
+    fetch("/api/signup/email/verification/confirm", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: params
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                email_verified = true;
+                verified_email = email;
+                document.getElementById("email").value = email;
+
+                if (text) {
+                    text.textContent = "이메일 인증이 완료되었습니다.";
+                    text.className = "guide-text success";
+                }
+
+                alert("이메일 인증이 완료되었습니다.");
+                return;
+            }
+
+            email_verified = false;
+            verified_email = "";
+
+            if (text) {
+                text.textContent = "인증번호가 올바르지 않거나 만료되었습니다.";
+                text.className = "guide-text error";
+            }
+
+            alert("인증번호가 올바르지 않거나 만료되었습니다.");
+        })
+        .catch(err => {
+            alert("이메일 인증 확인 중 오류가 발생했습니다.");
+            console.error(err);
+        });
 }
 
 /* ========== 다음 주소검색 ========== */
@@ -491,6 +657,13 @@ function signup() {
     }
 
     if (!combineEmail()) {
+        return;
+    }
+    
+    // [이메일 인증 추가] 인증 완료된 이메일과 현재 입력 이메일이 같은지 가입 직전 재확인
+    if (!email_verified || verified_email !== document.getElementById("email").value) {
+        alert("이메일 인증을 완료해주세요.");
+        document.getElementById("emailVerificationCode").focus();
         return;
     }
 

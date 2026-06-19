@@ -19,6 +19,9 @@ repositories {
 
 
 dependencies {
+	// email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// pdf
 	implementation 'org.apache.pdfbox:pdfbox:2.0.31'
 
@@ -26,16 +29,18 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly    'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly	   'io.jsonwebtoken:jjwt-jackson:0.12.6'
+		
+	//qr 생성
+	implementation 'com.google.zxing:core:3.5.3'
+	implementation 'com.google.zxing:javase:3.5.3'
 	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
@@ -47,15 +52,6 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-	
-	
-	//qr 생성
-	implementation 'com.google.zxing:core:3.5.3'
-	implementation 'com.google.zxing:javase:3.5.3'
-	
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	
-
 }
 
 tasks.named('test') {
