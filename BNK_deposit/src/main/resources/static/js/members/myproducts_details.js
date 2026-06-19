@@ -177,6 +177,12 @@ function renderDetail(p) {
         <button type="button" class="btn-black" onclick="location.href='/member/myproducts'">
           목록으로 돌아가기
         </button>
+		
+		<button type="button" class="btn-red" onclick="terminate(${p.member_no}, ${p.account_no})"
+	        ${p.subscription_status === 'EXPIRED' ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+			${p.subscription_status === 'EXPIRED' ? '해지 완료된 상품' : '상품 해지하기'}
+        </button>
+		
       </div>
 
     </article>
@@ -207,3 +213,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(e);
   }
 });
+
+
+/**
+ * 상품 해지 비동기 처리 함수
+ * @param {number} memberNo - 회원 고유 번호
+ * @param {number} accountNo - 해지할 계좌 고유 번호
+ */
+async function terminate(memberNo, accountNo) {
+  // 1. 유저에게 진짜 해지할 것인지 더블 체크
+  if (!confirm("정말 이 상품을 해지하시겠습니까?\n원금과 금리가 적용된 이자가 주계좌로 환급됩니다.")) {
+    return;
+  }
+
+  // 2. 서버의 @RequestParam(x-www-form-urlencoded) 포맷에 맞게 데이터 조립
+  const params = new URLSearchParams();
+  params.append("member_no", memberNo);
+  params.append("account_no", accountNo);
+
+  try {
+    // 3. 컨트롤러 API 호출 (/api/account/terminate)
+    const response = await fetch("/api/account/terminate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: params.toString()
+    });
+
+    const data = await response.json();
+
+    // 4. 서버 결과에 따른 처리 (컨트롤러에서 보낸 200 OK 여부)
+    if (response.ok && data.result === "success") {
+      alert(data.message || "상품 해지가 정상적으로 완료되었습니다.");
+      
+      // 성공 시 가입 상품 목록 페이지로 리다이렉트(이동)
+      location.href = "/member/myproducts";
+    } else {
+      // 서버에서 400 Bad Request 등을 던지며 failed를 보냈을 때
+      alert(`해지 실패: ${data.message || "오류가 발생했습니다."}`);
+    }
+
+  } catch (error) {
+    // 네트워크 장애 등 완전한 시스템 에러 상황
+    console.error("통신 에러:", error);
+    alert("서버와 통신 중 모종의 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+  }
+}

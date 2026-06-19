@@ -3,7 +3,6 @@ package com.example.bnk.controller.api.member;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +18,6 @@ import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountHistoryDto;
 import com.example.bnk.dto.member.AccountTransactionDto;
 import com.example.bnk.dto.member.BankMemberDto;
-import com.example.bnk.dto.member.MemberProductDto;
 import com.example.bnk.dto.member.MemberTrackingLogDto;
 import com.example.bnk.dto.member.MypageSummaryDto;
 import com.example.bnk.service.member.AccountService;

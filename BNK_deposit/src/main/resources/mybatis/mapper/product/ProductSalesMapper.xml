@@ -39,4 +39,12 @@
     	AND product_no = 상품 번호 고정(product_no);
     </update>
     
+    <select id="selectUsersProduct" resultType="com.example.bnk.dto.member.MemberProductDto">
+    	SELECT *
+    	FROM TB_PRODUCT_SALES
+    	WHERE member_no = #{member_no}
+    	AND account_no = #{account_no}
+    </select>
+    
+    
 </mapper>

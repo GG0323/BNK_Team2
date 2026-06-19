@@ -37,4 +37,43 @@
         WHERE ACCOUNT_NO = #{accountNo}
     </select>
     
+    <!-- 주계좌 -->
+    <select id="findUsersAccount" resultType="com.example.bnk.dto.member.AccountDto">
+    	SELECT *
+    	FROM TB_ACCOUNT
+    	WHERE account_no = #{account_no}
+    </select>
+    
+    <!-- 주 계좌의 고유번호(아마도 사용자가 회원가입하고 가장 처음 만든 계좌) -->
+    <select id="findUsingAccountNo" resultType="long">
+		SELECT MIN(account_no) 
+		FROM TB_ACCOUNT 
+		WHERE member_no = #{member_no}
+		AND account_status = 'ACTIVE' 
+    </select>
+    
+    <!-- 환금해주기 -->
+	<update id="interestToMyAccount">
+	    UPDATE TB_ACCOUNT
+	    SET balance = balance + (#{balance} + (#{balance} * (#{applied_interest_rate} / 100)))
+	    WHERE account_no = (
+	        SELECT MIN(account_no)
+	        FROM TB_ACCOUNT
+	        WHERE member_no = #{member_no}
+	          AND account_status = 'ACTIVE'
+	    )
+	</update>
+    
+    <!-- 환금 끝난 상품 계좌 비활성으로 변경 -->
+    <update id="changeAccountStatus">
+	    UPDATE TB_ACCOUNT
+	    SET account_status = 'CLOSED', -- ◀ AND 대신 쉼표(,) 사용! (보통 해지는 INACTIVE보다 CLOSED를 많이 씁니다)
+	        balance = 0,               -- ◀ 쉼표(,) 사용
+	        closed_at = SYSDATE,       -- 해지일자 기록
+	        updated_at = SYSDATE       -- 수정일자 기록
+	    WHERE account_no = #{account_no}
+	</update>
+    
+    
+    
 </mapper>
