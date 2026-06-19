@@ -34,4 +34,21 @@ public class EmailService {
 
         mailSender.send(message);
     }
+    
+    // 회원가입 시 이메일 인증번호 발송
+    public void sendSignupVerificationCode(String toEmail, String code) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("[BNK] 회원가입 이메일 인증번호");
+        message.setText(
+                "BNK 회원가입 이메일 인증번호입니다.\n\n"
+                + "인증번호: " + code + "\n\n"
+                + "인증번호는 5분 동안만 유효합니다."
+        );
+
+        mailSender.send(message);
+    }
 }

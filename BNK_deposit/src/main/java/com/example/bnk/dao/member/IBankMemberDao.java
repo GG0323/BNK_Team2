@@ -44,6 +44,9 @@ public interface IBankMemberDao {
 	// 회원 id 중복 확인
 	public int idCheck(String id);
 	
+	// 회원 email 중복 확인
+	public int emailCheck(@Param("email") String email);
+	
 	// 마지막 로그인 시간 갱신
 	void updateLastLoginAt(@Param("loginId") String loginId);
 	

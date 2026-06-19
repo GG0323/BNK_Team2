@@ -90,6 +90,10 @@
     	SELECT COUNT(*) FROM TB_BANK_MEMBER WHERE LOGIN_ID = #{param}
     </select>
     
+    <select id="emailCheck">
+    	SELECT COUNT(*) FROM TB_BANK_MEMBER WHERE LOWER(EMAIL) = LOWER(#{email})
+    </select>
+    
     <update id="updateLastLoginAt">
 	    UPDATE TB_BANK_MEMBER
 	    SET LAST_LOGIN_AT = SYSDATE
