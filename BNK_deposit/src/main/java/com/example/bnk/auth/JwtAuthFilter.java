@@ -1,14 +1,11 @@
 package com.example.bnk.auth;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,9 +16,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter{
+	
+	private static final String TOKEN_COOKIE_NAME = "bnk_token";
 	
 	private final JwtUtil jwtUtil;
 	private final EmployeeDetailsService employeeDetailsService;
@@ -41,37 +41,128 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		// 쿠키에서 토큰 추출
-		String token = this.getTokenFromCookie(request);
+		String token = findTokenFromCookies(request, TOKEN_COOKIE_NAME);
 		
-		// 토큰이 있고, 그 토큰이 유효하면
-		if(token != null && jwtUtil.isVaild(token)) {
-			String username = jwtUtil.getUsername(token);
-			String role = jwtUtil.getRole(token);
-			UserDetails userDetails;
-			
-			System.out.println(role);
-
-			userDetails = "ROLE_MEMBER".equals(role)
-					? memberDetailsService.loadUserByUsername(username)
-					: employeeDetailsService.loadUserByUsername(username);
-			
-			Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-			SecurityContextHolder.getContext().setAuthentication(auth);
+		if(token == null) {
+			filterChain.doFilter(request, response);
+			return;
 		}
-		filterChain.doFilter(request, response);
+		
+		if(jwtUtil.isVaild(token)) {
+			setAuthentication(token);
+			filterChain.doFilter(request, response);
+			return;
+		}
+		
+		// 쿠키는 있는데 만료/위조/손상 등 유효하지 않은 토큰이면 로그아웃 처리
+		clearAuthentication(request, response);
+		
+		if(isPublicRequest(request)) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		
+		sendAuthError(request, response);
 	}
 	
-	// 쿠키에서 토큰 찾기
-	private String getTokenFromCookie(HttpServletRequest request) {
-		Cookie[] cookie = request.getCookies();
-		if(cookie == null) return null;
-		for(Cookie ck : cookie) {
-			if("bnk_token".equals(ck.getName())) {
+	private void setAuthentication(String token) {
+		String username = jwtUtil.getUsername(token);
+		String role = jwtUtil.getRole(token);
+		UserDetails userDetails = "ROLE_MEMBER".equals(role)
+				? memberDetailsService.loadUserByUsername(username)
+				: employeeDetailsService.loadUserByUsername(username);
+		
+		Authentication auth = new UsernamePasswordAuthenticationToken(
+				userDetails,
+				null,
+				userDetails.getAuthorities()
+		);
+		
+		SecurityContextHolder.getContext().setAuthentication(auth);
+	}
+	
+	private String findTokenFromCookies(HttpServletRequest request, String tokenName) {
+		Cookie[] cookies = request.getCookies();
+		
+		if(cookies == null) return null;
+		
+		for(Cookie ck : cookies) {
+			if(tokenName.equals(ck.getName())) {
 				return ck.getValue();
 			}
 		}
+		
 		return null;
+	}
+	
+	// 인증 정보와 JWT 쿠키 제거
+	private void clearAuthentication(HttpServletRequest request, HttpServletResponse response) {
+		SecurityContextHolder.clearContext();
+		
+		HttpSession session = request.getSession(false);
+		if(session != null) {
+			session.invalidate();
+		}
+		
+		Cookie cookie = new Cookie(TOKEN_COOKIE_NAME, null);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
+	}
+	
+	private void sendAuthError(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String redirectUrl = resolveLoginUrl(request);
+		
+		if(isApiRequest(request)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("application/json; charset=UTF-8");
+			response.setHeader("X-Auth-Expired", "true");
+			response.getWriter().write("{\"success\":false,\"message\":\"로그인이 만료되었습니다.\",\"redirectUrl\":\"" + redirectUrl + "\"}");
+			return;
+		}
+		
+		response.sendRedirect(redirectUrl + "?message=expired");
+	}
+	
+	private boolean isApiRequest(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+		String accept = request.getHeader("Accept");
+		
+		return uri.startsWith("/api/")
+				|| (accept != null && accept.contains("application/json"));
+	}
+	
+	// [JWT 자동 로그아웃 추가] 공개 요청은 쿠키만 지우고 통과
+	private boolean isPublicRequest(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+		
+		return uri.equals("/")
+				|| uri.equals("/loginPage")
+				|| uri.equals("/signupPage")
+				|| uri.equals("/employee/toMain")
+				|| uri.equals("/employee/login")
+				|| uri.equals("/member/login")
+				|| uri.startsWith("/css/")
+				|| uri.startsWith("/js/")
+				|| uri.startsWith("/images/")
+				|| uri.startsWith("/products")
+				|| uri.startsWith("/api/products")
+				|| uri.startsWith("/api/signup/");
+	}
+	
+	private String resolveLoginUrl(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+		
+		if(uri.startsWith("/employee")
+				|| uri.startsWith("/api/employee")
+				|| uri.startsWith("/api/staff")
+				|| uri.startsWith("/api/manager")
+				|| uri.startsWith("/api/log/employee")) {
+			return "/employee/toMain";
+		}
+		
+		return "/loginPage";
 	}
 
 }

@@ -58,5 +58,12 @@ public class JwtUtil {
 	public String getRole(String token) {
 		return this.parseToken(token).get("role", String.class);
 	}
+	
+	// JWT 만료까지 남은 초 계산
+	public long getRemainingSeconds(String token) {
+		Date expirationDate = this.parseToken(token).getExpiration();
+		long remainingMillis = expirationDate.getTime() - System.currentTimeMillis();
+		return Math.max(0, remainingMillis / 1000);
+	}
 
 }

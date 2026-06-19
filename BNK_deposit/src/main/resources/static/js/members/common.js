@@ -113,7 +113,18 @@ async function fetchApi(url, options = {}) {
   });
 
   if (res.status === 401) {
-    location.href = "/loginPage";
+    let redirectUrl = "/loginPage";
+
+    if (res.headers.get("X-Auth-Expired") === "true") {
+      try {
+        const body = await res.clone().json();
+        redirectUrl = body.redirectUrl || redirectUrl;
+      } catch (e) {
+        // JSON 응답이 아니면 기본 로그인 페이지로 이동한다.
+      }
+    }
+
+    location.href = redirectUrl + "?message=expired";
     throw new Error("로그인이 필요합니다.");
   }
 

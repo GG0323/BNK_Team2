@@ -5,13 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.example.bnk.auth.EmployeeDetailsService;
 import com.example.bnk.auth.SecurityLoginFailHandler;
 import com.example.bnk.auth.EmployeeLoginSuccessHandler;
-import com.example.bnk.auth.MemberLoginSuccessHandler;
 import com.example.bnk.utils.JwtUtil;
 
 import jakarta.servlet.http.Cookie;
@@ -54,8 +52,9 @@ public class EmployeeSecurityConfig {
 				.logoutSuccessHandler((request, response, auth)->{
 					Cookie cookie = new Cookie("bnk_token", null);
 					cookie.setPath("/");
-					response.addCookie(cookie);
 					cookie.setHttpOnly(true);
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
 					
 					response.sendRedirect("/employee/toMain?message=logout");
 				})

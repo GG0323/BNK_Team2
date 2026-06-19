@@ -100,7 +100,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 페이지 진입 후 2.5초 뒤 자동 접힘
     startHeaderTimer();
+
+    startSessionTimer();
 });
+
+/* 로그인 후 JWT 만료까지 남은 시간 표시 */
+function startSessionTimer() {
+    const timer = document.getElementById("sessionTimer");
+
+    if (!timer) {
+        return;
+    }
+
+    fetch("/api/auth/session-remaining", {
+        method: "GET",
+        headers: {
+            Accept: "application/json"
+        },
+        credentials: "same-origin"
+    })
+        .then(async response => {
+            if (response.status === 401) {
+                let redirectUrl = "/loginPage";
+
+                if (response.headers.get("X-Auth-Expired") === "true") {
+                    try {
+                        const body = await response.clone().json();
+                        redirectUrl = body.redirectUrl || redirectUrl;
+                    } catch (e) {
+                        // JSON 응답이 아니면 기본 로그인 페이지로 이동한다.
+                    }
+                }
+
+                location.href = redirectUrl + "?message=expired";
+                return null;
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            if (!data || !data.authenticated) {
+                timer.textContent = "";
+                return;
+            }
+
+            runSessionCountdown(Number(data.remainingSeconds || 0), timer);
+        })
+        .catch(err => {
+            console.error("세션 남은 시간 조회 실패", err);
+        });
+}
+
+function runSessionCountdown(remainingSeconds, timer) {
+    function render() {
+        if (remainingSeconds <= 0) {
+            timer.textContent = "남은시간 0분 00초";
+            location.href = "/loginPage?message=expired";
+            return;
+        }
+
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+        timer.textContent = "남은시간 " + minutes + "분 " + String(seconds).padStart(2, "0") + "초";
+        remainingSeconds -= 1;
+    }
+
+    render();
+    setInterval(render, 1000);
+}
 
 function getModalSearchInput() {
     return document.getElementById("modalSearchInput");
