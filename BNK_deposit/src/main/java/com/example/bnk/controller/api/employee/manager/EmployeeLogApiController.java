@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.bnk.dto.employee.EmployeeDto;
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.employee.EmployeeLogDto;
 import com.example.bnk.dto.employee.EmployeeLogSelectDto;
-import com.example.bnk.service.employees.EmployeeListService;
 import com.example.bnk.service.employees.EmployeeLogService;
 
 @RestController
@@ -27,9 +26,9 @@ public class EmployeeLogApiController {
 	// 사원 활동 이력 
 	@GetMapping("/allList")
 	public List<EmployeeLogDto> allList(
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			){
-		logService.build(username, "SELECT", "TB_EMPLOYEE_LOG", "*", " 사원 활동기록을 조회한다. ");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_EMPLOYEE_LOG", "*", " 사원 활동기록을 조회한다. ");
 		
 		List<EmployeeLogDto> list  = logService.allLog();
 		
@@ -40,7 +39,7 @@ public class EmployeeLogApiController {
 	@GetMapping("/conditionList")
 	public List<EmployeeLogDto> conditionList(
 			EmployeeLogSelectDto selectDto ,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			){
 		System.out.println(selectDto.toString());
 		
@@ -49,7 +48,7 @@ public class EmployeeLogApiController {
 			    + ", action=" + selectDto.getAction_type()
 			    + ", table=" + selectDto.getTarget_table();
 		//로그
-		logService.build(username, "SELECT", "TB_EMPLOYEE_LOG", selectKey , " 사원 활동기록을 조회한다. ");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_EMPLOYEE_LOG", selectKey , " 사원 활동기록을 조회한다. ");
 		
 		List<EmployeeLogDto> list  = logService.conditionList(selectDto);
 		

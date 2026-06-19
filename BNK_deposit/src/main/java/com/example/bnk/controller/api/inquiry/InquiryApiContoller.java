@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.auth.EmployeeDetails;
+import com.example.bnk.auth.MemberDetails;
 import com.example.bnk.dto.inquiry.FaqCandidateDto;
 import com.example.bnk.dto.inquiry.FaqDto;
 import com.example.bnk.dto.inquiry.InquiryDto;
@@ -53,14 +54,14 @@ public class InquiryApiContoller {
 	        @RequestParam("INQUIRY_CATEGORY") String inquiryCategory,
 	        @RequestParam("INQUIRY_TITLE") String inquiryTitle,
 	        @RequestParam("MSG_CONTENT") String msgContent,
-	        @AuthenticationPrincipal String username
+	        @AuthenticationPrincipal MemberDetails memberD
 	        ) {
 		// ++ authentication 에서 유저 pk 뽑아오기, id 뽑아오기
 		System.out.println("파라미터 확인 // " + inquiryCategory +", "+ inquiryTitle +", "+ msgContent );
 		
 		
     	//인서트 함수
-        inquiryService.insertInquiry(inquiryCategory, inquiryTitle, msgContent, 25, "하드코딩-id");
+        inquiryService.insertInquiry(inquiryCategory, inquiryTitle, msgContent, memberD.getPk(), memberD.getUsername());
 
         return ResponseEntity.ok("success");
 
@@ -69,11 +70,11 @@ public class InquiryApiContoller {
 	// 유저 문의 사항 목록
 	@GetMapping("/list")
 	public List<InquiryDto> callList(
-			//@AuthenticationPrincipal
+			@AuthenticationPrincipal MemberDetails memberD
 			) {
 		// authentication 에서 pk 뽑아오기
 		
-		List<InquiryDto> inquiryList = inquiryService.callList(25);
+		List<InquiryDto> inquiryList = inquiryService.callList(memberD.getPk());
 		
 		return inquiryList;
 	}
@@ -95,9 +96,9 @@ public class InquiryApiContoller {
 	@PostMapping("/msg")
 	public ResponseEntity<String> msg(
 			@RequestBody InquiryMsgDto dto,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal MemberDetails memberD
 			) {
-		inquiryService.addMsg(dto.getInquiry_no(), "USER", "하드코딩-id" , dto.getMsg_content());
+		inquiryService.addMsg(dto.getInquiry_no(), "USER", memberD.getUsername() , dto.getMsg_content());
 		inquiryService.updateStatus(dto.getInquiry_no(), "접수완료");
 		return ResponseEntity.ok("추가문의 등록 성공");
 	}
@@ -146,10 +147,10 @@ public class InquiryApiContoller {
 	@Transactional
 	public ResponseEntity<String> answer(
 			@RequestBody InquiryMsgDto dto,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		//응답insert authentication id 꺼내기
-		inquiryService.postingAnswer(dto.getInquiry_no(), "ADMIN", username , dto.getMsg_content());
+		inquiryService.postingAnswer(dto.getInquiry_no(), "ADMIN", employeeD.getUsername() , dto.getMsg_content());
 		
 		//상태 변경
 		inquiryService.updateStatus(dto.getInquiry_no(), "답변완료");

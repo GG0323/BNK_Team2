@@ -34,6 +34,7 @@ public class StaffReservationApiController {
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "date", required = false) String date) {
 
+
         if (employeeDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.fail("로그인이 필요합니다."));
@@ -102,7 +103,9 @@ public class StaffReservationApiController {
             @RequestParam("reservationId") long reservationId,
             @RequestParam("reason") String reason) {
 
+
         if (employeeDetails == null) {
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.fail("로그인이 필요합니다."));
         }

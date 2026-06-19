@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.employee.EmployeeDetailUpdateDto;
-import com.example.bnk.dto.employee.EmployeeDto;
 import com.example.bnk.dto.employee.EmployeeListDetailDto;
 import com.example.bnk.dto.employee.EmployeeListDto;
 import com.example.bnk.service.employees.EmployeeListService;
@@ -31,10 +31,10 @@ public class EmployeeListApiController {
 	// 직원 리스트 불ㄹ러오기
 	@GetMapping("/allList")
 	public List<EmployeeListDto> allList(
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			){
 		
-		logService.build(username, "SELECT", "TB_EMPLOYEE", null, "전체 사원 목록을 출력한다. ");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_EMPLOYEE", null, "전체 사원 목록을 출력한다. ");
 		
 		List<EmployeeListDto> allList = listService.allList();
 		
@@ -47,11 +47,11 @@ public class EmployeeListApiController {
 	@GetMapping("/detail")
 	public EmployeeListDetailDto detailDto(
 			@RequestParam("employee_no")long employee_no,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		System.out.println("사원 pk는 " + employee_no);
 		//로그
-		logService.build(username, "SELECT", "TB_EMPLOYEE", "사원 pk : " + employee_no, " 사원 상세를 출력한다. ");
+		logService.build(employeeD.getUsername(), "SELECT", "TB_EMPLOYEE", "사원 pk : " + employee_no, " 사원 상세를 출력한다. ");
 		
 		//서비스
 		EmployeeListDetailDto detail = listService.detail(employee_no);
@@ -64,11 +64,11 @@ public class EmployeeListApiController {
 	@PostMapping("/updateEmployeeDetale")
 	public EmployeeListDetailDto updateEmployeeDetale(
 			EmployeeDetailUpdateDto detailDto,
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 		System.out.println("수정 정보 확인 "+detailDto.toString());
 		//로그
-		logService.build(username, "UPDATE", "TB_EMPLOYEE", detailDto.getEmployee_no()+"."+detailDto.getEmployee_name(), "사원 정보를 수정한다. ");
+		logService.build(employeeD.getUsername(), "UPDATE", "TB_EMPLOYEE", detailDto.getEmployee_no()+"."+detailDto.getEmployee_name(), "사원 정보를 수정한다. ");
 		
 		// 업데이트 서비스 호출
 		int result = listService.updateEmployeeDetail(detailDto);
