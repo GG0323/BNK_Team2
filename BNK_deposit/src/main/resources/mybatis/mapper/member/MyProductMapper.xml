@@ -5,6 +5,7 @@
 
 <mapper namespace="com.example.bnk.dao.member.IMyProductDao">
 
+	<!-- 가입한 상품 리스트 -->
     <select id="findMyProductsByMemberNo" resultType="com.example.bnk.dto.member.MyProductDto">
         SELECT
             ps.SUBSCRIPTION_NO,
@@ -32,6 +33,7 @@
         ORDER BY ps.SUBSCRIBED_AT DESC
     </select>
 
+	<!-- 가입한 상품의 상세 정보 -->
     <select id="findMyProductDetail" resultType="com.example.bnk.dto.member.MyProductDto">
         SELECT
             ps.SUBSCRIPTION_NO,

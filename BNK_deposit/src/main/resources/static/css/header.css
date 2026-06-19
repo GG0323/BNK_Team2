@@ -116,6 +116,20 @@ body {
     color: #d71920;
 }
 
+/* [세션 남은시간 추가] 로그인 유지 시간 표시 */
+.session-timer {
+    height: 28px;
+    padding: 0 9px;
+    border: 1px solid #f0d7d9;
+    border-radius: 5px;
+    background-color: #fff7f7;
+    color: #8a1d23;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 26px;
+    white-space: nowrap;
+}
+
 .logout-form {
     margin: 0;
 }

@@ -27,7 +27,7 @@
         <nav class="nav">
 		    <a th:href="@{/}">홈</a>
 		    <a th:href="@{/products}">금융상품</a>
-		    <a th:href="@{/finance/financedictionary}">금융용어사전</a>
+		    <a th:href="@{/inquiry/faqPage}">FAQ</a>
 		
 		    <button type="button"
 		            class="nav-search-btn"
@@ -65,6 +65,8 @@
 
                     <button type="submit" class="logout-btn">로그아웃</button>
                 </form>
+                <!-- JWT 만료 카운트다운 표시 -->
+                <span id="sessionTimer" class="session-timer" aria-live="polite"></span>
             </div>
 
         </div>

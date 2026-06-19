@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>금융 용어 사전</title>
-<link rel="stylesheet" href="/css/productView.css">
-<style>
-    .dict-card { background: white; border-radius: 22px; padding: 24px; margin-bottom: 18px; box-shadow: 0 10px 26px rgba(0,0,0,0.07); border: 1px solid #eeeeee; transition: 0.2s; }
-    .dict-card:hover { border-color: #d71920; transform: translateY(-2px); }
-    .dict-title { font-size: 18px; font-weight: 700; color: #111; display: block; margin-bottom: 8px; }
-    .empty-state { text-align:center; padding:40px; color:#777; background:#f8f8f8; border-radius:14px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 금융 용어 사전</title>
+    
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+
+    <link rel="stylesheet" href="/css/common/financeDictionary.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="page-wrap">
-        <div class="product-header">
+
+    <div th:replace="~{fragments/header :: header_default}"></div>
+
+    <main class="fd-page">
+        <header class="fd-header">
+            <p class="fd-eyebrow">금융 가이드</p>
             <h1>금융 용어 사전</h1>
-            <p>궁금한 금융 용어를 확인해보세요.</p>
-        </div>
-        
-        <div style="text-align: center; margin-bottom: 20px;">
-            <form id="searchForm">
-                <input type="text" id="keyword" name="keyword" placeholder="검색할 금융 용어를 입력하세요" style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc;">
-                <button type="submit" style="padding: 10px 20px; background-color: #d71920; color: white; border: none; border-radius: 5px; cursor: pointer;">검색</button>
-            </form>
+            <p class="fd-sub">궁금한 금융 용어를 빠르게 찾아보세요</p>
+        </header>
+
+        <div class="fd-search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="text" id="fdSearch" placeholder="검색할 금융 용어를 입력하세요" autocomplete="off">
         </div>
 
-        <div class="product-section" id="dictionaryList">
-		    <div class="empty-state">불러오는 중...</div>
-		</div>
-    </div>
+        <!-- 초성/영문 인덱스 : JS가 데이터 기준으로 생성 -->
+        <div id="fdIndex" class="fd-index"></div>
+
+        <!-- 용어 목록 : JS가 채움 -->
+        <div id="fdList" class="fd-list">
+            <div class="fd-empty">불러오는 중...</div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script src="/js/members/common.js"></script>
     <script src="/js/common/financedictionary.js"></script>

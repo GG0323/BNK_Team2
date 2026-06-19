@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductDto;
@@ -467,12 +468,16 @@ public class EmployeePageController {
 	}
 	
 	// /employee/staff/reservation
-    @GetMapping("/staff/reservation")
-    public String staffReservationPage() {
-       
-        return "Employees/staff/reservation";
-    }
-    
+	@GetMapping("/staff/reservation")
+	public String staffReservationPage(@AuthenticationPrincipal EmployeeDetails employeeDetails) {
+	    if (employeeDetails == null) {
+	        return "redirect:/employee/toMain";
+	    }
+
+	    String username = employeeDetails.getUsername();
+	    return "Employees/staff/reservation";
+	}
+
     
     /** 수정된 상품 등록 로직 */  //  /employee/manager/writeProduct    /employee/manager/pendingProductDetail
     @GetMapping("/manager/writeProduct")
