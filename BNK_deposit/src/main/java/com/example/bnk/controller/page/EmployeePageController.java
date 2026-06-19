@@ -112,6 +112,7 @@ public class EmployeePageController {
 	}
 	
 	
+	
 	// 매니저 상세 페이지 -> 상품 디테일의 디테일
 	// 브라우저 호출 주소:
 	// /manager/SUG/approvedDetail/productDetail?type=rate&suggestion_no=5
@@ -173,7 +174,8 @@ public class EmployeePageController {
 		return "Employees/staff/staffPage";
 	}
 
-	// 약관 등록 페이지 /employee/staff/productTerm --------------------------------------------------------------------------------
+	/* 약관 등록 페이지 /employee/staff/productTerm
+	-----------------------------------------------------------------------------------------*/
 	@GetMapping("/staff/productTerm")
 	public String productTermForm() {
 		return "Employees/staff/term/productTermForm";
@@ -193,9 +195,8 @@ public class EmployeePageController {
 //		return "Employees/staff/writeSuggestionPage";
 //	}
 
-	/*
-	 * 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드
-	 * -----------------------------------------------------------------------------*/
+	/* 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드
+	------------------------------------------------------------------------------------------*/
 	// /employee/staff/product/list
 	@GetMapping("/staff/product/list")
 	public String employeeProductListPage(Model model) {
@@ -219,8 +220,21 @@ public class EmployeePageController {
 		return "Employees/staff/productDetails";
 	}
 
+	/* 상품 등록하기 페이지 (신----------------------규!)
+	-------------------------------------------------------------------------------------------*/
+	@GetMapping("/staff/productRegistration")
+	public String goPrdRegistration() {
+		return "Employees/staff/productRegistration";
+	}
+	
+	
+	
+	
+	
+	
+
 	/*
-	 * ----------------------------------------------------------------------------- */
+	------------------------------------------------------------------------------------------ */
 	// 승인된 상품 상세 페이지의 상세 사양 페이지
 	@GetMapping("/staff/product/approved/{type}/detail")
 	public String approvedProductDetail(@PathVariable("type") String type,
