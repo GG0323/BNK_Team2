@@ -4,41 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BNK 계좌 상세 및 거래내역</title>
-    
+
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
-    
-    <link rel="stylesheet" href="/css/member/myhistory.css">
+
+    <link rel="stylesheet" href="/css/member/member-common.css">
     <link rel="stylesheet" href="/css/member/member-nav.css">
-    
+    <link rel="stylesheet" href="/css/member/myhistory.css">
+
     <script src="/js/members/common.js" defer></script>
     <script src="/js/members/myhistory.js" defer></script>
+    <script th:src="@{/js/members/member-ui.js}" defer></script>
 </head>
 <body>
-	<div th:replace="~{fragments/header :: header_default}"></div>
+    <div th:replace="~{fragments/header :: header_default}"></div>
+
     <header class="top-header">
-	    <div class="header-inner">
-	        <div class="header-left">
-	            <div class="header-title-group">
-	                <h2>마이페이지</h2>
-	                <p>회원 정보 · 계좌 · 상품 가입 내역</p>
-	            </div>
-	        </div>
-	        <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
-	    </div>
-	</header>
-    
-	<div th:replace="~{fragments/nav :: member_mypage('myaccounts')}"></div>
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="header-title-group">
+                    <h2>마이페이지</h2>
+                    <p>회원 정보 · 계좌 · 상품 가입 내역</p>
+                </div>
+            </div>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+        </div>
+    </header>
+
+    <div th:replace="~{fragments/nav :: member_mypage('myaccounts')}"></div>
 
     <main class="history-container">
-
-        <section class="page-header">
+        <section class="page-header page-motion-row">
             <h3>계좌 상세 / 거래내역 조회</h3>
             <p>선택한 계좌의 상세 정보와 거래내역을 조회합니다.</p>
         </section>
 
-        <div class="top-info-grid">
-            <section class="info-card-box">
+        <div class="top-info-grid page-motion-row">
+            <section class="info-card-box motion-card">
                 <h4>계좌 상세 정보</h4>
                 <table class="detail-table">
                     <tbody>
@@ -51,38 +53,39 @@
                 </table>
             </section>
 
-            <section class="info-card-box">
+            <section class="info-card-box motion-card">
                 <h4>조회 조건</h4>
                 <div class="filter-group">
                     <span class="filter-label">유형</span>
                     <div class="filter-buttons" id="typeFilterButtons">
-					    <button type="button" class="btn-filter active" data-type="ALL">전체</button>
-					    <button type="button" class="btn-filter" data-type="DEPOSIT">입금</button>
-					    <button type="button" class="btn-filter" data-type="WITHDRAW">출금</button>
-					    <button type="button" class="btn-filter" data-type="TRANSFER">이체</button>
-					</div>
+                        <button type="button" class="btn-filter active" data-type="ALL">전체</button>
+                        <button type="button" class="btn-filter" data-type="DEPOSIT">입금</button>
+                        <button type="button" class="btn-filter" data-type="WITHDRAW">출금</button>
+                        <button type="button" class="btn-filter" data-type="TRANSFER">이체</button>
+                    </div>
                 </div>
+
                 <div class="filter-row">
-				    <span class="filter-label">조회 기간</span>
-				    <select id="periodFilter" class="filter-select">
-				        <option value="30">최근 1개월</option>
-				        <option value="90">최근 3개월</option>
-				        <option value="180">최근 6개월</option>
-				        <option value="ALL">전체</option>
-				    </select>
-				</div>
-				
-				<div class="filter-row">
-				    <span class="filter-label">정렬 기준</span>
-				    <select id="sortFilter" class="filter-select">
-				        <option value="latest">최신순</option>
-				        <option value="oldest">오래된순</option>
-				    </select>
-				</div>
+                    <span class="filter-label">조회 기간</span>
+                    <select id="periodFilter" class="filter-select">
+                        <option value="30">최근 1개월</option>
+                        <option value="90">최근 3개월</option>
+                        <option value="180">최근 6개월</option>
+                        <option value="ALL">전체</option>
+                    </select>
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-label">정렬 기준</span>
+                    <select id="sortFilter" class="filter-select">
+                        <option value="latest">최신순</option>
+                        <option value="oldest">오래된순</option>
+                    </select>
+                </div>
             </section>
         </div>
 
-        <section class="history-list-section">
+        <section class="history-list-section page-motion-row">
             <div class="table-wrapper">
                 <table class="history-table">
                     <thead>
@@ -101,8 +104,8 @@
                 </table>
             </div>
         </section>
-
     </main>
+
     <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

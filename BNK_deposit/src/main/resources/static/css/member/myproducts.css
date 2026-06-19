@@ -1,120 +1,84 @@
 @charset "UTF-8";
 
-/* 1. 기본 설정 및 마이페이지 공통 변수 계승 */
-:root {
-    --primary-red: #e3000f;
-    --text-dark: #222;
-    --text-gray: #666;
-    --text-light-gray: #999;
-    --bg-light: #f8f9fa;
-    --bg-pink: #fdf5f6;
-    --border-color: #eaeaea;
-    --guide-bg: #FFF0F0;
-    --guide-text: #D37070;
-}
+/* ================================
+   가입 상품 목록 페이지 전용
+================================ */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-}
-
-body {
-    background-color: #ffffff;
-    color: var(--text-dark);
-}
-
-a { text-decoration: none; color: inherit; }
-ul { list-style: none; }
-
-/* 2. 상단 헤더 & 네비게이션 (mypage와 100% 일치) */
-.top-header { background-color: #000; color: #fff; padding: 20px 0; }
-.header-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-.header-left { display: flex; align-items: center; gap: 15px; }
-.header-left h1 { font-size: 24px; font-weight: 900; letter-spacing: 1px; }
-.header-title-group h2 { font-size: 16px; font-weight: bold; margin-bottom: 2px; }
-.header-title-group p { font-size: 11px; color: #aaa; }
-.header-right { display: flex; align-items: center; gap: 20px; }
-.header-right ul { display: flex; gap: 15px; font-size: 13px; color: #ccc; }
-.header-right ul li::after { content: '|'; margin-left: 15px; color: #555; }
-.header-right ul li:last-child::after { display: none; }
-.btn-mypage-header { background-color: #fff; color: #000; border: none; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; }
-
-/* 3. 메인 레이아웃 (1000px 중앙 정렬) */
-.products-container {
-    max-width: 1000px;
-    margin: 0 auto 100px;
-}
-
-.page-header { margin-bottom: 25px; }
-.page-header h3 { font-size: 20px; margin-bottom: 8px; }
-.page-header p { font-size: 13px; color: var(--text-gray); }
-
-/* 4. 가입 상품 가로형 리스트 카드 */
 .product-list {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* 카드 사이 간격 */
+    gap: 18px;
     margin-bottom: 40px;
 }
 
 .product-card {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.4fr 130px;
+    grid-template-columns: minmax(0, 2fr) minmax(130px, 1fr) minmax(180px, 1.35fr) 128px;
     align-items: center;
     gap: 24px;
 
-    background-color: #fff;
+    padding: 28px 34px;
+
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 30px 40px;
-    transition: box-shadow 0.2s, border 0.2s;
+    border-radius: 18px;
+    background-color: #fff;
+    box-shadow: var(--shadow-panel);
 }
 
-.product-card:hover {
-    border-color: #ccc;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-}
-
-/* 상품명 및 구분 뱃지 영역 (Flex 비율 40%) */
 .prod-info-sec {
     min-width: 0;
+
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
 .type-badge {
-    display: inline-block;
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: lowercase;
-    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 24px;
+    padding: 4px 13px;
     margin-bottom: 12px;
+
+    border-radius: 999px;
+
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
 }
 
-.badge-red { background-color: var(--primary-red); }
-.badge-black { background-color: #222; }
+.badge-red {
+    background-color: var(--primary-red);
+}
+
+.badge-black {
+    background-color: #222;
+}
 
 .prod-name {
+    max-width: 100%;
+
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 900;
     color: var(--text-dark);
     margin-bottom: 6px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .prod-desc {
     font-size: 13px;
     color: var(--text-light-gray);
-    line-height: 1.4;
+    line-height: 1.45;
 }
 
-/* 데이터 출력 영역 (금액, 금리/일자) (Flex 비율 25%씩) */
 .prod-data-sec {
     min-width: 0;
+
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -127,11 +91,11 @@ ul { list-style: none; }
 
 .data-value {
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 900;
     color: #000;
+    line-height: 1.35;
 }
 
-/* 가입 상태 뱃지 영역 (우측 끝) */
 .prod-status-sec {
     display: flex;
     justify-content: flex-end;
@@ -139,24 +103,35 @@ ul { list-style: none; }
 }
 
 .status-badge {
-    min-width: 92px;
-    background-color: #000;
+    min-width: 94px;
+    padding: 8px 15px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 999px;
+    background-color: #111;
     color: #fff;
-    padding: 8px 16px;
-    border-radius: 20px;
+
     font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-    white-space: nowrap;
+    font-weight: 900;
     line-height: 1.2;
+    white-space: nowrap;
 }
 
-/* 빈 화면 처리 */
-.empty-state {
-    text-align: center;
-    padding: 60px 0;
-    color: var(--text-light-gray);
-    background-color: var(--bg-light);
-    border-radius: 12px;
-    font-size: 14px;
+.product-list .empty-state,
+.product-list .member-empty {
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    .product-card {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .prod-status-sec {
+        justify-content: flex-start;
+    }
 }

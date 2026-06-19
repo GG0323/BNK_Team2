@@ -3,7 +3,6 @@ package com.example.bnk.controller.api.member;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +18,6 @@ import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountHistoryDto;
 import com.example.bnk.dto.member.AccountTransactionDto;
 import com.example.bnk.dto.member.BankMemberDto;
-import com.example.bnk.dto.member.MemberProductDto;
 import com.example.bnk.dto.member.MemberTrackingLogDto;
 import com.example.bnk.dto.member.MypageSummaryDto;
 import com.example.bnk.service.member.AccountService;
@@ -167,21 +165,21 @@ public class BankMemberApiController {
 	    return ResponseEntity.ok(ApiResponse.ok(historyData));
 	}
 
-	// 가입 상품 내역 조회
-	@GetMapping("/myproducts")
-	public ResponseEntity<ApiResponse<?>> getMyProducts(Principal principal) {
-
-	    if (principal == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                .body(ApiResponse.fail("로그인이 필요합니다."));
-	    }
-
-	    String currentLoginId = principal.getName();
-
-	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentLoginId);
-
-	    return ResponseEntity.ok(ApiResponse.ok(productList));
-	}
+//	// 가입 상품 내역 조회
+//	@GetMapping("/myproducts")
+//	public ResponseEntity<ApiResponse<?>> getMyProducts(Principal principal) {
+//
+//	    if (principal == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//	                .body(ApiResponse.fail("로그인이 필요합니다."));
+//	    }
+//
+//	    String currentLoginId = principal.getName();
+//
+//	    List<MemberProductDto> productList = productSalesService.getSubscribedProducts(currentLoginId);
+//
+//	    return ResponseEntity.ok(ApiResponse.ok(productList));
+//	}
 
 	// 내 정보 수정
 	@PostMapping("/myinfo/update")

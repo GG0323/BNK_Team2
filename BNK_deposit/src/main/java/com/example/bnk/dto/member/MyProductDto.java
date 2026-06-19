@@ -11,7 +11,7 @@ public class MyProductDto {
     private long subscription_no;
     private long member_no;
     private long product_no;
-
+    private long account_no;
     private String product_name;
     private String product_type;
 

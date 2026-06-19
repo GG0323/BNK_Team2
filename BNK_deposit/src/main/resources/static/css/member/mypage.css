@@ -1,201 +1,9 @@
 @charset "UTF-8";
 
 /* ================================
-   기본 변수
+   마이페이지 전용 스타일
+   - 공통 변수/헤더/컨테이너/page-header는 member-common.css 사용
 ================================ */
-
-:root {
-    --primary-red: #e3000f;
-    --primary-red-dark: #b8000c;
-
-    --text-dark: #222;
-    --text-gray: #666;
-    --text-light-gray: #999;
-
-    --bg-light: #f8f9fa;
-    --bg-pink: #fdf5f6;
-    --border-color: #eaeaea;
-
-    --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 26px 58px rgba(0, 0, 0, 0.1);
-    --shadow-red: 0 16px 38px rgba(227, 0, 15, 0.1);
-
-    --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ================================
-   기본 초기화
-================================ */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-}
-
-body {
-    background:
-        radial-gradient(circle at top left, rgba(227, 0, 15, 0.045), transparent 32%),
-        linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
-    color: var(--text-dark);
-    overflow-x: hidden;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-ul {
-    list-style: none;
-}
-
-/* ================================
-   상단 검은 바
-================================ */
-
-.top-header {
-    display: block !important;
-    background-color: #000 !important;
-    color: #fff !important;
-    padding: 20px 0 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-    position: relative;
-    z-index: 2;
-    overflow: hidden;
-}
-
-.top-header::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        120deg,
-        transparent 0%,
-        transparent 35%,
-        rgba(255, 255, 255, 0.08) 46%,
-        transparent 58%,
-        transparent 100%
-    );
-    transform: translateX(-120%);
-    animation: headerLight 1.5s ease 0.25s forwards;
-    pointer-events: none;
-}
-
-@keyframes headerLight {
-    to {
-        transform: translateX(120%);
-    }
-}
-
-.top-header .header-inner {
-    width: min(1000px, calc(100% - 48px));
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-}
-
-.top-header .header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.top-header .header-title-group h2 {
-    font-size: 16px;
-    font-weight: 800;
-    margin-bottom: 3px;
-}
-
-.top-header .header-title-group p {
-    font-size: 11px;
-    color: #aaa;
-}
-
-.top-header .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.top-header .header-right ul {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 13px;
-    color: #ccc;
-}
-
-.top-header .header-right ul li::after {
-    content: '|';
-    margin-left: 15px;
-    color: #555;
-}
-
-.top-header .header-right ul li:last-child::after {
-    display: none;
-}
-
-.top-header .header-right a {
-    transition: color 0.22s ease;
-}
-
-.top-header .header-right a:hover {
-    color: #fff;
-}
-
-.btn-mypage-header {
-    background-color: #fff;
-    color: #000;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    transition:
-        transform 0.32s var(--ease-soft),
-        box-shadow 0.32s var(--ease-soft),
-        background-color 0.24s ease;
-}
-
-.btn-mypage-header:hover {
-    transform: translate3d(0, -2px, 0);
-    box-shadow: 0 8px 18px rgba(255, 255, 255, 0.18);
-    background-color: #f4f4f4;
-}
-
-/* ================================
-   메인 컨테이너
-================================ */
-
-.mypage-container {
-    width: min(1000px, calc(100% - 48px));
-    max-width: 1000px;
-    margin: 0 auto 100px;
-}
-
-.page-header {
-    margin-bottom: 20px;
-}
-
-.page-header h3 {
-    font-size: 20px;
-    margin-bottom: 8px;
-    font-weight: 900;
-}
-
-.page-header p {
-    font-size: 13px;
-    color: var(--text-gray);
-}
 
 /* ================================
    행 단위 페이드 인
@@ -431,7 +239,7 @@ body.mypage-ready .motion-row {
 }
 
 /* ================================
-   진짜 룰렛 / 오도미터 숫자
+   오도미터 숫자
 ================================ */
 
 .roulette-number,
@@ -569,7 +377,7 @@ body.mypage-ready .motion-row {
     background-color: #fff;
     color: #333;
     font-size: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
     transform: translate3d(0, 0, 0) scale(1);
     transition:
@@ -604,6 +412,7 @@ body.mypage-ready .motion-row {
 
 /* ================================
    페이지 전환 레이어
+   현재 HTML에 없으면 영향 없음
 ================================ */
 
 .page-transition-layer {
@@ -678,32 +487,7 @@ body.mypage-ready .motion-row {
     font-weight: 800;
 }
 
-/* ================================
-   반응형
-================================ */
-
 @media (max-width: 768px) {
-    .top-header .header-inner,
-    .mypage-container {
-        width: min(100% - 32px, 1000px) !important;
-    }
-
-    .top-header .header-inner {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-    }
-
-    .top-header .header-right {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
-
-    .top-header .header-right ul {
-        flex-wrap: wrap;
-    }
-
     .summary-stats {
         grid-template-columns: 1fr;
     }

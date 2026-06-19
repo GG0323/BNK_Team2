@@ -19,4 +19,6 @@ public interface IProductSalesDao {
     // 커뮤니티 가입 시 우대금리 상승 인터페이스
     public int upTermsCommunityRegist(@Param("member_no") long member_no);
     
+    // 회원의 가입 상품 데이터 불러오기
+    public MemberProductDto selectUsersProduct(@Param("member_no") long member_no, @Param("account_no") long account_no);
 }
