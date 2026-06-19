@@ -57,8 +57,9 @@ public class MemberSecurityConfig {
 				.logoutSuccessHandler((request, response, auth) -> {
 					Cookie cookie = new Cookie("bnk_token", null);
 					cookie.setPath("/");
-					response.addCookie(cookie);
 					cookie.setHttpOnly(true);
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
 		
 					response.sendRedirect("/loginPage?message=logout");
 				})
@@ -68,7 +69,4 @@ public class MemberSecurityConfig {
 		
 		return http.build();
 	}
-	
-	
-
 }
