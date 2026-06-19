@@ -21,18 +21,23 @@
 		WHERE login_id = #{id}
 	</select>
 	
-	<insert id="regist">
-		INSERT INTO TB_BANK_MEMBER(
-	        login_id, password_hash, member_name, member_type, member_identifier,
-	        gender, birth_date, phone_number, email, adress, credit_score, member_status,
-        	created_at
-        )
-    	VALUES(
-    		#{dto.login_id}, #{dto.password_hash}, #{dto.member_name}, #{dto.member_type},
-	    	#{dto.member_identifier}, #{dto.gender, jdbcType=VARCHAR}, #{dto.birth_date}, #{dto.phone_number},
-	    	#{dto.email}, #{dto.adress}, #{dto.credit_score}, 'ASSOCIATE', SYSDATE
-    	)
+	<insert id="regist" statementType="CALLABLE" parameterType="com.example.bnk.dto.member.BankMemberDto">
+		BEGIN
+			INSERT INTO TB_BANK_MEMBER(
+		        login_id, password_hash, member_name, member_type, member_identifier,
+		        gender, birth_date, phone_number, email, adress, credit_score, member_status,
+	        	created_at
+	        )
+	    	VALUES(
+	    		#{login_id}, #{password_hash}, #{member_name}, #{member_type},
+		    	#{member_identifier}, #{gender, jdbcType=VARCHAR}, #{birth_date}, #{phone_number},
+		    	#{email}, #{adress}, #{credit_score}, 'ASSOCIATE', SYSDATE
+	    	)
+	    	RETURNING member_no
+	    	INTO #{member_no, mode=OUT, jdbcType=NUMERIC, javaType=long};
+		END;
 	</insert>
+
 	
 	<update id="editMember">
 		UPDATE TB_BANK_MEMBER

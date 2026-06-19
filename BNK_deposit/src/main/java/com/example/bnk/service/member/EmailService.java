@@ -51,4 +51,29 @@ public class EmailService {
 
         mailSender.send(message);
     }
+    
+    // 보안카드 이메일로 전송
+    public void sendSecurityCard(String toEmail, String securityCardNumber, long pk) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        String [] numbers = securityCardNumber.split(" ");
+        int no = 1;
+
+        String msg = "BNK 준회원 가입이 완료되었습니다.\n\n"
+        		+ "계좌 개설 시 사용할 보안카드 번호입니다.\n\n"
+        		+ "[보안카드 번호]\n"
+        		+ "No. " + pk + "\n";
+        
+        for(int i = 0; i < numbers.length; i+=2) {
+        	msg += String.format("%d: %s %s\n", no++, numbers[i], numbers[i+1]);
+        }
+        
+        msg += "\n해당 번호는 타인에게 공유하지 마세요.";
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("[BNK] 보안카드 번호 안내");
+        message.setText(msg);
+
+        mailSender.send(message);
+    }
 }
