@@ -52,12 +52,19 @@ public class ProductTermination {
     		return 0;
     	}
     	
+    	int changeSubStatus = changeSubscription(account_no);
+    	System.out.println("해지하기 결과: " + changeSubStatus);
+    	if(changeSubStatus == 0) {
+    		System.out.println("해지하기가 실패하였습니다!");
+    		return 0;
+    	}
     	
     	System.out.println("모두 성공");
     	return 1;
     }
     
 	
+    
 	
 	// 환급받을 계좌(죽, 주계좌) 찾기
 	public long findUsingAccountNo(@Param("member_no") long member_no) {
@@ -96,6 +103,17 @@ public class ProductTermination {
     		return 1;
     	}
     	System.out.println("환금 실패!");
+    	return 0;
+    }
+
+    // 마지막으로 가입상태 해지하기로 변경
+    public int changeSubscription(@Param("account_no") long account_no) {
+    	System.out.println("해지하기로 변경");
+    	if(iAccountDao.changeSubscriptionStatus(account_no) == 1) {
+    		System.out.println("해지하기까지 성공!");
+    		return 1;
+    	}
+    	System.out.println("해지하기 실패 ㅜㅜ");
     	return 0;
     }
     
