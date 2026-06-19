@@ -16,4 +16,15 @@ public interface IAccountDao {
     // 특정 계좌 번호로 계좌 상세 정보 1건 조회
     AccountDto findAccountByAccountNo(@Param("accountNo") long accountNo);
 
+    // account_no로 회원의 주계좌 정보 받기
+    AccountDto findUsersAccount(@Param("account_no") long account_no);
+    
+    // member_no로 주계좌 찾기
+    long findUsingAccountNo(@Param("member_no") long member_no);
+    
+    // 환금해주기
+    int interestToMyAccount(@Param("balance") long balance, @Param("applied_interest_rate") double applied_interest_rate, @Param("member_no") long member_no);
+    
+    // 환금 끝나고 계좌 비활성 만들기.
+    int changeAccountStatus(@Param("account_no") long account_no);
 }
