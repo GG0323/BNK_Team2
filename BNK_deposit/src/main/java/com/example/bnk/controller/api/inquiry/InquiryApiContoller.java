@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bnk.auth.MemberDetails;
 import com.example.bnk.dto.inquiry.FaqCandidateDto;
 import com.example.bnk.dto.inquiry.FaqDto;
 import com.example.bnk.dto.inquiry.InquiryDto;
@@ -45,16 +47,7 @@ public class InquiryApiContoller {
 		return faqlist;
 	}
 	
-	@GetMapping("/test")
-	public String test(Authentication authentication) {
-	    System.out.println("authentication = " + authentication);
-	    System.out.println("principal = " + authentication.getPrincipal());
-	    System.out.println("principal class = " + authentication.getPrincipal().getClass());
-	    System.out.println("authorities = " + authentication.getAuthorities());
-	    System.out.println("name = " + authentication.getName());
-
-	    return "ok";
-	}
+	
 	
 	// 문의사항 등록
 	@PostMapping("/form")
@@ -62,13 +55,12 @@ public class InquiryApiContoller {
 	        @RequestParam("INQUIRY_CATEGORY") String inquiryCategory,
 	        @RequestParam("INQUIRY_TITLE") String inquiryTitle,
 	        @RequestParam("MSG_CONTENT") String msgContent,
-	        @AuthenticationPrincipal String username,
-	        @AuthenticationPrincipal long pk
+	        @AuthenticationPrincipal String username
 	        ) {
 		// ++ authentication 에서 유저 pk 뽑아오기, id 뽑아오기
 		System.out.println("파라미터 확인 // " + inquiryCategory +", "+ inquiryTitle +", "+ msgContent );
 		
-	    
+		
     	//인서트 함수
         inquiryService.insertInquiry(inquiryCategory, inquiryTitle, msgContent, 25, "하드코딩-id");
 
@@ -195,11 +187,13 @@ public class InquiryApiContoller {
 	@PostMapping("/faqCandidates/{candidateNo}/approve")
 	public Map<String, Object> approve(
 	        @PathVariable("candidateNo") Long candidateNo,
-	        @RequestBody Map<String, String> req
-	        ) {
+	        @RequestBody Map<String, String> req, 
+	        @AuthenticationPrincipal MemberDetails memberD
+			) {
 	    String question = req.get("question");
 	    String answer = req.get("answer");
-	    return candidateService.approveCandidate(candidateNo, question, answer);
+	    long employeeNo = memberD.getPk();
+	    return candidateService.approveCandidate(candidateNo, question, answer, employeeNo);
 	}
 	
 	
