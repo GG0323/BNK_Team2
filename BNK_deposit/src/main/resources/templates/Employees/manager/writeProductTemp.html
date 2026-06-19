@@ -1,86 +1,156 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>상품 등록</title>
-  <!-- CSS는 나중에 작업. 지금은 최소한의 가독성만 -->
-  <style>
-    body { font-family: sans-serif; max-width: 640px; margin: 20px auto; }
-    .row { margin-bottom: 12px; }
-    label { display: inline-block; width: 160px; vertical-align: top; }
-    input[type=text], input[type=number], input[type=date], select { width: 240px; }
-    .required::after { content: " *"; color: red; }
-    #result { margin-top: 16px; padding: 10px; display: none; }
-    .ok { background: #e6ffe6; }
-    .err { background: #ffe6e6; }
-  </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>상품 등록</title>
+	
+	<link rel="stylesheet" th:href="@{/css/employee/manager/writeProductTemp.css}">
+
 </head>
 <body>
 
-<h2>상품 등록</h2>
-<p>등록하면 <b>판매대기(PENDING)</b> 상태로 저장됩니다. 이후 약관·설명·금리 작성 화면으로 이동합니다.</p>
-
-	<form id="productForm">
-		<div class="row">
-			<label class="required" for="product_name">상품명</label>
-			<input type="text" id="product_name" maxlength="100" required>
+	<div class="main">
+ 
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
 		</div>
-	
-		<div class="row">
-			<label class="required" for="product_type">상품유형</label>
-			<input type="text" id="product_type" maxlength="10" required>
-			DEPOSIT: 예금 / SAVINGS: 적금
+ 
+		<div class="breadcrumb">
+			관리자 페이지 ›
+			<a th:href="@{/employee/manager/pendingProductList}">미승인 상품 목록</a> ›
+			<span class="current">상품 등록</span>
 		</div>
-	
-		<div class="row">
-			<label for="min_interest_rate">최저금리(%)</label>
-			<input type="number" id="min_interest_rate" step="0.01" min="0" max="99.99">
+ 
+		<div class="page-title">상품 등록</div>
+		<p class="page-desc">등록하면 <b>판매대기(PENDING)</b> 상태로 저장됩니다. 이후 약관·설명·금리 작성 화면으로 이동합니다.</p>
+ 
+		<div class="form-card">
+			<form id="productForm">
+ 
+				<!-- 기본 정보 -->
+				<div class="section-title">기본 정보</div>
+				<div class="form-grid-2">
+ 
+					<div class="form-group full">
+						<label>상품명 <span class="required">*</span></label>
+						<input type="text" id="product_name" maxlength="100" placeholder="상품명을 입력해주세요">
+						<span class="field-error" id="err-product_name">상품명을 입력해주세요.</span>
+					</div>
+ 
+					<div class="form-group">
+						<label>상품유형 <span class="required">*</span></label>
+						<select id="product_type">
+							<option value="">-- 선택 --</option>
+							<option value="DEPOSIT">DEPOSIT (예금)</option>
+							<option value="SAVINGS">SAVINGS (적금)</option>
+						</select>
+						<span class="field-error" id="err-product_type">상품유형을 선택해주세요.</span>
+					</div>
+ 
+				</div>
+ 
+				<hr class="divider">
+ 
+				<!-- 금리 -->
+				<div class="section-title">금리</div>
+				<div class="form-grid-2">
+					<div class="rate-row">
+						<div class="form-group">
+							<label>최저금리 (%)</label>
+							<input type="number" id="min_interest_rate" step="0.01" min="0" max="99.99" placeholder="예: 2.50">
+						</div>
+						<div class="rate-sep">~</div>
+						<div class="form-group">
+							<label>최고금리 (%)</label>
+							<input type="number" id="max_interest_rate" step="0.01" min="0" max="99.99" placeholder="예: 4.00">
+							<span class="field-error" id="err-rate">최저금리가 최고금리보다 클 수 없습니다.</span>
+						</div>
+					</div>
+				</div>
+ 
+				<hr class="divider">
+ 
+				<!-- 이자 방식 -->
+				<div class="section-title">이자 방식</div>
+				<div class="form-grid-2">
+ 
+					<div class="form-group">
+						<label>이자지급방식</label>
+						<select id="interest_payment_type">
+							<option value="">-- 선택 --</option>
+							<option value="MATURITY">MATURITY (만기일시)</option>
+							<option value="MONTHLY">MONTHLY (월이자)</option>
+							<option value="SETTLEMENT">SETTLEMENT (결산주기)</option>
+						</select>
+					</div>
+ 
+					<div class="form-group">
+						<label>이자계산방식</label>
+						<select id="interest_calc_type">
+							<option value="">-- 선택 --</option>
+							<option value="SIMPLE">SIMPLE (단리)</option>
+							<option value="COMPOUND">COMPOUND (복리)</option>
+						</select>
+					</div>
+ 
+				</div>
+ 
+				<hr class="divider">
+ 
+				<!-- 판매 기간 -->
+				<div class="section-title">판매 기간</div>
+				<div class="form-grid-2">
+ 
+					<div class="form-group">
+						<label>판매시작일</label>
+						<input type="date" id="sale_start_date">
+					</div>
+ 
+					<div class="form-group">
+						<label>판매종료일</label>
+						<input type="date" id="sale_end_date">
+						<span class="hint">비워두면 상시판매</span>
+					</div>
+ 
+				</div>
+ 
+				<hr class="divider">
+ 
+				<!-- 가입 채널 -->
+				<div class="section-title">가입 채널</div>
+				<div class="form-group">
+					<label>가입 가능 채널</label>
+					<div class="channel-group">
+						<label class="channel-item">
+							<input type="checkbox" id="branch_join_yn">
+							<span>영업점</span>
+						</label>
+						<label class="channel-item">
+							<input type="checkbox" id="internet_join_yn">
+							<span>인터넷</span>
+						</label>
+						<label class="channel-item">
+							<input type="checkbox" id="mobile_join_yn" checked>
+							<span>모바일</span>
+						</label>
+					</div>
+				</div>
+ 
+				<div class="btn-row">
+					<a class="btn-cancel" th:href="@{/employee/manager/pendingProductList}">취소</a>
+					<button type="submit" class="btn-submit" id="submitBtn">상품 등록</button>
+				</div>
+ 
+			</form>
+ 
+			<div class="result-box" id="result"></div>
 		</div>
-	
-		<div class="row">
-			<label for="max_interest_rate">최고금리(%)</label>
-			<input type="number" id="max_interest_rate" step="0.01" min="0" max="99.99">
-		</div>
-	
-		<div class="row">
-			<label for="interest_payment_type">이자지급방식</label>
-			<input type="text" id="interest_payment_type" maxlength="20">
-			MATURITY: 만기일시 / MONTHLY: 월이자 / SETTLEMENT: 결산주기
-		</div>
-		
-		<div class="row">
-			<label for="interest_calc_type">이자계산방식</label>
-			<input type="text" id="interest_calc_type" maxlength="10">
-			SIMPLE: 단리 / COMPOUND: 복리
-		</div>
-	
-		<div class="row">
-			<label for="sale_start_date">판매시작일</label>
-			<input type="date" id="sale_start_date">
-		</div>
-
-		<div class="row">
-			<label for="sale_end_date">판매종료일</label>
-			<input type="date" id="sale_end_date">
-		</div>
-	
-		<div class="row">
-			<label>가입채널</label>
-			<span>
-				<label style="width:auto;"><input type="checkbox" id="branch_join_yn"> 영업점</label>
-				<label style="width:auto;"><input type="checkbox" id="internet_join_yn"> 인터넷</label>
-				<label style="width:auto;"><input type="checkbox" id="mobile_join_yn" checked> 모바일</label>
-			</span>
-		</div>
-	
-		<div class="row">
-			<button type="submit">등록</button>
-		</div>
-	</form>
-	
-	<div id="result"></div>
-
+ 
+	</div>
+ 
+	<div class="toast" id="toast"></div>
+ 
   <script th:src="@{/js/employees/manager/writeProductTemp.js}"></script>
   
   

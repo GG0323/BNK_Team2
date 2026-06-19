@@ -1,32 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>문의 답변</title>
+	<link rel="stylesheet" th:href="@{/css/employee/staff/inquiryAnswer.css}">
 </head>
 <body>
-	
-	<!-- 헤더 영역 -->
-	<div>
-	    <button onclick="history.back()">←</button>
-	    <div id="inquiryHeader"></div>
+
+	<div class="main">
+
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+
+		<div class="breadcrumb">
+			직원 페이지 ›
+			<a th:href="@{/inquiry/inquiryAnswerList}">문의 목록</a> ›
+			<span class="current">답변 작성</span>
+		</div>
+
+		<!-- 헤더 영역 -->
+		<div class="inquiry-header-wrap">
+			<button class="btn-back" onclick="history.back()">← 목록으로</button>
+			<div id="inquiryHeader"></div>
+		</div>
+
+		<!-- 메시지 목록 -->
+		<div class="chat-card">
+			<div id="msgList"></div>
+		</div>
+
+		<!-- 하단 입력창 -->
+		<div class="input-box" id="inputBox">
+			<input type="text" id="msgInput" placeholder="문의 사항에 대한 답변을 입력하세요">
+			<button class="btn-send" onclick="postingAnswer()">전송</button>
+		</div>
+
 	</div>
-	
-	<!-- 메시지 목록 -->
-	<div id="msgList"></div>
-	
-	
-	
-	<!-- 하단 입력창 -->
-	<div  id="inputBox">
-	    <input type="text" id="msgInput" placeholder="문의 사항에 대한 답변 생성">
-	    <button onclick="postingAnswer()">전송</button>
-	</div>
-	
-	
+
+	<div class="toast" id="toast"></div>
+
 	<script th:src="@{/js/inquiry/inquiryAnswer.js}"></script>
 
-	
-	
 </body>
 </html>

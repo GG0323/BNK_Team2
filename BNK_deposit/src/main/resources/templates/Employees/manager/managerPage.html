@@ -217,8 +217,13 @@
     	<a class="nav-item" th:href="@{/employee/manager/HRM/hrmEmployeeList}">직원 리스트</a>
     	<a class="nav-item" th:href="@{/employee/manager/SUG/suggestionList}">제안서 리스트</a>
     	<a class="nav-item" th:href="@{/employee/manager/SUG/approvedList}">승인된 제안서</a>
-    	<a class="nav-item" th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a>
+    	<!-- <a class="nav-item" th:href="@{/employee/manager/LOG/bankMemberLog}">고객 로그</a> -->
     	<a class="nav-item" th:href="@{/employee/manager/PRD/productList}">상품 리스트</a>
+    	
+    	<a class="nav-item" th:href="@{/employee/manager/LOG/pageLog/list}">세션 ID별 로그</a>
+		<a class="nav-item" th:href="@{/employee/manager/LOG/pageLog/stats}">세션 ID별 로그 정리</a>
+		<a class="nav-item" th:href="@{/employee/manager/writeProduct}">상품 등록 PENDING</a>
+		<a class="nav-item" th:href="@{/employee/manager/pendingProductList}">PENDING 상품 확인</a>
   	</aside>
 	
 	<main class="main">
@@ -260,8 +265,9 @@
         			<p class="card-sub">전체 직원 목록을 조회합니다</p>
        			</div>
       		</a>
+      		
       		<a class="menu-card primary" th:href="@{/employee/manager/SUG/suggestionList}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
+        		<div class="card-icon">아이콘</div>
         		<div>
         			<p class="card-title">제안서 리스트</p>
         			<p class="card-sub">제출된 제안서를 확인합니다.</p>
@@ -276,13 +282,15 @@
        			</div>
       		</a>
       		
-      		<a class="menu-card primary" th:href="@{/employee/manager/LOG/bankMemberLog}">
-        		<div class="card-icon"><!-- 아이콘 --></div>
+    		<!-- 
+    		<a class="menu-card primary" th:href="@{/employee/manager/LOG/bankMemberLog}">
+        		<div class="card-icon"></div>
         		<div>
         			<p class="card-title">고객 LOG</p>
         			<p class="card-sub">고객의 활동 LOG를 확인합니다.</p>
        			</div>
       		</a>
+      		 -->
       		
       		<!-- // 상품 판매 현황 조회 -->
       		<a class="menu-card primary" th:href="@{/employee/manager/PRD/productList}">

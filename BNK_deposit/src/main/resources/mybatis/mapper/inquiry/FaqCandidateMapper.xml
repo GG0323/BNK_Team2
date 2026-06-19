@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.inquiry.IFaqCandidateDao">
+
+
+	<select id="selectPendingCandidates" resultType="com.example.bnk.dto.inquiry.FaqCandidateDto">
+	    SELECT
+	        CANDIDATE_NO   AS candidateNo,
+	        REP_QUESTION   AS repQuestion,
+	        CATEGORY       AS category,
+	        INQUIRY_COUNT  AS inquiryCount,
+	        SIMILARITY     AS similarity,
+	        STATUS         AS status,
+	        CREATED_AT     AS createdAt,
+	        UPDATED_AT     AS updatedAt
+	    FROM TB_FAQ_CANDIDATE
+	    WHERE STATUS = '대기'
+	    ORDER BY INQUIRY_COUNT DESC, UPDATED_AT DESC
+	</select>
+	
+	<!-- 반려 상태 -->
+	<update id="updateStatus">
+    	UPDATE TB_FAQ_CANDIDATE
+		   SET STATUS = #{status},
+			   UPDATED_AT = SYSDATE
+    	WHERE CANDIDATE_NO = #{candidateNo}
+	</update>
+	
+	<!-- 승인 상태 + 답변 -->
+	<update id="approveCandidate">
+	    UPDATE TB_FAQ_CANDIDATE
+	       SET STATUS = #{status},
+	           DRAFT_ANSWER = #{answer},
+	           UPDATED_AT = SYSDATE
+	     WHERE CANDIDATE_NO = #{candidateNo}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+</mapper>

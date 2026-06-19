@@ -3,38 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<link rel="stylesheet" th:href="@{/css/employee/staff/inquiryAnswerList.css}">
+
 </head>
 <body>
 
 
-	http://localhost:8080/inquiry/inquiryAnswerList
-    <!-- 헤더 영역 -->
-    <div>
-        <span>문의 사항 답변 : 문의 목록</span>
-    </div>
-    
-    
-    <div id="statusTag">
-    <span>상태</span>
-	    <button class="tag-btn active" onclick="setFilter('status', null, this)">전체</button>
-	    <button class="tag-btn" onclick="setFilter('status', '접수완료', this)">접수완료</button>
-	    <button class="tag-btn" onclick="setFilter('status', '처리중', this)">처리중</button>
-	    <button class="tag-btn" onclick="setFilter('status', '답변완료', this)">답변완료</button>
-	</div>
-	<div id="categoryTag">
-	    <span>카테고리</span>
-	    <button class="tag-btn active" onclick="setFilter('category', null, this)">전체</button>
-	    <button class="tag-btn" onclick="setFilter('category', '적금상품', this)">적금상품</button>
-		<button class="tag-btn" onclick="setFilter('category', '가입관련', this)">가입관련</button>
-		<button class="tag-btn" onclick="setFilter('category', '이자/수익률', this)">이자/수익률</button>
-		<button class="tag-btn" onclick="setFilter('category', '계좌관련', this)">계좌관련</button>
-		<button class="tag-btn" onclick="setFilter('category', '기타', this)">기타</button>
-	</div>
-    
-    
 
-    <!-- 목록 영역 -->
-    <div id="inquiryList"></div>
+	<div class="main">
+ 
+		<div class="topbar">
+			<button class="logout-btn">로그아웃</button>
+		</div>
+ 
+		<div class="breadcrumb">
+			직원 페이지 › <span class="current">문의 사항 답변</span>
+		</div>
+ 
+		<div class="page-header">
+			<div class="page-title">문의 목록</div>
+			<span class="total-count" id="totalCount">전체 0건</span>
+		</div>
+ 
+		<!-- 필터 태그 -->
+		<div class="filter-wrap">
+			<div class="filter-row">
+				<span class="filter-label">상태</span>
+				<div class="tag-group" id="statusTag">
+					<button class="tag-btn active" onclick="setFilter('status', null, this)">전체</button>
+					<button class="tag-btn" onclick="setFilter('status', '접수완료', this)">접수완료</button>
+					<button class="tag-btn" onclick="setFilter('status', '처리중', this)">처리중</button>
+					<button class="tag-btn" onclick="setFilter('status', '답변완료', this)">답변완료</button>
+				</div>
+			</div>
+			<div class="filter-row">
+				<span class="filter-label">카테고리</span>
+				<div class="tag-group" id="categoryTag">
+					<button class="tag-btn active" onclick="setFilter('category', null, this)">전체</button>
+					<button class="tag-btn" onclick="setFilter('category', '적금상품', this)">적금상품</button>
+					<button class="tag-btn" onclick="setFilter('category', '가입관련', this)">가입관련</button>
+					<button class="tag-btn" onclick="setFilter('category', '이자/수익률', this)">이자/수익률</button>
+					<button class="tag-btn" onclick="setFilter('category', '계좌관련', this)">계좌관련</button>
+					<button class="tag-btn" onclick="setFilter('category', '기타', this)">기타</button>
+				</div>
+			</div>
+		</div>
+ 
+		<!-- 목록 -->
+		<div id="inquiryList"></div>
+ 
+	</div>
+ 
+	<div class="toast" id="toast"></div>
     
 	
 	<script th:src="@{/js/inquiry/inquiryAnswerList.js}"></script>

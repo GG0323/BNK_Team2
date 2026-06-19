@@ -21,6 +21,7 @@ public class PageLogWebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(memberPageLogInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
+                		"/inquiry/inquiryAnswerList","/inquiry/inquiryAnswer","/inquiry/faqCandidateList",
                 		"/employee/**", 
                         "/css/**", "/js/**", "/images/**", "/img/**", "/fonts/**",
                         "/favicon.ico",
