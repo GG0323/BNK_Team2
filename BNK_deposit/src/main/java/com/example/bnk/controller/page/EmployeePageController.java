@@ -470,7 +470,6 @@ public class EmployeePageController {
 	// /employee/staff/reservation
 	@GetMapping("/staff/reservation")
 	public String staffReservationPage(@AuthenticationPrincipal EmployeeDetails employeeDetails) {
-
 	    if (employeeDetails == null) {
 	        return "redirect:/employee/toMain";
 	    }
@@ -478,7 +477,7 @@ public class EmployeePageController {
 	    String username = employeeDetails.getUsername();
 	    return "Employees/staff/reservation";
 	}
-    
+
     
     /** 수정된 상품 등록 로직 */  //  /employee/manager/writeProduct    /employee/manager/pendingProductDetail
     @GetMapping("/manager/writeProduct")
