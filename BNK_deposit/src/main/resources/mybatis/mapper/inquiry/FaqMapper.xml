@@ -8,6 +8,25 @@
 		SELECT * FROM TB_FAQ
 	</select>
 	
+	<insert id="insertNewFaq">
+		INSERT INTO TB_FAQ (
+	        FAQ_CATEGORY,
+	        FAQ_QUESTION,
+	        FAQ_ANSWER,
+	        FAQ_ORDER,
+	        CREATED_AT,
+	        UPDATED_AT,
+	        CREATED_BY
+	    ) VALUES (
+	        #{faqCategory},
+	        #{faqQuestion},
+	        #{faqAnswer},
+	        #{faqOrder},
+	        SYSDATE,
+	        SYSDATE,
+	        #{createdBy}
+	    )
+	</insert>
 	
 	
 	

@@ -28,9 +28,7 @@ import com.example.bnk.service.product.ProductForEmployee;
 @RequestMapping("/employee")
 public class EmployeePageController {
 
-	@Autowired
-	EmployeeLogService logService;
-
+	
 	@Autowired
 	ProductForEmployee prdForEmpService;
 
@@ -52,31 +50,31 @@ public class EmployeePageController {
 
 	// /Employees/manager/managerPage
 	@GetMapping("/manager/managerPage")
-	public String managerPage(@AuthenticationPrincipal String username) {
-		logService.build(username, "INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
+	public String managerPage() {
+
 
 		return "Employees/manager/managerPage";
 	}
 
 	// /employee/manager/HRM/hrmRegist
 	@GetMapping("/manager/HRM/hrmRegist")
-	public String hrmRegist(@AuthenticationPrincipal String username) {
-		logService.build(username, "PAGEVIEW", null, null, "페이지간 이동을 실현한다: 인사관리/신규 사원 등록");
+	public String hrmRegist() {
+
 		return "Employees/manager/HRM/hrmRegist";
 	}
 
 	// 직원 로그 조회 페이지 /employee/manager/LOG/logList
 	@GetMapping("/manager/LOG/logList")
-	public String logList(@AuthenticationPrincipal String username) {
-		logService.build(username, "PAGEVIEW", null, null, "페이지간 이동을 실현한다: 로그/목록 보기");
+	public String logList() {
+		
 		return "Employees/manager/LOG/logList";
 	}
 
 	// 직원 리스트 페이지
 	// /employee/manager/HRM/hrmEmployeeList
 	@GetMapping("/manager/HRM/hrmEmployeeList")
-	public String hrmEmployeeList(@AuthenticationPrincipal String username) {
-		logService.build(username, "PAGEVIEW", "TB_EMPLOYEE", null, "직원 목록을 불러온다.");
+	public String hrmEmployeeList() {
+	
 		return "Employees/manager/HRM/hrmEmployeeList";
 	}
 
@@ -88,27 +86,27 @@ public class EmployeePageController {
 
 	// !! 제안서 리스트 페이지 /employee/manager/SUG/suggestionList
 	@GetMapping("/manager/SUG/suggestionList")
-	public String suggestionList(@AuthenticationPrincipal String username) {
-		logService.build(username, "PAGEVIEW", "TB_PRODUCTS_SUGGESTION", null, " 제안서 목록을 불러온다.");
+	public String suggestionList() {
+		
 		return "Employees/manager/SUG/suggestionListPage";
 	}
 
 	// !! 제안서 상세 페이지
 	@GetMapping("/manager/SUG/suggestionReview")
-	public String suggestionReview(@AuthenticationPrincipal String username) {
+	public String suggestionReview() {
 		return "Employees/manager/SUG/suggestionReviewPage";
 	}
 
 	// !! 승인된 제안서 리스트 (중간 테이블) /employee/manager/SUG/approvedList
 	@GetMapping("/manager/SUG/approvedList")
-	public String approvedList(@AuthenticationPrincipal String username) {
-		logService.build(username, "PAGEVIEW", "TB_APPROVED_SUGGESTION", null, "승인한 제안서 목록을 불러온다.");
+	public String approvedList() {
+		
 		return "Employees/manager/SUG/approvedSuggestionList";
 	}
 
 	// !! 승인된 제안서 상세 (중간 테이블)
 	@GetMapping("/manager/SUG/approvedDetail")
-	public String approvedDetail(@AuthenticationPrincipal String username) {
+	public String approvedDetail() {
 		return "Employees/manager/SUG/approvedSuggestionDetail";
 	}
 	
@@ -181,18 +179,18 @@ public class EmployeePageController {
 	}
 
 	// 제안서 작성 페이지 이동 /employee/staff/writeSuggestionPage
-	@GetMapping("/staff/writeSuggestionPage")
-	public String writeSuggestionPage(@AuthenticationPrincipal String username) {
-
-		if (username == null) {
-			System.out.println("사용자정보가 없는데?");
-			return "redirect:/employee/loginPage";
-		}
-
-		System.out.println("로그인 한 유저 id : " + username);
-
-		return "Employees/staff/writeSuggestionPage";
-	}
+//	@GetMapping("/staff/writeSuggestionPage")
+//	public String writeSuggestionPage(@AuthenticationPrincipal String username) {
+//
+//		if (username == null) {
+//			System.out.println("사용자정보가 없는데?");
+//			return "redirect:/employee/loginPage";
+//		}
+//
+//		System.out.println("로그인 한 유저 id : " + username);
+//
+//		return "Employees/staff/writeSuggestionPage";
+//	}
 
 	/*
 	 * 사원 페이지에서 상품 리스트 출력 및 관리 용도 코드
@@ -470,8 +468,8 @@ public class EmployeePageController {
 	
 	// /employee/staff/reservation
     @GetMapping("/staff/reservation")
-    public String staffReservationPage(@AuthenticationPrincipal String username) {
-        logService.build(username, "PAGEVIEW", "TB_RESERVATION", null, "예약 관리 페이지 접근");
+    public String staffReservationPage() {
+       
         return "Employees/staff/reservation";
     }
     

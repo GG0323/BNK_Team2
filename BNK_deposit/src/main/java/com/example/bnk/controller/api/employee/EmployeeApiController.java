@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.bnk.dto.employee.EmployeeDto;
-import com.example.bnk.dto.employee.EmployeeLogInsertDto;
+import com.example.bnk.auth.EmployeeDetails;
 import com.example.bnk.dto.employee.EmployeeRegistDto;
-import com.example.bnk.service.employees.EmployeeListService;
 import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.employees.EmployeeRegistService;
 import com.example.bnk.service.employees.EmployeesLoginService;
@@ -35,10 +33,12 @@ public class EmployeeApiController {
 	public ResponseEntity<String> regist(
 			EmployeeRegistDto empRegistDto,
 			@RequestParam("img") MultipartFile img,		// 이미지는 dto에서 빼기
-			@AuthenticationPrincipal String username
+			@AuthenticationPrincipal EmployeeDetails employeeD
 			) {
+		System.out.println();
+		
 		// 컨트롤러 안에 붙어서 log를 하드코딩한다. >> 필터단에 이 값을 넘긴다.
-		logService.build(username,"INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
+		logService.build(employeeD.getUsername(),"INSERT", "TB_EMPLOYEE", null, "신규 사원 등록 요청을 처리한다.");
 		
 		System.out.println(empRegistDto.toString());
 		if(!img.isEmpty() ) {
