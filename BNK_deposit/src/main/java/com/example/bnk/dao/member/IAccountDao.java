@@ -25,6 +25,9 @@ public interface IAccountDao {
     // 환금해주기
     int interestToMyAccount(@Param("balance") long balance, @Param("applied_interest_rate") double applied_interest_rate, @Param("member_no") long member_no);
     
+    // 가입 상태 해지하기로 바꾸기
+    int changeSubscriptionStatus(@Param("account_no") long account_no);
+    
     // 환금 끝나고 계좌 비활성 만들기.
     int changeAccountStatus(@Param("account_no") long account_no);
 }
