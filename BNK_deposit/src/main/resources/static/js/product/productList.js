@@ -212,6 +212,8 @@ function initRecommendedPassbookHero() {
     const mobileChip = hero.querySelector(".rpb-chip-mobile");
     const wordEls = hero.querySelectorAll(".rpb-word");
 
+    startHeroEntryAnimation(hero);
+
     let selectedCard = null;
     let isAnimating = false;
 
@@ -441,6 +443,38 @@ function initRecommendedPassbookHero() {
         if (Number.isNaN(numberValue)) return "0.00";
         return numberValue.toFixed(2);
     }
+}
+
+
+
+function startHeroEntryAnimation(hero) {
+    if (!hero) return;
+
+    const forceAnimation = true; // 개발/시연 중에는 true, 배포 시 false 가능
+
+    const reduceMotion = !forceAnimation
+        && window.matchMedia
+        && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) {
+        hero.classList.remove("is-hero-preparing", "is-hero-entering");
+        hero.classList.add("is-hero-entered");
+        return;
+    }
+
+    hero.classList.remove("is-hero-entered", "is-hero-entering");
+    hero.classList.add("is-hero-preparing");
+
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            hero.classList.add("is-hero-entering");
+        });
+    });
+
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing", "is-hero-entering");
+        hero.classList.add("is-hero-entered");
+    }, 2450);
 }
 
 function initProductFullPageSections() {

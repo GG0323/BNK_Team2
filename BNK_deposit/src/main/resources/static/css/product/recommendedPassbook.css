@@ -1414,3 +1414,223 @@
         --rpb-hover-transform: translateX(3%) translateY(-20px) rotate(13deg);
     }
 }
+
+/* =========================================================
+   추천 통장 Hero 첫 진입 애니메이션 - transform 기반 수정본
+   ========================================================= */
+
+.recommended-passbook-hero.is-hero-preparing .rpb-word,
+.recommended-passbook-hero.is-hero-preparing .rpb-intro,
+.recommended-passbook-hero.is-hero-preparing .rpb-fan-card,
+.recommended-passbook-hero.is-hero-preparing .rpb-stage > .rpb-scroll-next {
+    opacity: 0;
+}
+
+.recommended-passbook-hero.is-hero-preparing .rpb-fan-card {
+    pointer-events: none;
+    filter: blur(10px);
+}
+
+/* 배경 글씨 */
+.recommended-passbook-hero.is-hero-entering .rpb-word {
+    animation-duration: 0.95s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
+}
+
+.recommended-passbook-hero.is-hero-entering .rpb-word-1 {
+    animation-name: rpbWordDropStampFixed;
+    animation-delay: 0.10s;
+}
+
+.recommended-passbook-hero.is-hero-entering .rpb-word-2 {
+    animation-name: rpbWordRightStampFixed;
+    animation-delay: 0.34s;
+}
+
+.recommended-passbook-hero.is-hero-entering .rpb-word-3 {
+    animation-name: rpbWordBottomStampFixed;
+    animation-delay: 0.58s;
+}
+
+/* 안내 문구 */
+.recommended-passbook-hero.is-hero-entering .rpb-intro {
+    animation: rpbIntroEnterFixed 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.86s both;
+}
+
+/* 상품 카드 */
+.recommended-passbook-hero.is-hero-entering .rpb-fan-card {
+    animation-name: rpbFanCardUnfoldFixed;
+    animation-duration: 0.9s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-fill-mode: both;
+    pointer-events: none;
+    will-change: opacity, transform, filter;
+}
+
+.recommended-passbook-hero.is-hero-entering .rpb-fan-left {
+    animation-delay: 1.18s;
+}
+
+.recommended-passbook-hero.is-hero-entering .rpb-fan-right {
+    animation-delay: 1.34s;
+}
+
+.recommended-passbook-hero.is-hero-entering .rpb-fan-center {
+    animation-delay: 1.50s;
+}
+
+/* 하단 상품 목록 보기 버튼만 */
+.recommended-passbook-hero.is-hero-entering .rpb-stage > .rpb-scroll-next {
+    animation: rpbBottomButtonEnterFixed 0.62s cubic-bezier(0.22, 1, 0.36, 1) 1.92s both;
+}
+
+.recommended-passbook-hero.is-hero-entered .rpb-word,
+.recommended-passbook-hero.is-hero-entered .rpb-intro,
+.recommended-passbook-hero.is-hero-entered .rpb-fan-card,
+.recommended-passbook-hero.is-hero-entered .rpb-stage > .rpb-scroll-next {
+    opacity: 1;
+}
+
+/* =========================
+   keyframes
+========================= */
+
+@keyframes rpbWordDropStampFixed {
+    0% {
+        opacity: 0;
+        transform: translateY(-42px) scale(0.98);
+        filter: blur(14px);
+        letter-spacing: -0.08em;
+    }
+
+    65% {
+        opacity: 0.16;
+        transform: translateY(4px) scale(1.015);
+        filter: blur(2px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        letter-spacing: normal;
+    }
+}
+
+@keyframes rpbWordRightStampFixed {
+    0% {
+        opacity: 0;
+        transform: translateX(52px) scale(0.985);
+        filter: blur(14px);
+        letter-spacing: -0.08em;
+    }
+
+    66% {
+        opacity: 0.16;
+        transform: translateX(-5px) scale(1.012);
+        filter: blur(2px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+        letter-spacing: normal;
+    }
+}
+
+@keyframes rpbWordBottomStampFixed {
+    0% {
+        opacity: 0;
+        transform: translateY(48px) scale(0.985);
+        filter: blur(14px);
+        letter-spacing: -0.08em;
+    }
+
+    66% {
+        opacity: 0.16;
+        transform: translateY(-5px) scale(1.012);
+        filter: blur(2px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        letter-spacing: normal;
+    }
+}
+
+@keyframes rpbIntroEnterFixed {
+    0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.985);
+        filter: blur(8px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/*
+   핵심:
+   처음에는 세 카드가 중앙에 겹쳐 있다가,
+   마지막에는 각 카드의 기존 --rpb-base-transform 위치로 돌아간다.
+*/
+@keyframes rpbFanCardUnfoldFixed {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px) rotate(0deg) scale(0.82);
+        filter: blur(12px);
+    }
+
+    58% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-16px) rotate(0deg) scale(1.06);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: var(--rpb-base-transform) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes rpbBottomButtonEnterFixed {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(14px) scale(0.94);
+        filter: blur(6px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recommended-passbook-hero.is-hero-preparing .rpb-word,
+    .recommended-passbook-hero.is-hero-preparing .rpb-intro,
+    .recommended-passbook-hero.is-hero-preparing .rpb-fan-card,
+    .recommended-passbook-hero.is-hero-preparing .rpb-stage > .rpb-scroll-next {
+        opacity: 1;
+        filter: none;
+    }
+
+    .recommended-passbook-hero.is-hero-entering .rpb-word,
+    .recommended-passbook-hero.is-hero-entering .rpb-intro,
+    .recommended-passbook-hero.is-hero-entering .rpb-fan-card,
+    .recommended-passbook-hero.is-hero-entering .rpb-stage > .rpb-scroll-next {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
