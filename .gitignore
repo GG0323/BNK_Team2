@@ -1,2 +1,5 @@
 /.metadata/
 /BNK_deposit/src/main/resources/application-secret.properties
+/BNK_Fast/secret.env
+/BNK_Fast/save_models
+/BNK_Fast/chroma_db
