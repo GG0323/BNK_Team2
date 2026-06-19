@@ -54,6 +54,12 @@
             onclick="location.href='/member/reservation/list'">
         5. 영업점 예약
     </button>
+    
+    <button th:class="${currentTab == 'myinquiry'} ? 'tab-btn active' : 'tab-btn'"
+	        data-tab="myinquiry"
+	        onclick="location.href='/inquiry/inquiryList'">
+	    6. 문의 내역
+	</button>
 
 </nav>
 

@@ -1,30 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNK 문의 내역</title>
+
+    <!-- 공통 fetchApi가 읽는 CSRF 토큰 (목록은 GET이라 필수는 아니지만 일관성 위해 포함) -->
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}">
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : ''}">
+
+    <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
+    <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
+
+    <link rel="stylesheet" href="/css/member/member-common.css">
+    <link rel="stylesheet" href="/css/member/member-nav.css">
+    <link rel="stylesheet" href="/css/inquiry/inquiryList.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="/js/members/common.js" defer></script>
+    <script th:src="@{/js/members/member-ui.js}" defer></script>
+    <script th:src="@{/js/inquiry/inquiryList.js}" defer></script>
 </head>
+
 <body>
+    <div th:replace="~{fragments/header :: header_default}"></div>
 
-http://localhost:8080/inquiry/inquiryList
+    <header class="top-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="header-title-group">
+                    <h2>문의 내역</h2>
+                    <p>내가 작성한 문의와 답변 상태</p>
+                </div>
+            </div>
+            <div th:replace="~{fragments/nav :: member_top_mypage}"></div>
+        </div>
+    </header>
 
-	마이페이지에서 확인 할 수 있는 내가 작성한 문의 사항 리스트
-	1. 일단, 유저pk로 검색 문의사항 테이블만 가져오기 
+    <div th:replace="~{fragments/nav :: member_mypage('myinquiry')}"></div>
 
-    <!-- 헤더 영역 -->
-    <div>
-        <span>문의 목록</span>
-        <button onclick="location.href='/inquiry/inquiryForm'">+ 새 문의하기</button>
-    </div>
+    <main class="mypage-container">
+        <section class="page-header page-motion-row">
+            <div class="inquiry-head-row">
+                <div>
+                    <h3>문의 내역</h3>
+                    <p>내가 작성한 문의와 답변 상태를 확인할 수 있습니다.</p>
+                </div>
+                <a href="/inquiry/inquiryForm" class="btn-member-red">+ 새 문의하기</a>
+            </div>
+        </section>
 
-    <!-- 목록 영역 -->
-    <div id="inquiryList"></div>
-    
-	
-	<script th:src="@{/js/inquiry/inquiryList.js}"></script>
-	
+        <section class="member-content-panel inquiry-list-panel page-motion-row">
+            <div id="inquiryList">
+                <div class="member-empty">
+                    <div class="empty-icon"><i class="fa-regular fa-comment-dots"></i></div>
+                    <p>문의 내역을 불러오는 중...</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-	
-	
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
