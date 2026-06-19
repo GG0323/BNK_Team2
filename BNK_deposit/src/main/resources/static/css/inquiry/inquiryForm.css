@@ -1,0 +1,189 @@
+@charset "UTF-8";
+
+/* =========================================================
+   BNK 부산은행 문의하기(입력 폼) 페이지 스타일
+   - inquiryForm.html 구조에 맞춰 작성됨
+   - faqPage.css와 동일한 토큰을 사용해 디자인 통일
+   ========================================================= */
+
+:root{
+  --brand:        #DD1F26;   /* 브랜드 레드 (실제 코드의 정확한 빨강 HEX로 교체하세요) */
+  --brand-dark:   #B3151B;   /* hover / 강조 시 짙어지는 빨강 */
+  --brand-shadow: rgba(221, 31, 38, 0.16);  /* hover 그림자 */
+  --brand-ring:   rgba(221, 31, 38, 0.22);  /* 포커스 링 */
+
+  --text:      #1A1A1A;
+  --text-sub:  #4A4A4A;
+  --text-mute: #9A9A9A;
+  --line:      #E8E8E6;
+  --surface:   #FFFFFF;
+  --page-bg:   #F6F5F3;
+  --radius:    10px;
+}
+
+/* ---------- 페이지 기본 ---------- */
+body{
+  margin: 0 auto;
+  max-width: 640px;            /* 폼은 본문보다 살짝 좁게 두면 읽기 편함 */
+  padding: 48px 20px 64px;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic",
+               system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 페이지 헤더 (HTML에 .page-header 블록 추가 필요) ---------- */
+.page-header{
+  margin-top: 44px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.page-header .eyebrow{
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--brand);
+}
+.page-header h1{
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+}
+.page-header .sub{
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+/* ---------- 폼 컨테이너 ---------- */
+#inquiryForm{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+/* ---------- 카테고리 선택 (라디오 → 칩 버튼) ---------- */
+.category-group{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.category-btn{
+  cursor: pointer;
+  margin: 0;
+}
+/* 실제 라디오는 시각적으로 숨기되 접근성/포커스는 유지 */
+.category-btn input{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.category-btn span{
+  display: inline-block;
+  padding: 9px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text-sub);
+  font-size: 14px;
+  transition: transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+}
+.category-btn:hover span{
+  border-color: var(--brand);
+  transform: translateY(-2px);
+}
+/* 선택된 카테고리: 빨강으로 채움 */
+.category-btn input:checked + span{
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+/* 키보드 포커스 표시 */
+.category-btn input:focus-visible + span{
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+/* ---------- 텍스트 입력 / textarea ---------- */
+#inquiryForm input[type="text"],
+#inquiryForm textarea{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+#inquiryForm textarea{
+  min-height: 160px;
+  resize: vertical;            /* 본문을 textarea로 바꾸면 자동 적용됨 */
+}
+#inquiryForm input[type="text"]::placeholder,
+#inquiryForm textarea::placeholder{
+  color: var(--text-mute);
+}
+#inquiryForm input[type="text"]:focus,
+#inquiryForm textarea:focus{
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-ring);
+}
+
+/* 입력 항목 라벨 (HTML에 <label class="field-label"> 추가 시 적용) */
+.field-label{
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ---------- 제출 버튼 ---------- */
+#inquiryForm input[type="submit"]{
+  align-self: flex-end;        /* 오른쪽 정렬 */
+  width: fit-content;
+  padding: 12px 26px;
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid var(--brand);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+#inquiryForm input[type="submit"]:hover{
+  background: var(--brand-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--brand-shadow);
+}
+
+/* ---------- 모바일 ---------- */
+@media (max-width: 480px){
+  body{ padding: 32px 14px 48px; }
+  .page-header h1{ font-size: 22px; }
+  #inquiryForm{ padding: 18px; }
+  #inquiryForm input[type="submit"]{ align-self: stretch; width: 100%; }
+}
+
+/* ---------- 모션 최소화 환경 배려 ---------- */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; }
+  .category-btn:hover span,
+  #inquiryForm input[type="submit"]:hover{ transform: none; }
+}

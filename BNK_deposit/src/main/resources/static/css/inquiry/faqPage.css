@@ -1,0 +1,210 @@
+@charset "UTF-8";
+
+/* =========================================================
+   BNK 부산은행 FAQ 페이지 스타일
+   - 기존 faqPage.js가 생성하는 DOM 구조에 맞춰 작성됨
+   - 브랜드 레드는 아래 --brand 한 줄만 바꾸면 전체 통일됨
+   ========================================================= */
+
+:root{
+  --brand:        #DD1F26;   /* 브랜드 레드 (실제 코드의 정확한 빨강 HEX로 교체하세요) */
+  --brand-dark:   #B3151B;   /* hover / 강조 시 짙어지는 빨강 */
+  --brand-shadow: rgba(221, 31, 38, 0.16);  /* hover 그림자 */
+
+  --text:      #1A1A1A;      /* 제목/질문 텍스트 */
+  --text-sub:  #4A4A4A;      /* 답변 텍스트 */
+  --text-mute: #9A9A9A;      /* 화살표/비활성 */
+  --line:      #E8E8E6;      /* 기본 테두리 */
+  --surface:   #FFFFFF;      /* 카드 배경 */
+  --page-bg:   #F6F5F3;      /* 페이지 배경 */
+  --radius:    10px;
+}
+
+/* ---------- 페이지 기본 ---------- */
+body{
+  margin: 0 auto;
+  max-width: 760px;
+  padding: 48px 20px 64px;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic",
+               system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 페이지 헤더 (HTML에 .faq-header 블록 추가 필요) ---------- */
+.faq-header{
+  margin-top: 44px;            /* 상단 nav와의 간격 (값을 키우면 더 떨어짐) */
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.faq-header .eyebrow{
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--brand);
+}
+.faq-header h1{
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+}
+.faq-header .sub{
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+/* ---------- 문의하기 버튼 (#faqList 직속 button) ----------
+   질문 토글 버튼은 div 안에 있으므로 직속 자식 선택자로 분리됨 */
+#faqList > button{
+  display: block;
+  width: fit-content;
+  margin-left: auto;            /* 오른쪽 정렬 */
+  padding: 11px 20px;
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid var(--brand);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+#faqList > button:first-of-type{ margin-bottom: 20px; }  /* 상단 버튼 */
+#faqList > button:last-of-type { margin-top: 20px; }     /* 하단 버튼 */
+#faqList > button:hover{
+  background: var(--brand-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--brand-shadow);
+}
+
+/* ---------- FAQ 항목 카드 (#faqList > div) ---------- */
+#faqList > div{
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+/* hover: 살짝 떠오르며 빨강 테두리 강조 (일시적이라 부담 없음) */
+#faqList > div:hover{
+  transform: translateY(-2px);
+  border-color: var(--brand);
+  box-shadow: 0 4px 16px var(--brand-shadow);
+}
+
+/* ---------- 질문 토글 버튼 (#faqList > div > button) ---------- */
+#faqList > div > button{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 18px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text);
+  cursor: pointer;
+  transition: color .15s ease;
+}
+
+/* 펼쳐진 항목: 답변은 흰색 그대로 두고, 빨강은 '질문 텍스트 + 화살표'에만.
+   답변 div의 style="display:block" 여부로 열림 상태를 감지.
+   (.open 클래스를 JS에서 추가하면 그 방식도 함께 지원) */
+#faqList > div.open > button,
+#faqList > div:has(> div[id^="answer-"][style*="block"]) > button{
+  color: var(--brand-dark);
+}
+
+/* 화살표: 열리면 180도 회전 + 빨강 */
+#faqList span[id^="arrow-"]{
+  flex-shrink: 0;
+  color: var(--text-mute);
+  font-size: 12px;
+  transition: transform .25s ease, color .15s ease;
+}
+#faqList > div.open span[id^="arrow-"],
+#faqList > div:has(> div[id^="answer-"][style*="block"]) span[id^="arrow-"]{
+  transform: rotate(180deg);
+  color: var(--brand);
+}
+
+/* ---------- 답변 (#answer-i) ----------
+   열림/닫힘은 JS의 인라인 display가 제어. 흰 배경 + 중립 회색 글자로 피로감 제거 */
+#faqList > div > div[id^="answer-"]{
+  padding: 14px 18px 18px;
+  border-top: 1px solid var(--line);
+  color: var(--text-sub);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* ---------- 페이지네이션 (#pagination) ---------- */
+#pagination{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 28px 0 64px;         /* 아래 64px = footer와의 간격 */
+}
+#pagination button{
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text-sub);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, color .15s ease, background .15s ease;
+}
+/* 일반 버튼 hover: 흰 배경 위 빨강 글자 → 잘 보임 */
+#pagination button:not(:disabled):hover{
+  border-color: var(--brand);
+  color: var(--brand);
+  transform: translateY(-1px);
+}
+/* 현재 페이지: JS가 style="font-weight:bold"를 부여 → 빨강으로 채움 */
+#pagination button[style*="bold"]{
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+/* 현재 페이지에 hover 해도 글자(숫자)가 안 사라지도록 흰색 유지 (버그 수정) */
+#pagination button[style*="bold"]:not(:disabled):hover{
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: #fff;
+  transform: none;
+}
+#pagination button:disabled{
+  opacity: .4;
+  cursor: default;
+}
+
+/* ---------- 모바일 ---------- */
+@media (max-width: 480px){
+  body{ padding: 32px 14px 48px; }
+  .faq-header h1{ font-size: 22px; }
+  #faqList > div > button{ font-size: 14px; padding: 14px 15px; }
+}
+
+/* ---------- 모션 최소화 환경 배려 ---------- */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; }
+  #faqList > div:hover,
+  #faqList > button:hover{ transform: none; }
+}
