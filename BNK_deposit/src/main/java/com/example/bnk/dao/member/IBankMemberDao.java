@@ -17,7 +17,7 @@ public interface IBankMemberDao {
 	public BankMemberDto findByUsername(@Param("id") String id);
 	
 	// 회원 등록
-	public int regist(@Param("dto") BankMemberDto dto);
+	public int regist(BankMemberDto dto);
 	
 	// 회원 중복 조회
 	public List<String> checkIdentifier();
