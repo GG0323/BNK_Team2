@@ -1,5 +1,8 @@
+import gc
 import json
+import shutil
 from pathlib import Path
+from uuid import UUID
 
 import chromadb
 from openai import OpenAI
@@ -70,13 +73,19 @@ class FaqAdminService:
         vectors = [item.embedding for item in response.data]
 
         FAQ_CHROMA_PATH.mkdir(parents=True, exist_ok=True)
-        chroma_client = chromadb.PersistentClient(path=str(FAQ_CHROMA_PATH))
 
+        chroma_client = chromadb.PersistentClient(path=str(FAQ_CHROMA_PATH))
         try:
             chroma_client.delete_collection(name=FAQ_COLLECTION_NAME)
         except Exception:
             pass
 
+        del chroma_client
+        gc.collect()
+
+        self._remove_uuid_index_dirs()
+
+        chroma_client = chromadb.PersistentClient(path=str(FAQ_CHROMA_PATH))
         collection = chroma_client.create_collection(name=FAQ_COLLECTION_NAME)
         collection.add(
             ids=[str(i) for i in range(len(faqs))],
@@ -86,3 +95,18 @@ class FaqAdminService:
         )
 
         return collection.count()
+
+    def _remove_uuid_index_dirs(self) -> None:
+        if not FAQ_CHROMA_PATH.exists():
+            return
+
+        for child in FAQ_CHROMA_PATH.iterdir():
+            if child.is_dir() and self._is_uuid_name(child.name):
+                shutil.rmtree(child)
+
+    def _is_uuid_name(self, value: str) -> bool:
+        try:
+            UUID(value)
+            return True
+        except ValueError:
+            return False
