@@ -443,6 +443,40 @@ function initRecommendedPassbookHero() {
     }
 }
 
+
+function startHeroEntryAnimation(hero) {
+    if (!hero) return;
+
+    const body = document.body;
+
+    hero.classList.remove("is-hero-entered", "is-hero-entering");
+    hero.classList.add("is-hero-preparing");
+    body.classList.add("is-hero-entry-playing");
+
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing");
+        hero.classList.add("is-hero-entering");
+    }, 250);
+
+    // 추가: 하단 상품 목록 버튼을 지웠으므로 비교함 버튼을 먼저 표시
+    window.setTimeout(function () {
+        body.classList.remove("is-hero-entry-playing");
+    }, 2700);
+
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing", "is-hero-entering");
+        hero.classList.add("is-hero-entered");
+        body.classList.remove("is-hero-entry-playing");
+    }, 3900);
+
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing", "is-hero-entering");
+        hero.classList.add("is-hero-entered");
+        body.classList.remove("is-hero-entry-playing");
+    }, 5200);
+}
+
+
 function initProductFullPageSections() {
     const body = document.body;
     const hero = document.getElementById("recommendedPassbookHero");
