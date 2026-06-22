@@ -22,7 +22,6 @@ import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.dto.product.ProductTermsDto;
 import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
-import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.product.ProductForEmployee;
 
 @Controller
@@ -506,6 +505,7 @@ public class EmployeePageController {
 	    }
 
 	    String username = employeeDetails.getUsername();
+	    System.out.println(username);
 	    return "Employees/staff/reservation";
 	}
 
