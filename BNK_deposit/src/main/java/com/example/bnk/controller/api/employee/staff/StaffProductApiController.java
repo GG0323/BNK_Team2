@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/staff/product")
 @RequiredArgsConstructor
-public class StaffproductApiController {
+public class StaffProductApiController {
 
 	@Autowired
 	ProductService serv;
