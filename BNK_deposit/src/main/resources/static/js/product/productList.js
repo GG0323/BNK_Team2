@@ -450,29 +450,31 @@ function startHeroEntryAnimation(hero) {
 
     const body = document.body;
 
-    function playEntryAnimation() {
-        hero.classList.remove("is-hero-entered", "is-hero-entering");
-        hero.classList.add("is-hero-preparing");
-        body.classList.add("is-hero-entry-playing");
+    hero.classList.remove("is-hero-entered", "is-hero-entering");
+    hero.classList.add("is-hero-preparing");
+    body.classList.add("is-hero-entry-playing");
 
-        window.setTimeout(function () {
-            hero.classList.add("is-hero-entering");
-        }, 260);
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing");
+        hero.classList.add("is-hero-entering");
+    }, 250);
 
-        window.setTimeout(function () {
-            hero.classList.remove("is-hero-preparing", "is-hero-entering");
-            hero.classList.add("is-hero-entered");
-            body.classList.remove("is-hero-entry-playing");
-        }, 3900);
-    }
+    // 추가: 하단 상품 목록 버튼을 지웠으므로 비교함 버튼을 먼저 표시
+    window.setTimeout(function () {
+        body.classList.remove("is-hero-entry-playing");
+    }, 2700);
 
-    if (document.readyState === "complete") {
-        window.setTimeout(playEntryAnimation, 250);
-    } else {
-        window.addEventListener("load", function () {
-            window.setTimeout(playEntryAnimation, 250);
-        }, { once: true });
-    }
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing", "is-hero-entering");
+        hero.classList.add("is-hero-entered");
+        body.classList.remove("is-hero-entry-playing");
+    }, 3900);
+
+    window.setTimeout(function () {
+        hero.classList.remove("is-hero-preparing", "is-hero-entering");
+        hero.classList.add("is-hero-entered");
+        body.classList.remove("is-hero-entry-playing");
+    }, 5200);
 }
 
 function initProductFullPageSections() {
