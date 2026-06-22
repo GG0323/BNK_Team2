@@ -172,19 +172,40 @@ function goComponentPage(type) {
 		showToast("상품번호가 올바르지 않습니다.", "error");
 		return;
 	}
-	// 미등록 항목 클릭 차단
+
 	const item = document.getElementById(`${type}_status`).closest('.component-item');
-	if (item.dataset.enabled !== 'true') {
-	  return;  // 조용히 무시 (원하시면 showToast로 안내 메시지 띄워도 됨)
+	let url = "";
+
+	if (item.dataset.enabled === 'true') {
+		// 등록 (아직 작성 안해서 모름! 작성 해봐야 알 듯?)
+		const basePath = "/employee/staff/SUG/approvedDetail/productDetail";
+		url = `${basePath}?type=${type}&product_no=${product_no}`;
+	} else {
+		// 미등록
+		showToast("미등록 항목입니다. 작성 페이지로 이동합니다.", "info");
+		
+		switch (type) {
+			case 'rate': // 금리
+				url = `/employee/staff/product/pending/rate?product_no=${product_no}`;
+				break;
+			case 'terms': // 약관
+				url = `/employee/staff/product/pending/terms?product_no=${product_no}`;
+				break;
+			case 'description': // 설명
+				url = `/employee/staff/product/pending/description?product_no=${product_no}`;
+				break;
+			case 'condition': // 조건
+				url = `/employee/staff/product/pending/condition?product_no=${product_no}`;
+				break;
+			default:
+				showToast("올바르지 않은 접근입니다.", "error");
+				return;
+		}
 	}
 	
-	const basePath = "employee/staff/SUG/approvedDetail/productDetail";
-	location.href = `${basePath}?type=${type}&product_no=${product_no}`;
+	// 최종 결정된 주소로 워프!
+	location.href = url;
 }
-
-
-
-
 
 	
 	
