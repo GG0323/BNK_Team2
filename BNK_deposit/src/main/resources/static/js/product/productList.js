@@ -445,6 +445,10 @@ function initRecommendedPassbookHero() {
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 function startHeroEntryAnimation(hero) {
     if (!hero) return;
 
