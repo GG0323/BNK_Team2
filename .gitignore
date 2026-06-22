@@ -4,4 +4,6 @@
 /BNK_Fast/save_models
 /BNK_Fast/chroma_db
 /BNK_Fast/vector_stores
+/BNK_Fast/fast
 *.py[cod]
+

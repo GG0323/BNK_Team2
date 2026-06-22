@@ -22,7 +22,9 @@ public class FaqCandidateService {
     // 스프링부트 3.2+ 면 RestClient, 아니면 RestTemplate 로 // 둘 다 자바에서 다른 서버(여기선 파이썬 FastAPI)를 HTTP로 부르는 도구
 	// 파이선 api 불러오기
     private final RestClient restClient = RestClient.create("http://localhost:8000");
-
+    
+    //http://127.0.0.1:8000/docs - 스워거 주소
+    
 	
 	/** 대기 후보 목록 조회 (오라클에서 직접) */
     public List<FaqCandidateDto> getPendingCandidates() {
@@ -68,7 +70,7 @@ public class FaqCandidateService {
     
     // callAddFaq 함수를 호출한다.
     /** 후보 승인: 파이썬(FAQ 등록) 먼저 → 성공하면 오라클 상태변경 */
-    public Map<String, Object> approveCandidate(Long candidateNo, String question, String answer, long employeeNo) {
+    public Map<String, Object> approveCandidate(Long candidateNo, String category, String question, String answer, long employeeNo) {
         System.out.println("후보 승인 시작: " + candidateNo);
 
         // 1) 파이썬 호출 (지금은 가짜)
@@ -87,7 +89,7 @@ public class FaqCandidateService {
         System.out.println("승인 완료: " + candidateNo);
         
         // 4) FaQ 호출 - 
-        faqDao.insertNewFaq(question, answer, "기타", 0, employeeNo);
+        faqDao.insertNewFaq(question, answer, category, 0, employeeNo);
         
         return Map.of("ok", true, "candidateNo", candidateNo);
     }

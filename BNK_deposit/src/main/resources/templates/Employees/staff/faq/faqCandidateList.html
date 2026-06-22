@@ -67,6 +67,17 @@
 	        <h3>FAQ로 등록</h3>
 	        <label>질문</label>
 	        <input type="text" id="modalQuestion" readonly>
+	        
+	        <label>카테고리</label>
+			<input type="text" id="modalCategory" list="categoryList" placeholder="선택하거나 새로 입력">
+			<datalist id="categoryList">
+			    <option value="적금 상품"></option>
+			    <option value="가입 관련"></option>
+			    <option value="이자/수익률"></option>
+			    <option value="계좌 관련"></option>
+			    <option value="기타"></option>
+			</datalist>
+	        
 	        <label>답변 작성</label>
 	        <textarea id="modalAnswer" rows="5" placeholder="고객에게 보여줄 답변을 작성하세요"></textarea>
 	        <div class="modal-actions">
@@ -87,38 +98,40 @@
 		}
 
 		function loadList() {
-			fetch('/api/inquiry/faqCandidates', { method: 'GET' })
-				.then(res => res.json())
-				.then(rows => {
-					console.log('목록불러오기!');
+			fetch('/api/inquiry/faqCandidates', { 
+				method: 'GET' 
+			})
+			.then(res => res.json())
+			.then(rows => {
+				console.log('목록불러오기!');
 
-					const body = document.getElementById('candidateBody');
-					const countEl = document.getElementById('totalCount');
-					countEl.textContent = `전체 ${rows.length}건`;
+				const body = document.getElementById('candidateBody');
+				const countEl = document.getElementById('totalCount');
+				countEl.textContent = `전체 ${rows.length}건`;
 
-					if (rows.length === 0) {
-						body.innerHTML = '<tr class="empty-row"><td colspan="4">대기 중인 후보가 없습니다.</td></tr>';
-						return;
-					}
+				if (rows.length === 0) {
+					body.innerHTML = '<tr class="empty-row"><td colspan="4">대기 중인 후보가 없습니다.</td></tr>';
+					return;
+				}
 
-					body.innerHTML = rows.map(c => `
-						<tr>
-							<td>${c.repQuestion}</td>
-							<td>${c.category ? `<span class="category-badge">${c.category}</span>` : '-'}</td>
-							<td class="count-val">${c.inquiryCount}</td>
-							<td class="date-val">${(c.createdAt ?? '').substring(0, 10)}</td>
-							<td>
-								<button class="btn-approve" onclick="openApprove(${c.candidateNo}, '${c.repQuestion.replace(/'/g, "\\'")}')">승인</button>
-				            	<button class="btn-reject" onclick="reject(${c.candidateNo})">반려</button>
-							</td>
-						</tr>
-					`).join('');
-				})
-				.catch(e => {
-					console.error(e);
-					document.getElementById('candidateBody').innerHTML =
-						'<tr class="empty-row"><td colspan="4">데이터를 불러오지 못했습니다.</td></tr>';
-				});
+				body.innerHTML = rows.map(c => `
+					<tr>
+						<td>${c.repQuestion}</td>
+						<td>${c.category ? `<span class="category-badge">${c.category}</span>` : '-'}</td>
+						<td class="count-val">${c.inquiryCount}</td>
+						<td class="date-val">${(c.createdAt ?? '').substring(0, 10)}</td>
+						<td>
+							<button class="btn-approve" onclick="openApprove(${c.candidateNo}, '${c.repQuestion.replace(/'/g, "\\'")}')">승인</button>
+			            	<button class="btn-reject" onclick="reject(${c.candidateNo})">반려</button>
+						</td>
+					</tr>
+				`).join('');
+			})
+			.catch(e => {
+				console.error(e);
+				document.getElementById('candidateBody').innerHTML =
+					'<tr class="empty-row"><td colspan="4">데이터를 불러오지 못했습니다.</td></tr>';
+			});
 		}
 
 		function refresh() {
@@ -167,6 +180,7 @@
 		function openApprove(no, question) {
 		    approvingNo = no;
 		    document.getElementById('modalQuestion').value = question;
+		    document.getElementById('modalCategory').value = '';   // 실제 체계로 직접 고르게 비워둠
 		    document.getElementById('modalAnswer').value = '';
 		    document.getElementById('approveModal').style.display = 'flex';
 		}
@@ -175,35 +189,40 @@
 		    document.getElementById('approveModal').style.display = 'none';
 		    approvingNo = null;
 		}
-
+		
+		// 승인을 DB에 전송한다.
 		function submitApprove() {
 		    const question = document.getElementById('modalQuestion').value;
+		    const category = document.getElementById('modalCategory').value.trim();
 		    const answer = document.getElementById('modalAnswer').value.trim();
 		    if (!answer) {
 		        showToast('답변을 입력해주세요.', 'error');
 		        return;
 		    }
-
+		    
+		    // 카테고리도 필수로 막을지는 선택. 막으려면:
+		    if (!category) { showToast('카테고리를 입력해주세요.', 'error'); return; }
+		
 		    const btn = document.getElementById('approveSubmit');
-		    btn.disabled = true;   // 처리 중 중복클릭 방지 (파이썬 호출이라 몇 초 걸림)
-
+		    btn.disabled = true;
+		
 		    fetch(`/api/inquiry/faqCandidates/${approvingNo}/approve`, {
 		        method: 'POST',
 		        headers: { 'Content-Type': 'application/json' },
-		        body: JSON.stringify({ question, answer })
+		        body: JSON.stringify({ question, category, answer })   // ← category 추가
 		    })
-	        .then(res => res.json())
-	        .then(data => {
-	            if (data.ok) {
-	                closeApprove();
-	                loadList();
-	                showToast('FAQ로 등록되었습니다.', 'success');
-	            } else {
-	                showToast(data.message || '등록에 실패했습니다.', 'error');
-	            }
-	        })
-	        .catch(() => showToast('등록 중 오류가 발생했습니다.', 'error'))
-	        .finally(() => { btn.disabled = false; });
+		    .then(res => res.json())
+		    .then(data => {
+		        if (data.ok) {
+		            closeApprove();
+		            loadList();
+		            showToast('FAQ로 등록되었습니다.', 'success');
+		        } else {
+		            showToast(data.message || '등록에 실패했습니다.', 'error');
+		        }
+		    })
+		    .catch(() => showToast('등록 중 오류가 발생했습니다.', 'error'))
+		    .finally(() => { btn.disabled = false; });
 		}
 		
 		

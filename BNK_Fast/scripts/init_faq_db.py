@@ -8,6 +8,7 @@ from openai import OpenAI
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 ENV_PATH = BASE_DIR / "secret.env"
+FAQ_PATH = BASE_DIR / "save_models" / "faqs.json"
 
 load_dotenv(dotenv_path=ENV_PATH)
 
@@ -21,7 +22,11 @@ FAQ_COLLECTION_NAME = "faqs"
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # 1) FAQ 데이터 읽기
+<<<<<<< HEAD
 with FAQ_JSON_PATH.open(encoding="utf-8") as f:
+=======
+with open(FAQ_PATH, encoding="utf-8") as f:
+>>>>>>> 8e41d3095971f2acd002a33fbfded8cfed5523b9
     faqs = json.load(f)
 print(f"FAQ {len(faqs)}개를 읽었습니다.")
 
