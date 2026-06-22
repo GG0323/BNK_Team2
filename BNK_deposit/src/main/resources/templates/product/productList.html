@@ -17,7 +17,7 @@
 <body class="product-list-page">
 <div th:replace="~{fragments/header :: header_default}"></div>
 
-<section class="recommended-passbook-hero product-fullpage-section product-hero-section"
+<section class="recommended-passbook-hero product-fullpage-section product-hero-section is-hero-preparing"
          id="recommendedPassbookHero"
          th:if="${recommendedProducts != null and !#lists.isEmpty(recommendedProducts)}">
 
@@ -164,13 +164,6 @@
             <button type="button" class="rpb-close-btn">
                 ← 다른 상품 보기
             </button>
-
-            <a href="#productListSection"
-               class="rpb-scroll-next"
-               aria-label="상품 목록 섹션으로 이동">
-                <span>상품 목록 보기</span>
-                <strong>↓</strong>
-            </a>
 
         </div>
     </div>
