@@ -31,7 +31,7 @@ fetch('/api/manager/product/pendingList', {
 			DEPOSIT: '예금',
 			SAVINGS: '적금'
 		};
-
+	
 		return `<span class="badge badge-${type}">${label[type] ?? type}</span>`;
 	}
 	
