@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parents[1]
 ENV_PATH = BASE_DIR / "secret.env"
 
 load_dotenv(dotenv_path=ENV_PATH)
