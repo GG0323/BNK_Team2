@@ -1,10 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" xmlns:th="www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>condition 작성하기!</title>
+<title>상품 구성 - 가입 조건 등록</title>
+<link rel="stylesheet" href="/css/employee/staff_SideBar.css" />
+<link rel="stylesheet" href="/css/employee/staff_CommonPlace.css" />
+<link rel="stylesheet" href="/css/employee/write/conditionWrite.css" />
 </head>
 <body>
 
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+	<div class="main">
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+		<div class="breadcrumb">
+			직원 페이지 › 상품 리스트 › 상품 상세 › <span class="current">조건 등록</span>
+		</div>
+
+		<div class="page-title">가입 조건 등록</div>
+
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">가입 조건 신규 등록 (Condition Registration)</div>
+			</div>
+
+			<form id="conditionForm">
+				<input type="hidden" id="csrfToken" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+				<div class="form-grid">
+					
+					<input type="hidden" id="product_no" name="product_no">
+					
+					<div class="form-div">
+						<span id="product_info_text">[No.-] / 상품명: 불러오는 중...</span>
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 연령 제한 (단위: 세)</label>
+						<div class="range-container">
+							<input type="number" id="min_age" name="min_age" min="0" placeholder="최소 나이 (예: 19)" required />
+							<span class="range-sep">~</span>
+							<input type="number" id="max_age" name="max_age" min="0" placeholder="최대 나이 (공백 시 제한 없음)" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="customer_type">대상 고객 유형</label>
+						<select id="customer_type" name="customer_type">
+							<option value="ALL" selected>전체 고객 (ALL)</option>
+							<option value="PERSONAL">개인 고객 (PERSONAL)</option>
+							<option value="BUSINESS">개인사업자/법인 (BUSINESS)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 금액 설정 (단위: 원)</label>
+						<div class="range-container">
+							<input type="number" id="min_join_amount" name="min_join_amount" min="0" placeholder="최소 금액 (예: 10000)" required />
+							<span class="range-sep">~</span>
+							<input type="number" id="max_join_amount" name="max_join_amount" min="0" placeholder="최대 한도 (공백 시 무제한)" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="deposit_unit">회차별 최소 입금 단위액 (원)</label>
+						<input type="number" id="deposit_unit" name="deposit_unit" min="0" placeholder="예: 10000" />
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 약정 기간 범위</label>
+						<div class="range-container">
+							<input type="number" id="min_term_months" name="min_term_months" min="0" value="6" placeholder="최소 기간" required />
+							<span class="range-sep">~</span>
+							<input type="number" id="max_term_months" name="max_term_months" min="0" placeholder="최대 기간" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 가입 기간 단위 기준 및 배수 값</label>
+						<div class="range-container">
+							<select id="term_unit_type" name="term_unit_type" style="flex: 2;">
+								<option value="MONTH" selected>월 단위 (MONTH)</option>
+								<option value="DAY">일 단위 (DAY)</option>
+								<option value="YEAR">연 단위 (YEAR)</option>
+							</select>
+							<div style="flex: 1; display: flex; align-items: center; gap: 4px;">
+								<input type="number" id="term_unit_value" name="term_unit_value" min="1" value="1" required style="width: 100%;" />
+								<span id="unit_text" style="font-size: 13px; font-weight: 700; color: #555; white-space: nowrap;">개월</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="gender">성별 제한 필터</label>
+						<select id="gender" name="gender">
+							<option value="ALL" selected>제한 없음 (ALL)</option>
+							<option value="M">남성 전용 (M)</option>
+							<option value="F">여성 전용 (F)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="fixed_term_yn">정형 고정 가입기간 활성화 여부</label>
+						<div class="range-container">
+							<select id="fixed_term_yn" name="fixed_term_yn" style="flex: 1;">
+								<option value="N" selected>N (범위식 선택)</option>
+								<option value="Y">Y (고정치 지정)</option>
+							</select>
+							<input type="text" id="fixed_term_values" name="fixed_term_values" class="hidden-input" placeholder="예시) 3, 6, 12" style="flex: 2;" disabled />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="foreigner_available_yn">외국인 가입 가능 여부</label>
+						<select id="foreigner_available_yn" name="foreigner_available_yn">
+							<option value="N" selected>불가 (N)</option>
+							<option value="Y">가능 (Y)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="overseas_tax_yn">해외 납세 의무 여부 검증 필터</label>
+						<select id="overseas_tax_yn" name="overseas_tax_yn">
+							<option value="Y" selected>검증 필요 (Y)</option>
+							<option value="N">검증 생략 (N)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="tax_benefit_yn">세제 혜택 가입 대상 해당 여부</label>
+						<select id="tax_benefit_yn" name="tax_benefit_yn">
+							<option value="N" selected>일반 과세 (N)</option>
+							<option value="Y">혜택 대상 (Y)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="non_taxable_savings_yn">비과세 종합 저축 가입 가능 여부</label>
+						<select id="non_taxable_savings_yn" name="non_taxable_savings_yn">
+							<option value="N" selected>해당 없음 (N)</option>
+							<option value="Y">적용 가능 (Y)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="depositor_protection_yn">예금자 보호법 대상 여부</label>
+						<select id="depositor_protection_yn" name="depositor_protection_yn">
+							<option value="Y" selected>보호 대상 (Y)</option>
+							<option value="N">비대상 (N)</option>
+						</select>
+					</div>
+					
+					<div class="form-group"></div>
+
+					<div class="form-group full-width">
+						<label for="condition_note">가입 조건 부가 설명 및 특이 비고 사항</label>
+						<textarea id="condition_note" name="condition_note" rows="3" placeholder="예: 미성년자의 경우 법정대리인 동의서 구비 필수..."></textarea>
+					</div>
+
+				</div>
+
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary" onclick="history.back();">취소 및 돌아가기</button>
+					<button type="submit" class="btn btn-primary">신규 가입 조건 등록 완료</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="/js/employees/staff/pendingProductCondition.js"></script>
 </body>
 </html>
