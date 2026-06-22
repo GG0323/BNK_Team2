@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.dto.product.PendingProductDetailDto;
 import com.example.bnk.dto.product.PendingProductListDto;
-import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.service.product.ProductService;
 
 import lombok.RequiredArgsConstructor;
