@@ -220,17 +220,6 @@ public class EmployeePageController {
 		return "Employees/staff/productDetails";
 	}
 
-	/* 상품 등록하기 페이지 (신----------------------규!)
-	-------------------------------------------------------------------------------------------*/
-	@GetMapping("/staff/productRegistration")
-	public String goPrdRegistration() {
-		return "Employees/staff/productRegistration";
-	}
-	
-	
-	
-	
-	
 	
 
 	/*
@@ -509,7 +498,21 @@ public class EmployeePageController {
     
     
     
-    
+
+	/* 상품 등록하기 페이지 (신----------------------규!)
+	-------------------------------------------------------------------------------------------*/
+	@GetMapping("/staff/productRegistration")
+	public String goPrdRegistration() {
+		return "Employees/staff/pending/productRegistration";
+	}
+	
+	@GetMapping("/staff/pendingProductDetail")
+	public String goPrdRegDetail() {
+		return "Employees/staff/pending/productDetail";
+	}
+	
+	
+	
     
     
     
