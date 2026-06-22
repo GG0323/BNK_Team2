@@ -12,17 +12,16 @@ class FaqLlmService:
     def __init__(self):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
         self.model = OPENAI_MODEL
-        self.chroma_client = chromadb.PersistentClient(path=FAQ_CHROMA_PATH)
-        self.collection = self.chroma_client.get_or_create_collection(name=FAQ_COLLECTION_NAME)
 
     def search_faq(self, question: str) -> dict:
         embedding_response = self.client.embeddings.create(
-            model=OPENAI_EMBED_MODEL,
+            model=OPENAI_EMBED_MODEL or "text-embedding-3-small",
             input=[question]
         )
         query_vector = embedding_response.data[0].embedding
 
-        results = self.collection.query(
+        collection = self._get_collection()
+        results = collection.query(
             query_embeddings=[query_vector],
             n_results=1
         )
@@ -45,6 +44,10 @@ class FaqLlmService:
             "matchedQuestion": matched_question
         }
 
+    def _get_collection(self):
+        chroma_client = chromadb.PersistentClient(path=FAQ_CHROMA_PATH)
+        return chroma_client.get_or_create_collection(name=FAQ_COLLECTION_NAME)
+
     def generate_answer(self, question: str, matched_question: str, matched_answer: str) -> str:
         prompt = f"""
 [사용자 질문]
@@ -56,7 +59,7 @@ class FaqLlmService:
 
 [답변 지침]
 - FAQ 답변만 사용해서 답변해라.
-- FAQ에 없는 내용은 절대 추측하지 마라.
+- FAQ에 없는 내용은 추측하지 마라.
 - 한국어로 자연스럽고 친절하게 작성해라.
 """.strip()
 
