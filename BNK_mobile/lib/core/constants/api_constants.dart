@@ -1,0 +1,19 @@
+class ApiConstants {
+  static const String baseUrl = 'http://192.168.0.85:8080';
+
+  static const String appPing = '/api/app/auth/ping';
+  static const String appLogin = '/api/app/auth/login';
+  static const String appMe = '/api/app/auth/me';
+
+  static const String memberMypage = '/api/member/mypage';
+  static const String memberAccounts = '/api/member/myaccounts';
+
+  static const String products = '/api/products/member';
+  static const String productAiRecommend = '/api/products/ai/recommend';
+
+  static const String reservationBranches = '/api/member/reservation/branches';
+  static const String reservationSlots = '/api/member/reservation/slots';
+  static const String reservationList = '/api/member/reservation/list';
+  static const String reservationCreate = '/api/member/reservation/create';
+  static const String reservationCancel = '/api/member/reservation/cancel';
+}
