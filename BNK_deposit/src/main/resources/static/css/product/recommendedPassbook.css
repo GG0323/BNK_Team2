@@ -1774,4 +1774,5 @@ body.is-hero-entry-playing .compare-bar {
         transform: var(--rpb-base-transform) scale(1);
         filter: blur(0);
     }
+
 }
