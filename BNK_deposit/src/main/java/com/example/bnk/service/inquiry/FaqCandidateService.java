@@ -22,7 +22,9 @@ public class FaqCandidateService {
     // 스프링부트 3.2+ 면 RestClient, 아니면 RestTemplate 로 // 둘 다 자바에서 다른 서버(여기선 파이썬 FastAPI)를 HTTP로 부르는 도구
 	// 파이선 api 불러오기
     private final RestClient restClient = RestClient.create("http://localhost:8000");
-
+    
+    //http://127.0.0.1:8000/docs - 스워거 주소
+    
 	
 	/** 대기 후보 목록 조회 (오라클에서 직접) */
     public List<FaqCandidateDto> getPendingCandidates() {

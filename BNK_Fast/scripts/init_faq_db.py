@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parents[1]
 ENV_PATH = BASE_DIR / "secret.env"
+FAQ_PATH = BASE_DIR / "save_models" / "faqs.json"
 
 load_dotenv(dotenv_path=ENV_PATH)
 
@@ -15,7 +16,7 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # 1) FAQ 데이터 읽기
-with open("./save_models/faqs.json", encoding="utf-8") as f:
+with open(FAQ_PATH, encoding="utf-8") as f:
     faqs = json.load(f)
 print(f"FAQ {len(faqs)}개를 읽었습니다.")
 
