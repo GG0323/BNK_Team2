@@ -27,17 +27,7 @@ public class StaffProductApiController {
 	@Autowired
 	ProductService serv;
 	
-	
-	@PostMapping("/insertProduct")
-	public Map<String, Long> insertProduct(
-			@RequestBody ProductDto product
-			) {
-		System.out.println("상품 등록 파라미터 :"+product.toString());
-		Long productPk = serv.insertProduct(product);
-		
-		return Map.of("product_no", productPk);
-	}
-	
+	// 모든 pending 상품 리스트 출력
 	@GetMapping("/pendingList")
 	public List<PendingProductListDto> pendingList(){
 		System.out.println("대기 상품 불러오기");
@@ -46,6 +36,7 @@ public class StaffProductApiController {
 		return list;
 	}
 	
+	// 특정 pending 상품 상세 출력
 	@GetMapping("/pendingDetail")
 	public PendingProductDetailDto pendingDetail(
 			@RequestParam("product_no") Long product_no
@@ -56,6 +47,10 @@ public class StaffProductApiController {
 		return dto;
 	}
 	
+	
+	
+	
+	// 관리자용 승인요청인데 이거는 음..... 직원이 요청하기로 바꿀지, 아니면 그냥 없앨지 고민중
 	@PostMapping("/approvePending")
 	@Transactional
 	public Map<String, Object> approvePending(
