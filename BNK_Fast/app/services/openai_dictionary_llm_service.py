@@ -1,24 +1,34 @@
-from app.core.config import OPENAI_API_KEY, OPENAI_MODEL
 from openai import OpenAI
+
+from app.core.config import OPENAI_API_KEY, OPENAI_MODEL
+
 
 class OpenAiDictionaryLlmService:
     def __init__(self):
-        self.client = OpenAI(api_key=OPENAI_API_KEY)
-        self.model = OPENAI_MODEL
+        self.client = None
+        self.model = OPENAI_MODEL or "gpt-5-nano"
+
+    def _get_client(self) -> OpenAI:
+        if OPENAI_API_KEY is None or OPENAI_API_KEY.strip() == "":
+            raise RuntimeError("OPENAI_API_KEY 환경변수가 설정되어 있지 않습니다.")
+
+        if self.client is None:
+            self.client = OpenAI(api_key=OPENAI_API_KEY)
+
+        return self.client
 
     def generate_dictionary_answer(self, prompt: str) -> str:
         try:
-            response = self.client.responses.create(
+            response = self._get_client().responses.create(
                 model=self.model,
                 input=[
                     {
                         "role": "system",
                         "content": (
                             "너는 예적금 금융용어사전 챗봇이다. "
-                            "반드시 제공된 DB 검색 결과만 사용해서 답변한다. "
-                            "DB 내용에 없는 정보는 절대 추측하지 않는다. "
-                            "답변은 한국어로 쉽고 자연스럽게 작성한다. "
-                            "비문이나 어색한 표현 없이 완성된 문장으로 답한다."
+                            "반드시 제공된 검색 결과만 사용해서 답변한다. "
+                            "검색 결과에 없는 금융 정보는 추측하지 않는다. "
+                            "답변은 한국어로 읽기 쉽고 자연스럽게 작성한다."
                         )
                     },
                     {
