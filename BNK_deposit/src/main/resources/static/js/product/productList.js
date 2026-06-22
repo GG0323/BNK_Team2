@@ -445,36 +445,34 @@ function initRecommendedPassbookHero() {
     }
 }
 
-
-
 function startHeroEntryAnimation(hero) {
     if (!hero) return;
 
-    const forceAnimation = true; // 개발/시연 중에는 true, 배포 시 false 가능
+    const body = document.body;
 
-    const reduceMotion = !forceAnimation
-        && window.matchMedia
-        && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function playEntryAnimation() {
+        hero.classList.remove("is-hero-entered", "is-hero-entering");
+        hero.classList.add("is-hero-preparing");
+        body.classList.add("is-hero-entry-playing");
 
-    if (reduceMotion) {
-        hero.classList.remove("is-hero-preparing", "is-hero-entering");
-        hero.classList.add("is-hero-entered");
-        return;
+        window.setTimeout(function () {
+            hero.classList.add("is-hero-entering");
+        }, 260);
+
+        window.setTimeout(function () {
+            hero.classList.remove("is-hero-preparing", "is-hero-entering");
+            hero.classList.add("is-hero-entered");
+            body.classList.remove("is-hero-entry-playing");
+        }, 3900);
     }
 
-    hero.classList.remove("is-hero-entered", "is-hero-entering");
-    hero.classList.add("is-hero-preparing");
-
-    requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-            hero.classList.add("is-hero-entering");
-        });
-    });
-
-    window.setTimeout(function () {
-        hero.classList.remove("is-hero-preparing", "is-hero-entering");
-        hero.classList.add("is-hero-entered");
-    }, 2450);
+    if (document.readyState === "complete") {
+        window.setTimeout(playEntryAnimation, 250);
+    } else {
+        window.addEventListener("load", function () {
+            window.setTimeout(playEntryAnimation, 250);
+        }, { once: true });
+    }
 }
 
 function initProductFullPageSections() {
