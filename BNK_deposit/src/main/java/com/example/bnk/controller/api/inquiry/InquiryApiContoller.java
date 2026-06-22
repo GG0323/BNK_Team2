@@ -184,16 +184,18 @@ public class InquiryApiContoller {
 	
 	// 승인 버튼
 	@PostMapping("/faqCandidates/{candidateNo}/approve")
+	@Transactional
 	public Map<String, Object> approve(
 	        @PathVariable("candidateNo") Long candidateNo,
 	        @RequestBody Map<String, String> req, 
 	        @AuthenticationPrincipal EmployeeDetails employeeD
 			) {
 	    String question = req.get("question");
+	    String category = req.get("category");
 	    String answer = req.get("answer");
 	    System.out.println("직원 pk  "+ employeeD.getPk());
 	    long employeeNo = employeeD.getPk();
-	    return candidateService.approveCandidate(candidateNo, question, answer, employeeNo);
+	    return candidateService.approveCandidate(candidateNo, category, question, answer, employeeNo);
 	}
 	
 	

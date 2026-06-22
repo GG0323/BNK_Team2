@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.example.bnk.auth.MemberDetails;
 import com.example.bnk.dto.log.MemberPageLogDto;
 import com.example.bnk.service.log.MemberPageLogService;
 
@@ -217,7 +218,7 @@ public class MemberPageLogInterceptor implements HandlerInterceptor {
      * - 비로그인(익명) 상태면 null
      * - authentication 에서 유저의 pk를 가져온다.
      */
-    // authentication 에서 pk를 가져온다.
+    // authentication 에서 pk를 가져온다. ==========================================================user PK가 잘못되면 여기입니다!!
     private Long resolveMemberNo(HttpServletRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()
@@ -226,14 +227,11 @@ public class MemberPageLogInterceptor implements HandlerInterceptor {
         }
 
         /** principal 에서 PK 꺼내기 (팀원 작업 완료 후 아래 주석 해제하고 하드코딩 제거) */
-        // Object principal = auth.getPrincipal();
-        // if (principal instanceof CustomUserDetails user) {
-        //     return user.getMemberNo();
-        // }
-        // return null;
-
-        // 하드코딩 --> 25 김제니 (임시)
-        return 25L;
+        Object principal = auth.getPrincipal();
+        if (principal instanceof MemberDetails user) {
+            return user.getPk();
+        }
+        return null;
     }
 
     /**
