@@ -31,6 +31,10 @@ public class MemberService {
 	
 	@Autowired
 	private EmailVerificationService emailVerificationService;
+
+	// 준회원 가입 성공 시 보안카드 발급 처리
+	@Autowired
+	private SecurityCardService securityCardService;
 	
 	// 회원 등록
 	public boolean regist(BankMemberDto dto) {
@@ -53,12 +57,16 @@ public class MemberService {
 			if(aesUtil.decrypt(id).equals(identifier)) return false;
 		}
 		
-		boolean registered = memberDao.regist(dto) == 1;
-		if (registered) {
-			emailVerificationService.consumeSignupVerification(email);
+		memberDao.regist(dto);
+		
+		if(dto.getMember_no() <= 0) {
+			throw new IllegalStateException("회원 번호 생성에 실패했습니다.");
 		}
 		
-		return registered;
+		securityCardService.issueSignupSecurityCard(dto);
+		emailVerificationService.consumeSignupVerification(email);
+		
+		return true;
 	}
 	
 	// 회원 ID 중복 확인	(true: 사용가능, false: 중복)

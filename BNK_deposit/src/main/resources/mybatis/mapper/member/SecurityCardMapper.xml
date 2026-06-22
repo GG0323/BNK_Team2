@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bnk.dao.member.ISecurityCardDao">
+	<insert id="insertSecurityCard" statementType="CALLABLE" parameterType="com.example.bnk.dto.member.SecurityCardDto">
+		BEGIN
+			INSERT INTO TB_SECURITY_CARD(
+				MEMBER_NO,
+				SEC_NUM
+			)
+			VALUES(
+				#{member_no},
+				#{sec_num}
+			)
+			RETURNING sec_no
+			INTO #{sec_no, mode=OUT, jdbcType=NUMERIC, javaType=long};
+		END;
+	</insert>
+
+</mapper>
