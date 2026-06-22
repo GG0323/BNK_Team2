@@ -15,7 +15,6 @@ dictionary_service = DictionaryService()
 
 class DictionaryRequest(BaseModel):
     query: str | None = None
-    history: list[dict[str, str]] | None = None
 
 
 @router.post("/2/dictionary")
