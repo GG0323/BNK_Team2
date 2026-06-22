@@ -68,7 +68,7 @@ public class FaqCandidateService {
     
     // callAddFaq 함수를 호출한다.
     /** 후보 승인: 파이썬(FAQ 등록) 먼저 → 성공하면 오라클 상태변경 */
-    public Map<String, Object> approveCandidate(Long candidateNo, String question, String answer, long employeeNo) {
+    public Map<String, Object> approveCandidate(Long candidateNo, String category, String question, String answer, long employeeNo) {
         System.out.println("후보 승인 시작: " + candidateNo);
 
         // 1) 파이썬 호출 (지금은 가짜)
@@ -87,7 +87,7 @@ public class FaqCandidateService {
         System.out.println("승인 완료: " + candidateNo);
         
         // 4) FaQ 호출 - 
-        faqDao.insertNewFaq(question, answer, "기타", 0, employeeNo);
+        faqDao.insertNewFaq(question, answer, category, 0, employeeNo);
         
         return Map.of("ok", true, "candidateNo", candidateNo);
     }
