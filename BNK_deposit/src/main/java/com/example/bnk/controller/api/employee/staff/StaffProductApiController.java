@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bnk.dto.product.PendingProductDetailDto;
 import com.example.bnk.dto.product.PendingProductListDto;
 import com.example.bnk.dto.product.ProductRateDto;
+import com.example.bnk.dto.product.ProductTermsDto;
 import com.example.bnk.service.employees.staff.StaffPendingService;
 import com.example.bnk.service.product.ProductService;
 
@@ -41,6 +42,7 @@ public class StaffProductApiController {
 		return list;
 	}
 	
+	
 	// 특정 pending 상품 상세 출력
 	@GetMapping("/pendingDetail")
 	public PendingProductDetailDto pendingDetail(
@@ -51,8 +53,6 @@ public class StaffProductApiController {
 		
 		return dto;
 	}
-	
-	
 	
 	
 	// 관리자용 승인요청인데 이거는 음..... 직원이 요청하기로 바꿀지, 아니면 그냥 없앨지 고민중
@@ -73,8 +73,20 @@ public class StaffProductApiController {
 	@PostMapping("/rate/save")
 	public Map<String, Object> saveRate(
 			@RequestBody ProductRateDto rateDto){
-		pendingService.insertAllRate(rateDto);
+		if(pendingService.insertAllRate(rateDto) == 0) {
+			return Map.of("result", "금리 등록에 실패하였습니다!");
+		}
 		return Map.of("result", "금리 등록이 완료되었습니다!");
+	}
+	
+	//약관 등록
+	@PostMapping("/terms/save")
+	public Map<String, Object> saveTerms(
+			@RequestBody ProductTermsDto termsDto){
+		if(pendingService.insertAllTerms(termsDto) == 0) {
+			return Map.of("result", "약관 등록에 실패하였습니다!");
+		}
+		return Map.of("result", "약관 등록이 완료되었습니다!");
 	}
 	
 }
