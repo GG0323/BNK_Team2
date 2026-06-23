@@ -1,5 +1,6 @@
 package com.example.bnk.controller.api.employee.staff;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bnk.dto.product.PendingProductDetailDto;
 import com.example.bnk.dto.product.PendingProductListDto;
+import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.dto.product.ProductTermsDto;
 import com.example.bnk.service.employees.staff.StaffPendingService;
@@ -99,4 +101,19 @@ public class StaffProductApiController {
 		return Map.of("result", "약관 등록이 완료되었습니다!");
 	}
 	
+	// 설명 등록
+	@PostMapping("/description/save")
+	public Map<String, Object> saveDescription(
+			ProductDescriptionDto descriptionDto){
+		try {
+			if(pendingService.insertDescription(descriptionDto) == 0) {
+				return Map.of("result", "설명 등록에 실패하였습니다.");
+			}			
+		}catch(IOException e) {
+			System.out.println("설명 등록 중 오류 발생");
+			e.printStackTrace();
+		}
+		return Map.of("result", "설명 등록이 완료되었습니다!");
+	
+	}
 }
