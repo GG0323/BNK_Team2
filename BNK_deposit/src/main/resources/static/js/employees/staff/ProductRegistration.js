@@ -1,5 +1,5 @@
 
-fetch('/api/manager/product/pendingList', {
+fetch('/api/staff/product/pendingList', {
 	method: "GET"
 })
 .then((res) => {
@@ -49,7 +49,7 @@ fetch('/api/manager/product/pendingList', {
 			<td>${regBadge(row.has_join_condition)}</td>
 			<td>
 				<a class="btn-view"
-				   href="/employee/manager/pendingProductDetail?product_no=${row.product_no}">
+				   href="/employee/staff/pendingProductDetail?product_no=${row.product_no}">
 					보기
 				</a>
 			</td>

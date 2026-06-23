@@ -53,13 +53,13 @@ public class AiOrchestratorController {
                 
             case "DICTIONARY":
                 // 금융용어사전 AI 서버 호출 (예시 포트: 8082)
-                finalAnswer = callTargetAiServer("http://localhost:8080/api/ai/dictionary", userMessage);
+                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/fast/api/ai/2/dictionary", userMessage);
                 System.out.println("DICTIONARY");
                 break;
                 
             case "FAQ":
                 // FAQ 벡터 검색 AI 서버 호출 (예시 포트: 8083)
-                finalAnswer = callTargetAiServer("http://localhost:8083/api/ai/faq", userMessage);
+                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage);
                 System.out.println("FAQ");
                 break;
                 

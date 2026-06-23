@@ -10,6 +10,7 @@
 	    BEGIN
 	    
 		    INSERT INTO TB_PRODUCT_CONDITION(
+		    	product_no,
 		        min_age,
 		        max_age,
 		        foreigner_available_yn,
@@ -30,6 +31,7 @@
 		        fixed_term_values,
 		        condition_note)
 		    VALUES(
+		    	#{product_no},
 		        #{min_age, jdbcType=NUMERIC},
 		        #{max_age, jdbcType=NUMERIC},
 		        #{foreigner_available_yn},
