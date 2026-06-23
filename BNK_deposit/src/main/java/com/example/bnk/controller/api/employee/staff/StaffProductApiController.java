@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bnk.dto.product.PendingProductDetailDto;
 import com.example.bnk.dto.product.PendingProductListDto;
+import com.example.bnk.dto.product.ProductRateDto;
+import com.example.bnk.service.employees.staff.StaffPendingService;
 import com.example.bnk.service.product.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,10 @@ public class StaffProductApiController {
 
 	@Autowired
 	ProductService serv;
+	
+	@Autowired
+	StaffPendingService pendingService;
+	
 	
 	// 모든 pending 상품 리스트 출력
 	@GetMapping("/pendingList")
@@ -61,4 +67,14 @@ public class StaffProductApiController {
 	    int updated = serv.approvePending(product_no);   // 서비스가 0 또는 1 반환
 	    return Map.of("result", updated);
 	}
+	
+	
+	// 금리 등록
+	@PostMapping("/rate/save")
+	public Map<String, Object> saveRate(
+			@RequestBody ProductRateDto rateDto){
+		pendingService.insertAllRate(rateDto);
+		return Map.of("result", "금리 등록이 완료되었습니다!");
+	}
+	
 }

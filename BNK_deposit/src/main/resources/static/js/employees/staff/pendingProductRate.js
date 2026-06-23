@@ -56,7 +56,7 @@ document.getElementById("rateForm").addEventListener("submit", function(e) {
         return res.json();
     })
     .then((result) => {
-        alert("금리 사양 등록이 완료되었습니다.");
+        alert(result.result);
         // 성공 시 이전 미승인 상품 상세 페이지로 워프
         location.href = `/employee/staff/pendingProductDetail?product_no=${productNo}`;
     })
