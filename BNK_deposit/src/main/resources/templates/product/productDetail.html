@@ -299,30 +299,34 @@
                     <h3>상품약관</h3>
                     <p>
                         상품 가입 전 상품설명서와 약관을 반드시 확인하시기 바랍니다.
-                        상품별 약관 PDF 연동 기능은 2차 프로젝트에서 구현 예정입니다.
+                        아래 PDF 보기 버튼을 누르면 해당 약관 문서를 새 창에서 확인할 수 있습니다.
                     </p>
                 </div>
 
-                <div class="terms-list">
-                    <a href="javascript:void(0);" class="terms-item">
-                        <span>상품설명서</span>
+                <div class="terms-list"
+                     th:if="${termsList != null and !#lists.isEmpty(termsList)}">
+
+                    <a th:each="term : ${termsList}"
+                       th:href="@{${term.pdf_url}}"
+                       class="terms-item"
+                       target="_blank"
+                       rel="noopener noreferrer">
+
+                        <span th:text="${term.terms_title}">상품설명서</span>
+
                         <strong>PDF 보기</strong>
                     </a>
 
-                    <a href="javascript:void(0);" class="terms-item">
-                        <span>예금거래기본약관</span>
-                        <strong>PDF 보기</strong>
-                    </a>
+                </div>
 
-                    <a href="javascript:void(0);" class="terms-item">
-                        <span>적립식예금약관</span>
-                        <strong>PDF 보기</strong>
-                    </a>
+                <div class="info-block"
+                     th:if="${termsList == null or #lists.isEmpty(termsList)}">
 
-                    <a href="javascript:void(0);" class="terms-item">
-                        <span>상품특약</span>
-                        <strong>PDF 보기</strong>
-                    </a>
+                    <p>
+                        등록된 상품약관이 없습니다.
+                        상품 가입 전 영업점 또는 고객센터를 통해 약관을 확인해 주세요.
+                    </p>
+
                 </div>
 
             </div>
@@ -390,8 +394,8 @@
                 </tr>
 
                 <tr>
-                    <th>모바일 QR 가입</th>
-                    <td>가능</td>
+                    <th>모바일 QR 안내</th>
+                    <td>제공</td>
                 </tr>
 
                 <tr>
@@ -416,7 +420,7 @@
             </table>
 
             <div class="mobile-guide detail-mobile-guide">
-                모든 상품은 QR을 통해 BNK 모바일 앱 가입 화면으로 이동할 수 있습니다.
+                모든 상품은 QR을 통해 BNK 모바일 앱 상품 화면으로 이동할 수 있습니다.
             </div>
 
             <div class="detail-actions">
@@ -424,7 +428,7 @@
 
                 <a th:href="@{/products/mobile-qr(product_no=${product.product_no})}"
                    class="compare-btn">
-                    모바일로 가입하기
+                    모바일 QR 안내
                 </a>
 
                 <a th:if="${product.branch_join_yn == 'Y'}"
