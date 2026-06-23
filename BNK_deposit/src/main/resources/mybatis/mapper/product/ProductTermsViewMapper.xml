@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bnk.dao.product.IProductTermsViewDao">
+
+    <select id="selectProductTermsByProductNo"
+            parameterType="long"
+            resultType="com.example.bnk.dto.product.ProductTermsViewDto">
+
+        SELECT
+            TERMS_NO        AS terms_no,
+            PRODUCT_NO      AS product_no,
+            TERMS_TITLE     AS terms_title,
+            TERMS_TYPE      AS terms_type,
+            PDF_URL         AS pdf_url,
+            TERMS_SUMMARY   AS terms_summary,
+            TERMS_VERSION   AS terms_version,
+            USE_YN          AS use_yn
+        FROM TB_PRODUCT_TERMS
+        WHERE PRODUCT_NO = #{productNo}
+          AND USE_YN = 'Y'
+        ORDER BY
+            CASE
+                WHEN TERMS_TITLE = '상품설명서' THEN 1
+                WHEN TERMS_TITLE = '예금거래기본약관' THEN 2
+                WHEN TERMS_TITLE = '적립식예금약관' THEN 3
+                WHEN TERMS_TITLE = '거치식예금약관' THEN 3
+                WHEN TERMS_TITLE = '상품특약' THEN 4
+                ELSE 99
+            END,
+            TERMS_NO
+
+    </select>
+
+    <delete id="deleteProductTermsByProductRange">
+
+        DELETE FROM TB_PRODUCT_TERMS
+        WHERE PRODUCT_NO BETWEEN #{startProductNo} AND #{endProductNo}
+
+    </delete>
+
+    <insert id="insertProductTerms"
+            parameterType="com.example.bnk.dto.product.ProductTermsViewDto">
+
+        INSERT INTO TB_PRODUCT_TERMS (
+            PRODUCT_NO,
+            TERMS_TITLE,
+            TERMS_TYPE,
+            PDF_URL,
+            TERMS_SUMMARY,
+            TERMS_VERSION,
+            USE_YN,
+            UPLOADED_AT
+        ) VALUES (
+            #{product_no},
+            #{terms_title},
+            #{terms_type},
+            #{pdf_url},
+            #{terms_summary},
+            #{terms_version},
+            #{use_yn},
+            SYSDATE
+        )
+
+    </insert>
+
+</mapper>
