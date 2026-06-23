@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bnk.dto.product.PendingProductDetailDto;
 import com.example.bnk.dto.product.PendingProductListDto;
+import com.example.bnk.dto.product.ProductConditionDto;
 import com.example.bnk.dto.product.ProductDescriptionDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.dto.product.ProductTermsDto;
@@ -30,8 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class StaffProductApiController {
 
 	@Autowired
-	ProductService serv;
-	
+	ProductService productService;
 	@Autowired
 	StaffPendingService pendingService;
 	
@@ -40,7 +40,7 @@ public class StaffProductApiController {
 	@GetMapping("/pendingList")
 	public List<PendingProductListDto> pendingList(){
 		System.out.println("대기 상품 불러오기");
-		List<PendingProductListDto> list = serv.pendingList();
+		List<PendingProductListDto> list = productService.pendingList();
 		
 		return list;
 	}
@@ -52,13 +52,13 @@ public class StaffProductApiController {
 			@RequestParam("product_no") Long product_no
 			) {
 		System.out.println("디테일 불러오기 : " + product_no);
-		PendingProductDetailDto dto = serv.pendingDetail(product_no);
+		PendingProductDetailDto dto = productService.pendingDetail(product_no);
 		
 		return dto;
 	}
 	
 	
-	// 관리자용 승인요청인데 이거는 음..... 직원이 요청하기로 바꿀지, 아니면 그냥 없앨지 고민중
+	// 관리자용 승인요청 -> 이걸 요청으로 바꿀지, 아니면 아예 없애고 관리자 주관으로 바꿀지 고민 중
 	@PostMapping("/approvePending")
 	@Transactional
 	public Map<String, Object> approvePending(
@@ -67,7 +67,7 @@ public class StaffProductApiController {
 	    Long product_no = Long.parseLong(body.get("product_no").toString());
 	    System.out.println("승인 요청 product_no : " + product_no);
 
-	    int updated = serv.approvePending(product_no);   // 서비스가 0 또는 1 반환
+	    int updated = productService.approvePending(product_no);   // 서비스가 0 또는 1 반환
 	    return Map.of("result", updated);
 	}
 	
@@ -76,11 +76,12 @@ public class StaffProductApiController {
 	@PostMapping("/rate/save")
 	public Map<String, Object> saveRate(
 			@RequestBody ProductRateDto rateDto){
-		if(pendingService.insertAllRate(rateDto) == 0) {
+		if(pendingService.insertRate(rateDto) == 0) {
 			return Map.of("result", "금리 등록에 실패하였습니다!");
 		}
 		return Map.of("result", "금리 등록이 완료되었습니다!");
 	}
+	
 	
 	//약관 등록
 	@PostMapping("/terms/save")
@@ -91,7 +92,7 @@ public class StaffProductApiController {
 			){
 		
 		try {
-			if(pendingService.insertAllTerms(termsDto, pdfFile, imageFile) == 0) {
+			if(pendingService.insertTerms(termsDto, pdfFile, imageFile) == 0) {
 				return Map.of("result", "약관 등록에 실패하였습니다!");
 			}			
 		}catch(java.io.IOException e) {
@@ -100,6 +101,7 @@ public class StaffProductApiController {
 		}
 		return Map.of("result", "약관 등록이 완료되었습니다!");
 	}
+	
 	
 	// 설명 등록
 	@PostMapping("/description/save")
@@ -114,6 +116,20 @@ public class StaffProductApiController {
 			e.printStackTrace();
 		}
 		return Map.of("result", "설명 등록이 완료되었습니다!");
+	}
 	
+	
+	// 조건 등록
+	@PostMapping("/condition/save")
+	public Map<String, Object> saveCondition(
+			@RequestBody ProductConditionDto conditionDto){
+		
+		System.out.println(conditionDto);
+		
+		if(pendingService.insertCondition(conditionDto) == 0) {
+			System.out.println("조건 등록 중 오류 발생");
+		}
+		
+		return Map.of("result", "조건 등록이 완료되었습니다.");
 	}
 }

@@ -93,7 +93,7 @@ document.getElementById("conditionForm").addEventListener("submit", function(e) 
         return res.json();
     })
     .then((result) => {
-        alert("가입 사양 조건 등록이 안전하게 완료되었습니다.");
+        alert(result.result);
         location.href = `/employee/staff/pendingProductDetail?product_no=${productNo}`;
     })
     .catch((err) => {
