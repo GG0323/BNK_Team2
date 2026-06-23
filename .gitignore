@@ -5,5 +5,5 @@
 /BNK_Fast/chroma_db
 /BNK_Fast/vector_stores
 /BNK_Fast/fast
+__pycache__/
 *.py[cod]
-
