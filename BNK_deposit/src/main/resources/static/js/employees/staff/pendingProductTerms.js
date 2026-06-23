@@ -95,7 +95,7 @@ document.getElementById("termsRegistForm").addEventListener("submit", function(e
     // 자바 스프링 부트 약관 저장 API 엔드포인트로 전송
     fetch("/api/staff/product/terms/save", {
         method: "POST",
-        // Content-Type 헤더는 브라우저가 멀티파트 경계값을 잡도록 공백 유지
+		
         body: formData
     })
     .then((res) => {
@@ -103,7 +103,7 @@ document.getElementById("termsRegistForm").addEventListener("submit", function(e
         return res.json();
     })
     .then((result) => {
-        alert("신규 약관 명세 등록이 성공적으로 완료되었습니다.");
+        alert(result.result);
         location.href = `/employee/staff/pendingProductDetail?product_no=${productNo}`;
     })
     .catch((err) => {

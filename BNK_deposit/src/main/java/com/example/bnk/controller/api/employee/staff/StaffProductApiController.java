@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bnk.dto.product.PendingProductDetailDto;
 import com.example.bnk.dto.product.PendingProductListDto;
@@ -82,9 +83,18 @@ public class StaffProductApiController {
 	//약관 등록
 	@PostMapping("/terms/save")
 	public Map<String, Object> saveTerms(
-			@RequestBody ProductTermsDto termsDto){
-		if(pendingService.insertAllTerms(termsDto) == 0) {
-			return Map.of("result", "약관 등록에 실패하였습니다!");
+			ProductTermsDto termsDto,
+			@RequestParam(value = "pdf_file", required = false) MultipartFile pdfFile,
+			@RequestParam(value = "image_file", required = false) MultipartFile imageFile
+			){
+		
+		try {
+			if(pendingService.insertAllTerms(termsDto, pdfFile, imageFile) == 0) {
+				return Map.of("result", "약관 등록에 실패하였습니다!");
+			}			
+		}catch(java.io.IOException e) {
+			System.out.println("파일 저장 중 하드디크스 에러 발생: " + e.getMessage());
+			e.printStackTrace();
 		}
 		return Map.of("result", "약관 등록이 완료되었습니다!");
 	}

@@ -25,12 +25,14 @@
 		BEGIN
 		
 		    INSERT INTO TB_PRODUCT_TERMS (
+		    	product_no,
 		        TERMS_TITLE,
 		        TERMS_TYPE,
 		        PDF_URL, IMAGE_URL, TERMS_SUMMARY,
 		        TERMS_VERSION,
 		        USE_YN
 		    ) VALUES (
+		    	#{product_no},
 		        #{terms_title},
 		        #{terms_type},
 		        #{pdf_url},
