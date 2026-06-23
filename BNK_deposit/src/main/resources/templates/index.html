@@ -43,60 +43,121 @@
 <main class="main">
 
     <!-- Hero -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <p class="hero-label">BNK 금융상품</p>
+    <section class="hero-section" id="biniHeroSection">
+        <div class="hero-slider">
 
-            <h1>
-                나에게 맞는 금융상품을<br>
-                더 쉽고 간단하게
-            </h1>
+            <!-- 기본 배너 화면 -->
+            <div class="hero-view hero-default-view">
+                <div class="hero-content">
+                    <p class="hero-label">BNK 금융상품</p>
 
-            <p class="hero-desc">
-                예금, 적금, 대출상품까지 복잡한 조건은 줄이고<br>
-                필요한 상품만 빠르게 확인해보세요.
-            </p>
+                    <h1>
+                        나에게 맞는 금융상품을<br>
+                        더 쉽고 간단하게
+                    </h1>
 
-            <div class="hero-actions">
-                <button type="button" class="primary-btn" onclick="productSearch()">
-                    상품 검색하기
-                </button>
+                    <p class="hero-desc">
+                        예금, 적금, 대출상품까지 복잡한 조건은 줄이고<br>
+                        필요한 상품만 빠르게 확인해보세요.
+                    </p>
 
-                <a th:href="@{/products}" class="secondary-btn">
-                    전체 상품 보기
-                </a>
-            </div>
+                    <div class="hero-actions">
+                        <button type="button" class="primary-btn" onclick="productSearch()">
+                            상품 검색하기
+                        </button>
 
-            <div class="hero-tags">
-                <span>예금</span>
-                <span>적금</span>
-                <span>대출</span>
-                <span>맞춤추천</span>
-            </div>
-        </div>
+                        <a th:href="@{/products}" class="secondary-btn">
+                            전체 상품 보기
+                        </a>
 
-        <div class="hero-visual" aria-hidden="true">
-            <div class="phone-card">
-                <div class="phone-top"></div>
+                        <button type="button" class="bini-open-btn" id="openBiniGuide">
+                            비니에게 물어보기
+                        </button>
+                    </div>
 
-                <div class="product-card yellow-card">
-                    <span>추천 상품</span>
-                    <strong>BNK 맞춤 적금</strong>
-                    <p>최고 연 4.20%</p>
+                    <div class="hero-tags">
+                        <span>예금</span>
+                        <span>적금</span>
+                        <span>대출</span>
+                        <span>맞춤추천</span>
+                    </div>
                 </div>
 
-                <div class="product-card white-card">
-                    <span>만기 예상금액</span>
-                    <strong>12,450,000원</strong>
-                    <p>월 100만원 · 12개월</p>
-                </div>
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="phone-card">
+                        <div class="phone-top"></div>
 
-                <div class="mini-row">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                        <div class="product-card yellow-card">
+                            <span>추천 상품</span>
+                            <strong>BNK 맞춤 적금</strong>
+                            <p>최고 연 4.20%</p>
+                        </div>
+
+                        <div class="product-card white-card">
+                            <span>만기 예상금액</span>
+                            <strong>12,450,000원</strong>
+                            <p>월 100만원 · 12개월</p>
+                        </div>
+
+                        <div class="mini-row">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- 비니 AI 가이드 화면 -->
+            <div class="hero-view hero-bini-view" aria-hidden="true">
+                <div class="bini-guide-layout">
+                    <div class="bini-side">
+                        <div class="bini-character" id="biniCharacter" data-expression="greeting" aria-label="비니 금융가이드">
+                            <div class="bini-sign">비니 금융가이드</div>
+
+                            <div class="bini-body">
+                                <div class="bini-screen">
+                                    <span class="bini-mark"></span>
+                                    <span class="bini-eye eye-left"></span>
+                                    <span class="bini-eye eye-right"></span>
+                                    <span class="bini-mouth"></span>
+                                    <span class="bini-cheek cheek-left"></span>
+                                    <span class="bini-cheek cheek-right"></span>
+                                </div>
+
+                                <div class="bini-logo-box">
+                                    <strong>BNK</strong>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bini-chat-bubble">
+                        <div class="bini-chat-header">
+                            <div>
+                                <span class="bini-chat-kicker">AI 금융 도우미</span>
+                                <strong>비니와 대화하기</strong>
+                            </div>
+                            <button type="button" class="bini-close-btn" id="closeBiniGuide">
+                                끝내기
+                            </button>
+                        </div>
+
+                        <div class="bini-chat-messages" id="biniHeroMessages" aria-live="polite">
+                            <div class="bini-message system">
+                                <p>안녕하세요! 무엇을 도와드릴까요?</p>
+                            </div>
+                        </div>
+
+                        <div class="bini-chat-input-area">
+                            <input type="text" id="biniHeroInput" placeholder="금융상품이나 서비스에 대해 궁금한 점을 입력해보세요.">
+                            <button type="button" id="biniHeroSendBtn" aria-label="전송">➤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
