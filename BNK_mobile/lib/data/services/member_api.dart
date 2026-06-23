@@ -8,7 +8,7 @@ class MemberApi {
   Future<MyPageModel> getMyPage() async {
     final response = await _apiClient.get(
       ApiConstants.memberMypage,
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final bool success = response['success'] == true;

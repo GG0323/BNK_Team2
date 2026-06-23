@@ -19,13 +19,13 @@ class MemberModel {
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
     return MemberModel(
-      memberNo: json['memberNo'] ?? 0,
-      loginId: json['loginId'] ?? '',
-      memberName: json['memberName'] ?? '',
-      memberType: json['memberType'] ?? '',
-      memberStatus: json['memberStatus'] ?? '',
+      memberNo: json['memberNo'] ?? json['member_no'] ?? 0,
+      loginId: json['loginId'] ?? json['login_id'] ?? '',
+      memberName: json['memberName'] ?? json['member_name'] ?? '',
+      memberType: json['memberType'] ?? json['member_type'] ?? '',
+      memberStatus: json['memberStatus'] ?? json['member_status'] ?? '',
       email: json['email'],
-      phoneNumber: json['phoneNumber'],
+      phoneNumber: json['phoneNumber'] ?? json['phone_number'],
     );
   }
 }

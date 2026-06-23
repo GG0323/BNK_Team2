@@ -8,7 +8,7 @@ class ProductApi {
   Future<List<ProductModel>> getProducts() async {
     final response = await _apiClient.get(
       ApiConstants.products,
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final data = response['data'];

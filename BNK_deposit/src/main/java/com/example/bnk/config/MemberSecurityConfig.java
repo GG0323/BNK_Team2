@@ -37,6 +37,9 @@ public class MemberSecurityConfig {
 	@Bean	@Order(1)
 	SecurityFilterChain memberFilterChain(HttpSecurity http) {
 		
+		// 모바일에서 로그인할 때 csrf 토큰을 발급 받을 수 없으므로 예외처리용
+		http.csrf(csrf -> csrf.ignoringRequestMatchers("/member/login"));
+		
 		// 권한별 제어
 		http.userDetailsService(memberDetailsService)
 			.securityMatcher("/member/**", "/loginPage", "/signupPage", "/api/member/**", "/dormant/**", "/api/dormant/**")

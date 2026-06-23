@@ -9,7 +9,7 @@ class BranchApi {
   Future<List<BranchModel>> getBranches() async {
     final response = await _apiClient.get(
       ApiConstants.reservationBranches,
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final data = response['data'];
@@ -36,7 +36,7 @@ class BranchApi {
 
     final response = await _apiClient.get(
       '${ApiConstants.reservationSlots}?$query',
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final data = response['data'];
@@ -51,7 +51,7 @@ class BranchApi {
   Future<List<BranchReservationModel>> getMyReservations() async {
     final response = await _apiClient.get(
       ApiConstants.reservationList,
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final data = response['data'];
@@ -60,9 +60,9 @@ class BranchApi {
       return data
           .map(
             (item) => BranchReservationModel.fromJson(
-              item as Map<String, dynamic>,
-            ),
-          )
+          item as Map<String, dynamic>,
+        ),
+      )
           .toList();
     }
 
@@ -87,7 +87,7 @@ class BranchApi {
     await _apiClient.post(
       '${ApiConstants.reservationCreate}?$query',
       body: {},
-      useToken: true,
+      useAuthCookie: true,
     );
   }
 
@@ -103,7 +103,7 @@ class BranchApi {
     await _apiClient.post(
       '${ApiConstants.reservationCancel}?$query',
       body: {},
-      useToken: true,
+      useAuthCookie: true,
     );
   }
 }
