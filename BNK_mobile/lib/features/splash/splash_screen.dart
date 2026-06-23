@@ -27,12 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkLoginState() async {
     await Future.delayed(const Duration(seconds: 1));
 
-    final token = await SecureStorage.getToken();
+    final authCookie = await SecureStorage.getAuthCookie();
     final hasPin = await SecureStorage.hasPin();
 
     if (!mounted) return;
 
-    if (token == null || token.isEmpty) {
+    if (authCookie == null || authCookie.isEmpty) {
       _goToLogin();
       return;
     }

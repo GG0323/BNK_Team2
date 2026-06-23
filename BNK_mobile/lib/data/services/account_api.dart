@@ -8,7 +8,7 @@ class AccountApi {
   Future<List<AccountModel>> getMyAccounts() async {
     final response = await _apiClient.get(
       ApiConstants.memberAccounts,
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final bool success = response['success'] == true;
