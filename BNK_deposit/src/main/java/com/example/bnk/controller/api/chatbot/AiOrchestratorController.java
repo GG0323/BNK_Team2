@@ -47,7 +47,7 @@ public class AiOrchestratorController {
                 
             case "RECOMMEND":
                 // 상품 추천 AI 서버 호출 (예시 포트: 8081)
-                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/fast/api/ai/2/recommend", userMessage);
+                finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/recommend", userMessage);
                 System.out.println("RECOMMEND");
                 break;
                 
