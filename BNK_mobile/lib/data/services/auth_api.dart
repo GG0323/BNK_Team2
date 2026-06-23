@@ -14,38 +14,35 @@ class AuthApi {
   }) async {
     debugPrint('[AUTH LOGIN] POST ${ApiConstants.baseUrl}${ApiConstants.appLogin}');
 
-    final response = await _apiClient.post(
+    final response = await _apiClient.postForm(
       ApiConstants.appLogin,
       body: {
-        'loginId': loginId,
+        'username': loginId,
         'password': password,
       },
     );
 
-    final bool success = response['success'] == true;
+    final bool success = response['result'] == 'success';
 
     if (!success) {
       throw Exception(response['message'] ?? '로그인에 실패했습니다.');
     }
 
-    final data = response['data'];
-    final token = data['token'];
-    final memberJson = data['member'];
-
-    await SecureStorage.saveToken(token);
-
-    return MemberModel.fromJson(memberJson);
+    return getMe();
   }
 
   Future<void> ping() async {
     debugPrint('[AUTH PING] GET ${ApiConstants.baseUrl}${ApiConstants.appPing}');
-    await _apiClient.get(ApiConstants.appPing);
+    await _apiClient.get(
+      ApiConstants.appPing,
+      useAuthCookie: true,
+    );
   }
 
   Future<MemberModel> getMe() async {
     final response = await _apiClient.get(
       ApiConstants.appMe,
-      useToken: true,
+      useAuthCookie: true,
     );
 
     final bool success = response['success'] == true;
@@ -58,6 +55,6 @@ class AuthApi {
   }
 
   Future<void> logout() async {
-    await SecureStorage.deleteToken();
+    await SecureStorage.deleteAuthCookie();
   }
 }

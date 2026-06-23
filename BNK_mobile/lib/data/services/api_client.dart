@@ -16,18 +16,19 @@ class ApiClient {
   final http.Client _client = http.Client();
 
   static const Duration _timeout = Duration(seconds: 8);
+  static const String _authCookieName = 'bnk_token';
 
   Future<Map<String, dynamic>> post(
       String path, {
         Map<String, dynamic>? body,
-        bool useToken = false,
+        bool useAuthCookie = false,
       }) async {
     final uri = Uri.parse('${ApiConstants.baseUrl}$path');
-    final headers = await _makeHeaders(useToken: useToken);
+    final headers = await _makeHeaders(useAuthCookie: useAuthCookie);
 
     debugPrint('================ API POST ================');
     debugPrint('[API URL] $uri');
-    debugPrint('[API HEADERS] $headers');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
     debugPrint('[API BODY] ${jsonEncode(body ?? {})}');
     debugPrint('==========================================');
 
@@ -45,6 +46,7 @@ class ApiClient {
       debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
       debugPrint('==============================================');
 
+      await _saveAuthCookieFrom(response);
       return _handleResponse(response);
     } on TimeoutException {
       debugPrint('[API ERROR] TimeoutException');
@@ -61,16 +63,64 @@ class ApiClient {
     }
   }
 
-  Future<Map<String, dynamic>> get(
+  Future<Map<String, dynamic>> postForm(
       String path, {
-        bool useToken = false,
+        required Map<String, String> body,
+        bool useAuthCookie = false,
       }) async {
     final uri = Uri.parse('${ApiConstants.baseUrl}$path');
-    final headers = await _makeHeaders(useToken: useToken);
+    final headers = await _makeHeaders(
+      useAuthCookie: useAuthCookie,
+      includeContentType: false,
+    );
+
+    debugPrint('================ API POST FORM ================');
+    debugPrint('[API URL] $uri');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
+    debugPrint('[API BODY] ${_formBodyForLog(body)}');
+    debugPrint('================================================');
+
+    try {
+      final response = await _client
+          .post(
+        uri,
+        headers: headers,
+        body: body,
+      )
+          .timeout(_timeout);
+
+      debugPrint('================ API RESPONSE ================');
+      debugPrint('[API STATUS] ${response.statusCode}');
+      debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
+      debugPrint('==============================================');
+
+      await _saveAuthCookieFrom(response);
+      return _handleResponse(response);
+    } on TimeoutException {
+      debugPrint('[API ERROR] TimeoutException');
+      throw Exception('?쒕쾭 ?묐떟 ?쒓컙??珥덇낵?섏뿀?듬땲?? Spring ?쒕쾭? ?ㅽ듃?뚰겕 ?곌껐???뺤씤?댁＜?몄슂.');
+    } on SocketException catch (error) {
+      debugPrint('[API ERROR] SocketException: $error');
+      throw Exception('?쒕쾭???곌껐?????놁뒿?덈떎. baseUrl, ??댄뙆?? 諛⑺솕踰? Spring ?ㅽ뻾 ?곹깭瑜??뺤씤?댁＜?몄슂.');
+    } on FormatException catch (error) {
+      debugPrint('[API ERROR] FormatException: $error');
+      throw Exception('?쒕쾭 ?묐떟 ?뺤떇???щ컮瑜댁? ?딆뒿?덈떎.');
+    } catch (error) {
+      debugPrint('[API ERROR] $error');
+      throw Exception(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<Map<String, dynamic>> get(
+      String path, {
+        bool useAuthCookie = false,
+      }) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}$path');
+    final headers = await _makeHeaders(useAuthCookie: useAuthCookie);
 
     debugPrint('================ API GET ================');
     debugPrint('[API URL] $uri');
-    debugPrint('[API HEADERS] $headers');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
     debugPrint('=========================================');
 
     try {
@@ -86,6 +136,7 @@ class ApiClient {
       debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
       debugPrint('==============================================');
 
+      await _saveAuthCookieFrom(response);
       return _handleResponse(response);
     } on TimeoutException {
       debugPrint('[API ERROR] TimeoutException');
@@ -103,22 +154,73 @@ class ApiClient {
   }
 
   Future<Map<String, String>> _makeHeaders({
-    required bool useToken,
+    required bool useAuthCookie,
+    bool includeContentType = true,
   }) async {
     final headers = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
     };
 
-    if (useToken) {
-      final token = await SecureStorage.getToken();
+    if (includeContentType) {
+      headers['Content-Type'] = 'application/json; charset=UTF-8';
+    }
 
-      if (token != null && token.isNotEmpty) {
-        headers['Authorization'] = 'Bearer $token';
+    if (useAuthCookie) {
+      final cookieValue = await SecureStorage.getAuthCookie();
+
+      if (cookieValue != null && cookieValue.isNotEmpty) {
+        headers['Cookie'] = '$_authCookieName=$cookieValue';
       }
     }
 
     return headers;
+  }
+
+  Future<void> _saveAuthCookieFrom(http.Response response) async {
+    final setCookie = response.headers['set-cookie'];
+
+    if (setCookie == null || setCookie.isEmpty) {
+      return;
+    }
+
+    final cookieValue = _extractCookieValue(setCookie, _authCookieName);
+
+    if (cookieValue == null) {
+      return;
+    }
+
+    if (cookieValue.isEmpty) {
+      await SecureStorage.deleteAuthCookie();
+      return;
+    }
+
+    await SecureStorage.saveAuthCookie(cookieValue);
+  }
+
+  String? _extractCookieValue(String setCookie, String cookieName) {
+    final pattern = RegExp('(?:^|,\\s*)${RegExp.escape(cookieName)}=([^;]*)');
+    final match = pattern.firstMatch(setCookie);
+    return match?.group(1);
+  }
+
+  Map<String, String> _headersForLog(Map<String, String> headers) {
+    final safeHeaders = Map<String, String>.from(headers);
+
+    if (safeHeaders.containsKey('Cookie')) {
+      safeHeaders['Cookie'] = '$_authCookieName=***';
+    }
+
+    return safeHeaders;
+  }
+
+  Map<String, String> _formBodyForLog(Map<String, String> body) {
+    final safeBody = Map<String, String>.from(body);
+
+    if (safeBody.containsKey('password')) {
+      safeBody['password'] = '***';
+    }
+
+    return safeBody;
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
