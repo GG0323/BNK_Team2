@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.bnk.dao.product.IProductTermsViewDao;
 import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.dto.product.ProductCompareViewDto;
 import com.example.bnk.dto.product.ProductDetailViewDto;
 import com.example.bnk.dto.product.ProductListViewDto;
+import com.example.bnk.dto.product.ProductTermsViewDto;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.product.ProductViewService;
 import com.example.bnk.service.product.ai.ProductCompareAiService;
@@ -32,9 +35,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductPageController {
 
+    private static final int QR_SIZE = 220;
+    private static final String MOBILE_DEEP_LINK_PREFIX = "bnkapp://product/join?product_no=";
+
     private final ProductViewService productViewService;
     private final BankMemberService bankMemberService;
     private final ProductCompareAiService productCompareAiService;
+    private final IProductTermsViewDao productTermsViewDao;
 
     // 상품 목록 조회
     // 비회원도 접근 가능
@@ -92,7 +99,8 @@ public class ProductPageController {
     }
 
     // 상품 상세 조회
-    // TB_PRODUCT + TB_PRODUCT_DESCRIPTION + TB_PRODUCT_RATE + TB_PRODUCT_CONDITION
+    // TB_PRODUCT + TB_PRODUCT_DESCRIPTION + TB_PRODUCT_CONDITION
+    // TB_PRODUCT_TERMS 약관 목록 추가 조회
     @GetMapping("/detail")
     public String productDetail(@RequestParam("product_no") long product_no,
                                 Model model,
@@ -125,7 +133,11 @@ public class ProductPageController {
             }
         }
 
+        List<ProductTermsViewDto> termsList =
+                productTermsViewDao.selectProductTermsByProductNo(product_no);
+
         model.addAttribute("product", product);
+        model.addAttribute("termsList", termsList);
 
         return "product/productDetail";
     }
@@ -188,12 +200,17 @@ public class ProductPageController {
         return productCompareAiService.createCompareProductSummary(targetProduct);
     }
 
-    // 모바일 상품 가입 QR 안내 페이지
-    // 예: /products/mobile-qr?product_no=1
+    // 모바일 상품 QR 안내 페이지
+    // 예: /products/mobile-qr?product_no=39
     @GetMapping("/mobile-qr")
-    public String productMobileQr(@RequestParam("product_no") long product_no,
+    public String productMobileQr(@RequestParam(value = "product_no", required = false) Long product_no,
                                   Model model,
                                   RedirectAttributes rttr) {
+
+        if (product_no == null || product_no <= 0) {
+            rttr.addFlashAttribute("msg", "잘못된 상품 번호입니다.");
+            return "redirect:/products";
+        }
 
         ProductDetailViewDto product = productViewService.getProductDetail(product_no);
 
@@ -207,29 +224,37 @@ public class ProductPageController {
         return "product/productMobileQr";
     }
 
-    // 모바일 상품 가입 QR 이미지 생성
-    // 기존 화면 URL 호환을 위해 유지
-    // API 전용 URL은 /api/products/mobile-qr-image 사용 가능
+    // 모바일 상품 QR 이미지 생성
+    // QR 안에는 웹 URL이 아니라 앱 딥링크를 직접 넣는다.
+    // 예: bnkapp://product/join?product_no=39
     @GetMapping(value = "/mobile-qr-image", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseBody
-    public byte[] productMobileQrImage(@RequestParam("product_no") long product_no) throws Exception {
+    public ResponseEntity<byte[]> productMobileQrImage(@RequestParam(value = "product_no", required = false) Long product_no) {
 
-        String qrContent = "bnkapp://product/join?product_no=" + product_no;
+        if (product_no == null || product_no <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
 
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        ProductDetailViewDto product = productViewService.getProductDetail(product_no);
 
-        BitMatrix bitMatrix = qrCodeWriter.encode(
-                qrContent,
-                BarcodeFormat.QR_CODE,
-                220,
-                220
-        );
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        String qrContent = MOBILE_DEEP_LINK_PREFIX + product_no;
 
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
+        try {
+            byte[] qrImage = createQrImage(qrContent);
 
-        return outputStream.toByteArray();
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.IMAGE_PNG)
+                    .body(qrImage);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .build();
+        }
     }
 
     // 추천 화면 테스트 URL
@@ -260,6 +285,23 @@ public class ProductPageController {
         addRecommendationAttributes(model, principal);
 
         return "product/productList";
+    }
+
+    private byte[] createQrImage(String qrContent) throws Exception {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+        BitMatrix bitMatrix = qrCodeWriter.encode(
+                qrContent,
+                BarcodeFormat.QR_CODE,
+                QR_SIZE,
+                QR_SIZE
+        );
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
+
+        return outputStream.toByteArray();
     }
 
     private void addRecommendationAttributes(Model model, Principal principal) {
