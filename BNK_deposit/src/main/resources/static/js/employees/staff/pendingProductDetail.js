@@ -111,7 +111,6 @@ fetch("/api/staff/product/pendingDetail?product_no=" + product_no, {
 	setComponentStatus("description_status", data.description_no);
 	setComponentStatus("condition_status", data.condition_no);
 
-	checkApproveBtn(data);
 })
 .catch((e) => {
 	console.error(e);
@@ -129,43 +128,6 @@ function closeApprovePopup() {
 	document.getElementById("approvePopup").classList.remove('show');
 }
 
-/* ── 상품 승인 ── */
-function approveProduct() {
-	closeApprovePopup();
-
-	fetch("/api/staff/product/approvePending", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({
-			product_no: product_no
-		})
-	})
-	.then((r) => {
-		if (!r.ok) {
-			throw new Error(r.status);
-		}
-
-		return r.json();;
-	})
-	.then((data) => {
-		if (data.result === 1) {
-			showToast('상품 승인이 완료되었습니다.', 'success');
-
-			setTimeout(() => {
-				location.href = "/employee/manager/pendingProductList";
-			}, 1500);
-		} else {
-			showToast('승인에 실패했습니다. 부속정보 등록 상태를 다시 확인해주세요.', 'error');
-		}
-	})
-	.catch((e) => {
-		console.error(e);
-		showToast('상품 승인 중 오류가 발생했습니다.', 'error');
-	});
-}
-
 /* ── 부속 구성 클릭 시 해당 작성/조회 페이지로 이동 ── */
 function goComponentPage(type) {
 	if (!product_no) {
@@ -177,7 +139,6 @@ function goComponentPage(type) {
 	let url = "";
 
 	if (item.dataset.enabled === 'true') {
-		// 등록 (아직 작성 안해서 모름! 작성 해봐야 알 듯?)
 		const basePath = "/employee/staff/SUG/approvedDetail/productDetail";
 		url = `${basePath}?type=${type}&product_no=${product_no}`;
 	} else {
