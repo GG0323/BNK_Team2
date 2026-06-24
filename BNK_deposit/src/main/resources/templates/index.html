@@ -5,6 +5,7 @@
     <title>BNK 부산은행</title>
 
     <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/chatbot.css}" />
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 
@@ -13,32 +14,7 @@
 <body>
 
 <div th:replace="~{fragments/header :: header_default}"></div>
-
-<!-- 챗봇 -->
-<div class="custom-chatbot" id="trailChatbot">
-    <img src="/images/buggi.png" alt="챗봇" onerror="this.style.display='none'; this.parentNode.innerText='🤖';">
-</div>
-
-<div class="chatbot-window" id="chatbotWindow">
-    <div class="chatbot-header">
-        <div class="chatbot-title">
-            <span class="status-dot"></span>
-            <strong>부산은행 AI 부기</strong>
-        </div>
-        <button type="button" class="close-btn" id="closeChatbot">✕</button>
-    </div>
-
-    <div class="chatbot-messages">
-        <div class="message system">
-            <p>안녕하세요! BNK 부산은행 스마트 챗봇 부기입니다. 무엇을 도와드릴까요?</p>
-        </div>
-    </div>
-
-    <div class="chatbot-input-area">
-        <input type="text" placeholder="질문 내용을 입력해주세요..." id="chatbotInput">
-        <button type="button" id="sendBtn">전송</button>
-    </div>
-</div>
+<div th:replace="~{fragments/chatbotFragment :: chatbot}"></div>
 
 <main class="main">
 

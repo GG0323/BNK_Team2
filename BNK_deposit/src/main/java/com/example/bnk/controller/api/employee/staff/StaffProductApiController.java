@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +27,9 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/staff/product")
 @RequiredArgsConstructor
-public class StaffProductApiController {
-
+public class StaffProductApiController {	// RestAPI를 사용하는 pendding 기능 컨트롤러 입니다.
+	
+	
 	@Autowired
 	ProductService productService;
 	@Autowired
@@ -56,21 +56,7 @@ public class StaffProductApiController {
 		
 		return dto;
 	}
-	
-	
-	// 관리자용 승인요청 -> 이걸 요청으로 바꿀지, 아니면 아예 없애고 관리자 주관으로 바꿀지 고민 중
-	@PostMapping("/approvePending")
-	@Transactional
-	public Map<String, Object> approvePending(
-			@RequestBody Map<String, Object> body
-			) {
-	    Long product_no = Long.parseLong(body.get("product_no").toString());
-	    System.out.println("승인 요청 product_no : " + product_no);
 
-	    int updated = productService.approvePending(product_no);   // 서비스가 0 또는 1 반환
-	    return Map.of("result", updated);
-	}
-	
 	
 	// 금리 등록
 	@PostMapping("/rate/save")

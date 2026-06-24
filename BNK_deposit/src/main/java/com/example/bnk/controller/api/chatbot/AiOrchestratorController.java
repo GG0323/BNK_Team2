@@ -40,13 +40,13 @@ public class AiOrchestratorController {
         // 2단계: 파악된 의도에 따라 담당 팀원의 AI 마이크로서비스 API 호출
         switch (intent) {
             case "COMPARE":
-                // 상품 비교 AI 서버 호출 (예시 포트: 8081)
+                // 상품 비교 AI 서버 호출 (예시 포트: 8081) -> 안만든대요..
                 finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/compare", userMessage);
                 System.out.println("COMPARE");
                 break;
                 
             case "RECOMMEND":
-                // 상품 추천 AI 서버 호출 (예시 포트: 8081)
+                // 상품 추천 AI 서버 호출 (예시 포트: 8081) -> 안만든대요..
                 finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/recommend", userMessage);
                 System.out.println("RECOMMEND");
                 break;
