@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 import '../../core/constants/api_constants.dart';
 import '../../core/storage/secure_storage.dart';
@@ -13,10 +14,26 @@ class ApiClient {
 
   ApiClient._internal();
 
-  final http.Client _client = http.Client();
+  final http.Client _client = _createClient();
 
   static const Duration _timeout = Duration(seconds: 8);
   static const String _authCookieName = 'bnk_token';
+
+  static http.Client _createClient() {
+    if (!kDebugMode || !ApiConstants.allowSelfSignedDevCertificate) {
+      return http.Client();
+    }
+
+    final apiBaseUri = Uri.parse(ApiConstants.baseUrl);
+    final httpClient = HttpClient()
+      ..badCertificateCallback = (certificate, host, port) {
+        return apiBaseUri.scheme == 'https' &&
+            host == apiBaseUri.host &&
+            port == apiBaseUri.port;
+      };
+
+    return IOClient(httpClient);
+  }
 
   Future<Map<String, dynamic>> post(
       String path, {
