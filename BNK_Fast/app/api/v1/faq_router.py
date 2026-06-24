@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List, Literal
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -14,9 +14,15 @@ router = APIRouter(
 faq_service = FaqLlmService()
 faq_admin_service = FaqAdminService()
 
+#추가
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
 
 class FaqRequest(BaseModel):
     query: str | None = None
+    #추가 이전 대화 (없으면 빈 리스트 -> 단발 처리)
+    history: List[ChatMessage] = []
 
 
 class FaqAddRequest(BaseModel):
@@ -34,7 +40,9 @@ def faq(payload: FaqRequest) -> Dict[str, Any]:
             "status": "NOT_FOUND"
         }
 
-    return faq_service.search_faq(question.strip())
+    #추가
+    history = [msg.model_dump() for msg in payload.history]
+    return faq_service.search_faq(question.strip(), history=history)
 
 
 @router.post("/2/faqs", response_model=bool)
