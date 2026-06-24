@@ -299,6 +299,12 @@
                           th:text="${product.product_type == 'DEPOSIT' ? '예금' : '적금'}">
                         예금
                     </span>
+                    
+                    <span class="joined-badge"
+				          th:if="${product.joined_yn == 'Y'}">
+				        가입중
+				    </span>
+                    
 
                     <span class="mobile-badge"
                           th:if="${product.mobile_join_yn == 'Y' and product.branch_join_yn != 'Y' and product.internet_join_yn != 'Y'}">
