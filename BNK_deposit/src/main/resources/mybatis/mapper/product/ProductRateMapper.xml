@@ -9,6 +9,7 @@
 		BEGIN
 		
 			INSERT INTO TB_PRODUCT_RATE(
+				product_no,
 			    rate_group,
 			    rate_label,
 			    annual_rate,
@@ -17,6 +18,7 @@
 			    display_order,
 			    use_yn)
 			VALUES(
+				#{product_no},
 			    #{rate_group},
 			    #{rate_label},
 			    #{annual_rate, jdbcType=VARCHAR},

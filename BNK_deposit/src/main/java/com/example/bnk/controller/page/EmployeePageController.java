@@ -22,7 +22,6 @@ import com.example.bnk.dto.product.ProductDto;
 import com.example.bnk.dto.product.ProductRateDto;
 import com.example.bnk.dto.product.ProductTermsDto;
 import com.example.bnk.dto.product.suggestion.ApprovedSuggestionDetailDto;
-import com.example.bnk.service.employees.EmployeeLogService;
 import com.example.bnk.service.product.ProductForEmployee;
 
 @Controller
@@ -220,17 +219,6 @@ public class EmployeePageController {
 		return "Employees/staff/productDetails";
 	}
 
-	/* 상품 등록하기 페이지 (신----------------------규!)
-	-------------------------------------------------------------------------------------------*/
-	@GetMapping("/staff/productRegistration")
-	public String goPrdRegistration() {
-		return "Employees/staff/productRegistration";
-	}
-	
-	
-	
-	
-	
 	
 
 	/*
@@ -283,6 +271,13 @@ public class EmployeePageController {
 
 		return "Employees/staff/productConditionWrite";
 	}
+	
+	// 조건
+	@GetMapping("/staff/product/pending/condition")
+	public String goPendingToCondition() {
+		return "Employees/staff/pending/productCondition";
+	}
+	
 
 	// 상품 가입 조건 등록하기
 	// employee/staff/product/condition/save
@@ -298,6 +293,7 @@ public class EmployeePageController {
 		System.out.println("1. condition 등록하기 실패");
 		return "redirect:/employee/staff/product/condition";
 	}
+	
 
 	// 상품 금리 등록 페이지
 	// /employee/staff/product/rate
@@ -317,6 +313,13 @@ public class EmployeePageController {
 		return "Employees/staff/productRateWrite";
 	}
 
+	// 금리
+	@GetMapping("/staff/product/pending/rate")
+	public String goPendingToRate() {
+		return "Employees/staff/pending/productRate";
+	}
+	
+	
 	// 상품 금리 등록하기
 	// employee/staff/product/rate/save
 	@PostMapping("/staff/product/rate/save")
@@ -331,8 +334,8 @@ public class EmployeePageController {
 		}
 		System.out.println("1. rate_no 등록하기 실패");
 		return "redirect:/employee/staff/product/descrition";
-	}
-
+	}	
+	
 	// 약관 등록 페이지 이동
 	// employee/staff/product/terms
 	@GetMapping("/staff/product/terms")
@@ -347,6 +350,12 @@ public class EmployeePageController {
 		model.addAttribute("approvedSug", approvedSug);
 		
 		return "Employees/staff/productTermsWrite";
+	}
+	
+	// 약관
+	@GetMapping("/staff/product/pending/terms")
+	public String goPendingToTerms() {
+		return "Employees/staff/pending/productTerms";
 	}
 	
 	
@@ -402,6 +411,13 @@ public class EmployeePageController {
 		return "Employees/staff/productDescriptionWrite";
 	}
 
+	// 설명
+	@GetMapping("/staff/product/pending/description")
+	public String goPendingToDescription() {
+		return "Employees/staff/pending/productDescription";
+	}
+	
+	
 	// 상품 설명 관리 등록하기
 	@PostMapping("/staff/product/description/save")
 	public String saveProductDescription(ProductDescriptionDto prdDescDto,
@@ -489,6 +505,7 @@ public class EmployeePageController {
 	    }
 
 	    String username = employeeDetails.getUsername();
+	    System.out.println(username);
 	    return "Employees/staff/reservation";
 	}
 
@@ -509,7 +526,21 @@ public class EmployeePageController {
     
     
     
-    
+
+	/* 상품 등록하기 페이지 (신----------------------규!)
+	-------------------------------------------------------------------------------------------*/
+	@GetMapping("/staff/productRegistration")
+	public String goPrdRegistration() {
+		return "Employees/staff/pending/productRegistration";
+	}
+	
+	@GetMapping("/staff/pendingProductDetail")
+	public String goPrdRegDetail() {
+		return "Employees/staff/pending/productDetail";
+	}
+	
+	
+	
     
     
     

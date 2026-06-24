@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 구성 - 상세 설명 등록</title>
+<link rel="stylesheet" href="/css/employee/staff_SideBar.css" />
+<link rel="stylesheet" href="/css/employee/staff_CommonPlace.css" />
+<link rel="stylesheet" href="/css/employee/write/descriptionWrite.css" />
+</head>
+<body>
+
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+	<div class="main">
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+		<div class="breadcrumb">
+			직원 페이지 › 상품 리스트 › 상품 상세 › <span class="current">설명 등록</span>
+		</div>	
+
+		<div class="page-title">상품 구성 컴포넌트 관리</div>
+
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">상품 상세 설명 문구 등록 (Description Setup)</div>
+			</div>
+
+			<form id="descriptionForm">
+				<input type="hidden" id="csrfToken" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+				<div class="section-divider">01. 상품 기본 정보 및 노출 요약 스펙</div>
+				
+				<div class="form-grid">
+					
+					<input type="hidden" id="product_no" name="product_no">
+					
+					<div class="form-div">
+						<span id="product_info_text">[No.-] / 상품명: 불러오는 중...</span>
+					</div>
+
+					<div class="form-group">
+						<label for="subtitle">대표 부제목 (Subtitle)</label>
+						<input type="text" id="subtitle" name="subtitle" placeholder="예: BNK 가치성장 정기예금">
+					</div>
+					
+					<div class="form-group">
+						<label for="content">핵심 홍보문구 (Catchphrase)</label>
+						<input type="text" id="content" name="content" placeholder="예: 생산적 금융 참여 특판 정기예금">
+					</div>
+					
+					<div class="form-group">
+						<label for="eligibility_desc">가입 자격 요약</label>
+						<input type="text" id="eligibility_desc" name="eligibility_desc" placeholder="예: 만 19세 이상의 실명 개인 (제한 없음)">
+					</div>
+					
+					<div class="form-group">
+						<label for="period_desc">가입 기간 요약</label>
+						<input type="text" id="period_desc" name="period_desc" placeholder="예: 6개월 ~ 36개월 (일 단위 지정 가능)">
+					</div>
+					
+					<div class="form-group">
+						<label for="amount_desc">가입 금액 요약</label>
+						<input type="text" id="amount_desc" name="amount_desc" placeholder="예: 1만원 이상 (단, 적립식은 월 300만원 한도)">
+					</div>
+
+					<div class="form-group">
+						<label for="interest_rate_desc">적용 금리 유형 요약</label>
+						<input type="text" id="interest_rate_desc" name="interest_rate_desc" placeholder="예: 고정금리 (금리 안내 탭 참조)">
+					</div>
+
+					<div class="form-group">
+						<label for="deposit_subject_desc">예금 과목 구분</label>
+						<input type="text" id="deposit_subject_desc" name="deposit_subject_desc" placeholder="예: 정기예금 / 거치식예금">
+					</div>
+					
+					<div class="form-group">
+						<label for="payment_method_desc">납입/적립 방식</label>
+						<input type="text" id="payment_method_desc" name="payment_method_desc" placeholder="예: 만기일시지급식 / 자유적립식">
+					</div>
+					
+					<div class="form-group">
+						<label for="join_method_desc">권장 가입 채널</label>
+						<input type="text" id="join_method_desc" name="join_method_desc" placeholder="예: 영업점, 인터넷뱅킹, 모바일뱅킹(모바일 특대)">
+					</div>
+					
+					<div class="form-group">
+						<label for="required_document_desc">필요 서류 안내</label>
+						<input type="text" id="required_document_desc" name="required_document_desc" placeholder="예: 실명확인증표, (대리인 가입 시) 위임장 등">
+					</div>
+
+					<div class="form-group">
+						<label for="tax_benefit_desc">세제 혜택 가이드</label>
+						<input type="text" id="tax_benefit_desc" name="tax_benefit_desc" placeholder="예: 비과세 종합저축으로 가입 가능 (본인 한도 내)">
+					</div>
+
+					<div class="form-group">
+						<label for="sale_period_desc">특판/판매 기간 문구</label>
+						<input type="text" id="sale_period_desc" name="sale_period_desc" placeholder="예: 한도 5,000억원 소진 시 조기 종료">
+					</div>
+
+					<div class="form-group">
+						<label for="product_feature_desc">상품 주요 특징 한줄 요약</label>
+						<input type="text" id="product_feature_desc" name="product_feature_desc" placeholder="예: 거래 실적에 따라 최고 연 0.5%p 우대금리 제공">
+					</div>
+
+					<div class="form-group">
+						<label for="disclosure_approval_desc">준법감시인 심의필 공시 번호</label>
+						<input type="text" id="disclosure_approval_desc" name="disclosure_approval_desc" placeholder="예: 부산은행 심의필 제2026-XXXX호 (유효기간 포함)">
+					</div>
+
+					<div class="form-group full-width">
+						<label for="image_file">상품 대표 마케팅 배너 이미지</label>
+						<div class="file-upload-wrapper">
+							<input type="file" id="image_file" name="image_file" accept="image/*" />
+							<div class="file-hint">※ 가로형 카드형 배너 권장 (.png, .jpg / 최대 5MB)</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="section-divider" style="margin-top: 3rem;">02. 법적 필수 안내 고시 및 상세 조항 (CLOB)</div>
+
+				<div class="form-grid">
+					<div class="form-group full-width">
+						<label for="preferential_rate_summary">상단 우대금리 요약 정보 (CLOB)</label>
+						<textarea id="preferential_rate_summary" name="preferential_rate_summary" rows="3" placeholder="상품 메인 상단 팝업 또는 강조 영역에 들어갈 핵심 우대금리 조건 요약문을 입력하세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="preferential_rate_desc">우대이율 지급 조건 상세 안내 (CLOB)</label>
+						<textarea id="preferential_rate_desc" name="preferential_rate_desc" rows="4" placeholder="실적 연동 우대금리의 세부 산정 기준 및 예외 조항 규정을 줄바꿈을 활용해 상세히 기술하세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="interest_payment_desc">이자 지급 방식 및 중도해지이율 구조 (CLOB)</label>
+						<textarea id="interest_payment_desc" name="interest_payment_desc" rows="3" placeholder="만기 일시 지급, 월이자 지급식 구조 및 중도 해지 시 적용되는 보유 기간별 차등 이율 스케줄 안내를 입력하세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="principal_interest_limit_desc">원금 또는 이자지급 제한 유의 조항 (CLOB)</label>
+						<textarea id="principal_interest_limit_desc" name="principal_interest_limit_desc" rows="3" placeholder="압류, 담보제공, 질권설정 등 원금 및 이자 지급 제한 사유에 대한 법적 고시 문구를 입력하세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="expected_interest_desc">만기 예상 수취 이자액 예시 안내 (CLOB)</label>
+						<textarea id="expected_interest_desc" name="expected_interest_desc" rows="3" placeholder="1천만 원 가입 시 세전/세후 예시 이자 금액 계산 테이블 및 산식 안내를 기술하세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="non_taxable_savings_desc">비과세 종합저축 제한 및 세법 안내 (CLOB)</label>
+						<textarea id="non_taxable_savings_desc" name="non_taxable_savings_desc" rows="3" placeholder="관련 세법 개정에 따른 세율 변동 가능성 및 비과세 저축 한도 자격 제한 고시를 적으세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="caution_note">고객 필수 계약 유의사항 (CLOB)</label>
+						<textarea id="caution_note" name="caution_note" rows="4" placeholder="계약 체결 전 상품설명서 및 약관 참조 의무 고시, 상품 위험 등급 정보 등 핵심 유의사항을 입력하세요."></textarea>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="reference_note">기타 참고사항 및 예금자 보호 안내 (CLOB)</label>
+						<textarea id="reference_note" name="reference_note" rows="4" placeholder="예금보험공사 보호 대상 여부 표준 문구 및 기타 특이사항 위젯 노출용 문구를 기재하세요."></textarea>
+					</div>
+				</div>
+
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary" onclick="history.back();">취소 및 리스트로</button>
+					<button type="submit" class="btn btn-primary">상세 설명 컴포넌트 등록</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="/js/employees/staff/pendingProductDescription.js"></script>
+</body>
+</html>

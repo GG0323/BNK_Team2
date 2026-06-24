@@ -9,6 +9,7 @@
 		BEGIN
 		
 			INSERT INTO TB_PRODUCT_DESCRIPTION(
+				product_no,
 			    subtitle,
 			    content,
 			    eligibility_desc,
@@ -33,6 +34,7 @@
 			    disclosure_approval_desc,
 			    image_url)
 			VALUES(
+				#{product_no, jdbcType=VARCHAR},
 			    #{subtitle, jdbcType=VARCHAR},
 			    #{content, jdbcType=VARCHAR},
 			    #{eligibility_desc, jdbcType=VARCHAR},

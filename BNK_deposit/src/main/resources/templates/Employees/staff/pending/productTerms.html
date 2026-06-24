@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 구성 - 약관 등록</title>
+<link rel="stylesheet" href="/css/employee/staff_SideBar.css" />
+<link rel="stylesheet" href="/css/employee/staff_CommonPlace.css" />
+<link rel="stylesheet" href="/css/employee/write/termsWrite.css" />
+</head>
+<body>
+
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+
+	<div class="main">
+		<div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+		<div class="breadcrumb">
+			직원 페이지 › 상품 리스트 › 상품 상세 › <span class="current">약관 등록</span>
+		</div>
+
+		<div class="page-title">약관 등록</div>
+
+		<div class="card">
+			<div class="card-title-group">
+				<div class="card-title">약관 신규 등록 (Terms Registration)</div>
+			</div>
+
+			<form id="termsRegistForm">
+				<input type="hidden" id="csrfToken" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+				<div class="form-grid">
+
+					<input type="hidden" id="product_no" name="product_no">
+					
+					<div class="form-div">
+						<span id="product_info_text">[No.-] / 상품명: 불러오는 중...</span>
+					</div>
+
+					<div class="form-group full-width">
+						<label for="terms_title"><span class="required">*</span>약관명</label>
+						<input type="text" id="terms_title" name="terms_title" placeholder="예: 예금거래기본약관" required />
+					</div>
+
+					<div class="form-group">
+						<label for="terms_type"><span class="required">*</span> 약관 구분</label> 
+						<select id="terms_type" name="terms_type" required>
+							<option value="REQUIRED" selected>필수 동의 (REQUIRED)</option>
+							<option value="OPTIONAL">선택 동의 (OPTIONAL)</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="terms_version">약관 관리 버전</label> 
+						<input type="text" id="terms_version" name="terms_version" value="1.0" placeholder="예: 1.0" />
+					</div>
+
+					<div class="form-group">
+						<label><span class="required">*</span> 원본 약관 PDF 업로드</label>
+						<div class="file-upload-box" id="pdfTrigger">
+							<input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required style="display:none;">
+							<div class="file-upload-inner">
+								<div class="file-upload-icon">📄</div>
+								<div>클릭하여 PDF 파일 선택</div>
+								<div class="file-name" id="pdf-name">선택된 파일 없음</div>
+							</div>
+						</div>
+						<span class="field-error" id="err-pdf">약관 PDF 파일은 필수 등록 사항입니다.</span>
+					</div>
+
+					<div class="form-group">
+						<label>미리보기 대표 이미지 업로드 (JPG / PNG)</label>
+						<div class="file-upload-box" id="imageTrigger">
+							<input type="file" id="image_file" name="image_file" accept="image/*" style="display:none;">
+							<div class="file-upload-inner">
+								<div class="file-upload-icon" id="img-icon">🖼️</div>
+								<div>클릭하여 이미지 파일 선택</div>
+								<div class="file-name" id="img-name">선택된 파일 없음</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="use_yn">약관 사용 여부</label> 
+						<select id="use_yn" name="use_yn">
+							<option value="Y" selected>사용 활성화 (Y)</option>
+							<option value="N">미사용 보존 (N)</option>
+						</select>
+					</div>
+
+					<div class="form-group"></div>
+
+					<div class="form-width full-width">
+						<label for="terms_summary">약관 핵심 요약 정의 및 고지사항 (CLOB)</label>
+						<textarea id="terms_summary" name="terms_summary" rows="3" placeholder="약관의 주요 핵심 요약 내용을 작성해주세요..."></textarea>
+					</div>
+
+				</div>
+
+				<div class="btn-group">
+					<button type="button" class="btn btn-secondary" onclick="history.back();">취소 및 돌아가기</button>
+					<button type="submit" class="btn btn-primary">신규 약관 명세 등록 완료</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script src="/js/employees/staff/pendingProductTerms.js"></script>
+</body>
+</html>
