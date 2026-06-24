@@ -1,9 +1,10 @@
 /.metadata/
 /BNK_deposit/src/main/resources/application-secret.properties
+/BNK_deposit/certs/
 /BNK_Fast/secret.env
 /BNK_Fast/save_models
 /BNK_Fast/chroma_db
 /BNK_Fast/vector_stores
 /BNK_Fast/fast
+__pycache__/
 *.py[cod]
-

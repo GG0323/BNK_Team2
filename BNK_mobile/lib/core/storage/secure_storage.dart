@@ -3,19 +3,19 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SecureStorage {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  static const String _tokenKey = 'bnk_token';
+  static const String _authCookieKey = 'bnk_token';
   static const String _pinKey = 'bnk_pin';
 
-  static Future<void> saveToken(String token) async {
-    await _storage.write(key: _tokenKey, value: token);
+  static Future<void> saveAuthCookie(String cookieValue) async {
+    await _storage.write(key: _authCookieKey, value: cookieValue);
   }
 
-  static Future<String?> getToken() async {
-    return await _storage.read(key: _tokenKey);
+  static Future<String?> getAuthCookie() async {
+    return await _storage.read(key: _authCookieKey);
   }
 
-  static Future<void> deleteToken() async {
-    await _storage.delete(key: _tokenKey);
+  static Future<void> deleteAuthCookie() async {
+    await _storage.delete(key: _authCookieKey);
   }
 
   static Future<void> savePin(String pin) async {

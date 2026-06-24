@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>미승인 상품 상세</title>
+<link rel="stylesheet" th:href="@{/css/employee/staff_SideBar.css}" />
+<link rel="stylesheet" th:href="@{/css/employee/manager/pendingProductDetail.css}">
+</head>
+<body>
+
+	<div th:replace="~{fragments/staffFragment :: staffSideBar}"></div>
+	
+	<div class="main">
+        <div th:replace="~{fragments/staffFragment :: goHomePage}"></div>
+
+	
+        <div class="breadcrumb">
+            직원 페이지 › 상품 리스트 › <span class="current">상품 상세</span>
+        </div>	
+
+	
+		<div class="page-title">미승인 상품 상세</div>
+	
+		<div class="content">
+	
+			<!-- 왼쪽: 상품 기본 정보 -->
+			<div class="card">
+				<div class="card-title">상품 정보</div>
+				<table class="info-table">
+					<tr>
+						<th>상품번호</th>
+						<td id="product_no">-</td>
+					</tr>
+					<tr>
+						<th>상품명</th>
+						<td id="product_name">-</td>
+					</tr>
+					<tr>
+						<th>상품유형</th>
+						<td id="product_type">-</td>
+					</tr>
+					<tr>
+						<th>판매상태</th>
+						<td id="product_status_badge">-</td>
+					</tr>
+					<tr>
+						<th>최저금리</th>
+						<td id="min_interest_rate">-</td>
+					</tr>
+					<tr>
+						<th>최고금리</th>
+						<td id="max_interest_rate">-</td>
+					</tr>
+					<tr>
+						<th>이자지급방식</th>
+						<td id="interest_payment_type">-</td>
+					</tr>
+					<tr>
+						<th>이자계산방식</th>
+						<td id="interest_calc_type">-</td>
+					</tr>
+					<tr>
+						<th>판매시작일</th>
+						<td id="sale_start_date">-</td>
+					</tr>
+					<tr>
+						<th>판매종료일</th>
+						<td id="sale_end_date">-</td>
+					</tr>
+					<tr>
+						<th>가입채널</th>
+						<td id="join_channels">-</td>
+					</tr>
+					<tr>
+						<th>등록일</th>
+						<td id="created_at">-</td>
+					</tr>
+				</table>
+			</div>
+	
+			<!-- 오른쪽 패널 -->
+			<div class="right-panel">
+	
+				<!-- 상품 구성 현황 -->
+				<div class="card">
+					<div class="card-title">상품 구성 현황</div>
+					<div class="component-list">
+						<div class="component-item" onclick="goComponentPage('rate')" style="cursor:pointer;">
+							<span class="comp-name">금리</span>
+							<span id="rate_status" class="status-no">미등록</span>
+						</div>
+	
+						<div class="component-item" onclick="goComponentPage('terms')" style="cursor:pointer;">
+							<span class="comp-name">약관</span>
+							<span id="terms_status" class="status-no">미등록</span>
+						</div>
+	
+						<div class="component-item" onclick="goComponentPage('description')" style="cursor:pointer;">
+							<span class="comp-name">설명</span>
+							<span id="description_status" class="status-no">미등록</span>
+						</div>
+	
+						<div class="component-item" onclick="goComponentPage('condition')" style="cursor:pointer;">
+							<span class="comp-name">조건</span>
+							<span id="condition_status" class="status-no">미등록</span>
+						</div>
+					</div>
+				</div>
+	
+				<!-- 승인 버튼 -->
+				<div class="register-card">
+					<button class="btn-register" id="approveBtn" onclick="openApprovePopup()" style="display:none;">
+						상품 승인 (판매 개시)
+					</button>
+	
+					<div class="register-notice show" id="approveBtnMsg">
+						※ 금리 / 약관 / 설명 / 조건이 모두 등록되어야 승인이 가능합니다.
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<a class="btn-back" th:href="@{/employee/staff/productRegistration}">← 목록으로</a>
+	
+	</div>
+
+	<!-- 승인 확인 모달 -->
+	<div class="modal-overlay" id="approvePopup">
+		<div class="modal">
+			<div class="modal-icon">📋</div>
+			<div class="modal-title">상품을 승인하시겠습니까?</div>
+			<div class="modal-desc">
+				승인 시 상태가 <b>PENDING → SALE</b>로 변경되어 판매가 시작됩니다.
+			</div>
+	
+			<div class="modal-btns">
+				<button class="modal-btn cancel" onclick="closeApprovePopup()">취소</button>
+				<button class="modal-btn confirm" onclick="approveProduct()">확인</button>
+			</div>
+		</div>
+	</div>
+	
+	<div class="toast" id="toast"></div>
+
+	
+
+	<script th:src="@{/js/employees/staff/pendingProductDetail.js}"></script>
+	
+	
+	
+</body>
+</html>

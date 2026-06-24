@@ -27,7 +27,9 @@ public class ProductService {
 
 	public List<PendingProductListDto> pendingList() {
 		List<PendingProductListDto> list = dao.selectPendingProductList();
-		System.out.println("대기 상품 불러오기 : " + list);
+		for(int i = 0; i < list.size(); i++) {
+			System.out.println("대기 상품 불러오기(" + i + "): "+ list.get(i));			
+		}
 		return list;
 	}
 

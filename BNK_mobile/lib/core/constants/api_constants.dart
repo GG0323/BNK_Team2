@@ -1,9 +1,10 @@
 class ApiConstants {
-  static const String baseUrl = 'http://192.168.0.85:8080';
+  static const String baseUrl = 'https://192.168.0.87:8443';
+  static const bool allowSelfSignedDevCertificate = true;
 
-  static const String appPing = '/api/app/auth/ping';
-  static const String appLogin = '/api/app/auth/login';
-  static const String appMe = '/api/app/auth/me';
+  static const String appPing = '/api/auth/session-remaining';
+  static const String appLogin = '/member/login';
+  static const String appMe = '/api/member/myinfo';
 
   static const String memberMypage = '/api/member/mypage';
   static const String memberAccounts = '/api/member/myaccounts';
