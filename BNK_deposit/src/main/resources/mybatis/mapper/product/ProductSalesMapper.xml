@@ -34,7 +34,7 @@
     
     <update id="upTermsCommunityRegist">
     	UPDATE TB_PRODUCT_SALES
-    	SET applied_interest_rate = applied_interest_rate + 0.1
+    	SET applied_interest_rate = applied_interest_rate + 1
     	WHERE member_no = #{member_no}
     	AND product_no = 81;
     </update>
