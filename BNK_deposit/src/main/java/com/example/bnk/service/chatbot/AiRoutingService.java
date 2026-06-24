@@ -1,10 +1,18 @@
 package com.example.bnk.service.chatbot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.util.*;
 
 @Service
 public class AiRoutingService {
@@ -34,7 +42,7 @@ public class AiRoutingService {
             "2. RECOMMEND : 맞춤형 상품을 '추천'해달라고 하는 경우\n" +
             "3. DICTIONARY : 어려운 '금융 용어'의 뜻을 물어보거나 즉시 풀이를 원하는 경우\n" +
             "4. FAQ : 자주 묻는 질문 관련 '업무 안내'인 경우\n\n" +
-            "오직 딱 한 단어(COMPARE, RECOMMEND, DICTIONARY, FAQ, DEFAULT)만 출력하라. 다른 부연설명은 절대 하지 마라.";
+            "오직 딱 한 단어(COMPARE, RECOMMEND, DICTIONARY, FAQ, DEFAULT)만 출력하라. 다른 부연설명은 하지 마라.";
 
         try {
             // 1. OpenAI 표준 규격에 맞게 헤더 설정
