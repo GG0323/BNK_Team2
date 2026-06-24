@@ -6,13 +6,16 @@ import '../../core/constants/app_colors.dart';
 import '../../core/storage/secure_storage.dart';
 import '../auth/login_screen.dart';
 import '../home/home_screen.dart';
+import '../product_compare/product_join_intro_screen.dart';
 
 class PinLoginScreen extends StatefulWidget {
   final String memberName;
+  final int? redirectProductNo;
 
   const PinLoginScreen({
     super.key,
     required this.memberName,
+    this.redirectProductNo,
   });
 
   @override
@@ -22,6 +25,8 @@ class PinLoginScreen extends StatefulWidget {
 class _PinLoginScreenState extends State<PinLoginScreen> {
   String _currentPin = '';
   List<String> _keypadNumbers = [];
+
+  bool get _hasRedirect => widget.redirectProductNo != null;
 
   @override
   void initState() {
@@ -67,6 +72,19 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     if (savedPin == _currentPin) {
       if (!mounted) return;
 
+      if (_hasRedirect) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductJoinIntroScreen(
+              productNo: widget.redirectProductNo!,
+              enteredFromQr: true,
+            ),
+          ),
+        );
+        return;
+      }
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -102,7 +120,9 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
+        builder: (_) => LoginScreen(
+          redirectProductNo: widget.redirectProductNo,
+        ),
       ),
     );
   }
@@ -221,8 +241,50 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     );
   }
 
+  Widget _buildRedirectGuide() {
+    if (!_hasRedirect) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 22),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8F8),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.primaryRed),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.qr_code_2_rounded,
+            color: AppColors.primaryRed,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'PIN 인증 후 선택하신 상품의 가입 안내 화면으로 이동합니다.',
+              style: const TextStyle(
+                fontSize: 13,
+                height: 1.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primaryRed,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final subtitle = _hasRedirect
+        ? 'QR 상품 가입 안내를 계속 진행하려면 PIN을 입력해주세요'
+        : '저장된 간편비밀번호를 입력해주세요';
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -235,110 +297,67 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: 20,
+                    vertical: 22,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
                     borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: AppColors.border),
                   ),
-                  child: const Row(
+                  child: Column(
                     children: [
-                      Text(
-                        'BNK',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primaryRed,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.memberName.isEmpty
+                              ? 'BNK'
+                              : '${widget.memberName}님',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primaryRed,
+                          ),
                         ),
                       ),
-                      SizedBox(width: 18),
-                      Text(
-                        '간편 로그인',
+                      const SizedBox(height: 24),
+                      const Text(
+                        '간편비밀번호 입력',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
                           color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        subtitle,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      _buildRedirectGuide(),
+                      const SizedBox(height: 32),
+                      _buildPinDots(),
+                      const SizedBox(height: 34),
+                      _buildKeypad(),
+                      const SizedBox(height: 22),
+                      TextButton(
+                        onPressed: _goToLoginAgain,
+                        child: const Text(
+                          '아이디/비밀번호로 다시 로그인',
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 34),
-
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '${widget.memberName}님,\n간편비밀번호를 입력하세요',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      height: 1.35,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '저장된 로그인 토큰을 사용하기 전 PIN으로 본인 확인합니다.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 42),
-
-                _buildPinDots(),
-
-                const SizedBox(height: 38),
-
-                _buildKeypad(),
-
-                const SizedBox(height: 26),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: _goToLoginAgain,
-                    child: const Text(
-                      '아이디 / 비밀번호로 다시 로그인',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: const Text(
-                    'PIN 인증 성공 시\n저장된 토큰으로 앱 홈 화면에 진입합니다.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.5,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 18),
               ],
             ),
           ),

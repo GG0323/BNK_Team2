@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../data/models/product_model.dart';
+import 'product_join_intro_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -16,11 +17,14 @@ class ProductDetailScreen extends StatelessWidget {
     return rate.toStringAsFixed(2);
   }
 
-  void _showPreparingMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
+  void _goToJoinIntro(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProductJoinIntroScreen(
+          productNo: product.productNo,
+          enteredFromQr: false,
+        ),
       ),
     );
   }
@@ -233,7 +237,7 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMobileGuideCard(BuildContext context) {
+  Widget _buildMobileGuideCard() {
     final isMobile = product.mobileJoinYn == 'Y';
 
     return Container(
@@ -250,9 +254,7 @@ class ProductDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            isMobile
-                ? Icons.phone_iphone_rounded
-                : Icons.info_outline_rounded,
+            isMobile ? Icons.phone_iphone_rounded : Icons.info_outline_rounded,
             color: isMobile ? AppColors.primaryRed : AppColors.textSecondary,
             size: 30,
           ),
@@ -266,15 +268,13 @@ class ProductDetailScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w900,
-                    color: isMobile
-                        ? AppColors.primaryRed
-                        : AppColors.textPrimary,
+                    color: isMobile ? AppColors.primaryRed : AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   isMobile
-                      ? '이 상품은 모바일 앱에서 가입 신청을 진행할 수 있습니다. 실제 가입신청 절차는 이후 단계에서 연결합니다.'
+                      ? '이 상품은 모바일 앱에서 가입 신청을 진행할 수 있습니다. 아래 가입하기 버튼을 누르면 가입 안내 화면으로 이동합니다.'
                       : '이 상품은 현재 모바일 가입 대상이 아니거나 영업점 가입이 필요한 상품입니다.',
                   style: const TextStyle(
                     fontSize: 13,
@@ -347,12 +347,7 @@ class ProductDetailScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          onPressed: () {
-            _showPreparingMessage(
-              context,
-              '가입신청 기능은 이후 단계에서 연결합니다.',
-            );
-          },
+          onPressed: () => _goToJoinIntro(context),
           child: const Text(
             '가입하기',
             style: TextStyle(
@@ -390,7 +385,7 @@ class ProductDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _buildJoinChannelCard(),
             const SizedBox(height: 16),
-            _buildMobileGuideCard(context),
+            _buildMobileGuideCard(),
             const SizedBox(height: 16),
             _buildDescriptionCard(),
           ],
