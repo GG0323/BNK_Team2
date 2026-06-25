@@ -6,14 +6,22 @@ import org.springframework.stereotype.Service;
 
 import com.example.bnk.dto.product.ProductCompareViewDto;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class ProductCompareAiService {
 
     private final ProductAiPromptBuilder productAiPromptBuilder;
     private final ProductGptClient productGptClient;
+    private final ProductFastApiClient productFastApiClient;
+
+    public ProductCompareAiService(
+            ProductAiPromptBuilder productAiPromptBuilder,
+            ProductGptClient productGptClient,
+            ProductFastApiClient productFastApiClient
+    ) {
+        this.productAiPromptBuilder = productAiPromptBuilder;
+        this.productGptClient = productGptClient;
+        this.productFastApiClient = productFastApiClient;
+    }
 
     /**
      * 비교 상품 전체 AI 요약
@@ -21,6 +29,13 @@ public class ProductCompareAiService {
     public String createCompareSummary(List<ProductCompareViewDto> products) {
         if (products == null || products.isEmpty()) {
             return "비교할 상품 정보가 없습니다.";
+        }
+
+        String fastApiSummary = productFastApiClient.createCompareSummary(products);
+
+        if (!isAiUnavailable(fastApiSummary)) {
+            System.out.println("[상품 AI] FastAPI 비교 요약 결과 사용");
+            return fastApiSummary;
         }
 
         String prompt = productAiPromptBuilder.buildComparePrompt(products);
@@ -41,6 +56,13 @@ public class ProductCompareAiService {
             return "요약할 상품 정보가 없습니다.";
         }
 
+        String fastApiSummary = productFastApiClient.createProductSummary(product);
+
+        if (!isAiUnavailable(fastApiSummary)) {
+            System.out.println("[상품 AI] FastAPI 개별 상품 요약 결과 사용");
+            return fastApiSummary;
+        }
+
         String prompt = productAiPromptBuilder.buildCompareProductSummaryPrompt(product);
         String aiSummary = productGptClient.generate(prompt);
 
@@ -55,6 +77,10 @@ public class ProductCompareAiService {
      * 전체 비교 요약 fallback
      */
     public String createFallbackCompareSummary(List<ProductCompareViewDto> products) {
+        if (products == null || products.isEmpty()) {
+            return "비교할 상품 정보가 없습니다.";
+        }
+
         ProductCompareViewDto highestMaxRateProduct = products.get(0);
         ProductCompareViewDto lowestMinAmountProduct = products.get(0);
         ProductCompareViewDto easiestMobileProduct = null;
@@ -64,6 +90,10 @@ public class ProductCompareAiService {
         int savingsCount = 0;
 
         for (ProductCompareViewDto product : products) {
+            if (product == null) {
+                continue;
+            }
+
             if (product.getMax_interest_rate() > highestMaxRateProduct.getMax_interest_rate()) {
                 highestMaxRateProduct = product;
             }
@@ -136,6 +166,10 @@ public class ProductCompareAiService {
      * 개별 상품 요약 fallback
      */
     public String createFallbackCompareProductSummary(ProductCompareViewDto product) {
+        if (product == null) {
+            return "요약할 상품 정보가 없습니다.";
+        }
+
         String productType = getProductTypeLabel(product);
         String productName = product.getProduct_name();
 
