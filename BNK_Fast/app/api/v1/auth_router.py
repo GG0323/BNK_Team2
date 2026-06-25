@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, HTTPException
 from app.schemas.response import OcrResultResponse, FaceResultResponse
 from app.utils.crypto_util import decrypt_image, encrypt_image, encrypt_json
 from app.utils.image_util import bytes_to_cv2, cv2_to_bytes
@@ -19,9 +19,7 @@ router = APIRouter(
 # 신분증 검증
 # Flutter → DB에 암호화된 신분증 이미지 저장 완료 후 호출
 @router.post("/2/member", response_model=OcrResultResponse)
-async def idcard_check(
-    pk: int = Form(...)
-):
+async def idcard_check(pk: int):
     # 1. 암호화된 신분증 이미지 조회
     idcard_data = get_idcard_image(pk)
     if idcard_data is None:
@@ -81,9 +79,7 @@ async def idcard_check(
 
 # 얼굴 검증 (InsightFace)
 @router.post("/2/face", response_model=FaceResultResponse)
-async def face_verify(
-    pk: int = Form(...)
-):
+async def face_verify(pk: int):
     # 1. 두 이미지 조회
     face_data   = get_face_image(pk)
  

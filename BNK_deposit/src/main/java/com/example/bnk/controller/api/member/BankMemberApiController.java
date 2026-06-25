@@ -2,17 +2,27 @@ package com.example.bnk.controller.api.member;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.bnk.auth.MemberDetails;
 import com.example.bnk.dto.common.ApiResponse;
 import com.example.bnk.dto.member.AccountDto;
 import com.example.bnk.dto.member.AccountHistoryDto;
@@ -22,6 +32,7 @@ import com.example.bnk.dto.member.MemberTrackingLogDto;
 import com.example.bnk.dto.member.MypageSummaryDto;
 import com.example.bnk.service.member.AccountService;
 import com.example.bnk.service.member.AccountTransactionService;
+import com.example.bnk.service.member.AccountOpeningService;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.member.MemberService;
 import com.example.bnk.service.member.MemberTrackingLogService;
@@ -33,10 +44,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class BankMemberApiController {
+
+	private static final Logger log = LoggerFactory.getLogger(BankMemberApiController.class);
 	
 	private final MemberService service;
 	private final BankMemberService bankMemberService;
 	private final AccountService accountService;
+	private final AccountOpeningService accountOpeningService;
 	private final ProductSalesService productSalesService;
 	private final MemberTrackingLogService memberTrackingLogService;
 	private final AccountTransactionService accountTransactionService;
@@ -123,7 +137,190 @@ public class BankMemberApiController {
 	    return ResponseEntity.ok(ApiResponse.ok(accountList));
 	}
 
-	// 계좌 상세 + 거래내역 조회
+	@GetMapping("/accounts/open/status")
+	public ResponseEntity<ApiResponse<?>> getAccountOpeningStatus(
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(accountOpeningService.status(memberNo(memberDetails))));
+	}
+
+	@PostMapping("/accounts/open/consent/privacy")
+	public ResponseEntity<ApiResponse<?>> agreeAccountOpeningPrivacyConsent(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody Map<String, Object> request
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.savePrivacyConsent(memberNo(memberDetails), booleanValue(request.get("agreed")))
+		));
+	}
+
+	@PostMapping("/accounts/open/id-card")
+	public ResponseEntity<ApiResponse<?>> uploadAccountOpeningIdCard(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestParam("image") MultipartFile image
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.uploadIdCard(memberNo(memberDetails), image)
+		));
+	}
+
+	@GetMapping("/accounts/open/ocr")
+	public ResponseEntity<ApiResponse<?>> getAccountOpeningOcr(
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(accountOpeningService.getOcr(memberNo(memberDetails))));
+	}
+
+	@PutMapping("/accounts/open/ocr")
+	public ResponseEntity<ApiResponse<?>> updateAccountOpeningOcr(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody Map<String, Object> request
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.updateOcr(memberNo(memberDetails), request)
+		));
+	}
+
+	@PostMapping("/accounts/open/face")
+	public ResponseEntity<ApiResponse<?>> uploadAccountOpeningFace(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestParam("image") MultipartFile image
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.uploadFace(memberNo(memberDetails), image)
+		));
+	}
+
+	@GetMapping("/accounts/open/security-card/challenge")
+	public ResponseEntity<ApiResponse<?>> getAccountOpeningSecurityCardChallenge(
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.createSecurityCardChallenge(memberNo(memberDetails))
+		));
+	}
+
+	@PostMapping("/accounts/open/security-card/verify")
+	public ResponseEntity<ApiResponse<?>> verifyAccountOpeningSecurityCard(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody Map<String, String> request
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.verifySecurityCard(
+						memberNo(memberDetails),
+						request.get("frontAnswer"),
+						request.get("backAnswer")
+				)
+		));
+	}
+
+	@PostMapping("/accounts/open/consent/account")
+	public ResponseEntity<ApiResponse<?>> agreeAccountOpeningAccountConsent(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody Map<String, Object> request
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.saveAccountConsent(memberNo(memberDetails), booleanValue(request.get("agreed")))
+		));
+	}
+
+	@PostMapping("/accounts/open/password")
+	public ResponseEntity<ApiResponse<?>> saveAccountOpeningPassword(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody Map<String, String> request
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.savePassword(memberNo(memberDetails), request.get("password"))
+		));
+	}
+
+	@PostMapping("/accounts/open/purpose")
+	public ResponseEntity<ApiResponse<?>> saveAccountOpeningPurpose(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody Map<String, String> request
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountOpeningService.savePurpose(memberNo(memberDetails), request.get("accountPurpose"))
+		));
+	}
+
+	@PostMapping("/accounts/open")
+	public ResponseEntity<ApiResponse<?>> openDemandDepositAccount(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody(required = false) Map<String, String> request
+	) {
+		log.info(
+				"account open controller reached: principalType={}, memberPkExists={}",
+				memberDetails == null ? null : memberDetails.getClass().getSimpleName(),
+				memberDetails != null
+		);
+
+		if (memberDetails == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(ApiResponse.fail("Login is required."));
+		}
+
+		AccountDto account = accountOpeningService.openAccount(memberDetails.getPk());
+
+		bankMemberService.updateMemberStatus(memberDetails.getUsername(), "REGULAR");
+
+		return ResponseEntity.ok(ApiResponse.ok(account));
+	}
+
+	@DeleteMapping("/accounts/open")
+	public ResponseEntity<ApiResponse<?>> cancelDemandDepositAccountOpening(
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		log.info(
+				"account open cancel controller reached: principalType={}, memberPkExists={}",
+				memberDetails == null ? null : memberDetails.getClass().getSimpleName(),
+				memberDetails != null
+		);
+
+		if (memberDetails == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(ApiResponse.fail("Login is required."));
+		}
+
+		int deletedCount = accountOpeningService.cancel(memberDetails.getPk());
+
+		return ResponseEntity.ok(ApiResponse.ok(Map.of("deletedCount", deletedCount)));
+	}
+
+	private long memberNo(MemberDetails memberDetails) {
+		if (memberDetails == null) {
+			throw new IllegalStateException("로그인이 필요합니다.");
+		}
+		return memberDetails.getPk();
+	}
+
+	private boolean booleanValue(Object value) {
+		return Boolean.TRUE.equals(value) || "true".equalsIgnoreCase(String.valueOf(value));
+	}
+
+	@ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+	public ResponseEntity<ApiResponse<Void>> handleAccountOpeningBadRequest(RuntimeException e) {
+		String message = e.getMessage() == null ? "\uC694\uCCAD \uCC98\uB9AC \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4." : e.getMessage();
+		if (e instanceof AccountOpeningService.FastApiVerificationException fastApiException) {
+			return ResponseEntity.badRequest().body(ApiResponse.fail(fastApiException.getCode(), message));
+		}
+		String code = accountOpeningErrorCode(message);
+		if (code != null) {
+			return ResponseEntity.badRequest().body(ApiResponse.fail(code, message));
+		}
+		return ResponseEntity.badRequest().body(ApiResponse.fail(message));
+	}
+
+	private String accountOpeningErrorCode(String message) {
+		if ("\uC2E0\uBD84\uC99D \uC778\uC99D \uCC98\uB9AC \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uCD2C\uC601\uD574\uC8FC\uC138\uC694.".equals(message)) {
+			return "ID_CARD_VERIFY_FAILED";
+		}
+		if ("\uC5BC\uAD74 \uC778\uC99D \uCC98\uB9AC \uC911 \uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uCD2C\uC601\uD574\uC8FC\uC138\uC694.".equals(message)) {
+			return "FACE_VERIFY_FAILED";
+		}
+		return null;
+	}
+
 	@GetMapping("/accounts/{accountNo}/history")
 	public ResponseEntity<ApiResponse<?>> getAccountHistory(
 	        Principal principal,

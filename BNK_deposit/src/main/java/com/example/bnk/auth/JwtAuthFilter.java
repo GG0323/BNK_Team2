@@ -2,6 +2,8 @@ package com.example.bnk.auth;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,8 @@ import jakarta.servlet.http.HttpSession;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter{
+
+	private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
 	
 	private static final String TOKEN_COOKIE_NAME = "bnk_token";
 	
@@ -42,6 +46,16 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			throws ServletException, IOException {
 		
 		String token = findTokenFromCookies(request, TOKEN_COOKIE_NAME);
+		boolean accountOpenRequest = isAccountOpenRequest(request);
+		
+		if(accountOpenRequest) {
+			log.info(
+					"account open jwt filter: path={}, method={}, tokenExists={}",
+					request.getRequestURI(),
+					request.getMethod(),
+					token != null
+			);
+		}
 		
 		if(token == null) {
 			filterChain.doFilter(request, response);
@@ -49,9 +63,17 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		}
 		
 		if(jwtUtil.isVaild(token)) {
-			setAuthentication(token);
+			setAuthentication(token, accountOpenRequest, request);
 			filterChain.doFilter(request, response);
 			return;
+		}
+
+		if(accountOpenRequest) {
+			log.warn(
+					"account open jwt filter: path={}, method={}, tokenValid=false",
+					request.getRequestURI(),
+					request.getMethod()
+			);
 		}
 		
 		// 쿠키는 있는데 만료/위조/손상 등 유효하지 않은 토큰이면 로그아웃 처리
@@ -65,7 +87,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		sendAuthError(request, response);
 	}
 	
-	private void setAuthentication(String token) {
+	private void setAuthentication(String token, boolean logAccountOpenRequest, HttpServletRequest request) {
 		String username = jwtUtil.getUsername(token);
 		String role = jwtUtil.getRole(token);
 		UserDetails userDetails = "ROLE_MEMBER".equals(role)
@@ -79,6 +101,21 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		);
 		
 		SecurityContextHolder.getContext().setAuthentication(auth);
+
+		if(logAccountOpenRequest) {
+			log.info(
+					"account open jwt filter: path={}, method={}, tokenValid=true, tokenRole={}, authenticationExists=true, principalType={}, authorities={}",
+					request.getRequestURI(),
+					request.getMethod(),
+					role,
+					userDetails.getClass().getSimpleName(),
+					userDetails.getAuthorities()
+			);
+		}
+	}
+
+	private boolean isAccountOpenRequest(HttpServletRequest request) {
+		return "/api/member/accounts/open".equals(request.getRequestURI());
 	}
 	
 	private String findTokenFromCookies(HttpServletRequest request, String tokenName) {

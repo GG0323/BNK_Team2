@@ -13,32 +13,38 @@ import lombok.Getter;
 public class ApiResponse<T> {
 
 	private final boolean success;
+	private final String code;
 	private final String message;
 	private final T data;
 
-	private ApiResponse(boolean success, String message, T data) {
+	private ApiResponse(boolean success, String code, String message, T data) {
 		this.success = success;
+		this.code = code;
 		this.message = message;
 		this.data = data;
 	}
 
 	// 데이터만 담아서 성공 응답
 	public static <T> ApiResponse<T> ok(T data) {
-		return new ApiResponse<>(true, null, data);
+		return new ApiResponse<>(true, null, null, data);
 	}
 
 	// 메시지 + 데이터를 담아서 성공 응답
 	public static <T> ApiResponse<T> ok(String message, T data) {
-		return new ApiResponse<>(true, message, data);
+		return new ApiResponse<>(true, null, message, data);
 	}
 
 	// 메시지만 담아서 성공 응답 (수정/변경 완료 등)
 	public static ApiResponse<Void> success(String message) {
-		return new ApiResponse<>(true, message, null);
+		return new ApiResponse<>(true, null, message, null);
 	}
 
 	// 실패 응답
 	public static ApiResponse<Void> fail(String message) {
-		return new ApiResponse<>(false, message, null);
+		return new ApiResponse<>(false, null, message, null);
+	}
+
+	public static ApiResponse<Void> fail(String code, String message) {
+		return new ApiResponse<>(false, code, message, null);
 	}
 }

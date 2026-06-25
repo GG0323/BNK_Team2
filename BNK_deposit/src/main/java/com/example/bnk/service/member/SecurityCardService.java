@@ -32,7 +32,7 @@ public class SecurityCardService {
 		}
 
 		String plainSecurityCardNumber = generateSecurityCardNumber();
-		String encryptedSecurityCardNumber = aesUtil.encrypt(plainSecurityCardNumber);
+		String encryptedSecurityCardNumber = aesUtil.encryptGcmToString(plainSecurityCardNumber);
 
 		SecurityCardDto securityCard = new SecurityCardDto();
 		securityCard.setMember_no(member.getMember_no());

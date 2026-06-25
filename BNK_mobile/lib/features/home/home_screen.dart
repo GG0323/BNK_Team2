@@ -6,6 +6,7 @@ import '../../core/storage/secure_storage.dart';
 import '../../data/models/mypage_model.dart';
 import '../../data/services/member_api.dart';
 import '../account/account_list_screen.dart';
+import '../account_opening/account_opening_screen.dart';
 import '../auth/login_screen.dart';
 import '../branch/branch_map_screen.dart';
 import '../branch/branch_reservation_list_screen.dart';
@@ -91,6 +92,21 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_) => const ProductListScreen(),
       ),
     );
+  }
+
+  Future<void> _goToAccountOpening() async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AccountOpeningScreen(),
+      ),
+    );
+
+    if (result == true && mounted) {
+      setState(() {
+        _myPageFuture = _memberApi.getMyPage();
+      });
+    }
   }
 
   void _goToBranchMap() {
@@ -364,6 +380,70 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBalanceCard(MyPageModel mypage, String displayName) {
+    if (mypage.accountCount == 0) {
+      return Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 22),
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 22),
+        decoration: BoxDecoration(
+          color: const Color(0xFF111827),
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              displayName,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                color: AppColors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '아직 입출금 계좌가 없습니다',
+              style: TextStyle(
+                fontSize: 13,
+                color: Color(0xFFB8C3D6),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryRed,
+                  foregroundColor: AppColors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                onPressed: _goToAccountOpening,
+                child: const Text(
+                  '입출금 계좌 개설하기',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 22),
