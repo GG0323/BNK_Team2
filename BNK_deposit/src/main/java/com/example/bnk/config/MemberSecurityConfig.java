@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 import org.springframework.security.web.csrf.MissingCsrfTokenException;
@@ -67,17 +68,28 @@ public class MemberSecurityConfig {
 		));
 		http.cors(Customizer.withDefaults());
 		http.exceptionHandling(exception -> exception
+				.authenticationEntryPoint(memberApiAuthenticationEntryPoint())
 				.accessDeniedHandler(memberApiAccessDeniedHandler())
 		);
 		
 		// 권한별 제어
 		http.userDetailsService(memberDetailsService)
-			.securityMatcher("/member/**", "/loginPage", "/signupPage", "/api/member/**", "/dormant/**", "/api/dormant/**")
+			.securityMatcher(
+					"/member/**", "/loginPage", "/signupPage",
+					"/api/member/**", "/dormant/**", "/api/dormant/**",
+					"/api/products/member", "/api/products/member/**",
+					"/api/products/join/**"
+			)
 			.authorizeHttpRequests(auth -> auth
 					.requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/member/accounts/open").hasAuthority("MEMBER")
 					.requestMatchers(HttpMethod.DELETE, "/api/member/accounts/open").hasAuthority("MEMBER")
 					.requestMatchers("/api/member/accounts/open/**").hasAuthority("MEMBER")
+					.requestMatchers(HttpMethod.GET,
+							"/api/products/member",
+							"/api/products/member/search",
+							"/api/products/member/detail").hasAuthority("MEMBER")
+					.requestMatchers("/api/products/join/**").hasAuthority("MEMBER")
 					.anyRequest().permitAll()
 		);
 
@@ -108,6 +120,20 @@ public class MemberSecurityConfig {
 		);
 		
 		return http.build();
+	}
+
+	private AuthenticationEntryPoint memberApiAuthenticationEntryPoint() {
+		return (request, response, authException) -> {
+			if (request.getRequestURI().startsWith("/api/")) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write("{\"success\":false,\"message\":\"로그인이 필요합니다.\"}");
+				return;
+			}
+
+			response.sendRedirect("/loginPage");
+		};
 	}
 
 	private AccessDeniedHandler memberApiAccessDeniedHandler() {

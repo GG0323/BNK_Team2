@@ -184,8 +184,20 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 				|| uri.startsWith("/js/")
 				|| uri.startsWith("/images/")
 				|| uri.startsWith("/products")
-				|| uri.startsWith("/api/products")
+				|| isPublicProductApiRequest(request)
 				|| uri.startsWith("/api/signup/");
+	}
+
+	private boolean isPublicProductApiRequest(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+
+		if (!"GET".equalsIgnoreCase(request.getMethod())) {
+			return false;
+		}
+
+		return uri.equals("/api/products")
+				|| uri.equals("/api/products/search")
+				|| uri.equals("/api/products/mobile-qr-image");
 	}
 	
 	private String resolveLoginUrl(HttpServletRequest request) {

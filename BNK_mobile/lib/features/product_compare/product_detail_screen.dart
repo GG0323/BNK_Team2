@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/storage/secure_storage.dart';
 import '../../data/models/product_model.dart';
-import 'product_join_screen.dart';
+import '../../data/services/product_join_api.dart';
+import '../account_opening/account_opening_screen.dart';
+import '../auth/login_screen.dart';
+import 'product_join_entry_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -20,15 +24,100 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  void _goToJoin(BuildContext context) {
+  Future<void> _goToJoin(BuildContext context) async {
     if (product.mobileJoinYn != 'Y') {
       _showPreparingMessage(context, '모바일 가입이 가능한 상품만 앱에서 가입할 수 있습니다.');
       return;
     }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => ProductJoinScreen(product: product)),
-    );
+    final authCookie = await SecureStorage.getAuthCookie();
+
+    if (!context.mounted) return;
+
+    if (authCookie == null || authCookie.isEmpty) {
+      final loggedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(returnOnSuccess: true),
+        ),
+      );
+
+      if (loggedIn == true && context.mounted) {
+        await _goToJoin(context);
+      }
+      return;
+    }
+
+    try {
+      final entryStatus = await ProductJoinApi().entryStatus(product.productNo);
+
+      if (!context.mounted) return;
+
+      if (entryStatus.accountRequired) {
+        await showDialog<void>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('계좌 개설 필요'),
+            content: Text(
+              entryStatus.message.isEmpty
+                  ? '상품 가입을 위해서는 입출금 계좌 개설이 먼저 필요합니다.'
+                  : entryStatus.message,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('확인'),
+              ),
+            ],
+          ),
+        );
+
+        if (!context.mounted) return;
+
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const AccountOpeningScreen()),
+        );
+        return;
+      }
+
+      if (!entryStatus.canEnterJoin) {
+        _showPreparingMessage(
+          context,
+          entryStatus.message.isEmpty
+              ? '상품 가입 진입 조건을 확인할 수 없습니다.'
+              : entryStatus.message,
+        );
+        return;
+      }
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ProductJoinEntryScreen(
+            product: product,
+            entryStatus: entryStatus,
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!context.mounted) return;
+
+      final message = error.toString().replaceFirst('Exception: ', '');
+      _showPreparingMessage(context, message);
+
+      if (message.contains('로그인') || message.contains('만료')) {
+        await SecureStorage.deleteAuthCookie();
+        if (!context.mounted) return;
+
+        final loggedIn = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            builder: (_) => const LoginScreen(returnOnSuccess: true),
+          ),
+        );
+
+        if (loggedIn == true && context.mounted) {
+          await _goToJoin(context);
+        }
+      }
+    }
   }
 
   Widget _buildHeader() {
