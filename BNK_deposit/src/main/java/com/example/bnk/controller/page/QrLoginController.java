@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,9 @@ import lombok.RequiredArgsConstructor;
 public class QrLoginController {
 
     private final IQrLoginDao qrLoginDao;
+
+    @Value("${spring.public-base-url:https://192.168.0.87:8443}")
+    private String springPublicBaseUrl;
 
     // QR 인증 상태 저장용 Map
     // key: authId
@@ -61,7 +65,7 @@ public class QrLoginController {
 
         // 실제 서비스라면 모바일 앱 인증 화면 주소가 들어감
         // 현재는 웹 인증 화면으로 연결
-    	String qrContent = "http://192.168.0.85:8080/qr-auth?authId=" + authId;
+    	String qrContent = springPublicBaseUrl + "/qr-auth?authId=" + authId;
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
 

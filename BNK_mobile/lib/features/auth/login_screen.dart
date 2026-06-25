@@ -5,11 +5,11 @@ import '../../data/services/auth_api.dart';
 import '../pin/pin_setup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  final int? redirectProductNo;
+  final bool returnOnSuccess;
 
   const LoginScreen({
     super.key,
-    this.redirectProductNo,
+    this.returnOnSuccess = false,
   });
 
   @override
@@ -23,8 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthApi _authApi = AuthApi();
 
   bool _isLoading = false;
-
-  bool get _hasRedirect => widget.redirectProductNo != null;
 
   @override
   void dispose() {
@@ -54,12 +52,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
+      if (widget.returnOnSuccess) {
+        Navigator.pop(context, true);
+        return;
+      }
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => PinSetupScreen(
             memberName: member.memberName,
-            redirectProductNo: widget.redirectProductNo,
           ),
         ),
       );
@@ -116,70 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildRedirectGuide() {
-    if (!_hasRedirect) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 22),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F8),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.primaryRed),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(
-            Icons.qr_code_2_rounded,
-            color: AppColors.primaryRed,
-            size: 26,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'QR로 상품 가입 안내에 진입했습니다.\n로그인 후 선택하신 상품의 가입 안내 화면으로 다시 이동합니다.',
-              style: const TextStyle(
-                fontSize: 13,
-                height: 1.5,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primaryRed,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoBox() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 18,
-      ),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Text(
-        _hasRedirect
-            ? '로그인 성공 시\n간편비밀번호 등록 후 QR 상품 가입 안내 화면으로 이동'
-            : '로그인 성공 시\n토큰 저장 후 간편비밀번호 등록으로 이동',
-        style: const TextStyle(
-          fontSize: 13,
-          height: 1.5,
-          color: AppColors.textSecondary,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -218,18 +156,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        _hasRedirect
-                            ? 'QR 상품 가입 안내를 계속 진행하기 위해 로그인해주세요.'
-                            : '최초 기기 등록 또는 재인증 시 사용',
-                        style: const TextStyle(
+                      const Text(
+                        '최초 기기 등록 또는 재인증 시 사용',
+                        style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      const SizedBox(height: 24),
-
-                      _buildRedirectGuide(),
+                      const SizedBox(height: 34),
 
                       const Text(
                         '아이디',
@@ -298,7 +232,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 24),
 
-                      _buildInfoBox(),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 18,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7F8FA),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: const Text(
+                          '로그인 성공 시\n토큰 저장 후 간편비밀번호 등록으로 이동',
+                          style: TextStyle(
+                            fontSize: 13,
+                            height: 1.5,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
 
                       const SizedBox(height: 26),
 
