@@ -69,4 +69,9 @@ public class ReservationPageController {
 
         return "member/myReservation";
     }
+    
+    @GetMapping("/geocode")
+    public String rootGeocode() {
+    	return "geocode_tool";
+    }
 }
