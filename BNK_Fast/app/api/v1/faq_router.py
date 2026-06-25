@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from app.services.faq_admin_service import FaqAdminService
 from app.services.faq_llm_service import FaqLlmService
+from app.services.faq_pipeline_service import FaqPipelineService
 
 router = APIRouter(
     prefix="/fast/api/ai",
@@ -13,6 +14,8 @@ router = APIRouter(
 
 faq_service = FaqLlmService()
 faq_admin_service = FaqAdminService()
+#추가
+faq_pipeline_service = FaqPipelineService()
 
 #추가
 class ChatMessage(BaseModel):
@@ -24,12 +27,13 @@ class FaqRequest(BaseModel):
     #추가 이전 대화 (없으면 빈 리스트 -> 단발 처리)
     history: List[ChatMessage] = []
 
-
 class FaqAddRequest(BaseModel):
     question: str
     answer: str
 
 
+
+# FaQ 컨트롤러
 @router.post("/2/faq")
 def faq(payload: FaqRequest) -> Dict[str, Any]:
     question = payload.query
@@ -44,7 +48,12 @@ def faq(payload: FaqRequest) -> Dict[str, Any]:
     history = [msg.model_dump() for msg in payload.history]
     return faq_service.search_faq(question.strip(), history=history)
 
-
+# faqs.json 최신화, 백터 DB 리빌드
 @router.post("/2/faqs", response_model=bool)
 def add_faq(payload: FaqAddRequest) -> bool:
     return faq_admin_service.add_faq(payload.question, payload.answer)
+
+# 파이프라인 호출 컨트롤러
+@router.post("/2/faq/refresh")
+def refresh_candidates() -> Dict[str, Any]:
+    return faq_pipeline_service.refresh_candidates()

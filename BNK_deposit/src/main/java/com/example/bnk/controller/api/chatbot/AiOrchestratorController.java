@@ -29,6 +29,18 @@ public class AiOrchestratorController {
     public ResponseEntity<Map<String, Object>> handleChat(@RequestBody Map<String, String> payload) {
         String userMessage = payload.get("message");
         
+        /*
+         * handleChat(@RequestBody Map<String, Object > payload
+        // message는 문자열로 꺼냄 (payload 타입이 Object라 캐스팅)
+        String userMessage = payload.get("message") != null ? payload.get("message").toString() : "";
+        // history 꺼내기 (프론트가 안 보내면 빈 리스트 → 단발 처리, 안 터짐)
+        Object historyObj = payload.get("history");
+        List<Object> history = (historyObj instanceof List)
+                ? (List<Object>) historyObj
+                : new ArrayList<>();
+        */
+        
+        
         // 1단계: 장진우 담당 라우팅 엔진으로 의도(Intent) 파악
         String intent = aiRoutingService.determineRoutingIntent(userMessage);
         
@@ -59,6 +71,7 @@ public class AiOrchestratorController {
                 
             case "FAQ":
                 // FAQ 벡터 검색 AI 서버 호출 (예시 포트: 8083)
+            	//finalAnswer = callFaqAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage, history);
                 finalAnswer = callTargetAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage);
                 System.out.println("FAQ");
                 break;
@@ -91,4 +104,22 @@ public class AiOrchestratorController {
             return "죄송합니다. 해당 금융 AI 서비스 모듈이 준비 중이거나 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.";
         }
     }
+    
+    /*
+    // FAQ 전용 헬퍼: query + history를 함께 보냄 (멀티턴)
+    private String callFaqAiServer(String url, String message, List<Object> history) {
+        try {
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("query", message);
+            requestBody.put("history", history);  // FastAPI의 history 필드로 전달
+
+            Map<String, Object> response = restTemplate.postForObject(url, requestBody, Map.class);
+            return response.get("answer").toString();
+
+        } catch (Exception e) {
+            return "죄송합니다. 해당 금융 AI 서비스 모듈이 준비 중이거나 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.";
+        }
+    }
+    */
+    
 }
