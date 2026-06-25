@@ -1,10 +1,12 @@
 package com.example.bnk.utils;
 
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -13,107 +15,144 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AesCryptoUtil {
-	
-	// AES 블록 크기에 맞게 평문을 패딩하여 암호화하는 방식
-	private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
-	
-	// AES CBC 모드에서 사용 될 초기화 벡터 길이
-	private static final int IV_LENGTH = 16;
-	
-	// 프로퍼티스에 저장된 AES key 값
+
+	private static final String CBC_ALGORITHM = "AES/CBC/PKCS5Padding";
+	private static final String GCM_ALGORITHM = "AES/GCM/NoPadding";
+	private static final int CBC_IV_LENGTH = 16;
+	private static final int GCM_NONCE_LENGTH = 12;
+	private static final int GCM_TAG_LENGTH_BIT = 128;
+	private static final int GCM_TAG_LENGTH_BYTE = 16;
+
 	@Value("${app.crypto.secret-key}")
 	private String secretKey;
-	
-	// 암호화
+
+	@Value("${app.crypto.gcm-secret-key}")
+	private String gcmSecretKey;
+
 	public String encrypt(String plainText) {
 		try {
-			// String 타입의 AES key를 바이트로 변환 
-			byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-			
-			// AES-256의 키 길이는 32로 고정이므로 맞는지 확인
-			if (keyBytes.length != 32) {
-                throw new IllegalArgumentException("AES-256 키는 32바이트여야 합니다.");
-            }
-			
-			// AES 키 스펙 저장(AES 키 객체 생성)
+			byte[] keyBytes = keyBytes(secretKey);
 			SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
-			
-			// AES CBC 모드에서 사용할 초기화 벡터
-			byte[] iv = new byte[IV_LENGTH];
-			
-			// 동일한 평문도 매번 다르게 암호문이 되도록 초기화 벡터에 랜덤 값 채움
-			new java.security.SecureRandom().nextBytes(iv);
-			
-			// 초기화 벡터를 Cipher에 전달할 수 있는 파라미터 객체로 생성
+
+			byte[] iv = new byte[CBC_IV_LENGTH];
+			new SecureRandom().nextBytes(iv);
 			IvParameterSpec ivSpec = new IvParameterSpec(iv);
-			
-			// 암호화/복호화 객체 생성
-			Cipher cipher = Cipher.getInstance(ALGORITHM);
-			
-			// CBC 방식에서 사용할 비밀키와 초기화 벡터를 사용하여 암호화 모드로 초기화
+
+			Cipher cipher = Cipher.getInstance(CBC_ALGORITHM);
 			cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-			
-			// 평문을 바이트로 변환한 뒤 암호화 수행
+
 			byte[] encrypted = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
-			
-			// 암호문과 초기화 벡터를 담기위한 바이트 배열 생성
 			byte[] combined = new byte[iv.length + encrypted.length];
-			
-			// combined 배열 앞 16바이트에 초기화 벡터 복사
 			System.arraycopy(iv, 0, combined, 0, iv.length);
-			
-			// combined 배열에서 초기화 벡터 뒤에 암호문 바이트 배열 복사
 			System.arraycopy(encrypted, 0, combined, iv.length, encrypted.length);
-			
-			// Base64로 바이트를 문자열로 인코딩
+
 			return Base64.getEncoder().encodeToString(combined);
-			
 		}catch(Exception e) {
-			throw new RuntimeException("AES 암호화 실패", e);
+			throw new RuntimeException("AES encryption failed", e);
 		}
 	}
-	
-	// 복호화
-	public String decrypt(String encryptedText) {
-        try {
-        	
-        	// Base64로 문자열로 저장된 암호문을 바이트로 디코딩
-            byte[] combined = Base64.getDecoder().decode(encryptedText);
-            
-            // combined 앞 16바이트를 초기화 벡터로 분리
-            byte[] iv = Arrays.copyOfRange(combined, 0, IV_LENGTH);
-            
-            // combined 초기화 벡터 뒷부분을 암호문으로 분리
-            byte[] encrypted = Arrays.copyOfRange(combined, IV_LENGTH, combined.length);
-            
-            // String 타입의 AES key를 바이트로 변환
-            byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
-            
-            // AES-256 키 길이인 32바이트인지 확인
-            if (keyBytes.length != 32) {
-                throw new IllegalArgumentException("AES-256 키는 32바이트여야 합니다.");
-            }
-            
-            // AES 키 스펙 저장(AES 키 객체 생성)
-            SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
-            
-            // AES CBC 모드에서 사용할 초기화 벡터
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
-            
-            // 암호화/복호화 객체 생성
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            
-            // CBC 방식에서 사용할 비밀키와 초기화 벡터를 사용하여 복호화 모드로 초기화
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-            
-            // 암호문을 복호화하여 평문 바이트 배열 생성
-            byte[] decrypted = cipher.doFinal(encrypted);
-            
-            // 복호화된 바이트 배열을 문자열로 변환
-            return new String(decrypted, StandardCharsets.UTF_8);
 
-        } catch (Exception e) {
-            throw new RuntimeException("AES 복호화 실패", e);
-        }
-    }
+	public String decrypt(String encryptedText) {
+		try {
+			byte[] combined = Base64.getDecoder().decode(encryptedText);
+			byte[] iv = Arrays.copyOfRange(combined, 0, CBC_IV_LENGTH);
+			byte[] encrypted = Arrays.copyOfRange(combined, CBC_IV_LENGTH, combined.length);
+
+			SecretKeySpec keySpec = new SecretKeySpec(keyBytes(secretKey), "AES");
+			IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+			Cipher cipher = Cipher.getInstance(CBC_ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+
+			byte[] decrypted = cipher.doFinal(encrypted);
+			return new String(decrypted, StandardCharsets.UTF_8);
+		}catch(Exception e) {
+			throw new RuntimeException("AES decryption failed", e);
+		}
+	}
+
+	public GcmPayload encryptGcm(byte[] plainBytes) {
+		try {
+			byte[] nonce = new byte[GCM_NONCE_LENGTH];
+			new SecureRandom().nextBytes(nonce);
+
+			SecretKeySpec keySpec = new SecretKeySpec(keyBytes(gcmSecretKey), "AES");
+			GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH_BIT, nonce);
+
+			Cipher cipher = Cipher.getInstance(GCM_ALGORITHM);
+			cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmSpec);
+
+			byte[] encryptedWithTag = cipher.doFinal(plainBytes);
+			byte[] cipherText = Arrays.copyOfRange(
+					encryptedWithTag,
+					0,
+					encryptedWithTag.length - GCM_TAG_LENGTH_BYTE
+			);
+			byte[] tag = Arrays.copyOfRange(
+					encryptedWithTag,
+					encryptedWithTag.length - GCM_TAG_LENGTH_BYTE,
+					encryptedWithTag.length
+			);
+
+			return new GcmPayload(
+					Base64.getEncoder().encodeToString(cipherText),
+					Base64.getEncoder().encodeToString(nonce),
+					Base64.getEncoder().encodeToString(tag)
+			);
+		}catch(Exception e) {
+			throw new RuntimeException("AES-GCM encryption failed", e);
+		}
+	}
+
+	public String encryptGcmToString(String plainText) {
+		GcmPayload payload = encryptGcm(plainText.getBytes(StandardCharsets.UTF_8));
+		return payload.enc() + "." + payload.nonce() + "." + payload.tag();
+	}
+
+	public byte[] decryptGcm(GcmPayload payload) {
+		return decryptGcm(payload.enc(), payload.nonce(), payload.tag());
+	}
+
+	public byte[] decryptGcm(String enc, String nonce, String tag) {
+		try {
+			byte[] cipherText = Base64.getDecoder().decode(enc);
+			byte[] tagBytes = Base64.getDecoder().decode(tag);
+			byte[] encryptedWithTag = new byte[cipherText.length + tagBytes.length];
+			System.arraycopy(cipherText, 0, encryptedWithTag, 0, cipherText.length);
+			System.arraycopy(tagBytes, 0, encryptedWithTag, cipherText.length, tagBytes.length);
+
+			SecretKeySpec keySpec = new SecretKeySpec(keyBytes(gcmSecretKey), "AES");
+			GCMParameterSpec gcmSpec = new GCMParameterSpec(
+					GCM_TAG_LENGTH_BIT,
+					Base64.getDecoder().decode(nonce)
+			);
+
+			Cipher cipher = Cipher.getInstance(GCM_ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmSpec);
+
+			return cipher.doFinal(encryptedWithTag);
+		}catch(Exception e) {
+			throw new RuntimeException("AES-GCM decryption failed", e);
+		}
+	}
+
+	public String decryptGcmToString(String storedPayload) {
+		String[] parts = storedPayload == null ? new String[0] : storedPayload.split("\\.", -1);
+
+		if (parts.length != 3) {
+			throw new IllegalArgumentException("AES-GCM payload must be formatted as enc.nonce.tag.");
+		}
+
+		return new String(decryptGcm(parts[0], parts[1], parts[2]), StandardCharsets.UTF_8);
+	}
+
+	private byte[] keyBytes(String key) {
+		byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+		if(keyBytes.length != 32) {
+			throw new IllegalArgumentException("AES-256 key must be 32 bytes.");
+		}
+		return keyBytes;
+	}
+
+	public record GcmPayload(String enc, String nonce, String tag) {}
 }

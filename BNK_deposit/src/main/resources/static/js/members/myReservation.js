@@ -86,9 +86,9 @@ document.addEventListener("DOMContentLoaded", function () {
               : ""
           }
           ${
-            isEnded
-              ? `<a href="/products" class="btn-rebook">다시 예약하기</a>`
-              : ""
+			isEnded
+			  ? `<a href="/member/reservation" class="btn-rebook">다시 예약하기</a>`
+			  : ""
           }
         </div>`;
 

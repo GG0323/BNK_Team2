@@ -18,4 +18,18 @@
 		END;
 	</insert>
 
+	<select id="findActiveByMemberNo" resultType="com.example.bnk.dto.member.SecurityCardDto">
+		SELECT
+			SEC_NO AS sec_no,
+			MEMBER_NO AS member_no,
+			SEC_NUM AS sec_num,
+			CREATE_AT AS create_at,
+			EXPIRE_AT AS expire_at,
+			USE_YN AS use_yn
+		FROM TB_SECURITY_CARD
+		WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+			  AND UPPER(USE_YN) = 'Y'
+			  AND expire_at > SYSDATE
+	</select>
+
 </mapper>

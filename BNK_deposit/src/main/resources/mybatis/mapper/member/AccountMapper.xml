@@ -13,6 +13,7 @@
 	        ACCOUNT_ALIAS AS account_alias,
 	        BALANCE AS balance,
 	        ACCOUNT_STATUS AS account_status,
+	        ACCOUNT_PURPOSE AS account_purpose,
 	        OPENED_AT AS opened_at,
 	        CLOSED_AT AS closed_at,
 	        UPDATED_AT AS updated_at
@@ -32,6 +33,7 @@
 	        ACCOUNT_ALIAS AS account_alias,
 	        BALANCE AS balance,
 	        ACCOUNT_STATUS AS account_status,
+	        ACCOUNT_PURPOSE AS account_purpose,
 	        OPENED_AT AS opened_at,
 	        CLOSED_AT AS closed_at,
 	        UPDATED_AT AS updated_at
@@ -54,6 +56,72 @@
 		WHERE member_no = #{member_no}
 		AND account_status = 'ACTIVE' 
     </select>
+
+    <select id="findActiveAccountNoByMemberNo" resultType="long">
+		SELECT MIN(account_no)
+		FROM TB_ACCOUNT
+		WHERE member_no = #{member_no}
+		  AND account_status = 'ACTIVE'
+    </select>
+
+    <insert id="insertDemandDepositAccount" statementType="CALLABLE" parameterType="com.example.bnk.dto.member.AccountCreateDto">
+    	BEGIN
+	    	INSERT INTO TB_ACCOUNT (
+	    		MEMBER_NO,
+	    		ACCOUNT_ALIAS,
+	    		BALANCE,
+	    		ACCOUNT_STATUS,
+	    		ACCOUNT_PASSWORD,
+	    		ACCOUNT_PURPOSE,
+	    		OPENED_AT,
+	    		UPDATED_AT
+	    	)
+	    	VALUES (
+	    		#{memberNo},
+	    		#{accountAlias},
+	    		0,
+	    		'ACTIVE',
+	    		#{accountPassword, jdbcType=VARCHAR},
+	    		#{accountPurpose, jdbcType=VARCHAR},
+	    		SYSDATE,
+	    		SYSDATE
+	    	)
+	    	RETURNING ACCOUNT_NO
+	    	INTO #{accountNo, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Long};
+    	END;
+    </insert>
+
+    <insert id="insertProductAccount" statementType="CALLABLE" parameterType="com.example.bnk.dto.member.AccountCreateDto">
+    	BEGIN
+	    	INSERT INTO TB_ACCOUNT (
+	    		MEMBER_NO,
+	    		ACCOUNT_ALIAS,
+	    		BALANCE,
+	    		ACCOUNT_STATUS,
+	    		ACCOUNT_PASSWORD,
+	    		ACCOUNT_PURPOSE,
+	    		OPENED_AT,
+	    		UPDATED_AT
+	    	)
+	    	VALUES (
+	    		#{memberNo},
+	    		#{accountAlias},
+	    		0,
+	    		'ACTIVE',
+	    		#{accountPassword, jdbcType=VARCHAR},
+	    		#{accountPurpose, jdbcType=VARCHAR},
+	    		SYSDATE,
+	    		SYSDATE
+	    	)
+	    	RETURNING ACCOUNT_NO
+	    	INTO #{accountNo, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Long};
+    	END;
+    </insert>
+
+    <delete id="deleteAuthenticationByMemberNo">
+    	DELETE FROM TB_AUTHENTICATION
+    	WHERE MEMBER_NO = #{member_no}
+    </delete>
     
     <!-- 환금해주기 -->
 	<update id="interestToMyAccount">

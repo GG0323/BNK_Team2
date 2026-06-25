@@ -57,13 +57,13 @@ public class ProductPageController {
 
         String normalizedProductType = normalizeProductType(productType);
 
-        List<ProductListViewDto> productList;
-
-        if (keyword != null && !keyword.trim().equals("")) {
-            productList = productViewService.searchProductList(keyword, sort, normalizedProductType);
-        } else {
-            productList = productViewService.getProductList(sort, normalizedProductType);
-        }
+        List<ProductListViewDto> productList =
+                getVisibleProductListForCurrentUser(
+                        principal,
+                        keyword,
+                        sort,
+                        normalizedProductType
+                );
 
         model.addAttribute("productList", productList);
         model.addAttribute("keyword", keyword);
@@ -88,7 +88,12 @@ public class ProductPageController {
         String normalizedProductType = normalizeProductType(productType);
 
         List<ProductListViewDto> productList =
-                productViewService.searchProductList(keyword, sort, normalizedProductType);
+                getVisibleProductListForCurrentUser(
+                        principal,
+                        keyword,
+                        sort,
+                        normalizedProductType
+                );
 
         model.addAttribute("productList", productList);
         model.addAttribute("keyword", keyword);
@@ -286,13 +291,13 @@ public class ProductPageController {
 
         String normalizedProductType = normalizeProductType(productType);
 
-        List<ProductListViewDto> productList;
-
-        if (keyword != null && !keyword.trim().equals("")) {
-            productList = productViewService.searchProductList(keyword, sort, normalizedProductType);
-        } else {
-            productList = productViewService.getProductList(sort, normalizedProductType);
-        }
+        List<ProductListViewDto> productList =
+                getVisibleProductListForCurrentUser(
+                        principal,
+                        keyword,
+                        sort,
+                        normalizedProductType
+                );
 
         model.addAttribute("productList", productList);
         model.addAttribute("keyword", keyword);
@@ -329,7 +334,7 @@ public class ProductPageController {
         String recommendationMode;
         String recommendationMessage;
 
-        if (member != null && productViewService.isPersonalRecommendationTarget(member)) {
+        if (member != null) {
             recommendedProducts = productViewService.getRecommendedProductsForMember(member);
             recommendationMode = productViewService.getRecommendationMode(member);
             recommendationMessage = productViewService.getRecommendationMessage(member);
@@ -362,5 +367,51 @@ public class ProductPageController {
         }
 
         return "ALL";
+    }
+    
+    private List<ProductListViewDto> getVisibleProductListForCurrentUser(
+            Principal principal,
+            String keyword,
+            String sort,
+            String productType
+    ) {
+        BankMemberDto member = getLoginMember(principal);
+
+        boolean hasKeyword = keyword != null && !keyword.trim().equals("");
+
+        if (member != null) {
+            long memberNo = member.getMember_no();
+            String memberType = member.getMember_type();
+
+            if (hasKeyword) {
+                return productViewService.searchProductListForMember(
+                        memberNo,
+                        memberType,
+                        keyword,
+                        sort,
+                        productType
+                );
+            }
+
+            return productViewService.getProductListForMember(
+                    memberNo,
+                    memberType,
+                    sort,
+                    productType
+            );
+        }
+
+        if (hasKeyword) {
+            return productViewService.searchProductList(
+                    keyword,
+                    sort,
+                    productType
+            );
+        }
+
+        return productViewService.getProductList(
+                sort,
+                productType
+        );
     }
 }

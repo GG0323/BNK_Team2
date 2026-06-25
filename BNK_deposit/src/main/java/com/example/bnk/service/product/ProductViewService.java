@@ -74,21 +74,29 @@ public class ProductViewService {
 
     // 로그인 회원 맞춤 추천 상품 TOP 3
     // 추천 불가능한 회원이면 비회원 인기 상품으로 대체
+    // 회원용 인기 추천에서는 이미 가입중인 상품을 제외한다.
     public List<ProductListViewDto> getRecommendedProductsForMember(BankMemberDto member) {
 
-        if (!isPersonalRecommendationTarget(member)) {
+        if (member == null) {
             return getPopularRecommendedProducts();
+        }
+
+        long memberNo = member.getMember_no();
+
+        if (!isPersonalRecommendationTarget(member)) {
+            return getPopularRecommendedProductsForMember(memberNo);
         }
 
         int age = calculateAge(member.getBirth_date());
         String groupCode = getMemberGroupCode(age, member.getGender());
 
         if (groupCode == null) {
-            return getPopularRecommendedProducts();
+            return getPopularRecommendedProductsForMember(memberNo);
         }
 
         List<ProductListViewDto> recommendedList =
                 productViewDao.selectRecommendedProductsForMember(
+                        memberNo,
                         age,
                         member.getGender(),
                         member.getMember_type(),
@@ -96,7 +104,7 @@ public class ProductViewService {
                 );
 
         if (recommendedList == null || recommendedList.isEmpty()) {
-            return getPopularRecommendedProducts();
+            return getPopularRecommendedProductsForMember(memberNo);
         }
 
         return recommendedList;
@@ -202,16 +210,19 @@ public class ProductViewService {
         return productViewDao.selectCompareProducts(productNoList);
     }
 
-    // 로그인 회원 유형별 상품 목록 조회
-    public List<ProductListViewDto> getProductListForMember(String memberType, String sort) {
-        return getProductListForMember(memberType, sort, "ALL");
+ // 로그인 회원 유형별 상품 목록 조회
+    public List<ProductListViewDto> getProductListForMember(long memberNo, String memberType, String sort) {
+        return getProductListForMember(memberNo, memberType, sort, "ALL");
     }
 
     // 로그인 회원 유형별 상품 목록 조회 + 카테고리 필터 + 정렬
-    public List<ProductListViewDto> getProductListForMember(String memberType, String sort, String productType) {
+    public List<ProductListViewDto> getProductListForMember(long memberNo,
+                                                            String memberType,
+                                                            String sort,
+                                                            String productType) {
 
         List<ProductListViewDto> list =
-                productViewDao.selectProductListForMember(memberType);
+                productViewDao.selectProductListForMember(memberNo, memberType);
 
         filterProductListByType(list, productType);
         sortProductList(list, sort);
@@ -220,12 +231,15 @@ public class ProductViewService {
     }
 
     // 로그인 회원 유형별 상품 검색
-    public List<ProductListViewDto> searchProductListForMember(String memberType, String keyword) {
-        return searchProductListForMember(memberType, keyword, "baseRateDesc", "ALL");
+    public List<ProductListViewDto> searchProductListForMember(long memberNo,
+                                                               String memberType,
+                                                               String keyword) {
+        return searchProductListForMember(memberNo, memberType, keyword, "baseRateDesc", "ALL");
     }
 
     // 로그인 회원 유형별 상품 검색 + 카테고리 필터 + 정렬
-    public List<ProductListViewDto> searchProductListForMember(String memberType,
+    public List<ProductListViewDto> searchProductListForMember(long memberNo,
+                                                               String memberType,
                                                                String keyword,
                                                                String sort,
                                                                String productType) {
@@ -233,9 +247,10 @@ public class ProductViewService {
         List<ProductListViewDto> list;
 
         if (keyword == null || keyword.trim().equals("")) {
-            list = productViewDao.selectProductListForMember(memberType);
+            list = productViewDao.selectProductListForMember(memberNo, memberType);
         } else {
             list = productViewDao.searchProductListForMember(
+                    memberNo,
                     memberType,
                     keyword.trim()
             );
@@ -295,5 +310,10 @@ public class ProductViewService {
                     .comparingDouble(ProductListViewDto::getMin_interest_rate)
                     .reversed());
         }
+    }
+    
+    // 고객을 위한 상품 추천
+    public List<ProductListViewDto> getPopularRecommendedProductsForMember(long memberNo) {
+        return productViewDao.selectPopularRecommendedProductsForMember(memberNo);
     }
 }

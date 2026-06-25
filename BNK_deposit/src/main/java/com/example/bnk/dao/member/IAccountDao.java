@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.bnk.dto.member.AccountCreateDto;
 import com.example.bnk.dto.member.AccountDto;
 
 @Mapper
@@ -21,6 +22,14 @@ public interface IAccountDao {
     
     // member_no로 주계좌 찾기
     long findUsingAccountNo(@Param("member_no") long member_no);
+
+    Long findActiveAccountNoByMemberNo(@Param("member_no") long member_no);
+
+    int insertDemandDepositAccount(AccountCreateDto dto);
+
+    int insertProductAccount(AccountCreateDto dto);
+
+    int deleteAuthenticationByMemberNo(@Param("member_no") long member_no);
     
     // 환금해주기
     int interestToMyAccount(@Param("balance") long balance, @Param("applied_interest_rate") double applied_interest_rate, @Param("member_no") long member_no);

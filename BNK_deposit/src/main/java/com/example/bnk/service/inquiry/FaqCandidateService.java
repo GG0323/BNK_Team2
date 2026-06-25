@@ -22,9 +22,12 @@ public class FaqCandidateService {
     // 스프링부트 3.2+ 면 RestClient, 아니면 RestTemplate 로 // 둘 다 자바에서 다른 서버(여기선 파이썬 FastAPI)를 HTTP로 부르는 도구
 	// 파이선 api 불러오기
     private final RestClient restClient = RestClient.create("http://localhost:8000");
+    //private final RestClient restClient = RestClient.create("http://192.168.0.87:8000");
+    
     
     //http://127.0.0.1:8000/docs - 스워거 주소
     
+    // /fast/api/ai/2/faqs -- add_faq
 	
 	/** 대기 후보 목록 조회 (오라클에서 직접) */
     public List<FaqCandidateDto> getPendingCandidates() {
@@ -94,22 +97,17 @@ public class FaqCandidateService {
         return Map.of("ok", true, "candidateNo", candidateNo);
     }
 
-    /** 파이썬 add_faq 호출. TODO: FastAPI 완성되면 진짜 호출로 교체. 지금은 가짜로 항상 성공 응답. */
+    /** 파이썬 add_faq 호출.*/
     private Map<String, Object> callAddFaq(String question, String answer) {
-        System.out.println("[가짜] add_faq 호출: " + question);
-        try {
-            Thread.sleep(6000);   // 파이썬이 일하는 척 (6초)
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        return Map.of("ok", true, "total_faqs", 35);
+        System.out.println("Fast API add_faq 호출: " + question);
+        
 
         // ── FastAPI 완성되면 위를 지우고 아래 살리기 ──
-        // return restClient.post()
-        //         .uri("/add-faq")
-        //         .body(Map.of("question", question, "answer", answer))
-        //         .retrieve()
-        //         .body(Map.class);
+        return restClient.post()
+                .uri("/fast/api/ai/2/faqs")
+                .body(Map.of("question", question, "answer", answer))
+                .retrieve()
+                .body(Map.class);
     }
     
     
