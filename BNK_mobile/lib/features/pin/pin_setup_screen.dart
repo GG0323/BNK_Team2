@@ -5,16 +5,13 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/secure_storage.dart';
 import '../home/home_screen.dart';
-import '../product_compare/product_join_intro_screen.dart';
 
 class PinSetupScreen extends StatefulWidget {
   final String memberName;
-  final int? redirectProductNo;
 
   const PinSetupScreen({
     super.key,
     required this.memberName,
-    this.redirectProductNo,
   });
 
   @override
@@ -27,8 +24,6 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
   bool _isConfirmStep = false;
 
   List<String> _keypadNumbers = [];
-
-  bool get _hasRedirect => widget.redirectProductNo != null;
 
   @override
   void initState() {
@@ -80,7 +75,20 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
       return;
     }
 
-    if (_firstPin != _currentPin) {
+    if (_firstPin == _currentPin) {
+      await SecureStorage.savePin(_currentPin);
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(
+            memberName: widget.memberName,
+          ),
+        ),
+      );
+    } else {
       setState(() {
         _firstPin = '';
         _currentPin = '';
@@ -95,34 +103,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
-      return;
     }
-
-    await SecureStorage.savePin(_currentPin);
-
-    if (!mounted) return;
-
-    if (_hasRedirect) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ProductJoinIntroScreen(
-            productNo: widget.redirectProductNo!,
-            enteredFromQr: true,
-          ),
-        ),
-      );
-      return;
-    }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => HomeScreen(
-          memberName: widget.memberName,
-        ),
-      ),
-    );
   }
 
   Widget _buildPinDots() {
@@ -196,13 +177,6 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
     );
   }
 
-  Widget _buildKeypadRow(List<String> numbers) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: numbers.map(_buildNumberButton).toList(),
-    );
-  }
-
   Widget _buildKeypad() {
     if (_keypadNumbers.length < 10) {
       return const SizedBox.shrink();
@@ -239,41 +213,10 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
     );
   }
 
-  Widget _buildRedirectGuide() {
-    if (!_hasRedirect) {
-      return const SizedBox.shrink();
-    }
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(top: 22),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F8),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.primaryRed),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(
-            Icons.qr_code_2_rounded,
-            color: AppColors.primaryRed,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'PIN 등록 후 선택하신 상품의 가입 안내 화면으로 이동합니다.',
-              style: const TextStyle(
-                fontSize: 13,
-                height: 1.5,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primaryRed,
-              ),
-            ),
-          ),
-        ],
-      ),
+  Widget _buildKeypadRow(List<String> numbers) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: numbers.map(_buildNumberButton).toList(),
     );
   }
 
@@ -285,9 +228,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
 
     final subtitle = _isConfirmStep
         ? '확인을 위해 한 번 더 입력해주세요'
-        : _hasRedirect
-            ? '상품 가입 안내를 계속 진행하기 위해 6자리 비밀번호를 등록해주세요'
-            : '앞으로 앱 로그인 시 사용할 6자리 비밀번호';
+        : '앞으로 앱 로그인 시 사용할 6자리 비밀번호';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -301,56 +242,123 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: 22,
+                    vertical: 20,
                   ),
                   decoration: BoxDecoration(
                     color: AppColors.cardBackground,
                     borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: AppColors.border),
                   ),
-                  child: Column(
+                  child: const Row(
                     children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          widget.memberName.isEmpty
-                              ? 'BNK'
-                              : '${widget.memberName}님',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.primaryRed,
-                          ),
+                      Text(
+                        'BNK',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primaryRed,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(width: 18),
                       Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
+                        '간편비밀번호 등록',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        subtitle,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                      _buildRedirectGuide(),
-                      const SizedBox(height: 32),
-                      _buildPinDots(),
-                      const SizedBox(height: 34),
-                      _buildKeypad(),
                     ],
                   ),
                 ),
+
+                const SizedBox(height: 28),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 34),
+
+                _buildPinDots(),
+
+                const SizedBox(height: 34),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Text(
+                    _isConfirmStep
+                        ? '등록 단계\n2차 입력 → 일치 여부 확인'
+                        : '등록 단계\n1차 입력 → 2차 재입력 확인',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.6,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                _buildKeypad(),
+
+                const SizedBox(height: 24),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF8EE),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: const Color(0xFFFFB75E),
+                    ),
+                  ),
+                  child: const Text(
+                    '얼굴인식 등록 안내\n얼굴인식은 별도 인증 파트와 연동 예정',
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: Color(0xFF8A5A13),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 18),
               ],
             ),
           ),
