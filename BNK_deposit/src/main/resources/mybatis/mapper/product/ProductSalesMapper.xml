@@ -79,6 +79,47 @@
         WHERE ROWNUM = 1
     </select>
 
+    <select id="findLatestByMemberAndProduct" resultType="com.example.bnk.dto.product.ProductJoinDraftDto">
+        SELECT *
+        FROM (
+            SELECT
+                s.SUBSCRIPTION_NO,
+                s.MEMBER_NO,
+                s.PRODUCT_NO,
+                s.ACCOUNT_NO,
+                s.JOIN_CHANNEL,
+                s.APPLIED_INTEREST_RATE,
+                s.SUBSCRIPTION_MONTHS,
+                s.SUBSCRIPTION_AMOUNT,
+                s.AUTO_TRANSFER_AMOUNT,
+                s.LINKED_ACCOUNT_ID,
+                s.SUBSCRIBED_AT,
+                s.MATURITY_DATE,
+                s.SUBSCRIPTION_STATUS,
+                s.REQUIRED_TERMS_AGREED,
+                s.OPTIONAL_TERMS_AGREED,
+                s.CREATED_AT,
+                s.UPDATED_AT,
+                p.PRODUCT_NAME,
+                p.PRODUCT_TYPE
+            FROM TB_PRODUCT_SALES s
+            JOIN TB_PRODUCT p ON s.PRODUCT_NO = p.PRODUCT_NO
+            WHERE s.MEMBER_NO = #{memberNo}
+              AND s.PRODUCT_NO = #{productNo}
+            ORDER BY
+                CASE s.SUBSCRIPTION_STATUS
+                    WHEN 'COMPLETE' THEN 1
+                    WHEN 'DRAFT' THEN 2
+                    WHEN 'EXPIRED' THEN 3
+                    ELSE 4
+                END,
+                s.UPDATED_AT DESC NULLS LAST,
+                s.CREATED_AT DESC NULLS LAST,
+                s.SUBSCRIPTION_NO DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+
     <select id="findBySubscriptionNo" resultType="com.example.bnk.dto.product.ProductJoinDraftDto">
         SELECT
             s.SUBSCRIPTION_NO,
@@ -111,7 +152,6 @@
             MEMBER_NO,
             PRODUCT_NO,
             JOIN_CHANNEL,
-            LINKED_ACCOUNT_ID,
             SUBSCRIPTION_STATUS,
             REQUIRED_TERMS_AGREED,
             OPTIONAL_TERMS_AGREED,
@@ -121,21 +161,32 @@
             #{memberNo},
             #{productNo},
             'MOBILE',
-            #{linkedAccountId, jdbcType=NUMERIC},
             'DRAFT',
-            0,
+            1,
             0,
             SYSDATE,
             SYSDATE
         )
     </insert>
 
-    <update id="updateDraftTerms">
+    <update id="updateDraftTermsAgreement">
         UPDATE TB_PRODUCT_SALES
-        SET SUBSCRIPTION_AMOUNT = #{subscriptionAmount},
-            SUBSCRIPTION_MONTHS = #{subscriptionMonths},
-            REQUIRED_TERMS_AGREED = #{requiredTermsAgreed},
+        SET REQUIRED_TERMS_AGREED = #{requiredTermsAgreed},
             OPTIONAL_TERMS_AGREED = #{optionalTermsAgreed},
+            UPDATED_AT = SYSDATE
+        WHERE MEMBER_NO = #{memberNo}
+          AND SUBSCRIPTION_NO = #{subscriptionNo}
+          AND SUBSCRIPTION_STATUS = 'DRAFT'
+    </update>
+
+    <update id="updateDraftContract">
+        UPDATE TB_PRODUCT_SALES
+        SET LINKED_ACCOUNT_ID = #{linkedAccountId},
+            SUBSCRIPTION_AMOUNT = #{subscriptionAmount},
+            SUBSCRIPTION_MONTHS = #{subscriptionMonths},
+            AUTO_TRANSFER_AMOUNT = #{autoTransferAmount},
+            APPLIED_INTEREST_RATE = #{appliedInterestRate},
+            MATURITY_DATE = ADD_MONTHS(SYSDATE, #{subscriptionMonths}),
             UPDATED_AT = SYSDATE
         WHERE MEMBER_NO = #{memberNo}
           AND SUBSCRIPTION_NO = #{subscriptionNo}

@@ -1,11 +1,18 @@
 package com.example.bnk.service.member;
 
+import java.nio.file.Path;
+import java.util.List;
+
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -75,5 +82,33 @@ public class EmailService {
         message.setText(msg);
 
         mailSender.send(message);
+    }
+
+    public void sendProductTermsPdfs(String toEmail, String productName, List<Path> pdfFiles) {
+        if (toEmail == null || toEmail.isBlank() || pdfFiles == null || pdfFiles.isEmpty()) {
+            return;
+        }
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject("[BNK] 상품 가입 약관 안내");
+            helper.setText(
+                    "BNK 상품 가입이 완료되었습니다.\n\n"
+                    + "상품명: " + productName + "\n\n"
+                    + "가입하신 상품의 약관 PDF를 첨부합니다."
+            );
+
+            for (Path pdfFile : pdfFiles) {
+                helper.addAttachment(pdfFile.getFileName().toString(), new FileSystemResource(pdfFile));
+            }
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new IllegalStateException("상품 약관 메일을 생성할 수 없습니다.", e);
+        }
     }
 }

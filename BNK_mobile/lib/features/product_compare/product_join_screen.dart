@@ -1,164 +1,78 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../data/models/account_model.dart';
 import '../../data/models/product_join_status_model.dart';
 import '../../data/models/product_model.dart';
-import '../../data/services/api_client.dart';
+import '../../data/models/product_terms_images_model.dart';
 import '../../data/services/product_join_api.dart';
+import '../account/account_list_screen.dart';
 import '../account_opening/account_opening_screen.dart';
+import 'product_list_screen.dart';
 
 class ProductJoinScreen extends StatefulWidget {
-  final ProductModel? product;
-  final ProductModel? resumeProduct;
-  final bool accountOpeningOnly;
+  final ProductModel product;
 
-  const ProductJoinScreen({
-    super.key,
-    required this.product,
-  })  : resumeProduct = null,
-        accountOpeningOnly = false;
-
-  const ProductJoinScreen.accountOpening({
-    super.key,
-    this.resumeProduct,
-  })  : product = null,
-        accountOpeningOnly = true;
+  const ProductJoinScreen({super.key, required this.product});
 
   @override
   State<ProductJoinScreen> createState() => _ProductJoinScreenState();
 }
 
 class _ProductJoinScreenState extends State<ProductJoinScreen> {
-  final ProductJoinApi _api = ProductJoinApi();
+  final ProductJoinApi _joinApi = ProductJoinApi();
   final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _monthsController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _frontAnswerController = TextEditingController();
+  final TextEditingController _backAnswerController = TextEditingController();
 
   ProductJoinStatusModel? _status;
-  bool _requiredTermsAgreed = false;
-  bool _optionalTermsAgreed = false;
-  bool _loading = true;
-  String _accountPurpose = 'ETC';
+  ProductTermsImagesModel? _termsImages;
+  List<AccountModel> _accounts = [];
+  Map<String, dynamic>? _challenge;
+  final Set<int> _agreedTermIndexes = {};
 
-  static const List<Map<String, String>> _purposes = [
-    {'label': '급여 수령', 'code': 'SALARY'},
-    {'label': '아르바이트 급여', 'code': 'PART_TIME_SALARY'},
-    {'label': '연금 수령', 'code': 'PENSION'},
-    {'label': '사업용 계좌', 'code': 'BUSINESS'},
-    {'label': '모임 계좌', 'code': 'GROUP'},
-    {'label': '공과금 납부', 'code': 'UTILITY_PAYMENT'},
-    {'label': '생활비 관리', 'code': 'LIVING_EXPENSE'},
-    {'label': '기타', 'code': 'ETC'},
-  ];
+  int? _selectedAccountNo;
+  int? _selectedMonths;
+  bool _loading = true;
+  bool _reviewingContract = false;
+  bool _securityStep = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.accountOpeningOnly) {
-      _loading = false;
-    } else {
-      _start();
-    }
+    _load();
   }
 
   @override
   void dispose() {
     _amountController.dispose();
-    _monthsController.dispose();
+    _passwordController.dispose();
+    _frontAnswerController.dispose();
+    _backAnswerController.dispose();
     super.dispose();
   }
 
-  Future<void> _start() async {
-    final product = widget.product;
-    if (product == null) return;
-
+  Future<void> _load() async {
     await _run(() async {
-      _applyStatus(await _api.start(product.productNo));
-    });
-  }
+      final status = await _joinApi.start(widget.product.productNo);
+      final accounts = await _joinApi.withdrawalAccounts();
+      ProductTermsImagesModel? termsImages;
 
-  Future<void> _saveTerms() async {
-    final status = _status;
-    final subscriptionNo = status?.subscriptionNo;
-
-    if (status == null || subscriptionNo == null) return;
-
-    final amount = int.tryParse(_amountController.text.trim());
-    final months = int.tryParse(_monthsController.text.trim());
-
-    if (amount == null || months == null) {
-      _showMessage('가입 금액과 기간을 숫자로 입력해 주세요.');
-      return;
-    }
-
-    if (!_requiredTermsAgreed) {
-      _showMessage('필수 약관에 동의해 주세요.');
-      return;
-    }
-
-    await _run(() async {
-      _applyStatus(await _api.saveTerms(
-        subscriptionNo: subscriptionNo,
-        subscriptionAmount: amount,
-        subscriptionMonths: months,
-        requiredTermsAgreed: _requiredTermsAgreed,
-        optionalTermsAgreed: _optionalTermsAgreed,
-      ));
-    });
-  }
-
-  Future<void> _complete() async {
-    final subscriptionNo = _status?.subscriptionNo;
-    if (subscriptionNo == null) return;
-
-    await _run(() async {
-      _applyStatus(await _api.complete(
-        subscriptionNo: subscriptionNo,
-        accountPurpose: _accountPurpose,
-      ));
-    });
-  }
-
-  Future<void> _openDemandDepositAccount() async {
-    await _run(() async {
-      final response = await ApiClient.instance.post(
-        '/api/member/accounts/open',
-        body: {'accountPurpose': _accountPurpose},
-        useAuthCookie: true,
-      );
-
-      if (response['success'] != true) {
-        throw Exception(response['message'] ?? '계좌 개설에 실패했습니다.');
+      if (status.currentStep == 'TERMS') {
+        termsImages = await _joinApi.termsPdf(widget.product.productNo);
       }
 
       if (!mounted) return;
 
-      final resumeProduct = widget.resumeProduct;
-      if (resumeProduct != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => ProductJoinScreen(product: resumeProduct),
-          ),
-        );
-      } else {
-        Navigator.of(context).pop(true);
-      }
-    });
-  }
-
-  Future<void> _cancelAccountOpening() async {
-    await _run(() async {
-      final response = await ApiClient.instance.delete(
-        '/api/member/accounts/open',
-        useAuthCookie: true,
-      );
-
-      if (response['success'] != true) {
-        throw Exception(response['message'] ?? '계좌 개설 취소에 실패했습니다.');
-      }
-
-      if (mounted) {
-        Navigator.of(context).pop(false);
-      }
+      setState(() {
+        _accounts = accounts.where(_isWithdrawableAccount).toList();
+        _termsImages = termsImages;
+        _applyStatus(status);
+      });
     });
   }
 
@@ -175,15 +89,135 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
 
   void _applyStatus(ProductJoinStatusModel status) {
     _status = status;
-    _requiredTermsAgreed = status.requiredTermsDone;
-    _optionalTermsAgreed = status.optionalTermsDone;
 
-    _amountController.text = (status.subscriptionAmount ??
-            (status.minJoinAmount > 0 ? status.minJoinAmount : 0))
-        .toString();
-    _monthsController.text = (status.subscriptionMonths ??
-            (status.minTermMonths > 0 ? status.minTermMonths : 1))
-        .toString();
+    if (status.subscriptionAmount != null) {
+      _amountController.text = status.subscriptionAmount.toString();
+    } else {
+      _amountController.clear();
+    }
+
+    final monthOptions = _monthOptions(status);
+    _selectedMonths = monthOptions.contains(status.subscriptionMonths)
+        ? status.subscriptionMonths
+        : null;
+
+    _selectedAccountNo =
+        _accounts.any((account) => account.accountNo == status.linkedAccountId)
+        ? status.linkedAccountId
+        : null;
+
+    _reviewingContract = status.currentStep == 'CONTRACT_CONFIRM';
+    _securityStep = false;
+  }
+
+  Future<void> _agreeTerms() async {
+    final terms = _termsImages?.terms ?? [];
+
+    if (terms.isEmpty) {
+      _showMessage('확인할 약관 PDF가 없습니다.');
+      return;
+    }
+
+    if (_agreedTermIndexes.length != terms.length) {
+      _showMessage('모든 약관을 마지막 페이지까지 확인하고 동의해주세요.');
+      return;
+    }
+
+    await _run(() async {
+      final status = await _joinApi.agreeTerms(
+        productNo: widget.product.productNo,
+        requiredTermsAgreed: true,
+        optionalTermsAgreed: false,
+      );
+
+      if (!mounted) return;
+      setState(() => _applyStatus(status));
+    });
+  }
+
+  void _goToContractReview() {
+    final validationMessage = _contractInputValidationMessage();
+
+    if (validationMessage != null) {
+      _showMessage(validationMessage);
+      return;
+    }
+
+    setState(() => _reviewingContract = true);
+  }
+
+  Future<void> _confirmContract() async {
+    final subscriptionNo = _status?.subscriptionNo;
+    final amount = _enteredAmount;
+
+    if (subscriptionNo == null ||
+        _contractInputValidationMessage() != null ||
+        amount == null) {
+      _showMessage('계약내용을 확인할 수 없습니다.');
+      return;
+    }
+
+    await _run(() async {
+      final status = await _joinApi.confirmContract(
+        subscriptionNo: subscriptionNo,
+        linkedAccountNo: _selectedAccountNo!,
+        subscriptionAmount: amount,
+        subscriptionMonths: _selectedMonths!,
+      );
+      final challenge = await _joinApi.securityChallenge();
+
+      if (!mounted) return;
+      setState(() {
+        _applyStatus(status);
+        _reviewingContract = false;
+        _securityStep = true;
+        _challenge = challenge;
+      });
+    });
+  }
+
+  Future<void> _completeJoin() async {
+    final subscriptionNo = _status?.subscriptionNo;
+    final challenge = _challenge;
+
+    if (subscriptionNo == null || challenge == null) {
+      _showMessage('보안카드 인증 정보를 확인할 수 없습니다.');
+      return;
+    }
+
+    final productAccountPassword = _passwordController.text.trim();
+
+    if (!RegExp(r'^\d{4}$').hasMatch(productAccountPassword)) {
+      _showMessage('계좌 비밀번호는 숫자 4자리로 입력해주세요.');
+      return;
+    }
+
+    if (mounted) setState(() => _loading = true);
+    try {
+      final status = await _joinApi.complete(
+        subscriptionNo: subscriptionNo,
+        accountPassword: productAccountPassword,
+        frontIndex: _toInt(challenge['frontIndex']),
+        backIndex: _toInt(challenge['backIndex']),
+        frontAnswer: _frontAnswerController.text.trim(),
+        backAnswer: _backAnswerController.text.trim(),
+      );
+
+      if (!mounted) return;
+      setState(() {
+        _applyStatus(status);
+        _securityStep = false;
+      });
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const ProductListScreen()),
+        (route) => false,
+      );
+    } catch (error) {
+      _showMessage(error.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   void _showMessage(String message) {
@@ -193,77 +227,82 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    final product = widget.product;
-    final title = widget.accountOpeningOnly
-        ? '입출금 계좌 개설하기'
-        : product?.productName ?? '상품 가입';
-    final message = widget.accountOpeningOnly
-        ? '상품 가입 전 입출금 계좌를 먼저 개설합니다.'
-        : _status?.message ?? '상품 가입 정보를 준비 중입니다.';
+  Future<void> _openTermsViewer() async {
+    final terms = _termsImages?.terms ?? [];
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 21,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            message,
-            style: const TextStyle(
-              fontSize: 14,
-              height: 1.45,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
+    if (terms.isEmpty) {
+      _showMessage('확인할 약관 PDF가 없습니다.');
+      return;
+    }
+
+    final result = await Navigator.of(context).push<Set<int>>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => _ProductTermsViewer(
+          terms: terms,
+          initialAgreedTermIndexes: _agreedTermIndexes,
+        ),
       ),
     );
+
+    if (!mounted || result == null) return;
+
+    setState(() {
+      _agreedTermIndexes
+        ..clear()
+        ..addAll(result);
+    });
   }
 
-  Widget _buildAccountRequired() {
-    return _buildSection(
+  Widget _buildCurrentStep() {
+    final status = _status;
+
+    if (status == null) {
+      return const SizedBox.shrink();
+    }
+
+    if (status.accountRequired) {
+      return _accountRequiredStep();
+    }
+
+    if (status.complete) {
+      return _completeStep();
+    }
+
+    if (status.currentStep == 'EXPIRED') {
+      return _messageStep('만기 또는 해지된 가입 이력이 있습니다.');
+    }
+
+    if (_securityStep) {
+      return _securityStepView();
+    }
+
+    if (status.currentStep == 'TERMS') {
+      return _termsStep();
+    }
+
+    if (_reviewingContract) {
+      return _contractReviewStep();
+    }
+
+    return _contractInputStep();
+  }
+
+  Widget _accountRequiredStep() {
+    return _section(
       title: '입출금 계좌 필요',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '상품 가입 전 입출금 계좌 개설이 필요합니다.',
-            style: TextStyle(
-              fontSize: 14,
-              height: 1.5,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-            ),
-          ),
+          const Text('상품 가입을 위해서는 입출금 계좌 개설이 먼저 필요합니다.'),
           const SizedBox(height: 14),
           _primaryButton(
-            label: '입출금 계좌 개설하기',
+            label: '계좌 개설하기',
             onPressed: () async {
               await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const AccountOpeningScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const AccountOpeningScreen()),
               );
-
-              if (mounted) {
-                _start();
-              }
+              if (mounted) _load();
             },
           ),
         ],
@@ -271,133 +310,316 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
     );
   }
 
-  Widget _buildAccountOpeningForm() {
+  Widget _termsStep() {
+    final terms = _termsImages?.terms ?? [];
+
+    if (terms.isEmpty) {
+      return _section(
+        title: '약관 확인',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('조회된 약관 PDF가 없습니다. 상품 약관 파일을 확인해주세요.'),
+            const SizedBox(height: 14),
+            _primaryButton(label: '다시 조회', onPressed: _load),
+          ],
+        ),
+      );
+    }
+
+    final allAgreed = _agreedTermIndexes.length == terms.length;
+
     return Column(
       children: [
-        _buildHeader(),
-        _buildSection(
-          title: '계좌 사용 목적',
+        _section(
+          title: '약관 목록',
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _purposeDropdown(enabled: true),
-              const SizedBox(height: 14),
-              _primaryButton(
-                label: '입출금 계좌 개설하기',
-                onPressed: _openDemandDepositAccount,
+              Text(
+                '전체 약관을 순서대로 확인하고 약관별로 동의해주세요.',
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w700,
+                  height: 1.4,
+                ),
               ),
               const SizedBox(height: 10),
-              SizedBox(
+              ...List.generate(terms.length, (index) {
+                final agreed = _agreedTermIndexes.contains(index);
+                return _termListTile(
+                  title: terms[index].termsTitle,
+                  agreed: agreed,
+                  onTap: _openTermsViewer,
+                );
+              }),
+              const SizedBox(height: 12),
+              Container(
                 width: double.infinity,
-                height: 46,
-                child: OutlinedButton(
-                  onPressed: _loading ? null : _cancelAccountOpening,
-                  child: const Text('취소'),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.inputBackground,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: const Text(
+                  '고객 확인 사항\n상품설명서와 약관의 주요 내용을 확인하고 이해한 뒤 다음 단계로 진행해주세요.',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w700,
+                    height: 1.45,
+                  ),
                 ),
               ),
             ],
           ),
         ),
+        _primaryButton(label: '다음', onPressed: allAgreed ? _agreeTerms : null),
       ],
     );
   }
 
-  Widget _buildForm(ProductJoinStatusModel status) {
-    final amountGuide = status.maxJoinAmount > 0
-        ? '${_formatMoney(status.minJoinAmount)} ~ ${_formatMoney(status.maxJoinAmount)}'
-        : '${_formatMoney(status.minJoinAmount)} 이상';
-
-    return Column(
-      children: [
-        _buildSection(
-          title: '가입 조건',
-          child: Column(
-            children: [
-              _numberField(
-                controller: _amountController,
-                label: '가입 금액',
-                helperText: amountGuide,
-              ),
-              const SizedBox(height: 12),
-              _numberField(
-                controller: _monthsController,
-                label: '가입 기간',
-                helperText: '${status.minTermMonths} ~ ${status.maxTermMonths}',
-              ),
-            ],
-          ),
-        ),
-        _buildSection(
-          title: '약관 동의',
-          child: Column(
-            children: [
-              CheckboxListTile(
-                value: _requiredTermsAgreed,
-                onChanged: status.complete
-                    ? null
-                    : (value) => setState(
-                          () => _requiredTermsAgreed = value ?? false,
-                        ),
-                title: const Text('필수 약관에 동의합니다'),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-              ),
-              CheckboxListTile(
-                value: _optionalTermsAgreed,
-                onChanged: status.complete
-                    ? null
-                    : (value) => setState(
-                          () => _optionalTermsAgreed = value ?? false,
-                        ),
-                title: const Text('선택 약관에 동의합니다'),
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-              ),
-              _primaryButton(
-                label: '가입 조건 저장',
-                onPressed: status.complete ? null : _saveTerms,
-              ),
-            ],
-          ),
-        ),
-        _buildSection(
-          title: '상품 계좌 사용 목적',
-          child: Column(
-            children: [
-              _purposeDropdown(enabled: !status.complete),
-              const SizedBox(height: 14),
-              _primaryButton(
-                label: status.complete ? '가입 완료' : '상품 가입 완료',
-                onPressed: status.readyToComplete ? _complete : null,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _purposeDropdown({required bool enabled}) {
-    return DropdownButtonFormField<String>(
-      initialValue: _accountPurpose,
-      items: _purposes
-          .map(
-            (purpose) => DropdownMenuItem(
-              value: purpose['code'],
-              child: Text(purpose['label']!),
+  Widget _termListTile({
+    required String title,
+    required bool agreed,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 7),
+        child: Row(
+          children: [
+            Icon(
+              agreed ? Icons.check_circle : Icons.radio_button_unchecked,
+              color: agreed ? AppColors.primaryRed : AppColors.textSecondary,
+              size: 22,
             ),
-          )
-          .toList(),
-      onChanged: enabled
-          ? (value) => setState(() => _accountPurpose = value ?? 'ETC')
-          : null,
-      decoration: _inputDecoration('사용 목적'),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                '$title 동의',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildSection({required String title, required Widget child}) {
+  Widget _contractInputStep() {
+    final status = _status!;
+    final selectedAccount = _selectedAccount();
+    final validationMessage = _contractInputValidationMessage(
+      showRequired: false,
+    );
+    return _section(
+      title: '가입조건 입력',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownButtonFormField<int>(
+            initialValue: _selectedAccountNo,
+            hint: const Text('출금계좌를 선택해주세요'),
+            items: _accounts
+                .map(
+                  (account) => DropdownMenuItem(
+                    value: account.accountNo,
+                    child: Text(
+                      '${account.accountNumber} (${_formatMoney(account.balance)}원)',
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) => setState(() => _selectedAccountNo = value),
+            decoration: _inputDecoration('출금계좌'),
+          ),
+          if (selectedAccount != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              '출금가능금액 ${_formatMoney(selectedAccount.balance)}원',
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          DropdownButtonFormField<int>(
+            initialValue: _selectedMonths,
+            hint: const Text('가입기간을 선택해주세요'),
+            items: _monthOptions(status)
+                .map(
+                  (month) =>
+                      DropdownMenuItem(value: month, child: Text('$month개월')),
+                )
+                .toList(),
+            onChanged: (value) => setState(() => _selectedMonths = value),
+            decoration: _inputDecoration('가입기간'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _amountController,
+            keyboardType: TextInputType.number,
+            onChanged: (_) => setState(() {}),
+            decoration: _inputDecoration('가입금액').copyWith(
+              hintText: '가입금액을 입력해주세요',
+              helperText: _amountGuide(status),
+            ),
+          ),
+          if (validationMessage != null) ...[
+            const SizedBox(height: 10),
+            Text(
+              validationMessage,
+              style: const TextStyle(
+                color: AppColors.primaryRed,
+                fontWeight: FontWeight.w800,
+                height: 1.35,
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          _primaryButton(
+            label: '계약내용 확인',
+            onPressed: _canReviewContract ? _goToContractReview : null,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _contractReviewStep() {
+    final status = _status!;
+    final account = _selectedAccount();
+    final amount = _enteredAmount ?? 0;
+    final appliedRate =
+        status.appliedInterestRate ?? widget.product.minInterestRate;
+    final maturityDate = status.maturityDate ?? '계약 확인 후 산출';
+
+    return _section(
+      title: '계약내용 확인',
+      child: Column(
+        children: [
+          _infoRow('상품명', status.productName),
+          _infoRow('출금계좌번호', account?.accountNumber ?? '-'),
+          _infoRow('만기입금계좌번호', account?.accountNumber ?? '-'),
+          _infoRow('가입기간', '${_selectedMonths ?? '-'}개월'),
+          _infoRow('가입금액', '${_formatMoney(amount)}원'),
+          _infoRow('자동이체금액', '${_formatMoney(amount)}원'),
+          _infoRow('적용금리', '${appliedRate.toStringAsFixed(2)}%'),
+          _infoRow('만기일', maturityDate),
+          _infoRow('약관동의', status.requiredTermsDone ? '동의' : '미동의'),
+          const SizedBox(height: 16),
+          _primaryButton(label: '확인', onPressed: _confirmContract),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            height: 46,
+            child: OutlinedButton(
+              onPressed: () => setState(() => _reviewingContract = false),
+              child: const Text('수정하기'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _securityStepView() {
+    final challenge = _challenge ?? {};
+    final canComplete =
+        RegExp(r'^\d{4}$').hasMatch(_passwordController.text) &&
+        _frontAnswerController.text.trim().isNotEmpty &&
+        _backAnswerController.text.trim().isNotEmpty;
+
+    return _section(
+      title: '상품계좌 비밀번호 및 보안카드 인증',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: _passwordController,
+            keyboardType: TextInputType.number,
+            obscureText: true,
+            maxLength: 4,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(4),
+            ],
+            onChanged: (_) => setState(() {}),
+            decoration: _inputDecoration(
+              '상품계좌 비밀번호',
+            ).copyWith(helperText: '숫자 4자리를 입력해주세요.', counterText: ''),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            (challenge['message'] ?? '').toString(),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _frontAnswerController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => setState(() {}),
+            decoration: _inputDecoration('${challenge['frontIndex']}번 앞자리'),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _backAnswerController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => setState(() {}),
+            decoration: _inputDecoration('${challenge['backIndex']}번 뒷자리'),
+          ),
+          const SizedBox(height: 16),
+          _primaryButton(
+            label: '가입 완료',
+            onPressed: canComplete ? _completeJoin : null,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _completeStep() {
+    return _section(
+      title: '가입 완료',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('상품 가입이 완료되었습니다. 약관 PDF는 등록된 이메일로 발송됩니다.'),
+          const SizedBox(height: 14),
+          _primaryButton(
+            label: '보유 계좌 보기',
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const AccountListScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _messageStep(String message) {
+    return _section(title: '안내', child: Text(message));
+  }
+
+  Widget _section({required String title, required Widget child}) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 14),
+      margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
@@ -410,7 +632,7 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
           Text(
             title,
             style: const TextStyle(
-              fontSize: 17,
+              fontSize: 18,
               fontWeight: FontWeight.w900,
               color: AppColors.textPrimary,
             ),
@@ -422,26 +644,28 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
     );
   }
 
-  Widget _numberField({
-    required TextEditingController controller,
-    required String label,
-    required String helperText,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      decoration: _inputDecoration(label).copyWith(helperText: helperText),
-    );
-  }
-
-  InputDecoration _inputDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: AppColors.inputBackground,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.border),
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 112,
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -452,7 +676,7 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
   }) {
     return SizedBox(
       width: double.infinity,
-      height: 48,
+      height: 50,
       child: ElevatedButton(
         onPressed: _loading ? null : onPressed,
         style: ElevatedButton.styleFrom(
@@ -468,42 +692,136 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
     );
   }
 
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: AppColors.inputBackground,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.border),
+      ),
+    );
+  }
+
+  List<int> _monthOptions(ProductJoinStatusModel status) {
+    final min = status.minTermMonths <= 0 ? 1 : status.minTermMonths;
+    final max = status.maxTermMonths < min ? min : status.maxTermMonths;
+    return List<int>.generate(max - min + 1, (index) => min + index);
+  }
+
+  AccountModel? _selectedAccount() {
+    for (final account in _accounts) {
+      if (account.accountNo == _selectedAccountNo) {
+        return account;
+      }
+    }
+    return null;
+  }
+
+  bool _isWithdrawableAccount(AccountModel account) {
+    final purpose = account.accountPurpose?.toUpperCase();
+    return account.accountStatus == 'ACTIVE' &&
+        purpose != 'DEPOSIT' &&
+        purpose != 'SAVINGS';
+  }
+
+  bool get _canReviewContract => _contractInputValidationMessage() == null;
+
+  int? get _enteredAmount {
+    final digitsOnly = _amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    return int.tryParse(digitsOnly);
+  }
+
+  String? _contractInputValidationMessage({bool showRequired = true}) {
+    final status = _status;
+    final amount = _enteredAmount;
+    final selectedAccount = _selectedAccount();
+
+    if (_selectedAccountNo == null || selectedAccount == null) {
+      return showRequired ? '출금계좌를 선택해주세요.' : null;
+    }
+
+    if (_selectedMonths == null) {
+      return showRequired ? '가입기간을 선택해주세요.' : null;
+    }
+
+    if (amount == null || amount <= 0) {
+      return showRequired ? '가입금액을 입력해주세요.' : null;
+    }
+
+    if (status != null) {
+      if (amount < status.minJoinAmount) {
+        return '최소 가입금액은 ${_formatMoney(status.minJoinAmount)}원입니다.';
+      }
+
+      if (status.maxJoinAmount > 0 && amount > status.maxJoinAmount) {
+        return '최대 가입금액은 ${_formatMoney(status.maxJoinAmount)}원입니다.';
+      }
+
+      if (status.depositUnit > 0 && amount % status.depositUnit != 0) {
+        return '가입금액은 ${_formatMoney(status.depositUnit)}원 단위로 입력해주세요.';
+      }
+    }
+
+    if (amount > selectedAccount.balance) {
+      return '출금 가능 금액이 부족합니다.\n가입금액을 줄이거나 다른 출금계좌를 선택해주세요.';
+    }
+
+    return null;
+  }
+
+  String _amountGuide(ProductJoinStatusModel status) {
+    final min = _formatMoney(status.minJoinAmount);
+    if (status.maxJoinAmount > 0) {
+      return '$min원 ~ ${_formatMoney(status.maxJoinAmount)}원';
+    }
+    return '$min원 이상';
+  }
+
   String _formatMoney(int value) {
     return value.toString().replaceAllMapped(
-          RegExp(r'\B(?=(\d{3})+(?!\d))'),
-          (_) => ',',
-        );
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (_) => ',',
+    );
+  }
+
+  int _toInt(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    return int.tryParse((value ?? '0').toString()) ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
-    final status = _status;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
-        title: Text(
-          widget.accountOpeningOnly ? '계좌 개설' : '상품 가입',
-          style: const TextStyle(fontWeight: FontWeight.w900),
+        title: const Text(
+          '상품 가입',
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
       body: Stack(
         children: [
           ListView(
-            padding: const EdgeInsets.fromLTRB(18, 14, 18, 24),
+            padding: const EdgeInsets.fromLTRB(18, 14, 18, 28),
             children: [
-              if (widget.accountOpeningOnly)
-                _buildAccountOpeningForm()
-              else ...[
-                _buildHeader(),
-                if (status != null && status.accountRequired)
-                  _buildAccountRequired()
-                else if (status != null)
-                  _buildForm(status),
-              ],
+              _section(
+                title: widget.product.productName,
+                child: Text(
+                  _status?.message ?? '상품 가입 정보를 확인하고 있습니다.',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w700,
+                    height: 1.45,
+                  ),
+                ),
+              ),
+              _buildCurrentStep(),
             ],
           ),
           if (_loading)
@@ -511,6 +829,298 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
               color: Colors.black.withValues(alpha: 0.08),
               child: const Center(child: CircularProgressIndicator()),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProductTermsViewer extends StatefulWidget {
+  final List<ProductTermsFileModel> terms;
+  final Set<int> initialAgreedTermIndexes;
+
+  const _ProductTermsViewer({
+    required this.terms,
+    required this.initialAgreedTermIndexes,
+  });
+
+  @override
+  State<_ProductTermsViewer> createState() => _ProductTermsViewerState();
+}
+
+class _ProductTermsViewerState extends State<_ProductTermsViewer> {
+  late final ScrollController _scrollController;
+  late final List<GlobalKey> _termStartKeys;
+  late final List<GlobalKey> _termEndKeys;
+  late final List<List<GlobalKey>> _pageKeys;
+  late final Set<int> _agreedTermIndexes;
+
+  int _currentTermIndex = 0;
+  int _currentPageIndex = 0;
+  bool _currentTermReachedEnd = false;
+
+  bool get _allAgreed => _agreedTermIndexes.length == widget.terms.length;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_syncReachedEnd);
+    _termStartKeys = List.generate(widget.terms.length, (_) => GlobalKey());
+    _termEndKeys = List.generate(widget.terms.length, (_) => GlobalKey());
+    _pageKeys = widget.terms
+        .map((term) => List.generate(term.pages.length, (_) => GlobalKey()))
+        .toList();
+    _agreedTermIndexes = Set<int>.from(widget.initialAgreedTermIndexes);
+    _currentTermIndex = _firstNotAgreedIndex();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _scrollToTermStart(_currentTermIndex, animate: false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_syncReachedEnd);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  int _firstNotAgreedIndex() {
+    for (var i = 0; i < widget.terms.length; i++) {
+      if (!_agreedTermIndexes.contains(i)) return i;
+    }
+    return widget.terms.isEmpty ? 0 : widget.terms.length - 1;
+  }
+
+  void _syncReachedEnd() {
+    if (!mounted || _allAgreed || _currentTermReachedEnd) return;
+
+    final context = _termEndKeys[_currentTermIndex].currentContext;
+    if (context == null) return;
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.attached) return;
+
+    final viewportBottom = MediaQuery.of(context).size.height - 96;
+    final endY = renderBox.localToGlobal(Offset.zero).dy;
+
+    if (endY <= viewportBottom) {
+      setState(() => _currentTermReachedEnd = true);
+    }
+  }
+
+  Future<void> _scrollToTermStart(int index, {bool animate = true}) async {
+    final context = _termStartKeys[index].currentContext;
+    if (context == null) return;
+
+    if (animate) {
+      await Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+        alignment: 0,
+      );
+    } else {
+      Scrollable.ensureVisible(context, duration: Duration.zero, alignment: 0);
+    }
+  }
+
+  Future<void> _scrollWithinCurrentTerm() async {
+    final pages = widget.terms[_currentTermIndex].pages;
+
+    if (_currentPageIndex < pages.length - 1) {
+      _currentPageIndex += 1;
+      final context =
+          _pageKeys[_currentTermIndex][_currentPageIndex].currentContext;
+
+      if (context != null) {
+        await Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 360),
+          curve: Curves.easeOutCubic,
+          alignment: 0.02,
+        );
+      }
+
+      return;
+    }
+
+    final context = _termEndKeys[_currentTermIndex].currentContext;
+    if (context == null) return;
+
+    await Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 420),
+      curve: Curves.easeOutCubic,
+      alignment: 0.88,
+    );
+
+    if (mounted) setState(() => _currentTermReachedEnd = true);
+  }
+
+  Future<void> _agreeCurrentTerm() async {
+    setState(() => _agreedTermIndexes.add(_currentTermIndex));
+
+    if (_currentTermIndex >= widget.terms.length - 1) {
+      Navigator.of(context).pop(Set<int>.from(_agreedTermIndexes));
+      return;
+    }
+
+    setState(() {
+      _currentTermIndex += 1;
+      _currentPageIndex = 0;
+      _currentTermReachedEnd = false;
+    });
+
+    await _scrollToTermStart(_currentTermIndex);
+  }
+
+  Future<void> _handleBottomButton() async {
+    if (_allAgreed) {
+      Navigator.of(context).pop(Set<int>.from(_agreedTermIndexes));
+      return;
+    }
+
+    if (_currentTermReachedEnd) {
+      await _agreeCurrentTerm();
+      return;
+    }
+
+    await _scrollWithinCurrentTerm();
+  }
+
+  String get _bottomButtonLabel {
+    if (_allAgreed) return '닫기';
+    return _currentTermReachedEnd ? '동의하기' : '아래로 스크롤';
+  }
+
+  String get _currentProgressText {
+    if (widget.terms.isEmpty) return '';
+    final title = widget.terms[_currentTermIndex].termsTitle;
+    return '$title 확인 중 (${_currentTermIndex + 1}/${widget.terms.length})';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        foregroundColor: AppColors.textPrimary,
+        title: const Text(
+          '약관·동의서 보기',
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () =>
+              Navigator.of(context).pop(Set<int>.from(_agreedTermIndexes)),
+        ),
+      ),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
+            child: Text(
+              _currentProgressText,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+              itemCount: widget.terms.length,
+              itemBuilder: (context, index) => _termSection(index),
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(18, 12, 18, 14),
+              decoration: const BoxDecoration(
+                color: AppColors.background,
+                border: Border(top: BorderSide(color: AppColors.border)),
+              ),
+              child: SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _handleBottomButton,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryRed,
+                    foregroundColor: AppColors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    _bottomButtonLabel,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _termSection(int index) {
+    final term = widget.terms[index];
+    final agreed = _agreedTermIndexes.contains(index);
+
+    return Container(
+      key: _termStartKeys[index],
+      margin: EdgeInsets.only(
+        bottom: index == widget.terms.length - 1 ? 0 : 22,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (index > 0) const Divider(height: 28, color: AppColors.border),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  term.termsTitle,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              Icon(
+                agreed ? Icons.check_circle : Icons.radio_button_unchecked,
+                color: agreed ? AppColors.primaryRed : AppColors.textSecondary,
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...List.generate(term.pages.length, (pageIndex) {
+            final page = term.pages[pageIndex];
+            return Padding(
+              key: _pageKeys[index][pageIndex],
+              padding: const EdgeInsets.only(bottom: 12),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.memory(
+                  base64Decode(page.imageBase64),
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            );
+          }),
+          SizedBox(key: _termEndKeys[index], height: 1),
         ],
       ),
     );

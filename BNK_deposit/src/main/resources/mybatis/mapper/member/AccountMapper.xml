@@ -41,6 +41,33 @@
 	    WHERE ACCOUNT_NO = #{accountNo}
 	      AND ACCOUNT_STATUS != 'CLOSED'
 	</select>
+
+	<select id="findAccountByAccountNoAndMemberNo" resultType="com.example.bnk.dto.member.AccountDto">
+	    SELECT
+	        ACCOUNT_NO AS account_no,
+	        MEMBER_NO AS member_no,
+	        ACCOUNT_NUMBER AS account_number,
+	        ACCOUNT_ALIAS AS account_alias,
+	        BALANCE AS balance,
+	        ACCOUNT_STATUS AS account_status,
+	        ACCOUNT_PURPOSE AS account_purpose,
+	        OPENED_AT AS opened_at,
+	        CLOSED_AT AS closed_at,
+	        UPDATED_AT AS updated_at
+	    FROM tb_account
+	    WHERE ACCOUNT_NO = #{accountNo}
+	      AND MEMBER_NO = #{memberNo}
+	      AND ACCOUNT_STATUS = 'ACTIVE'
+	      AND (ACCOUNT_PURPOSE IS NULL OR ACCOUNT_PURPOSE NOT IN ('DEPOSIT', 'SAVINGS'))
+	</select>
+
+	<select id="findAccountPasswordByAccountNoAndMemberNo" resultType="string">
+	    SELECT ACCOUNT_PASSWORD
+	    FROM TB_ACCOUNT
+	    WHERE ACCOUNT_NO = #{accountNo}
+	      AND MEMBER_NO = #{memberNo}
+	      AND ACCOUNT_STATUS = 'ACTIVE'
+	</select>
     
     <!-- 주계좌 -->
     <select id="findUsersAccount" resultType="com.example.bnk.dto.member.AccountDto">
@@ -62,6 +89,26 @@
 		FROM TB_ACCOUNT
 		WHERE member_no = #{member_no}
 		  AND account_status = 'ACTIVE'
+		  AND (ACCOUNT_PURPOSE IS NULL OR ACCOUNT_PURPOSE NOT IN ('DEPOSIT', 'SAVINGS'))
+    </select>
+
+    <select id="findWithdrawableAccountsByMemberNo" resultType="com.example.bnk.dto.member.AccountDto">
+        SELECT
+            ACCOUNT_NO AS account_no,
+            MEMBER_NO AS member_no,
+            ACCOUNT_NUMBER AS account_number,
+            ACCOUNT_ALIAS AS account_alias,
+            BALANCE AS balance,
+            ACCOUNT_STATUS AS account_status,
+            ACCOUNT_PURPOSE AS account_purpose,
+            OPENED_AT AS opened_at,
+            CLOSED_AT AS closed_at,
+            UPDATED_AT AS updated_at
+        FROM TB_ACCOUNT
+        WHERE member_no = #{member_no}
+          AND account_status = 'ACTIVE'
+          AND (ACCOUNT_PURPOSE IS NULL OR ACCOUNT_PURPOSE NOT IN ('DEPOSIT', 'SAVINGS'))
+        ORDER BY OPENED_AT DESC
     </select>
 
     <insert id="insertDemandDepositAccount" statementType="CALLABLE" parameterType="com.example.bnk.dto.member.AccountCreateDto">
@@ -79,7 +126,7 @@
 	    	VALUES (
 	    		#{memberNo},
 	    		#{accountAlias},
-	    		0,
+	    		#{balance},
 	    		'ACTIVE',
 	    		#{accountPassword, jdbcType=VARCHAR},
 	    		#{accountPurpose, jdbcType=VARCHAR},
@@ -106,7 +153,7 @@
 	    	VALUES (
 	    		#{memberNo},
 	    		#{accountAlias},
-	    		0,
+	    		#{balance},
 	    		'ACTIVE',
 	    		#{accountPassword, jdbcType=VARCHAR},
 	    		#{accountPurpose, jdbcType=VARCHAR},
@@ -117,6 +164,17 @@
 	    	INTO #{accountNo, mode=OUT, jdbcType=NUMERIC, javaType=java.lang.Long};
     	END;
     </insert>
+
+    <update id="debitAccount">
+        UPDATE TB_ACCOUNT
+        SET BALANCE = BALANCE - #{amount},
+            UPDATED_AT = SYSDATE
+        WHERE ACCOUNT_NO = #{accountNo}
+          AND MEMBER_NO = #{memberNo}
+          AND ACCOUNT_STATUS = 'ACTIVE'
+          AND (ACCOUNT_PURPOSE IS NULL OR ACCOUNT_PURPOSE NOT IN ('DEPOSIT', 'SAVINGS'))
+          AND BALANCE >= #{amount}
+    </update>
 
     <delete id="deleteAuthenticationByMemberNo">
     	DELETE FROM TB_AUTHENTICATION
