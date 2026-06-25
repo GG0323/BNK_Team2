@@ -1,5 +1,6 @@
 class ApiConstants {
-  static const String baseUrl = 'http://192.168.0.85:8080';
+  static const String baseUrl = 'https://192.168.0.87:8443';
+  static const bool allowSelfSignedDevCertificate = true;
 
   static const String appPing = '/api/auth/session-remaining';
   static const String appLogin = '/member/login';
@@ -9,7 +10,6 @@ class ApiConstants {
   static const String memberAccounts = '/api/member/myaccounts';
 
   static const String products = '/api/products/member';
-  static const String productDetail = '/api/products/member/detail';
   static const String productAiRecommend = '/api/products/ai/recommend';
 
   static const String reservationBranches = '/api/member/reservation/branches';
