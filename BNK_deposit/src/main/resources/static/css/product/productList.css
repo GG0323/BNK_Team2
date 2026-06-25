@@ -281,7 +281,8 @@ button {
 }
 
 .type-badge,
-.mobile-badge {
+.mobile-badge,
+.joined-badge {
     display: inline-flex;
     align-items: center;
     height: 28px;
@@ -299,6 +300,11 @@ button {
 .mobile-badge {
     background: #ffe8e9;
     color: #d71920;
+}
+
+.joined-badge {
+    background: #fff1d6;
+    color: #9a5a00;
 }
 
 .product-card h3 {

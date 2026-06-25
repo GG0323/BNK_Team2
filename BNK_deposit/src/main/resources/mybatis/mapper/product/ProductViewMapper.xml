@@ -7,11 +7,14 @@
 <mapper namespace="com.example.bnk.dao.product.IProductViewDao">
 
     <!--
-        판매중인 예금/적금 상품 목록 조회
-        조건:
+        판매중인 예금/적금 상품 목록 조회 - 비회원/공통용
+
+        적용 기능:
         1. product_status = 'SALE'
         2. product_type IN ('DEPOSIT', 'SAVINGS')
-        3. 비회원도 접근 가능
+        3. 판매기간 유효 상품만 조회
+        4. 비회원 조회이므로 joined_yn = 'N'
+        5. customer_type 등 일부 조건 정보를 함께 내려보낼 수 있도록 TB_PRODUCT_CONDITION 조인
     -->
     <select id="selectProductList"
             resultType="com.example.bnk.dto.product.ProductListViewDto">
@@ -30,14 +33,35 @@
             p.mobile_join_yn,
             p.sale_start_date,
             p.sale_end_date,
+
             d.subtitle,
             d.content,
-            d.image_url
+            d.image_url,
+
+            c.customer_type,
+            c.min_age,
+            c.max_age,
+            c.gender,
+            c.tax_benefit_yn,
+            c.depositor_protection_yn,
+            c.min_join_amount,
+            c.max_join_amount,
+            c.min_term_months,
+            c.max_term_months,
+
+            'N' AS joined_yn
+
         FROM TB_PRODUCT p
         LEFT JOIN TB_PRODUCT_DESCRIPTION d
             ON p.product_no = d.product_no
+        LEFT JOIN TB_PRODUCT_CONDITION c
+            ON p.product_no = c.product_no
+
         WHERE p.product_status = 'SALE'
           AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+          AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+
         ORDER BY p.product_no DESC
 
     </select>
@@ -91,6 +115,7 @@
 
             c.min_age,
             c.max_age,
+            c.gender,
             c.customer_type,
             c.tax_benefit_yn,
             c.depositor_protection_yn,
@@ -108,57 +133,94 @@
             ON p.product_no = d.product_no
         LEFT JOIN TB_PRODUCT_CONDITION c
             ON p.product_no = c.product_no
+
         WHERE p.product_no = #{product_no}
           AND p.product_status = 'SALE'
           AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+          AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
 
     </select>
 
 
     <!--
-        키워드 기반 상품 검색
-        TB_KEYWORD.normalized_keyword 활용
+        키워드 기반 상품 검색 - 비회원/공통용
+
+        적용 기능:
+        1. TB_KEYWORD.normalized_keyword 활용
+        2. 키워드 테이블에 없어도 사용자가 입력한 원문 키워드로 검색 가능
+        3. product_type IN ('DEPOSIT', 'SAVINGS') 조건 추가
+        4. 판매기간 유효 조건 추가
+        5. 비회원 조회이므로 joined_yn = 'N'
     -->
     <select id="searchProductList"
-        parameterType="string"
-        resultType="com.example.bnk.dto.product.ProductListViewDto">
+            parameterType="string"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
 
-	    WITH search_keyword AS (
-	        SELECT normalized_keyword AS keyword
-	        FROM tb_keyword
-	        WHERE input_keyword = #{keyword}
-	          AND use_yn = 'Y'
-	    )
-	    SELECT DISTINCT
-	           p.product_no,
-	           p.product_name,
-	           p.product_type,
-	           p.min_interest_rate,
-	           p.max_interest_rate,
-	           p.interest_payment_type,
-	           p.interest_calc_type,
-	           p.product_status,
-	           p.branch_join_yn,
-	           p.internet_join_yn,
-	           p.mobile_join_yn,
-	           p.sale_start_date,
-	           p.sale_end_date,
-	           d.subtitle,
-	           d.content,
-	           d.image_url
-	    FROM TB_PRODUCT p
-	    LEFT JOIN TB_PRODUCT_DESCRIPTION d
-	           ON p.product_no = d.product_no
-	    WHERE p.product_status = 'SALE'
-	      AND EXISTS (
-	            SELECT 1
-	            FROM search_keyword sk
-	            WHERE p.product_name LIKE '%' || sk.keyword || '%'
-	               OR d.content LIKE '%' || sk.keyword || '%'
-	      )
-	    ORDER BY p.product_no
-	
-	</select>
+        WITH search_keyword AS (
+            SELECT normalized_keyword AS keyword
+            FROM TB_KEYWORD
+            WHERE input_keyword = #{keyword}
+              AND use_yn = 'Y'
+
+            UNION
+
+            SELECT #{keyword} AS keyword
+            FROM DUAL
+        )
+        SELECT DISTINCT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.product_status,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+            p.sale_start_date,
+            p.sale_end_date,
+
+            d.subtitle,
+            d.content,
+            d.image_url,
+
+            c.customer_type,
+            c.min_age,
+            c.max_age,
+            c.gender,
+            c.tax_benefit_yn,
+            c.depositor_protection_yn,
+            c.min_join_amount,
+            c.max_join_amount,
+            c.min_term_months,
+            c.max_term_months,
+
+            'N' AS joined_yn
+
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        LEFT JOIN TB_PRODUCT_CONDITION c
+            ON p.product_no = c.product_no
+
+        WHERE p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+          AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+          AND EXISTS (
+                SELECT 1
+                FROM search_keyword sk
+                WHERE p.product_name LIKE '%' || sk.keyword || '%'
+                   OR d.subtitle LIKE '%' || sk.keyword || '%'
+                   OR d.content LIKE '%' || sk.keyword || '%'
+          )
+
+        ORDER BY p.product_no DESC
+
+    </select>
 
 
     <!--
@@ -225,6 +287,8 @@
 
         WHERE p.product_status = 'SALE'
           AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+          AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
           AND p.product_no IN
           <foreach collection="product_no_list"
                    item="product_no"
@@ -259,106 +323,183 @@
         ORDER BY p.product_no
 
     </select>
-    
+
+
     <!--
-    로그인 회원 유형별 상품 목록 조회
-    PERSONAL 회원: ALL + PERSONAL 상품
-    BUSINESS 회원: ALL + BUSINESS 상품
-	-->
-	<select id="selectProductListForMember"
-	        resultType="com.example.bnk.dto.product.ProductListViewDto">
-	
-	    SELECT
-	        p.product_no,
-	        p.product_name,
-	        p.product_type,
-	        p.min_interest_rate,
-	        p.max_interest_rate,
-	        p.interest_payment_type,
-	        p.interest_calc_type,
-	        p.product_status,
-	        p.branch_join_yn,
-	        p.internet_join_yn,
-	        p.mobile_join_yn,
-	        p.sale_start_date,
-	        p.sale_end_date,
-	        d.subtitle,
-	        d.content,
-	        d.image_url
-	    FROM TB_PRODUCT p
-	    LEFT JOIN TB_PRODUCT_DESCRIPTION d
-	        ON p.product_no = d.product_no
-	    JOIN TB_PRODUCT_CONDITION c
-	        ON p.product_no = c.product_no
-	    WHERE p.product_status = 'SALE'
-	      AND p.product_type IN ('DEPOSIT', 'SAVINGS')
-	      AND (
-	            c.customer_type = 'ALL'
-	            OR c.customer_type = #{memberType}
-	          )
-	    ORDER BY p.product_no DESC
-	
-	</select>
-	
-	<!--
-    로그인 회원 유형별 상품 검색
-	-->
-	<select id="searchProductListForMember"
-	        resultType="com.example.bnk.dto.product.ProductListViewDto">
-	
-	    SELECT DISTINCT
-	        p.product_no,
-	        p.product_name,
-	        p.product_type,
-	        p.min_interest_rate,
-	        p.max_interest_rate,
-	        p.interest_payment_type,
-	        p.interest_calc_type,
-	        p.product_status,
-	        p.branch_join_yn,
-	        p.internet_join_yn,
-	        p.mobile_join_yn,
-	        p.sale_start_date,
-	        p.sale_end_date,
-	        d.subtitle,
-	        d.content,
-	        d.image_url
-	    FROM TB_PRODUCT p
-	    LEFT JOIN TB_PRODUCT_DESCRIPTION d
-	        ON p.product_no = d.product_no
-	    JOIN TB_PRODUCT_CONDITION c
-	        ON p.product_no = c.product_no
-	    LEFT JOIN TB_KEYWORD k
-	        ON (
-	            p.product_name LIKE '%' || k.normalized_keyword || '%'
-	            OR d.content LIKE '%' || k.normalized_keyword || '%'
-	            OR d.subtitle LIKE '%' || k.normalized_keyword || '%'
-	        )
-	    WHERE p.product_status = 'SALE'
-	      AND p.product_type IN ('DEPOSIT', 'SAVINGS')
-	      AND (
-	            c.customer_type = 'ALL'
-	            OR c.customer_type = #{memberType}
-	          )
-	      AND (
-	            p.product_name LIKE '%' || #{keyword} || '%'
-	            OR d.content LIKE '%' || #{keyword} || '%'
-	            OR d.subtitle LIKE '%' || #{keyword} || '%'
-	            OR k.input_keyword LIKE '%' || #{keyword} || '%'
-	            OR k.normalized_keyword LIKE '%' || #{keyword} || '%'
-	      )
-	    ORDER BY p.product_no DESC
-	
-	</select>
+        로그인 회원 유형별 상품 목록 조회
+
+        적용 기능:
+        1. PERSONAL 회원: ALL + PERSONAL 상품
+        2. BUSINESS 회원: ALL + BUSINESS 상품
+        3. 이미 가입한 상품도 목록에 표시
+        4. COMPLETE 상태이면서 아직 만기 전인 상품은 joined_yn = 'Y'로 내려보내 화면에서 "가입중" 표시
+        5. DRAFT / EXPIRED는 가입중으로 보지 않는다.
+    -->
+    <select id="selectProductListForMember"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        SELECT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.product_status,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+            p.sale_start_date,
+            p.sale_end_date,
+
+            d.subtitle,
+            d.content,
+            d.image_url,
+
+            c.customer_type,
+            c.min_age,
+            c.max_age,
+            c.gender,
+            c.tax_benefit_yn,
+            c.depositor_protection_yn,
+            c.min_join_amount,
+            c.max_join_amount,
+            c.min_term_months,
+            c.max_term_months,
+
+            CASE
+                WHEN EXISTS (
+                    SELECT 1
+                    FROM TB_PRODUCT_SALES ps
+                    WHERE ps.member_no = #{memberNo}
+                      AND ps.product_no = p.product_no
+                      AND ps.subscription_status = 'COMPLETE'
+                      AND (ps.maturity_date IS NULL OR ps.maturity_date &gt;= TRUNC(SYSDATE))
+                )
+                THEN 'Y'
+                ELSE 'N'
+            END AS joined_yn
+
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        JOIN TB_PRODUCT_CONDITION c
+            ON p.product_no = c.product_no
+
+        WHERE p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+          AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+          AND (
+                c.customer_type = 'ALL'
+                OR c.customer_type = #{memberType}
+          )
+
+        ORDER BY p.product_no DESC
+
+    </select>
+
+
+    <!--
+        로그인 회원 유형별 상품 검색
+
+        적용 기능:
+        1. PERSONAL 회원: ALL + PERSONAL 상품 검색
+        2. BUSINESS 회원: ALL + BUSINESS 상품 검색
+        3. 이미 가입한 상품도 검색 결과에 표시
+        4. COMPLETE 상태이면서 아직 만기 전인 상품은 joined_yn = 'Y'로 내려보내 화면에서 "가입중" 표시
+        5. DRAFT / EXPIRED는 가입중으로 보지 않는다.
+    -->
+    <select id="searchProductListForMember"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        SELECT DISTINCT
+            p.product_no,
+            p.product_name,
+            p.product_type,
+            p.min_interest_rate,
+            p.max_interest_rate,
+            p.interest_payment_type,
+            p.interest_calc_type,
+            p.product_status,
+            p.branch_join_yn,
+            p.internet_join_yn,
+            p.mobile_join_yn,
+            p.sale_start_date,
+            p.sale_end_date,
+
+            d.subtitle,
+            d.content,
+            d.image_url,
+
+            c.customer_type,
+            c.min_age,
+            c.max_age,
+            c.gender,
+            c.tax_benefit_yn,
+            c.depositor_protection_yn,
+            c.min_join_amount,
+            c.max_join_amount,
+            c.min_term_months,
+            c.max_term_months,
+
+            CASE
+                WHEN EXISTS (
+                    SELECT 1
+                    FROM TB_PRODUCT_SALES ps
+                    WHERE ps.member_no = #{memberNo}
+                      AND ps.product_no = p.product_no
+                      AND ps.subscription_status = 'COMPLETE'
+                      AND (ps.maturity_date IS NULL OR ps.maturity_date &gt;= TRUNC(SYSDATE))
+                )
+                THEN 'Y'
+                ELSE 'N'
+            END AS joined_yn
+
+        FROM TB_PRODUCT p
+        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+            ON p.product_no = d.product_no
+        JOIN TB_PRODUCT_CONDITION c
+            ON p.product_no = c.product_no
+        LEFT JOIN TB_KEYWORD k
+            ON (
+                p.product_name LIKE '%' || k.normalized_keyword || '%'
+                OR d.content LIKE '%' || k.normalized_keyword || '%'
+                OR d.subtitle LIKE '%' || k.normalized_keyword || '%'
+            )
+
+        WHERE p.product_status = 'SALE'
+          AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+          AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+          AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+          AND (
+                c.customer_type = 'ALL'
+                OR c.customer_type = #{memberType}
+          )
+          AND (
+                p.product_name LIKE '%' || #{keyword} || '%'
+                OR d.content LIKE '%' || #{keyword} || '%'
+                OR d.subtitle LIKE '%' || #{keyword} || '%'
+                OR k.input_keyword LIKE '%' || #{keyword} || '%'
+                OR k.normalized_keyword LIKE '%' || #{keyword} || '%'
+          )
+
+        ORDER BY p.product_no DESC
+
+    </select>
 
 
     <!--
         비회원/공통 추천 상품 TOP 3
-        기준:
+
+        적용 기능:
         1. 판매중 상품
         2. 판매기간 유효
-        3. TB_PRODUCT_SALES에서 DRAFT만 제외한 가입 이력 집계
-        4. 가입 이력 > 최고금리 > 기본금리 > 최근 등록 상품 순
+        3. TB_PRODUCT_SALES에서 DRAFT 제외 가입 이력 집계
+        4. COMPLETE / EXPIRED는 실제 가입 이력으로 보고 인기 집계에 포함
+        5. 가입 이력 > 최고금리 > 기본금리 > 최근 등록 상품 순
+        6. 비회원 추천이므로 joined_yn = 'N'
     -->
     <select id="selectPopularRecommendedProducts"
             resultType="com.example.bnk.dto.product.ProductListViewDto">
@@ -379,12 +520,20 @@
                 p.mobile_join_yn,
                 p.sale_start_date,
                 p.sale_end_date,
+
                 d.subtitle,
                 d.content,
-                d.image_url
+                d.image_url,
+
+                c.customer_type,
+
+                'N' AS joined_yn
+
             FROM TB_PRODUCT p
             LEFT JOIN TB_PRODUCT_DESCRIPTION d
                 ON p.product_no = d.product_no
+            LEFT JOIN TB_PRODUCT_CONDITION c
+                ON p.product_no = c.product_no
             LEFT JOIN (
                 SELECT
                     product_no,
@@ -394,10 +543,12 @@
                 GROUP BY product_no
             ) s
                 ON p.product_no = s.product_no
+
             WHERE p.product_status = 'SALE'
               AND p.product_type IN ('DEPOSIT', 'SAVINGS')
               AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
               AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+
             ORDER BY
                 NVL(s.sales_count, 0) DESC,
                 NVL(p.max_interest_rate, 0) DESC,
@@ -410,17 +561,108 @@
 
 
     <!--
-        로그인 개인 회원 추천 상품 TOP 3
-        필수 조건:
-        1. 판매중 상품
-        2. 판매기간 유효
-        3. 회원 나이/성별/회원유형 기준 가입 가능 상품만 필터링
+        로그인 회원용 인기 추천 TOP 3
 
-        추천 점수:
-        같은 그룹 가입 이력 * 100
-        + 전체 가입 이력 * 20
-        + 최고금리 * 10
-        + 모바일 가입 가능 가산점 5
+        적용 기능:
+        1. 맞춤 추천 대상이 아니거나 맞춤 추천 결과가 없을 때 fallback 용도
+        2. COMPLETE 상태이면서 아직 만기 전인 상품은 추천에서 제외
+        3. DRAFT / EXPIRED는 추천 제외 대상으로 보지 않는다.
+        4. 회원 유형에 맞는 상품만 추천
+           - PERSONAL: ALL + PERSONAL
+           - BUSINESS: ALL + BUSINESS
+    -->
+    <select id="selectPopularRecommendedProductsForMember"
+            resultType="com.example.bnk.dto.product.ProductListViewDto">
+
+        SELECT *
+        FROM (
+            SELECT
+                p.product_no,
+                p.product_name,
+                p.product_type,
+                p.min_interest_rate,
+                p.max_interest_rate,
+                p.interest_payment_type,
+                p.interest_calc_type,
+                p.product_status,
+                p.branch_join_yn,
+                p.internet_join_yn,
+                p.mobile_join_yn,
+                p.sale_start_date,
+                p.sale_end_date,
+
+                d.subtitle,
+                d.content,
+                d.image_url,
+
+                c.customer_type,
+
+                'N' AS joined_yn
+
+            FROM TB_PRODUCT p
+            LEFT JOIN TB_PRODUCT_DESCRIPTION d
+                ON p.product_no = d.product_no
+            JOIN TB_PRODUCT_CONDITION c
+                ON p.product_no = c.product_no
+            LEFT JOIN (
+                SELECT
+                    product_no,
+                    COUNT(*) AS sales_count
+                FROM TB_PRODUCT_SALES
+                WHERE subscription_status &lt;&gt; 'DRAFT'
+                GROUP BY product_no
+            ) s
+                ON p.product_no = s.product_no
+
+            WHERE p.product_status = 'SALE'
+              AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+              AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+              AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+              AND (
+                    c.customer_type = 'ALL'
+                    OR c.customer_type = (
+                        SELECT m.member_type
+                        FROM TB_BANK_MEMBER m
+                        WHERE m.member_no = #{memberNo}
+                    )
+              )
+              AND NOT EXISTS (
+                    SELECT 1
+                    FROM TB_PRODUCT_SALES ps
+                    WHERE ps.member_no = #{memberNo}
+                      AND ps.product_no = p.product_no
+                      AND ps.subscription_status = 'COMPLETE'
+                      AND (ps.maturity_date IS NULL OR ps.maturity_date &gt;= TRUNC(SYSDATE))
+              )
+
+            ORDER BY
+                NVL(s.sales_count, 0) DESC,
+                NVL(p.max_interest_rate, 0) DESC,
+                NVL(p.min_interest_rate, 0) DESC,
+                p.product_no DESC
+        )
+        WHERE ROWNUM &lt;= 3
+
+    </select>
+
+
+    <!--
+        로그인 개인 회원 맞춤 추천 상품 TOP 3
+
+        적용 기능:
+        1. 개인회원만 맞춤 추천 대상
+        2. 나이/성별/회원유형 기준 가입 가능 상품만 추천
+        3. 같은 회원 그룹 가입 이력 반영
+        4. 전체 가입 이력 반영
+        5. 금리/모바일 가입 가능 여부 반영
+        6. COMPLETE 상태이면서 아직 만기 전인 상품은 추천에서 제외
+        7. DRAFT / EXPIRED는 추천 제외 대상으로 보지 않는다.
+
+        추천 그룹:
+        - YOUTH: 19~39세
+        - MIDDLE_MALE: 40~64세 남성
+        - MIDDLE_FEMALE: 40~64세 여성
+        - SENIOR: 65세 이상
     -->
     <select id="selectRecommendedProductsForMember"
             resultType="com.example.bnk.dto.product.ProductListViewDto">
@@ -483,15 +725,31 @@
                 p.mobile_join_yn,
                 p.sale_start_date,
                 p.sale_end_date,
+
                 d.subtitle,
                 d.content,
                 d.image_url,
+
+                c.customer_type,
+                c.min_age,
+                c.max_age,
+                c.gender,
+                c.tax_benefit_yn,
+                c.depositor_protection_yn,
+                c.min_join_amount,
+                c.max_join_amount,
+                c.min_term_months,
+                c.max_term_months,
+
+                'N' AS joined_yn,
+
                 (
                     NVL(gs.group_sales_count, 0) * 100
                     + NVL(ts.total_sales_count, 0) * 20
                     + NVL(p.max_interest_rate, 0) * 10
                     + CASE WHEN p.mobile_join_yn = 'Y' THEN 5 ELSE 0 END
                 ) AS recommend_score
+
             FROM TB_PRODUCT p
             JOIN TB_PRODUCT_CONDITION c
                 ON p.product_no = c.product_no
@@ -501,15 +759,25 @@
                 ON p.product_no = ts.product_no
             LEFT JOIN group_sales gs
                 ON p.product_no = gs.product_no
+
             WHERE p.product_status = 'SALE'
               AND p.product_type IN ('DEPOSIT', 'SAVINGS')
               AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
               AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
 
-              AND #{age} &gt;= c.min_age
+              AND (c.min_age IS NULL OR #{age} &gt;= c.min_age)
               AND (c.max_age IS NULL OR #{age} &lt;= c.max_age)
               AND (c.gender IS NULL OR c.gender = #{gender})
               AND (c.customer_type = 'ALL' OR c.customer_type = #{memberType})
+
+              AND NOT EXISTS (
+                    SELECT 1
+                    FROM TB_PRODUCT_SALES ps
+                    WHERE ps.member_no = #{memberNo}
+                      AND ps.product_no = p.product_no
+                      AND ps.subscription_status = 'COMPLETE'
+                      AND (ps.maturity_date IS NULL OR ps.maturity_date &gt;= TRUNC(SYSDATE))
+              )
 
             ORDER BY
                 recommend_score DESC,
@@ -520,6 +788,5 @@
         WHERE ROWNUM &lt;= 3
 
     </select>
-
 
 </mapper>

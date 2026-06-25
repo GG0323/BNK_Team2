@@ -31,13 +31,20 @@ public interface IProductViewDao {
 
     // 회원 유형별 상품 목록 조회
     List<ProductListViewDto> selectProductListForMember(
+            @Param("memberNo") long memberNo,
             @Param("memberType") String memberType
     );
 
     // 회원 유형별 상품 목록 검색
     List<ProductListViewDto> searchProductListForMember(
+            @Param("memberNo") long memberNo,
             @Param("memberType") String memberType,
             @Param("keyword") String keyword
+    );
+    
+    // 이미 가입한 거 안보이게
+    List<ProductListViewDto> selectPopularRecommendedProductsForMember(
+            @Param("memberNo") long memberNo
     );
 
     // 비회원/공통 추천 상품 TOP 3
@@ -47,6 +54,7 @@ public interface IProductViewDao {
     // 로그인 개인 회원 추천 상품 TOP 3
     // 기준: 가입 가능 조건 통과 + 같은 회원 그룹 판매 이력 + 전체 판매 이력 + 금리/채널 점수
     List<ProductListViewDto> selectRecommendedProductsForMember(
+            @Param("memberNo") long memberNo,
             @Param("age") int age,
             @Param("gender") String gender,
             @Param("memberType") String memberType,
