@@ -18,8 +18,6 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   image_picker: ^1.1.2
 
-  app_links: ^6.3.2
-
   flutter_naver_map: ^1.4.3
   geolocator: ^14.0.2
 
