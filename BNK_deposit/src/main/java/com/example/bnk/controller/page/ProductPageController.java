@@ -23,6 +23,7 @@ import com.example.bnk.dto.product.ProductTermsViewDto;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.product.ProductViewService;
 import com.example.bnk.service.product.ai.ProductCompareAiService;
+import com.example.bnk.service.product.ai.ProductFastApiClient;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
@@ -41,6 +42,7 @@ public class ProductPageController {
     private final ProductViewService productViewService;
     private final BankMemberService bankMemberService;
     private final ProductCompareAiService productCompareAiService;
+    private final ProductFastApiClient productFastApiClient;
     private final IProductTermsViewDao productTermsViewDao;
 
     // 상품 목록 조회
@@ -168,6 +170,14 @@ public class ProductPageController {
             return "비교할 상품 정보가 없습니다.";
         }
 
+        String fastApiSummary = productFastApiClient.createCompareSummary(compareList);
+
+        if (fastApiSummary != null && !fastApiSummary.trim().isEmpty()) {
+            System.out.println("[상품 AI] FastAPI 상품 비교 요약 결과 사용");
+            return fastApiSummary;
+        }
+
+        System.out.println("[상품 AI] FastAPI 상품 비교 요약 실패. 기존 Spring 요약 로직 사용");
         return productCompareAiService.createCompareSummary(compareList);
     }
 
@@ -197,6 +207,14 @@ public class ProductPageController {
             return "요약할 상품을 찾을 수 없습니다.";
         }
 
+        String fastApiSummary = productFastApiClient.createProductSummary(targetProduct);
+
+        if (fastApiSummary != null && !fastApiSummary.trim().isEmpty()) {
+            System.out.println("[상품 AI] FastAPI 상품 단일 요약 결과 사용");
+            return fastApiSummary;
+        }
+
+        System.out.println("[상품 AI] FastAPI 상품 단일 요약 실패. 기존 Spring 요약 로직 사용");
         return productCompareAiService.createCompareProductSummary(targetProduct);
     }
 
