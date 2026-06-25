@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../data/models/product_model.dart';
+import 'product_join_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
 
-  const ProductDetailScreen({
-    super.key,
-    required this.product,
-  });
+  const ProductDetailScreen({super.key, required this.product});
 
   String _formatRate(double rate) {
     if (rate == 0) return '-';
@@ -18,10 +16,18 @@ class ProductDetailScreen extends StatelessWidget {
 
   void _showPreparingMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  void _goToJoin(BuildContext context) {
+    if (product.mobileJoinYn != 'Y') {
+      _showPreparingMessage(context, '모바일 가입이 가능한 상품만 앱에서 가입할 수 있습니다.');
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ProductJoinScreen(product: product)),
     );
   }
 
@@ -31,7 +37,7 @@ class ProductDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -113,10 +119,10 @@ class ProductDetailScreen extends StatelessWidget {
     bool highlight = false,
   }) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -153,7 +159,7 @@ class ProductDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -233,7 +239,7 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMobileGuideCard(BuildContext context) {
+  Widget _buildMobileGuideCard() {
     final isMobile = product.mobileJoinYn == 'Y';
 
     return Container(
@@ -241,7 +247,7 @@ class ProductDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isMobile ? const Color(0xFFFFF8F8) : AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isMobile ? AppColors.primaryRed : AppColors.border,
         ),
@@ -250,9 +256,7 @@ class ProductDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            isMobile
-                ? Icons.phone_iphone_rounded
-                : Icons.info_outline_rounded,
+            isMobile ? Icons.phone_iphone_rounded : Icons.info_outline_rounded,
             color: isMobile ? AppColors.primaryRed : AppColors.textSecondary,
             size: 30,
           ),
@@ -274,8 +278,8 @@ class ProductDetailScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   isMobile
-                      ? '이 상품은 모바일 앱에서 가입 신청을 진행할 수 있습니다. 실제 가입신청 절차는 이후 단계에서 연결합니다.'
-                      : '이 상품은 현재 모바일 가입 대상이 아니거나 영업점 가입이 필요한 상품입니다.',
+                      ? '가입 조건을 입력하고 상품 가입을 이어갈 수 있습니다.'
+                      : '현재 이 상품은 앱 가입 대상이 아니거나 영업점 가입이 필요합니다.',
                   style: const TextStyle(
                     fontSize: 13,
                     height: 1.5,
@@ -297,7 +301,7 @@ class ProductDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -332,7 +336,7 @@ class ProductDetailScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.background,
         border: Border(
-          top: BorderSide(color: AppColors.border.withOpacity(0.7)),
+          top: BorderSide(color: AppColors.border.withValues(alpha: 0.7)),
         ),
       ),
       child: SizedBox(
@@ -344,21 +348,13 @@ class ProductDetailScreen extends StatelessWidget {
             foregroundColor: AppColors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
           ),
-          onPressed: () {
-            _showPreparingMessage(
-              context,
-              '가입신청 기능은 이후 단계에서 연결합니다.',
-            );
-          },
+          onPressed: () => _goToJoin(context),
           child: const Text(
             '가입하기',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
           ),
         ),
       ),
@@ -375,9 +371,7 @@ class ProductDetailScreen extends StatelessWidget {
         foregroundColor: AppColors.textPrimary,
         title: const Text(
           '상품 상세',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
       body: SingleChildScrollView(
@@ -390,7 +384,7 @@ class ProductDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _buildJoinChannelCard(),
             const SizedBox(height: 16),
-            _buildMobileGuideCard(context),
+            _buildMobileGuideCard(),
             const SizedBox(height: 16),
             _buildDescriptionCard(),
           ],

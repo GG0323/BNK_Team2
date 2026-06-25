@@ -24,7 +24,7 @@ public class SecurityConfig {
 		this.bankMemberService = bankMemberService;
 	}
 	
-	@Bean
+	@Bean @Order(99)
 	SecurityFilterChain filterChain(HttpSecurity http) {
 		
 		http.csrf(csrf -> csrf.disable());

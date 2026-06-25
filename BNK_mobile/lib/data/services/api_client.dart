@@ -18,6 +18,11 @@ class ApiClient {
 
   static const Duration _timeout = Duration(seconds: 8);
   static const String _authCookieName = 'bnk_token';
+  static const String _timeoutMessage =
+      '서버 응답 시간이 초과되었습니다. Spring 서버와 네트워크 연결을 확인해주세요.';
+  static const String _socketMessage =
+      '서버에 연결할 수 없습니다. baseUrl, 와이파이, 방화벽, Spring 실행 상태를 확인해주세요.';
+  static const String _formatMessage = '서버 응답 형식이 올바르지 않습니다.';
 
   static http.Client _createClient() {
     if (!kDebugMode || !ApiConstants.allowSelfSignedDevCertificate) {
@@ -36,26 +41,22 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> post(
-      String path, {
-        Map<String, dynamic>? body,
-        bool useAuthCookie = false,
-      }) async {
+    String path, {
+    Map<String, dynamic>? body,
+    bool useAuthCookie = false,
+  }) async {
     final uri = Uri.parse('${ApiConstants.baseUrl}$path');
     final headers = await _makeHeaders(useAuthCookie: useAuthCookie);
 
     debugPrint('================ API POST ================');
     debugPrint('[API URL] $uri');
     debugPrint('[API HEADERS] ${_headersForLog(headers)}');
-    debugPrint('[API BODY] ${jsonEncode(body ?? {})}');
+    debugPrint('[API BODY] ${jsonEncode(_jsonBodyForLog(body ?? {}))}');
     debugPrint('==========================================');
 
     try {
       final response = await _client
-          .post(
-        uri,
-        headers: headers,
-        body: jsonEncode(body ?? {}),
-      )
+          .post(uri, headers: headers, body: jsonEncode(body ?? {}))
           .timeout(_timeout);
 
       debugPrint('================ API RESPONSE ================');
@@ -67,13 +68,13 @@ class ApiClient {
       return _handleResponse(response);
     } on TimeoutException {
       debugPrint('[API ERROR] TimeoutException');
-      throw Exception('서버 응답 시간이 초과되었습니다. Spring 서버와 네트워크 연결을 확인해주세요.');
+      throw Exception(_timeoutMessage);
     } on SocketException catch (error) {
       debugPrint('[API ERROR] SocketException: $error');
-      throw Exception('서버에 연결할 수 없습니다. baseUrl, 와이파이, 방화벽, Spring 실행 상태를 확인해주세요.');
+      throw Exception(_socketMessage);
     } on FormatException catch (error) {
       debugPrint('[API ERROR] FormatException: $error');
-      throw Exception('서버 응답 형식이 올바르지 않습니다.');
+      throw Exception(_formatMessage);
     } catch (error) {
       debugPrint('[API ERROR] $error');
       throw Exception(error.toString().replaceFirst('Exception: ', ''));
@@ -81,10 +82,10 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> postForm(
-      String path, {
-        required Map<String, String> body,
-        bool useAuthCookie = false,
-      }) async {
+    String path, {
+    required Map<String, String> body,
+    bool useAuthCookie = false,
+  }) async {
     final uri = Uri.parse('${ApiConstants.baseUrl}$path');
     final headers = await _makeHeaders(
       useAuthCookie: useAuthCookie,
@@ -99,11 +100,7 @@ class ApiClient {
 
     try {
       final response = await _client
-          .post(
-        uri,
-        headers: headers,
-        body: body,
-      )
+          .post(uri, headers: headers, body: body)
           .timeout(_timeout);
 
       debugPrint('================ API RESPONSE ================');
@@ -115,13 +112,13 @@ class ApiClient {
       return _handleResponse(response);
     } on TimeoutException {
       debugPrint('[API ERROR] TimeoutException');
-      throw Exception('?쒕쾭 ?묐떟 ?쒓컙??珥덇낵?섏뿀?듬땲?? Spring ?쒕쾭? ?ㅽ듃?뚰겕 ?곌껐???뺤씤?댁＜?몄슂.');
+      throw Exception(_timeoutMessage);
     } on SocketException catch (error) {
       debugPrint('[API ERROR] SocketException: $error');
-      throw Exception('?쒕쾭???곌껐?????놁뒿?덈떎. baseUrl, ??댄뙆?? 諛⑺솕踰? Spring ?ㅽ뻾 ?곹깭瑜??뺤씤?댁＜?몄슂.');
+      throw Exception(_socketMessage);
     } on FormatException catch (error) {
       debugPrint('[API ERROR] FormatException: $error');
-      throw Exception('?쒕쾭 ?묐떟 ?뺤떇???щ컮瑜댁? ?딆뒿?덈떎.');
+      throw Exception(_formatMessage);
     } catch (error) {
       debugPrint('[API ERROR] $error');
       throw Exception(error.toString().replaceFirst('Exception: ', ''));
@@ -129,9 +126,9 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> get(
-      String path, {
-        bool useAuthCookie = false,
-      }) async {
+    String path, {
+    bool useAuthCookie = false,
+  }) async {
     final uri = Uri.parse('${ApiConstants.baseUrl}$path');
     final headers = await _makeHeaders(useAuthCookie: useAuthCookie);
 
@@ -142,10 +139,7 @@ class ApiClient {
 
     try {
       final response = await _client
-          .get(
-        uri,
-        headers: headers,
-      )
+          .get(uri, headers: headers)
           .timeout(_timeout);
 
       debugPrint('================ API RESPONSE ================');
@@ -157,13 +151,141 @@ class ApiClient {
       return _handleResponse(response);
     } on TimeoutException {
       debugPrint('[API ERROR] TimeoutException');
-      throw Exception('서버 응답 시간이 초과되었습니다. Spring 서버와 네트워크 연결을 확인해주세요.');
+      throw Exception(_timeoutMessage);
     } on SocketException catch (error) {
       debugPrint('[API ERROR] SocketException: $error');
-      throw Exception('서버에 연결할 수 없습니다. baseUrl, 와이파이, 방화벽, Spring 실행 상태를 확인해주세요.');
+      throw Exception(_socketMessage);
     } on FormatException catch (error) {
       debugPrint('[API ERROR] FormatException: $error');
-      throw Exception('서버 응답 형식이 올바르지 않습니다.');
+      throw Exception(_formatMessage);
+    } catch (error) {
+      debugPrint('[API ERROR] $error');
+      throw Exception(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<Map<String, dynamic>> put(
+    String path, {
+    Map<String, dynamic>? body,
+    bool useAuthCookie = false,
+  }) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}$path');
+    final headers = await _makeHeaders(useAuthCookie: useAuthCookie);
+
+    debugPrint('================ API PUT ================');
+    debugPrint('[API URL] $uri');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
+    debugPrint('[API BODY] ${jsonEncode(_jsonBodyForLog(body ?? {}))}');
+    debugPrint('=========================================');
+
+    try {
+      final response = await _client
+          .put(uri, headers: headers, body: jsonEncode(body ?? {}))
+          .timeout(_timeout);
+
+      debugPrint('================ API RESPONSE ================');
+      debugPrint('[API STATUS] ${response.statusCode}');
+      debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
+      debugPrint('==============================================');
+
+      await _saveAuthCookieFrom(response);
+      return _handleResponse(response);
+    } on TimeoutException {
+      debugPrint('[API ERROR] TimeoutException');
+      throw Exception(_timeoutMessage);
+    } on SocketException catch (error) {
+      debugPrint('[API ERROR] SocketException: $error');
+      throw Exception(_socketMessage);
+    } on FormatException catch (error) {
+      debugPrint('[API ERROR] FormatException: $error');
+      throw Exception(_formatMessage);
+    } catch (error) {
+      debugPrint('[API ERROR] $error');
+      throw Exception(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<Map<String, dynamic>> delete(
+    String path, {
+    bool useAuthCookie = false,
+  }) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}$path');
+    final headers = await _makeHeaders(useAuthCookie: useAuthCookie);
+
+    debugPrint('================ API DELETE ================');
+    debugPrint('[API URL] $uri');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
+    debugPrint('===========================================');
+
+    try {
+      final response = await _client
+          .delete(uri, headers: headers)
+          .timeout(_timeout);
+
+      debugPrint('================ API RESPONSE ================');
+      debugPrint('[API STATUS] ${response.statusCode}');
+      debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
+      debugPrint('==============================================');
+
+      await _saveAuthCookieFrom(response);
+      return _handleResponse(response);
+    } on TimeoutException {
+      debugPrint('[API ERROR] TimeoutException');
+      throw Exception(_timeoutMessage);
+    } on SocketException catch (error) {
+      debugPrint('[API ERROR] SocketException: $error');
+      throw Exception(_socketMessage);
+    } on FormatException catch (error) {
+      debugPrint('[API ERROR] FormatException: $error');
+      throw Exception(_formatMessage);
+    } catch (error) {
+      debugPrint('[API ERROR] $error');
+      throw Exception(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<Map<String, dynamic>> postMultipart(
+    String path, {
+    required String filePath,
+    String fieldName = 'image',
+    bool useAuthCookie = false,
+  }) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}$path');
+    final headers = await _makeHeaders(
+      useAuthCookie: useAuthCookie,
+      includeContentType: false,
+    );
+
+    debugPrint('============= API MULTIPART POST =============');
+    debugPrint('[API URL] $uri');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
+    debugPrint('[API FILE] attached=true');
+    debugPrint('==============================================');
+
+    try {
+      final request = http.MultipartRequest('POST', uri);
+      request.headers.addAll(headers);
+      request.files.add(await http.MultipartFile.fromPath(fieldName, filePath));
+
+      final streamed = await _client.send(request).timeout(_timeout);
+      final response = await http.Response.fromStream(streamed);
+
+      debugPrint('================ API RESPONSE ================');
+      debugPrint('[API STATUS] ${response.statusCode}');
+      debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
+      debugPrint('==============================================');
+
+      await _saveAuthCookieFrom(response);
+      return _handleResponse(response);
+    } on TimeoutException {
+      debugPrint('[API ERROR] TimeoutException');
+      throw Exception(_timeoutMessage);
+    } on SocketException catch (error) {
+      debugPrint('[API ERROR] SocketException: $error');
+      throw Exception(_socketMessage);
+    } on FormatException catch (error) {
+      debugPrint('[API ERROR] FormatException: $error');
+      throw Exception(_formatMessage);
     } catch (error) {
       debugPrint('[API ERROR] $error');
       throw Exception(error.toString().replaceFirst('Exception: ', ''));
@@ -174,9 +296,7 @@ class ApiClient {
     required bool useAuthCookie,
     bool includeContentType = true,
   }) async {
-    final headers = <String, String>{
-      'Accept': 'application/json',
-    };
+    final headers = <String, String>{'Accept': 'application/json'};
 
     if (includeContentType) {
       headers['Content-Type'] = 'application/json; charset=UTF-8';
@@ -240,6 +360,18 @@ class ApiClient {
     return safeBody;
   }
 
+  Map<String, dynamic> _jsonBodyForLog(Map<String, dynamic> body) {
+    final safeBody = Map<String, dynamic>.from(body);
+
+    for (final key in ['pin', 'answer1', 'answer2', 'password', 'frontAnswer', 'backAnswer']) {
+      if (safeBody.containsKey(key)) {
+        safeBody[key] = '***';
+      }
+    }
+
+    return safeBody;
+  }
+
   Map<String, dynamic> _handleResponse(http.Response response) {
     final decodedBody = utf8.decode(response.bodyBytes);
 
@@ -257,9 +389,8 @@ class ApiClient {
       return decodedJson;
     }
 
-    final message = decodedJson['message'] ??
-        decodedJson['error'] ??
-        '요청 처리 중 오류가 발생했습니다.';
+    final message =
+        decodedJson['message'] ?? decodedJson['error'] ?? '요청 처리 중 오류가 발생했습니다.';
 
     throw Exception(message.toString());
   }

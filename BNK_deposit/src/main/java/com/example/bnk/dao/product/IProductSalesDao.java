@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.bnk.dto.member.MemberProductDto;
+import com.example.bnk.dto.product.ProductJoinDraftDto;
 
 @Mapper
 public interface IProductSalesDao {
@@ -21,4 +22,37 @@ public interface IProductSalesDao {
     
     // 회원의 가입 상품 데이터 불러오기
     public MemberProductDto selectUsersProduct(@Param("member_no") long member_no, @Param("account_no") long account_no);
+
+    ProductJoinDraftDto findDraftByMemberAndProduct(
+            @Param("memberNo") long memberNo,
+            @Param("productNo") long productNo
+    );
+
+    ProductJoinDraftDto findBySubscriptionNo(
+            @Param("memberNo") long memberNo,
+            @Param("subscriptionNo") long subscriptionNo
+    );
+
+    int insertDraft(
+            @Param("memberNo") long memberNo,
+            @Param("productNo") long productNo,
+            @Param("linkedAccountId") Long linkedAccountId
+    );
+
+    int updateDraftTerms(
+            @Param("memberNo") long memberNo,
+            @Param("subscriptionNo") long subscriptionNo,
+            @Param("subscriptionAmount") long subscriptionAmount,
+            @Param("subscriptionMonths") long subscriptionMonths,
+            @Param("requiredTermsAgreed") int requiredTermsAgreed,
+            @Param("optionalTermsAgreed") int optionalTermsAgreed
+    );
+
+    int completeDraft(
+            @Param("memberNo") long memberNo,
+            @Param("subscriptionNo") long subscriptionNo,
+            @Param("accountNo") long accountNo,
+            @Param("appliedInterestRate") double appliedInterestRate,
+            @Param("maturityDate") java.time.LocalDate maturityDate
+    );
 }
