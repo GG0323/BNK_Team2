@@ -15,7 +15,8 @@ class ProductApi {
 
     if (data is List) {
       return data
-          .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
+          .whereType<Map<String, dynamic>>()
+          .map(ProductModel.fromJson)
           .toList();
     }
 
@@ -27,11 +28,33 @@ class ProductApi {
 
       if (list is List) {
         return list
-            .map((item) => ProductModel.fromJson(item as Map<String, dynamic>))
+            .whereType<Map<String, dynamic>>()
+            .map(ProductModel.fromJson)
             .toList();
       }
     }
 
     return [];
+  }
+
+  Future<ProductModel> getProductDetailByNo(int productNo) async {
+    final response = await _apiClient.get(
+      '${ApiConstants.productDetail}?product_no=$productNo',
+      useAuthCookie: true,
+    );
+
+    final data = response['data'];
+
+    if (data is Map<String, dynamic>) {
+      final productData = data['product'];
+
+      if (productData is Map<String, dynamic>) {
+        return ProductModel.fromJson(productData);
+      }
+
+      return ProductModel.fromJson(data);
+    }
+
+    throw Exception('상품 상세 정보를 불러오지 못했습니다.');
   }
 }
