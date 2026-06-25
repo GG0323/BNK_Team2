@@ -1,9 +1,21 @@
 import '../../core/constants/api_constants.dart';
+import '../models/product_join_entry_status_model.dart';
 import '../models/product_join_status_model.dart';
 import 'api_client.dart';
 
 class ProductJoinApi {
   final ApiClient _apiClient = ApiClient.instance;
+
+  Future<ProductJoinEntryStatusModel> entryStatus(int productNo) async {
+    final response = await _apiClient.get(
+      '${ApiConstants.productJoinEntryStatus}?product_no=$productNo',
+      useAuthCookie: true,
+    );
+
+    return ProductJoinEntryStatusModel.fromJson(
+      Map<String, dynamic>.from(response['data'] ?? {}),
+    );
+  }
 
   Future<ProductJoinStatusModel> start(int productNo) async {
     final response = await _apiClient.post(

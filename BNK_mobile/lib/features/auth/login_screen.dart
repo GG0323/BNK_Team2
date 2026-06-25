@@ -5,7 +5,12 @@ import '../../data/services/auth_api.dart';
 import '../pin/pin_setup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final bool returnOnSuccess;
+
+  const LoginScreen({
+    super.key,
+    this.returnOnSuccess = false,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -46,6 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (!mounted) return;
+
+      if (widget.returnOnSuccess) {
+        Navigator.pop(context, true);
+        return;
+      }
 
       Navigator.pushReplacement(
         context,
