@@ -852,13 +852,14 @@ class _ProductTermsViewer extends StatefulWidget {
 class _ProductTermsViewerState extends State<_ProductTermsViewer> {
   late final ScrollController _scrollController;
   late List<GlobalKey> _currentPageKeys;
+  late List<Uint8List> _currentPageBytes;
   late final Set<int> _agreedTermIndexes;
 
   int _currentTermIndex = 0;
   int _currentVisiblePageIndex = 0;
-  bool _currentTermReachedEnd = false;
 
-  bool get _allAgreed => _agreedTermIndexes.length == widget.terms.length;
+  bool get _canScrollToNextPage =>
+      _currentVisiblePageIndex < _currentPageKeys.length - 1;
 
   @override
   void initState() {
@@ -866,11 +867,7 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
     _scrollController = ScrollController()..addListener(_handleScrollChanged);
     _agreedTermIndexes = Set<int>.from(widget.initialAgreedTermIndexes);
     _currentTermIndex = _firstNotAgreedIndex();
-    _rebuildCurrentPageKeys();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _syncReachedEnd();
-    });
+    _rebuildCurrentTermPages();
   }
 
   @override
@@ -887,30 +884,16 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
     return widget.terms.isEmpty ? 0 : widget.terms.length - 1;
   }
 
-  void _rebuildCurrentPageKeys() {
+  void _rebuildCurrentTermPages() {
     final pages = widget.terms[_currentTermIndex].pages;
     _currentPageKeys = List.generate(pages.length, (_) => GlobalKey());
+    _currentPageBytes = pages
+        .map((page) => base64Decode(page.imageBase64))
+        .toList();
   }
 
   void _handleScrollChanged() {
     _syncCurrentVisiblePageIndex();
-    _syncReachedEnd();
-  }
-
-  void _syncReachedEnd() {
-    if (!mounted || _allAgreed || _currentTermReachedEnd) return;
-    if (!_scrollController.hasClients) return;
-
-    final position = _scrollController.position;
-    if (!position.hasContentDimensions) return;
-
-    final maxExtent = position.maxScrollExtent;
-    if (maxExtent <= 0) return;
-
-    final reachedEnd = position.pixels >= maxExtent - 20;
-    if (reachedEnd) {
-      setState(() => _currentTermReachedEnd = true);
-    }
   }
 
   void _syncCurrentVisiblePageIndex() {
@@ -938,9 +921,13 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
       }
     }
 
-    _currentVisiblePageIndex = visibleIndex
+    final nextVisibleIndex = visibleIndex
         .clamp(0, _currentPageKeys.isEmpty ? 0 : _currentPageKeys.length - 1)
         .toInt();
+
+    if (nextVisibleIndex != _currentVisiblePageIndex && mounted) {
+      setState(() => _currentVisiblePageIndex = nextVisibleIndex);
+    }
   }
 
   Future<void> _scrollToNextPage() async {
@@ -959,9 +946,7 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
       return;
     }
 
-    final pages = widget.terms[_currentTermIndex].pages;
-    if (pages.isEmpty) {
-      if (mounted) setState(() => _currentTermReachedEnd = true);
+    if (_currentPageKeys.isEmpty) {
       return;
     }
 
@@ -969,51 +954,48 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
     if (maxExtent <= 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted || !_scrollController.hasClients) return;
-
-        final retryPosition = _scrollController.position;
-        if (!retryPosition.hasContentDimensions) return;
-
-        if (retryPosition.maxScrollExtent <= 20) {
-          setState(() => _currentTermReachedEnd = true);
-        }
+        _syncCurrentVisiblePageIndex();
       });
       return;
     }
 
-    _syncCurrentVisiblePageIndex();
+    final current = position.pixels;
+    double? nextOffset;
+    var nextVisibleIndex = _currentVisiblePageIndex;
 
-    final nextIndex = (_currentVisiblePageIndex + 1)
-        .clamp(0, pages.length - 1)
-        .toInt();
+    for (var i = 0; i < _currentPageKeys.length; i++) {
+      final context = _currentPageKeys[i].currentContext;
+      final renderObject = context?.findRenderObject();
+      if (renderObject == null || !renderObject.attached) continue;
 
-    if (nextIndex == _currentVisiblePageIndex) {
-      await _scrollController.animateTo(
-        maxExtent,
-        duration: const Duration(milliseconds: 360),
-        curve: Curves.easeOutCubic,
-      );
-      _syncReachedEnd();
+      final viewport = RenderAbstractViewport.maybeOf(renderObject);
+      if (viewport == null) continue;
+
+      final pageOffset = viewport.getOffsetToReveal(renderObject, 0).offset;
+      if (pageOffset > current + 8) {
+        nextOffset = pageOffset;
+        nextVisibleIndex = i;
+        break;
+      }
+    }
+
+    if (nextOffset == null) {
       return;
     }
 
-    final context = _currentPageKeys[nextIndex].currentContext;
-    if (context == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _scrollToNextPage();
-      });
-      return;
+    final target = nextOffset.clamp(0.0, maxExtent).toDouble();
+
+    if (target <= current + 8) return;
+
+    if (nextVisibleIndex != _currentVisiblePageIndex && mounted) {
+      setState(() => _currentVisiblePageIndex = nextVisibleIndex);
     }
 
-    _currentVisiblePageIndex = nextIndex;
-
-    await Scrollable.ensureVisible(
-      context,
+    await _scrollController.animateTo(
+      target,
       duration: const Duration(milliseconds: 360),
       curve: Curves.easeOutCubic,
-      alignment: 0,
     );
-
-    if (mounted) _syncReachedEnd();
   }
 
   Future<void> _agreeCurrentTerm() async {
@@ -1027,14 +1009,12 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
     setState(() {
       _currentTermIndex += 1;
       _currentVisiblePageIndex = 0;
-      _currentTermReachedEnd = false;
-      _rebuildCurrentPageKeys();
+      _rebuildCurrentTermPages();
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollController.hasClients) return;
       _scrollController.jumpTo(0);
-      _syncReachedEnd();
     });
   }
 
@@ -1081,9 +1061,7 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
                 NotificationListener<ScrollMetricsNotification>(
                   onNotification: (_) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (!mounted) return;
-                      _syncCurrentVisiblePageIndex();
-                      _syncReachedEnd();
+                      if (mounted) _syncCurrentVisiblePageIndex();
                     });
                     return false;
                   },
@@ -1093,7 +1071,7 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
                     children: [_termSection(_currentTermIndex)],
                   ),
                 ),
-                if (!_currentTermReachedEnd)
+                if (_canScrollToNextPage)
                   Positioned(
                     left: 0,
                     right: 0,
@@ -1135,12 +1113,10 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _currentTermReachedEnd ? _agreeCurrentTerm : null,
+                  onPressed: _agreeCurrentTerm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryRed,
-                    disabledBackgroundColor: AppColors.textSecondary,
                     foregroundColor: AppColors.white,
-                    disabledForegroundColor: AppColors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -1188,14 +1164,13 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
           ),
           const SizedBox(height: 12),
           ...List.generate(term.pages.length, (pageIndex) {
-            final page = term.pages[pageIndex];
             return Padding(
               key: _currentPageKeys[pageIndex],
               padding: const EdgeInsets.only(bottom: 12),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.memory(
-                  base64Decode(page.imageBase64),
+                  _currentPageBytes[pageIndex],
                   width: double.infinity,
                   fit: BoxFit.fitWidth,
                 ),
