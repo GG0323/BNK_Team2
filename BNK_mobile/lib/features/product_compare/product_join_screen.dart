@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -850,13 +851,11 @@ class _ProductTermsViewer extends StatefulWidget {
 
 class _ProductTermsViewerState extends State<_ProductTermsViewer> {
   late final ScrollController _scrollController;
-  late final List<GlobalKey> _termStartKeys;
-  late final List<GlobalKey> _termEndKeys;
-  late final List<List<GlobalKey>> _pageKeys;
+  late List<GlobalKey> _currentPageKeys;
   late final Set<int> _agreedTermIndexes;
 
   int _currentTermIndex = 0;
-  int _currentPageIndex = 0;
+  int _currentVisiblePageIndex = 0;
   bool _currentTermReachedEnd = false;
 
   bool get _allAgreed => _agreedTermIndexes.length == widget.terms.length;
@@ -864,23 +863,19 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()..addListener(_syncReachedEnd);
-    _termStartKeys = List.generate(widget.terms.length, (_) => GlobalKey());
-    _termEndKeys = List.generate(widget.terms.length, (_) => GlobalKey());
-    _pageKeys = widget.terms
-        .map((term) => List.generate(term.pages.length, (_) => GlobalKey()))
-        .toList();
+    _scrollController = ScrollController()..addListener(_handleScrollChanged);
     _agreedTermIndexes = Set<int>.from(widget.initialAgreedTermIndexes);
     _currentTermIndex = _firstNotAgreedIndex();
+    _rebuildCurrentPageKeys();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _scrollToTermStart(_currentTermIndex, animate: false);
+      if (mounted) _syncReachedEnd();
     });
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_syncReachedEnd);
+    _scrollController.removeListener(_handleScrollChanged);
     _scrollController.dispose();
     super.dispose();
   }
@@ -892,70 +887,133 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
     return widget.terms.isEmpty ? 0 : widget.terms.length - 1;
   }
 
+  void _rebuildCurrentPageKeys() {
+    final pages = widget.terms[_currentTermIndex].pages;
+    _currentPageKeys = List.generate(pages.length, (_) => GlobalKey());
+  }
+
+  void _handleScrollChanged() {
+    _syncCurrentVisiblePageIndex();
+    _syncReachedEnd();
+  }
+
   void _syncReachedEnd() {
     if (!mounted || _allAgreed || _currentTermReachedEnd) return;
+    if (!_scrollController.hasClients) return;
 
-    final context = _termEndKeys[_currentTermIndex].currentContext;
-    if (context == null) return;
+    final position = _scrollController.position;
+    if (!position.hasContentDimensions) return;
 
-    final renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null || !renderBox.attached) return;
+    final maxExtent = position.maxScrollExtent;
+    if (maxExtent <= 0) return;
 
-    final viewportBottom = MediaQuery.of(context).size.height - 96;
-    final endY = renderBox.localToGlobal(Offset.zero).dy;
-
-    if (endY <= viewportBottom) {
+    final reachedEnd = position.pixels >= maxExtent - 20;
+    if (reachedEnd) {
       setState(() => _currentTermReachedEnd = true);
     }
   }
 
-  Future<void> _scrollToTermStart(int index, {bool animate = true}) async {
-    final context = _termStartKeys[index].currentContext;
-    if (context == null) return;
+  void _syncCurrentVisiblePageIndex() {
+    if (!_scrollController.hasClients) return;
 
-    if (animate) {
-      await Scrollable.ensureVisible(
-        context,
-        duration: const Duration(milliseconds: 320),
-        curve: Curves.easeOutCubic,
-        alignment: 0,
-      );
-    } else {
-      Scrollable.ensureVisible(context, duration: Duration.zero, alignment: 0);
+    final position = _scrollController.position;
+    if (!position.hasContentDimensions) return;
+
+    final currentOffset = position.pixels + 1;
+    var visibleIndex = _currentVisiblePageIndex;
+
+    for (var i = 0; i < _currentPageKeys.length; i++) {
+      final context = _currentPageKeys[i].currentContext;
+      final renderObject = context?.findRenderObject();
+      if (renderObject == null || !renderObject.attached) continue;
+
+      final viewport = RenderAbstractViewport.maybeOf(renderObject);
+      if (viewport == null) continue;
+
+      final pageOffset = viewport.getOffsetToReveal(renderObject, 0).offset;
+      if (pageOffset <= currentOffset) {
+        visibleIndex = i;
+      } else {
+        break;
+      }
     }
+
+    _currentVisiblePageIndex = visibleIndex
+        .clamp(0, _currentPageKeys.isEmpty ? 0 : _currentPageKeys.length - 1)
+        .toInt();
   }
 
-  Future<void> _scrollWithinCurrentTerm() async {
-    final pages = widget.terms[_currentTermIndex].pages;
-
-    if (_currentPageIndex < pages.length - 1) {
-      _currentPageIndex += 1;
-      final context =
-          _pageKeys[_currentTermIndex][_currentPageIndex].currentContext;
-
-      if (context != null) {
-        await Scrollable.ensureVisible(
-          context,
-          duration: const Duration(milliseconds: 360),
-          curve: Curves.easeOutCubic,
-          alignment: 0.02,
-        );
-      }
-
+  Future<void> _scrollToNextPage() async {
+    if (!_scrollController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToNextPage();
+      });
       return;
     }
 
-    final context = _termEndKeys[_currentTermIndex].currentContext;
-    if (context == null) return;
+    final position = _scrollController.position;
+    if (!position.hasContentDimensions) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToNextPage();
+      });
+      return;
+    }
+
+    final pages = widget.terms[_currentTermIndex].pages;
+    if (pages.isEmpty) {
+      if (mounted) setState(() => _currentTermReachedEnd = true);
+      return;
+    }
+
+    final maxExtent = position.maxScrollExtent;
+    if (maxExtent <= 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_scrollController.hasClients) return;
+
+        final retryPosition = _scrollController.position;
+        if (!retryPosition.hasContentDimensions) return;
+
+        if (retryPosition.maxScrollExtent <= 20) {
+          setState(() => _currentTermReachedEnd = true);
+        }
+      });
+      return;
+    }
+
+    _syncCurrentVisiblePageIndex();
+
+    final nextIndex = (_currentVisiblePageIndex + 1)
+        .clamp(0, pages.length - 1)
+        .toInt();
+
+    if (nextIndex == _currentVisiblePageIndex) {
+      await _scrollController.animateTo(
+        maxExtent,
+        duration: const Duration(milliseconds: 360),
+        curve: Curves.easeOutCubic,
+      );
+      _syncReachedEnd();
+      return;
+    }
+
+    final context = _currentPageKeys[nextIndex].currentContext;
+    if (context == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _scrollToNextPage();
+      });
+      return;
+    }
+
+    _currentVisiblePageIndex = nextIndex;
 
     await Scrollable.ensureVisible(
       context,
-      duration: const Duration(milliseconds: 420),
+      duration: const Duration(milliseconds: 360),
       curve: Curves.easeOutCubic,
-      alignment: 0.88,
+      alignment: 0,
     );
 
-    if (mounted) setState(() => _currentTermReachedEnd = true);
+    if (mounted) _syncReachedEnd();
   }
 
   Future<void> _agreeCurrentTerm() async {
@@ -968,30 +1026,16 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
 
     setState(() {
       _currentTermIndex += 1;
-      _currentPageIndex = 0;
+      _currentVisiblePageIndex = 0;
       _currentTermReachedEnd = false;
+      _rebuildCurrentPageKeys();
     });
 
-    await _scrollToTermStart(_currentTermIndex);
-  }
-
-  Future<void> _handleBottomButton() async {
-    if (_allAgreed) {
-      Navigator.of(context).pop(Set<int>.from(_agreedTermIndexes));
-      return;
-    }
-
-    if (_currentTermReachedEnd) {
-      await _agreeCurrentTerm();
-      return;
-    }
-
-    await _scrollWithinCurrentTerm();
-  }
-
-  String get _bottomButtonLabel {
-    if (_allAgreed) return '닫기';
-    return _currentTermReachedEnd ? '동의하기' : '아래로 스크롤';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      _scrollController.jumpTo(0);
+      _syncReachedEnd();
+    });
   }
 
   String get _currentProgressText {
@@ -1032,11 +1076,51 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
-              itemCount: widget.terms.length,
-              itemBuilder: (context, index) => _termSection(index),
+            child: Stack(
+              children: [
+                NotificationListener<ScrollMetricsNotification>(
+                  onNotification: (_) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (!mounted) return;
+                      _syncCurrentVisiblePageIndex();
+                      _syncReachedEnd();
+                    });
+                    return false;
+                  },
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 90),
+                    children: [_termSection(_currentTermIndex)],
+                  ),
+                ),
+                if (!_currentTermReachedEnd)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 18,
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: _scrollToNextPage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF737B96),
+                          foregroundColor: AppColors.white,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 28,
+                            vertical: 13,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(26),
+                          ),
+                        ),
+                        child: const Text(
+                          '아래로 스크롤',
+                          style: TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           SafeArea(
@@ -1051,18 +1135,20 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
               child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _handleBottomButton,
+                  onPressed: _currentTermReachedEnd ? _agreeCurrentTerm : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryRed,
+                    disabledBackgroundColor: AppColors.textSecondary,
                     foregroundColor: AppColors.white,
+                    disabledForegroundColor: AppColors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(
-                    _bottomButtonLabel,
-                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  child: const Text(
+                    '동의하기',
+                    style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
@@ -1078,14 +1164,10 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
     final agreed = _agreedTermIndexes.contains(index);
 
     return Container(
-      key: _termStartKeys[index],
-      margin: EdgeInsets.only(
-        bottom: index == widget.terms.length - 1 ? 0 : 22,
-      ),
+      margin: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (index > 0) const Divider(height: 28, color: AppColors.border),
           Row(
             children: [
               Expanded(
@@ -1108,7 +1190,7 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
           ...List.generate(term.pages.length, (pageIndex) {
             final page = term.pages[pageIndex];
             return Padding(
-              key: _pageKeys[index][pageIndex],
+              key: _currentPageKeys[pageIndex],
               padding: const EdgeInsets.only(bottom: 12),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
@@ -1120,7 +1202,6 @@ class _ProductTermsViewerState extends State<_ProductTermsViewer> {
               ),
             );
           }),
-          SizedBox(key: _termEndKeys[index], height: 1),
         ],
       ),
     );
