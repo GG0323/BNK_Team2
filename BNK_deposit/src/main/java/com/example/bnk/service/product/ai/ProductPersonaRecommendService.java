@@ -1,10 +1,11 @@
 package com.example.bnk.service.product.ai;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -30,26 +31,26 @@ public class ProductPersonaRecommendService {
         }
 
         List<ProductListViewDto> productList = productViewService.getProductList("maxRateDesc", "ALL");
-
         List<ScoredProduct> scoredProducts = new ArrayList<>();
 
-        for (ProductListViewDto product : productList) {
-            ProductDetailViewDto detail = productViewService.getProductDetail(product.getProduct_no());
+        if (productList != null) {
+            for (ProductListViewDto product : productList) {
+                if (product == null) {
+                    continue;
+                }
 
-            if (detail == null) {
-                continue;
+                ProductDetailViewDto detail = productViewService.getProductDetail(product.getProduct_no());
+
+                if (detail == null) {
+                    continue;
+                }
+
+                ScoredProduct scoredProduct = scoreProduct(detail, request);
+                scoredProducts.add(scoredProduct);
             }
-
-            if (!isAgeAvailable(detail, request.getAge())) {
-                continue;
-            }
-
-            ScoredProduct scoredProduct = scoreProduct(detail, request);
-            scoredProducts.add(scoredProduct);
         }
 
         scoredProducts.sort(Comparator.comparingInt(ScoredProduct::getRawScore).reversed());
-
         normalizeRankScores(scoredProducts);
 
         List<ProductPersonaRecommendItemDto> resultItems = new ArrayList<>();
@@ -62,35 +63,29 @@ public class ProductPersonaRecommendService {
 
             ProductPersonaRecommendItemDto item = new ProductPersonaRecommendItemDto();
 
-            item.setProductNo(product.getProduct_no());
-            item.setProductName(product.getProduct_name());
-            item.setProductType(product.getProduct_type());
-            item.setSubtitle(product.getSubtitle());
+            item.setProductNo(toLong(readValue(product, "product_no", "productNo")));
+            item.setProductName(toText(readValue(product, "product_name", "productName")));
+            item.setProductType(toText(readValue(product, "product_type", "productType")));
+            item.setSubtitle(toText(readValue(product, "subtitle")));
 
-            item.setMinInterestRate(product.getMin_interest_rate());
-            item.setMaxInterestRate(product.getMax_interest_rate());
+            item.setMinInterestRate(toDouble(readValue(product, "min_interest_rate", "minInterestRate")));
+            item.setMaxInterestRate(toDouble(readValue(product, "max_interest_rate", "maxInterestRate")));
 
-            item.setMinJoinAmount(product.getMin_join_amount());
-            item.setMaxJoinAmount(product.getMax_join_amount());
+            item.setMinJoinAmount(toLong(readValue(product, "min_join_amount", "minJoinAmount")));
+            item.setMaxJoinAmount(toLong(readValue(product, "max_join_amount", "maxJoinAmount")));
 
-            item.setBranchJoinYn(product.getBranch_join_yn());
-            item.setInternetJoinYn(product.getInternet_join_yn());
-            item.setMobileJoinYn(product.getMobile_join_yn());
+            item.setBranchJoinYn(toText(readValue(product, "branch_join_yn", "branchJoinYn")));
+            item.setInternetJoinYn(toText(readValue(product, "internet_join_yn", "internetJoinYn")));
+            item.setMobileJoinYn(toText(readValue(product, "mobile_join_yn", "mobileJoinYn")));
 
-            item.setScore(scoredProduct.getFitPercent());
+            item.setScore(scoredProduct.getScore());
             item.setFitPercent(scoredProduct.getFitPercent());
             item.setBenefitChancePercent(scoredProduct.getBenefitChancePercent());
 
             item.setEvidence(scoredProduct.getEvidence());
-            item.setDetailUrl("/products/detail?product_no=" + product.getProduct_no());
+            item.setDetailUrl("/products/detail?product_no=" + item.getProductNo());
 
-            String reason = productRecommendAiService.createPersonalRecommendReason(
-                    product,
-                    request,
-                    scoredProduct.getFitPercent(),
-                    scoredProduct.getBenefitChancePercent(),
-                    scoredProduct.getEvidence()
-            );
+            String reason = createReason(product, request, scoredProduct);
 
             item.setReason(reason);
 
@@ -98,431 +93,469 @@ public class ProductPersonaRecommendService {
         }
 
         ProductPersonaRecommendResponseDto response = new ProductPersonaRecommendResponseDto();
-        response.setRecommendedProducts(resultItems);
+
         response.setSummary(createSummary(request, resultItems));
+        response.setRecommendedProducts(resultItems);
 
         return response;
     }
 
-    private boolean isAgeAvailable(ProductDetailViewDto product, int age) {
-        if (age <= 0) {
-            return true;
-        }
-
-        if (product.getMin_age() > 0 && age < product.getMin_age()) {
-            return false;
-        }
-
-        return product.getMax_age() <= 0 || age <= product.getMax_age();
-    }
-
     private ScoredProduct scoreProduct(ProductDetailViewDto product, ProductPersonaRecommendRequestDto request) {
-        int rawScore = 45;
-        int benefitChance = 45;
+        int score = 0;
+        List<String> evidence = new ArrayList<>();
 
-        Set<String> evidenceSet = new LinkedHashSet<>();
+        String productType = toText(readValue(product, "product_type", "productType")).toUpperCase();
+        String preferredProductType = toText(readRequestValue(request, "preferredProductTypeSafe", "preferredProductType"), "ALL").toUpperCase();
+        String preferredChannel = toText(readRequestValue(request, "preferredChannelSafe", "preferredChannel"), "ALL").toUpperCase();
+        String purpose = toText(readRequestValue(request, "purposeSafe", "purpose"), "MAKE_MONEY").toUpperCase();
 
-        String purpose = request.getPurposeSafe();
-        String preferredProductType = request.getPreferredProductTypeSafe();
-        String preferredChannel = request.getPreferredChannelSafe();
-        List<String> interestConditions = request.getInterestConditionsSafe();
+        double maxRate = toDouble(readValue(product, "max_interest_rate", "maxInterestRate"));
+        long minAmount = toLong(readValue(product, "min_join_amount", "minJoinAmount"));
+        long maxAmount = toLong(readValue(product, "max_join_amount", "maxJoinAmount"));
+        int minTerm = toInt(readValue(product, "min_term_months", "minTermMonths"));
+        int maxTerm = toInt(readValue(product, "max_term_months", "maxTermMonths"));
 
-        String productType = product.getProduct_type();
+        long balance = toLong(readRequestValue(request, "balance"));
+        long monthlyAmount = toLong(readRequestValue(request, "monthlyAmount"));
+        int periodMonths = toInt(readRequestValue(request, "periodMonths"));
 
-        /*
-         * 1. 선호 상품 유형
-         */
-        if ("ALL".equals(preferredProductType)) {
-            rawScore += 4;
-        } else if (preferredProductType.equals(productType)) {
-            rawScore += 16;
-            evidenceSet.add("선호 상품 유형 일치");
+        if ("ALL".equals(preferredProductType) || preferredProductType.equals(productType)) {
+            score += 18;
+            evidence.add("선호 상품 유형 일치");
+        }
+
+        if (maxRate >= 4.0) {
+            score += 22;
+            evidence.add("최고금리 연 " + maxRate + "%");
+        } else if (maxRate >= 3.0) {
+            score += 16;
+            evidence.add("금리 조건 양호");
         } else {
-            rawScore -= 18;
-            evidenceSet.add("선호 상품 유형과 다름");
+            score += 8;
         }
 
-        /*
-         * 2. 가입 목적
-         */
-        if ("MAKE_MONEY".equals(purpose)) {
-            if ("SAVINGS".equals(productType)) {
-                rawScore += 18;
-                evidenceSet.add("목돈 만들기 목적에 적합");
-            } else {
-                rawScore -= 8;
+        if ("MAKE_MONEY".equals(purpose) && "SAVINGS".equals(productType)) {
+            score += 14;
+            evidence.add("목돈 만들기 목적에 적금 유형 적합");
+        } else if ("ROLL_MONEY".equals(purpose) && "DEPOSIT".equals(productType)) {
+            score += 14;
+            evidence.add("목돈 굴리기 목적에 예금 유형 적합");
+        } else if ("HIGH_RATE".equals(purpose)) {
+            score += 10;
+            evidence.add("고금리 우선 조건 반영");
+        }
+
+        boolean mobileJoin = "Y".equalsIgnoreCase(toText(readValue(product, "mobile_join_yn", "mobileJoinYn")));
+        boolean internetJoin = "Y".equalsIgnoreCase(toText(readValue(product, "internet_join_yn", "internetJoinYn")));
+        boolean branchJoin = "Y".equalsIgnoreCase(toText(readValue(product, "branch_join_yn", "branchJoinYn")));
+
+        if ("MOBILE".equals(preferredChannel) && mobileJoin) {
+            score += 13;
+            evidence.add("모바일 가입 가능");
+        } else if ("INTERNET".equals(preferredChannel) && internetJoin) {
+            score += 13;
+            evidence.add("인터넷 가입 가능");
+        } else if ("BRANCH".equals(preferredChannel) && branchJoin) {
+            score += 13;
+            evidence.add("영업점 가입 가능");
+        } else if ("ALL".equals(preferredChannel)) {
+            score += 8;
+        }
+
+        long targetAmount = "SAVINGS".equals(productType) ? monthlyAmount : balance;
+
+        if (targetAmount > 0) {
+            if (minAmount <= targetAmount && (maxAmount <= 0 || targetAmount <= maxAmount)) {
+                score += 12;
+                evidence.add("가입금액 조건 충족");
+            } else if (minAmount > targetAmount) {
+                score -= 6;
             }
         }
 
-        if ("ROLL_MONEY".equals(purpose)) {
-            if ("DEPOSIT".equals(productType)) {
-                rawScore += 18;
-                evidenceSet.add("목돈 굴리기 목적에 적합");
-            } else {
-                rawScore -= 8;
+        if (periodMonths > 0) {
+            if (minTerm <= periodMonths && (maxTerm <= 0 || periodMonths <= maxTerm)) {
+                score += 10;
+                evidence.add("가입기간 조건 충족");
             }
         }
 
-        if ("HIGH_RATE".equals(purpose)) {
-            int rateScore = calculateRateScore(product.getMax_interest_rate(), 6);
-            rawScore += rateScore;
-            evidenceSet.add("고금리 우선 조건 반영");
+        List<String> interestConditions = getStringList(
+                readRequestValue(request, "interestConditionsSafe", "interestConditions")
+        );
+
+        if (interestConditions.contains("HIGH_RATE") && maxRate >= 4.0) {
+            score += 10;
+            evidence.add("고금리 관심 조건 반영");
         }
 
-        if ("EMERGENCY".equals(purpose)) {
-            if (product.getMin_join_amount() <= 10000) {
-                rawScore += 14;
-                evidenceSet.add("비상금 목적에 맞는 소액 시작 가능");
-            } else {
-                rawScore -= 6;
-            }
+        if (interestConditions.contains("MOBILE") && mobileJoin) {
+            score += 8;
+            evidence.add("모바일 선호 조건 반영");
         }
 
-        /*
-         * 3. 금리 점수
-         */
-        int baseRateScore = calculateRateScore(product.getMax_interest_rate(), 4);
-        rawScore += baseRateScore;
-        evidenceSet.add("최고금리 연 " + formatRate(product.getMax_interest_rate()) + "%");
-
-        /*
-         * 4. 금액 조건
-         */
-        long availableAmount = getAvailableAmountForProduct(product, request);
-
-        if (availableAmount > 0) {
-            if (product.getMin_join_amount() <= availableAmount) {
-                rawScore += 12;
-                evidenceSet.add("가입 가능 금액 조건 충족");
-            } else {
-                rawScore -= 22;
-                evidenceSet.add("최소 가입금액 확인 필요");
-            }
+        if (interestConditions.contains("PROTECTION")
+                && "Y".equalsIgnoreCase(toText(readValue(product, "depositor_protection_yn", "depositorProtectionYn")))) {
+            score += 7;
+            evidence.add("예금자보호 대상");
         }
 
-        if (product.getMin_join_amount() <= 10000) {
-            rawScore += 5;
-
-            if (interestConditions.contains("LOW_AMOUNT")) {
-                rawScore += 11;
-                evidenceSet.add("소액 시작 가능");
-            }
-        } else if (product.getMin_join_amount() >= 1000000) {
-            if ("MAKE_MONEY".equals(purpose) || "EMERGENCY".equals(purpose)) {
-                rawScore -= 8;
-            }
+        if (interestConditions.contains("LOW_AMOUNT") && minAmount <= 10000) {
+            score += 7;
+            evidence.add("소액 가입 가능");
         }
-
-        /*
-         * 5. 가입 기간
-         */
-        if (request.getPeriodMonths() > 0) {
-            if (isPeriodAvailable(product, request.getPeriodMonths())) {
-                rawScore += 7;
-                evidenceSet.add("희망 가입 기간 조건과 유사");
-            } else {
-                rawScore -= 9;
-                evidenceSet.add("희망 가입 기간과 차이 있음");
-            }
-        }
-
-        /*
-         * 6. 가입 채널
-         */
-        if ("MOBILE".equals(preferredChannel)) {
-            if ("Y".equals(product.getMobile_join_yn())) {
-                rawScore += 14;
-                benefitChance += 9;
-                evidenceSet.add("모바일 가입 가능");
-            } else {
-                rawScore -= 12;
-                evidenceSet.add("모바일 가입 불가");
-            }
-        }
-
-        if ("INTERNET".equals(preferredChannel)) {
-            if ("Y".equals(product.getInternet_join_yn())) {
-                rawScore += 10;
-                evidenceSet.add("인터넷 가입 가능");
-            } else {
-                rawScore -= 8;
-            }
-        }
-
-        if ("BRANCH".equals(preferredChannel)) {
-            if ("Y".equals(product.getBranch_join_yn())) {
-                rawScore += 10;
-                evidenceSet.add("영업점 가입 가능");
-            } else {
-                rawScore -= 8;
-            }
-        }
-
-        if ("ALL".equals(preferredChannel) && "Y".equals(product.getMobile_join_yn())) {
-            rawScore += 4;
-            evidenceSet.add("모바일 가입 가능");
-        }
-
-        /*
-         * 7. 관심 조건
-         */
-        if (interestConditions.contains("HIGH_RATE")) {
-            rawScore += calculateRateScore(product.getMax_interest_rate(), 3);
-        }
-
-        if (interestConditions.contains("MOBILE")) {
-            if ("Y".equals(product.getMobile_join_yn())) {
-                rawScore += 8;
-                benefitChance += 6;
-                evidenceSet.add("모바일 선호 조건 반영");
-            } else {
-                rawScore -= 5;
-            }
-        }
-
-        if (interestConditions.contains("PROTECTION")) {
-            if ("Y".equals(product.getDepositor_protection_yn())) {
-                rawScore += 6;
-                evidenceSet.add("예금자보호 대상");
-            } else {
-                rawScore -= 4;
-            }
-        }
-
-        if (interestConditions.contains("PREFERENTIAL_RATE")) {
-            if (hasPreferentialCondition(product)) {
-                rawScore += 9;
-                benefitChance += 12;
-                evidenceSet.add("우대조건 확인 가능");
-            } else {
-                rawScore -= 6;
-                evidenceSet.add("우대조건 확인 필요");
-            }
-        }
-
-        /*
-         * 8. 우대조건 충족 가능성
-         */
-        benefitChance += calculateBenefitChanceBonus(product, request);
-        benefitChance = clamp(benefitChance, 28, 95);
-
-        /*
-         * 9. 상품별 과도한 점수 방지
-         */
-        rawScore = clamp(rawScore, 1, 130);
-
-        List<String> evidence = new ArrayList<>(evidenceSet);
 
         if (evidence.isEmpty()) {
-            evidence.add("조건 기반 추천");
+            evidence.add("기본 조건 기준 추천 후보");
         }
 
-        return new ScoredProduct(product, rawScore, benefitChance, evidence);
+        int rawScore = Math.max(0, Math.min(score, 100));
+        int fitPercent = Math.max(60, Math.min(rawScore + 8, 98));
+        int benefitChancePercent = Math.max(50, Math.min(60 + evidence.size() * 5, 95));
+
+        return new ScoredProduct(
+                product,
+                rawScore,
+                fitPercent,
+                benefitChancePercent,
+                evidence
+        );
     }
 
-    /*
-     * rawScore가 다 높게 나와도 최종 적합도는 1/2/3위가 자연스럽게 갈리도록 보정한다.
-     */
     private void normalizeRankScores(List<ScoredProduct> scoredProducts) {
         if (scoredProducts == null || scoredProducts.isEmpty()) {
             return;
         }
 
-        int topRawScore = scoredProducts.get(0).getRawScore();
+        int rank = 0;
 
-        for (int i = 0; i < scoredProducts.size(); i++) {
-            ScoredProduct product = scoredProducts.get(i);
+        for (ScoredProduct scoredProduct : scoredProducts) {
+            int adjusted = Math.max(60, Math.min(98, scoredProduct.getFitPercent() - rank * 3));
+            scoredProduct.setFitPercent(adjusted);
+            rank++;
+        }
+    }
 
-            int rawGap = Math.max(0, topRawScore - product.getRawScore());
-            int rankPenalty = i * 4;
+    private String createReason(
+            ProductDetailViewDto product,
+            ProductPersonaRecommendRequestDto request,
+            ScoredProduct scoredProduct
+    ) {
+        try {
+            String aiReason = productRecommendAiService.createPersonalRecommendReason(
+                    product,
+                    request,
+                    scoredProduct.getFitPercent(),
+                    scoredProduct.getBenefitChancePercent(),
+                    scoredProduct.getEvidence()
+            );
 
-            int normalized = 92 - rawGap - rankPenalty;
-
-            if (i == 0 && product.getRawScore() >= 95) {
-                normalized += 3;
+            if (aiReason != null && !aiReason.trim().isEmpty()) {
+                return aiReason.trim();
             }
 
-            if (i == 0) {
-                normalized = clamp(normalized, 88, 96);
-            } else if (i == 1) {
-                normalized = clamp(normalized, 80, 91);
-            } else if (i == 2) {
-                normalized = clamp(normalized, 72, 87);
-            } else {
-                normalized = clamp(normalized, 50, 82);
-            }
-
-            product.setFitPercent(normalized);
+        } catch (Exception e) {
+            System.out.println("[상품 AI] Spring 추천 이유 생성 실패. fallback 사용. message=" + e.getMessage());
         }
+
+        return createFallbackReason(product, scoredProduct);
     }
 
-    private int calculateRateScore(double maxRate, int multiplier) {
-        return Math.min((int) Math.round(maxRate * multiplier), 24);
+    private String createFallbackReason(ProductDetailViewDto product, ScoredProduct scoredProduct) {
+        String productName = toText(readValue(product, "product_name", "productName"), "해당 상품");
+        String productType = toText(readValue(product, "product_type", "productType")).toUpperCase();
+        double maxRate = toDouble(readValue(product, "max_interest_rate", "maxInterestRate"));
+
+        String productTypeLabel = "DEPOSIT".equals(productType) ? "예금" : "적금";
+
+        StringBuilder reason = new StringBuilder();
+
+        reason.append(productName)
+                .append("은/는 ")
+                .append(productTypeLabel)
+                .append(" 상품이며, 입력하신 조건 기준 적합도 ")
+                .append(scoredProduct.getFitPercent())
+                .append("%로 추천할 수 있습니다. ");
+
+        reason.append("최고금리 연 ")
+                .append(maxRate)
+                .append("%를 기준으로 금리 조건을 비교해볼 만합니다. ");
+
+        if (scoredProduct.getEvidence() != null && !scoredProduct.getEvidence().isEmpty()) {
+            reason.append("추천 근거로는 ")
+                    .append(String.join(", ", scoredProduct.getEvidence()))
+                    .append(" 조건이 반영되었습니다. ");
+        }
+
+        reason.append("가입 전 세부 우대조건과 상품설명서를 함께 확인하는 것이 좋습니다.");
+
+        return reason.toString();
     }
 
-    private long getAvailableAmountForProduct(ProductDetailViewDto product, ProductPersonaRecommendRequestDto request) {
-        if ("SAVINGS".equals(product.getProduct_type())) {
-            return request.getMonthlyAmount() > 0 ? request.getMonthlyAmount() : request.getBalance();
+    private String createSummary(
+            ProductPersonaRecommendRequestDto request,
+            List<ProductPersonaRecommendItemDto> resultItems
+    ) {
+        if (resultItems == null || resultItems.isEmpty()) {
+            return "조건에 맞는 추천 상품을 찾지 못했습니다.";
         }
 
-        return request.getBalance();
-    }
+        ProductPersonaRecommendItemDto first = resultItems.get(0);
 
-    private boolean isPeriodAvailable(ProductDetailViewDto product, int periodMonths) {
-        int minTerm = product.getMin_term_months();
-        int maxTerm = product.getMax_term_months();
+        String purpose = toText(readRequestValue(request, "purposeSafe", "purpose"), "MAKE_MONEY").toUpperCase();
 
-        if (minTerm <= 0 && maxTerm <= 0) {
-            return true;
-        }
-
-        if (minTerm > 0 && periodMonths < minTerm) {
-            return false;
-        }
-
-        return maxTerm <= 0 || periodMonths <= maxTerm;
-    }
-
-    private boolean hasPreferentialCondition(ProductDetailViewDto product) {
-        String text = normalizeText(
-                product.getPreferential_rate_summary()
-                        + " "
-                        + product.getCondition_note()
-                        + " "
-                        + product.getJoin_method_desc()
-        );
-
-        return text.contains("우대")
-                || text.contains("급여")
-                || text.contains("자동이체")
-                || text.contains("카드")
-                || text.contains("모바일")
-                || text.contains("비대면");
-    }
-
-    private int calculateBenefitChanceBonus(ProductDetailViewDto product, ProductPersonaRecommendRequestDto request) {
-        int bonus = 0;
-
-        String text = normalizeText(
-                product.getPreferential_rate_summary()
-                        + " "
-                        + product.getCondition_note()
-                        + " "
-                        + product.getJoin_method_desc()
-        );
-
-        List<String> conditions = request.getInterestConditionsSafe();
-
-        if (text.contains("모바일") || text.contains("비대면")) {
-            bonus += 8;
-        }
-
-        if (text.contains("자동이체")) {
-            bonus += 6;
-        }
-
-        if (text.contains("급여")) {
-            bonus += 4;
-        }
-
-        if (text.contains("카드")) {
-            bonus += 4;
-        }
-
-        if (conditions.contains("MOBILE") && "Y".equals(product.getMobile_join_yn())) {
-            bonus += 8;
-        }
-
-        if (conditions.contains("LOW_AMOUNT") && product.getMin_join_amount() <= 10000) {
-            bonus += 8;
-        }
-
-        if (conditions.contains("HIGH_RATE") && product.getMax_interest_rate() >= 3.0) {
-            bonus += 6;
-        }
-
-        if (conditions.contains("PREFERENTIAL_RATE") && hasPreferentialCondition(product)) {
-            bonus += 8;
-        }
-
-        return bonus;
-    }
-
-    private String createSummary(ProductPersonaRecommendRequestDto request,
-                                 List<ProductPersonaRecommendItemDto> items) {
-
-        if (items == null || items.isEmpty()) {
-            return "입력한 조건에 맞는 추천 상품을 찾지 못했습니다. 금액이나 상품 유형 조건을 조금 완화해 다시 시도해 주세요.";
-        }
-
-        String purposeText = getPurposeText(request.getPurposeSafe());
-        ProductPersonaRecommendItemDto topItem = items.get(0);
-
-        return purposeText
-                + " 기준으로 "
-                + topItem.getProductName()
-                + "을/를 가장 우선 추천합니다. "
-                + "적합도는 "
-                + topItem.getFitPercent()
-                + "%, 우대조건 충족 가능성은 "
-                + topItem.getBenefitChancePercent()
-                + "%로 계산되었습니다. "
-                + "금리·가입금액·가입채널·관심 조건을 함께 반영했습니다.";
-    }
-
-    private String getPurposeText(String purpose) {
-        if ("MAKE_MONEY".equals(purpose)) {
-            return "목돈 만들기 목적";
-        }
+        String purposeText;
 
         if ("ROLL_MONEY".equals(purpose)) {
-            return "목돈 굴리기 목적";
+            purposeText = "목돈 굴리기";
+        } else if ("HIGH_RATE".equals(purpose)) {
+            purposeText = "고금리 우선";
+        } else if ("EMERGENCY".equals(purpose)) {
+            purposeText = "비상금 관리";
+        } else {
+            purposeText = "목돈 만들기";
         }
 
-        if ("HIGH_RATE".equals(purpose)) {
-            return "고금리 우선 조건";
-        }
-
-        if ("EMERGENCY".equals(purpose)) {
-            return "비상금 마련 목적";
-        }
-
-        return "입력한 조건";
+        return purposeText
+                + " 목적 기준으로 "
+                + first.getProductName()
+                + "을/를 가장 우선 추천합니다. 적합도는 "
+                + first.getFitPercent()
+                + "%, 우대조건 충족 가능성은 "
+                + first.getBenefitChancePercent()
+                + "%로 계산되었습니다. 금리, 가입금액, 가입채널, 관심 조건을 함께 반영했습니다.";
     }
 
-    private String normalizeText(String value) {
+    private Object readRequestValue(ProductPersonaRecommendRequestDto request, String... names) {
+        if (request == null) {
+            return null;
+        }
+
+        return readValue(request, names);
+    }
+
+    private Object readValue(Object source, String... names) {
+        if (source == null || names == null) {
+            return null;
+        }
+
+        for (String name : names) {
+            Object value = readByMethod(source, name);
+
+            if (value != null) {
+                return value;
+            }
+
+            value = readByField(source, name);
+
+            if (value != null) {
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    private Object readByMethod(Object source, String name) {
+        List<String> methodNames = new ArrayList<>();
+
+        methodNames.add(name);
+        methodNames.add("get" + capitalize(name));
+        methodNames.add("is" + capitalize(name));
+
+        String camelName = toCamelCase(name);
+
+        methodNames.add("get" + capitalize(camelName));
+        methodNames.add("is" + capitalize(camelName));
+
+        for (String methodName : methodNames) {
+            try {
+                Method method = source.getClass().getMethod(methodName);
+
+                if (method.getParameterCount() == 0) {
+                    return method.invoke(source);
+                }
+
+            } catch (Exception ignored) {
+                // 다음 getter 후보 확인
+            }
+        }
+
+        return null;
+    }
+
+    private Object readByField(Object source, String name) {
+        List<String> fieldNames = new ArrayList<>();
+        fieldNames.add(name);
+        fieldNames.add(toCamelCase(name));
+
+        Class<?> currentClass = source.getClass();
+
+        while (currentClass != null && currentClass != Object.class) {
+            for (String fieldName : fieldNames) {
+                try {
+                    Field field = currentClass.getDeclaredField(fieldName);
+                    field.setAccessible(true);
+                    return field.get(source);
+
+                } catch (Exception ignored) {
+                    // 다음 field 후보 확인
+                }
+            }
+
+            currentClass = currentClass.getSuperclass();
+        }
+
+        return null;
+    }
+
+    private String toText(Object value) {
+        return toText(value, "");
+    }
+
+    private String toText(Object value, String defaultValue) {
         if (value == null) {
+            return defaultValue;
+        }
+
+        String text = String.valueOf(value).trim();
+
+        if (text.isEmpty()) {
+            return defaultValue;
+        }
+
+        return text;
+    }
+
+    private int toInt(Object value) {
+        if (value == null) {
+            return 0;
+        }
+
+        try {
+            return (int) Double.parseDouble(String.valueOf(value));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private long toLong(Object value) {
+        if (value == null) {
+            return 0L;
+        }
+
+        try {
+            return (long) Double.parseDouble(String.valueOf(value));
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    private double toDouble(Object value) {
+        if (value == null) {
+            return 0.0;
+        }
+
+        try {
+            return Double.parseDouble(String.valueOf(value));
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
+    private List<String> getStringList(Object value) {
+        List<String> result = new ArrayList<>();
+
+        if (value == null) {
+            return result;
+        }
+
+        if (value instanceof List<?>) {
+            for (Object item : (List<?>) value) {
+                if (item != null) {
+                    result.add(String.valueOf(item).trim().toUpperCase());
+                }
+            }
+
+            return result;
+        }
+
+        if (value instanceof String) {
+            String text = ((String) value).trim();
+
+            if (text.isEmpty()) {
+                return result;
+            }
+
+            String[] parts = text.split(",");
+
+            for (String part : parts) {
+                if (part != null && !part.trim().isEmpty()) {
+                    result.add(part.trim().toUpperCase());
+                }
+            }
+
+            return result;
+        }
+
+        return result;
+    }
+
+    private String capitalize(String text) {
+        if (text == null || text.isEmpty()) {
             return "";
         }
 
-        return value.replace("null", "").trim();
+        return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 
-    private String formatRate(double rate) {
-        return String.format("%.2f", rate);
-    }
+    private String toCamelCase(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
 
-    private int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
+        StringBuilder builder = new StringBuilder();
+        boolean upperNext = false;
+
+        for (char ch : text.toCharArray()) {
+            if (ch == '_') {
+                upperNext = true;
+                continue;
+            }
+
+            if (upperNext) {
+                builder.append(Character.toUpperCase(ch));
+                upperNext = false;
+            } else {
+                builder.append(ch);
+            }
+        }
+
+        return builder.toString();
     }
 
     private static class ScoredProduct {
+
         private final ProductDetailViewDto product;
         private final int rawScore;
+        private final int score;
+        private int fitPercent;
         private final int benefitChancePercent;
         private final List<String> evidence;
 
-        private int fitPercent;
-
-        private ScoredProduct(ProductDetailViewDto product,
-                              int rawScore,
-                              int benefitChancePercent,
-                              List<String> evidence) {
+        private ScoredProduct(
+                ProductDetailViewDto product,
+                int rawScore,
+                int fitPercent,
+                int benefitChancePercent,
+                List<String> evidence
+        ) {
             this.product = product;
             this.rawScore = rawScore;
+            this.score = rawScore;
+            this.fitPercent = fitPercent;
             this.benefitChancePercent = benefitChancePercent;
-            this.evidence = evidence;
-            this.fitPercent = rawScore;
+            this.evidence = evidence == null ? Collections.emptyList() : evidence;
         }
 
         public ProductDetailViewDto getProduct() {
@@ -533,12 +566,8 @@ public class ProductPersonaRecommendService {
             return rawScore;
         }
 
-        public int getBenefitChancePercent() {
-            return benefitChancePercent;
-        }
-
-        public List<String> getEvidence() {
-            return evidence;
+        public int getScore() {
+            return score;
         }
 
         public int getFitPercent() {
@@ -547,6 +576,14 @@ public class ProductPersonaRecommendService {
 
         public void setFitPercent(int fitPercent) {
             this.fitPercent = fitPercent;
+        }
+
+        public int getBenefitChancePercent() {
+            return benefitChancePercent;
+        }
+
+        public List<String> getEvidence() {
+            return evidence;
         }
     }
 }

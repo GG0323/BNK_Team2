@@ -38,14 +38,19 @@ public class ProductRecommendAiService {
     /**
      * 사용자 페르소나 기반 추천 이유 생성
      */
-    public String createPersonalRecommendReason(ProductDetailViewDto product,
-                                                ProductPersonaRecommendRequestDto request,
-                                                int score,
-                                                int benefitChancePercent,
-                                                List<String> evidence) {
-
+    public String createPersonalRecommendReason(
+            ProductDetailViewDto product,
+            ProductPersonaRecommendRequestDto request,
+            int score,
+            int benefitChancePercent,
+            List<String> evidence
+    ) {
         if (product == null) {
             return "추천할 상품 정보가 없습니다.";
+        }
+
+        if (request == null) {
+            request = new ProductPersonaRecommendRequestDto();
         }
 
         String prompt = buildPersonalRecommendPrompt(
@@ -74,6 +79,10 @@ public class ProductRecommendAiService {
      * 기존 fallback 추천 이유
      */
     public String createFallbackRecommendReason(ProductListViewDto product) {
+        if (product == null) {
+            return "추천할 상품 정보가 없습니다.";
+        }
+
         String productType = "DEPOSIT".equals(product.getProduct_type()) ? "예금" : "적금";
 
         String mobileText = "Y".equals(product.getMobile_join_yn())
@@ -89,12 +98,13 @@ public class ProductRecommendAiService {
                 + mobileText;
     }
 
-    private String buildPersonalRecommendPrompt(ProductDetailViewDto product,
-                                                ProductPersonaRecommendRequestDto request,
-                                                int score,
-                                                int benefitChancePercent,
-                                                List<String> evidence) {
-
+    private String buildPersonalRecommendPrompt(
+            ProductDetailViewDto product,
+            ProductPersonaRecommendRequestDto request,
+            int score,
+            int benefitChancePercent,
+            List<String> evidence
+    ) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("너는 BNK 부산은행 예금/적금 상품 추천을 도와주는 금융 상담 AI야.\n");
@@ -124,8 +134,11 @@ public class ProductRecommendAiService {
         prompt.append("최고금리: ").append(product.getMax_interest_rate()).append("\n");
         prompt.append("최소 가입금액: ").append(product.getMin_join_amount()).append("\n");
         prompt.append("최대 가입금액: ").append(product.getMax_join_amount()).append("\n");
-        prompt.append("가입 기간: ").append(product.getMin_term_months()).append("개월 ~ ")
-                .append(product.getMax_term_months()).append("개월\n");
+        prompt.append("가입 기간: ")
+                .append(product.getMin_term_months())
+                .append("개월 ~ ")
+                .append(product.getMax_term_months())
+                .append("개월\n");
         prompt.append("영업점 가입 가능 여부: ").append(product.getBranch_join_yn()).append("\n");
         prompt.append("인터넷 가입 가능 여부: ").append(product.getInternet_join_yn()).append("\n");
         prompt.append("모바일 가입 가능 여부: ").append(product.getMobile_join_yn()).append("\n");
@@ -136,16 +149,22 @@ public class ProductRecommendAiService {
         prompt.append("[추천 계산 결과]\n");
         prompt.append("적합도: ").append(score).append("%\n");
         prompt.append("우대조건 충족 가능성: ").append(benefitChancePercent).append("%\n");
-        prompt.append("추천 근거: ").append(evidence).append("\n");
+
+        if (evidence == null || evidence.isEmpty()) {
+            prompt.append("추천 근거: 기본 조건 기준 추천 후보\n");
+        } else {
+            prompt.append("추천 근거: ").append(evidence).append("\n");
+        }
 
         return prompt.toString();
     }
 
-    private String createFallbackPersonalRecommendReason(ProductDetailViewDto product,
-                                                         ProductPersonaRecommendRequestDto request,
-                                                         int score,
-                                                         int benefitChancePercent) {
-
+    private String createFallbackPersonalRecommendReason(
+            ProductDetailViewDto product,
+            ProductPersonaRecommendRequestDto request,
+            int score,
+            int benefitChancePercent
+    ) {
         String productType = "DEPOSIT".equals(product.getProduct_type()) ? "예금" : "적금";
 
         StringBuilder reason = new StringBuilder();
