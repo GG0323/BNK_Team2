@@ -9,4 +9,5 @@ public class AccountCreateDto {
 	private String accountAlias;
 	private String accountPassword;
 	private String accountPurpose;
+	private long balance;
 }

@@ -18,10 +18,12 @@ import com.example.bnk.dto.member.BankMemberDto;
 import com.example.bnk.dto.product.ProductDetailViewDto;
 import com.example.bnk.dto.product.ProductJoinEntryStatusDto;
 import com.example.bnk.dto.product.ProductJoinRequests.CompleteRequest;
+import com.example.bnk.dto.product.ProductJoinRequests.ContractRequest;
 import com.example.bnk.dto.product.ProductJoinRequests.StartRequest;
 import com.example.bnk.dto.product.ProductJoinRequests.TermsRequest;
 import com.example.bnk.service.member.BankMemberService;
 import com.example.bnk.service.product.ProductSalesService;
+import com.example.bnk.service.product.ProductTermsPdfService;
 import com.example.bnk.service.product.ProductViewService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class ProductJoinApiController {
 	private final ProductViewService productViewService;
 	private final BankMemberService bankMemberService;
 	private final IAccountDao accountDao;
+	private final ProductTermsPdfService productTermsPdfService;
 
 	@GetMapping("/entry-status")
 	public ResponseEntity<ApiResponse<?>> entryStatus(
@@ -104,27 +107,70 @@ public class ProductJoinApiController {
 		return ResponseEntity.ok(ApiResponse.ok(productSalesService.getDraftStatus(memberNo(memberDetails), productNo)));
 	}
 
+	@GetMapping("/terms-pdf")
+	public ResponseEntity<ApiResponse<?>> termsPdf(
+			@RequestParam("product_no") long productNo
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(productTermsPdfService.getTermsImages(productNo)));
+	}
+
+	@GetMapping("/withdrawal-accounts")
+	public ResponseEntity<ApiResponse<?>> withdrawalAccounts(
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				accountDao.findWithdrawableAccountsByMemberNo(memberNo(memberDetails))
+		));
+	}
+
 	@PostMapping("/terms")
 	public ResponseEntity<ApiResponse<?>> terms(
 			@AuthenticationPrincipal MemberDetails memberDetails,
 			@RequestBody TermsRequest request
 	) {
-		if (request == null || request.subscriptionNo() == null) {
-			throw new IllegalArgumentException("가입 진행 번호가 필요합니다.");
-		}
-
-		if (request.subscriptionAmount() == null || request.subscriptionMonths() == null) {
-			throw new IllegalArgumentException("가입 금액과 기간이 필요합니다.");
+		if (request == null || request.productNo() == null) {
+			throw new IllegalArgumentException("상품 번호가 필요합니다.");
 		}
 
 		return ResponseEntity.ok(ApiResponse.ok(productSalesService.saveTerms(
 				memberNo(memberDetails),
-				request.subscriptionNo(),
-				request.subscriptionAmount(),
-				request.subscriptionMonths(),
+				request.productNo(),
 				request.isRequiredTermsAgreed(),
 				request.isOptionalTermsAgreed()
 		)));
+	}
+
+	@PostMapping("/contract/confirm")
+	public ResponseEntity<ApiResponse<?>> confirmContract(
+			@AuthenticationPrincipal MemberDetails memberDetails,
+			@RequestBody ContractRequest request
+	) {
+		if (request == null || request.subscriptionNo() == null) {
+			throw new IllegalArgumentException("가입 진행 번호가 필요합니다.");
+		}
+
+		if (request.linkedAccountNo() == null
+				|| request.subscriptionAmount() == null
+				|| request.subscriptionMonths() == null) {
+			throw new IllegalArgumentException("출금계좌, 가입금액, 가입기간이 필요합니다.");
+		}
+
+		return ResponseEntity.ok(ApiResponse.ok(productSalesService.updateContract(
+				memberNo(memberDetails),
+				request.subscriptionNo(),
+				request.linkedAccountNo(),
+				request.subscriptionAmount(),
+				request.subscriptionMonths()
+		)));
+	}
+
+	@GetMapping("/security-card/challenge")
+	public ResponseEntity<ApiResponse<?>> securityCardChallenge(
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		return ResponseEntity.ok(ApiResponse.ok(
+				productSalesService.createSecurityCardChallenge(memberNo(memberDetails))
+		));
 	}
 
 	@PostMapping("/complete")
@@ -139,7 +185,11 @@ public class ProductJoinApiController {
 		return ResponseEntity.ok(ApiResponse.ok(productSalesService.completeJoin(
 				memberNo(memberDetails),
 				request.subscriptionNo(),
-				request.accountPurpose()
+				request.accountPassword(),
+				request.frontIndex(),
+				request.backIndex(),
+				request.frontAnswer(),
+				request.backAnswer()
 		)));
 	}
 

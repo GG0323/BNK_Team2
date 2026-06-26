@@ -64,7 +64,10 @@ public class MemberSecurityConfig {
 				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/member/accounts/open"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/member/accounts/open/**"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.PUT, "/api/member/accounts/open/**"),
-				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/member/accounts/open/**")
+				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/member/accounts/open/**"),
+				PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/products/join/**"),
+				PathPatternRequestMatcher.pathPattern(HttpMethod.PUT, "/api/products/join/**"),
+				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/products/join/**")
 		));
 		http.cors(Customizer.withDefaults());
 		http.exceptionHandling(exception -> exception
@@ -140,8 +143,9 @@ public class MemberSecurityConfig {
 		return (request, response, accessDeniedException) -> {
 			String path = request.getRequestURI();
 			boolean accountOpenRequest = "/api/member/accounts/open".equals(path);
+			boolean productJoinRequest = path.startsWith("/api/products/join/");
 
-			if (accountOpenRequest) {
+			if (accountOpenRequest || productJoinRequest) {
 				Authentication authentication = org.springframework.security.core.context.SecurityContextHolder
 						.getContext()
 						.getAuthentication();
@@ -149,7 +153,7 @@ public class MemberSecurityConfig {
 						|| accessDeniedException instanceof InvalidCsrfTokenException;
 
 				log.warn(
-						"account open access denied: chain=memberFilterChain, path={}, method={}, csrfDenied={}, exception={}, authenticationExists={}, principalType={}, authorities={}",
+						"member api access denied: chain=memberFilterChain, path={}, method={}, csrfDenied={}, exception={}, authenticationExists={}, principalType={}, authorities={}",
 						path,
 						request.getMethod(),
 						csrfDenied,
