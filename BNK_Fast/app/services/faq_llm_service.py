@@ -148,6 +148,7 @@ class FaqLlmService:
         history: list,
         fallback: str | None = None,
     ) -> str:
+        # 여기서 하드코딩으로 문의하기로 안내할 수 있을까?
         system_prompt = (
             "너는 부산은행 고객을 돕는 친절한 FAQ 상담 챗봇이야.\n"
             "아래 제공된 FAQ 내용만 근거로 답변해. FAQ에 없는 내용은 절대 지어내지 마.\n"
