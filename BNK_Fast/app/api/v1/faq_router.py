@@ -32,8 +32,8 @@ class FaqAddRequest(BaseModel):
     answer: str
 
 
-
-# FaQ 컨트롤러
+ 
+# FaQ 컨트롤러  
 @router.post("/2/faq")
 def faq(payload: FaqRequest) -> Dict[str, Any]:
     question = payload.query
@@ -48,12 +48,12 @@ def faq(payload: FaqRequest) -> Dict[str, Any]:
     history = [msg.model_dump() for msg in payload.history]
     return faq_service.search_faq(question.strip(), history=history)
 
-# faqs.json 최신화, 백터 DB 리빌드
+# faqs.json 최신화, 백터 DB 리빌드  /fast/api/ai/2/faqs
 @router.post("/2/faqs", response_model=bool)
 def add_faq(payload: FaqAddRequest) -> bool:
     return faq_admin_service.add_faq(payload.question, payload.answer)
 
-# 파이프라인 호출 컨트롤러
+# 파이프라인 호출 컨트롤러  /fast/api/ai/2/faq/refresh
 @router.post("/2/faq/refresh")
 def refresh_candidates() -> Dict[str, Any]:
     return faq_pipeline_service.refresh_candidates()

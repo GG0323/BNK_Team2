@@ -48,6 +48,7 @@ EMBED_MODEL = OPENAI_EMBED_MODEL or "text-embedding-3-small"
 HERE = Path(__file__).resolve().parent
 CACHE_DIR = BASE_DIR / "vector_stores" / "pipeline_cache"
 GAP_PATH = CACHE_DIR / "gap_result.json"   # 단독 실행 시 입력으로 읽는 파일
+# 임계값 설정
 DUP_THRESHOLD = 0.6                          # 같은 주제로 볼 후보 간 유사도 기준
 
 client = OpenAI(api_key=OPENAI_API_KEY)
