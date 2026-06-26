@@ -9,8 +9,13 @@ class ApiConstants {
   static const String memberMypage = '/api/member/mypage';
   static const String memberAccounts = '/api/member/myaccounts';
 
-  static const String products = '/api/products/member';
+  static const String products = '/api/products';
   static const String productAiRecommend = '/api/products/ai/recommend';
+  static const String productJoinEntryStatus = '/api/products/join/entry-status';
+  static const String productJoinStart = '/api/products/join/start';
+  static const String productJoinStatus = '/api/products/join/status';
+  static const String productJoinTerms = '/api/products/join/terms';
+  static const String productJoinComplete = '/api/products/join/complete';
 
   static const String reservationBranches = '/api/member/reservation/branches';
   static const String reservationSlots = '/api/member/reservation/slots';

@@ -8,7 +8,7 @@
 	<select id="countProductSalesByMemberNo" parameterType="long" resultType="int">
         SELECT COUNT(*)
         FROM tb_product_sales
-        WHERE MEMBER_NO = #{memberNo}
+        WHERE MEMBER_NO = #{memberNo} AND subscription_status = 'COMPLETE'
     </select>
 
 	<!-- 사용자가 가입한 상품 리스트 출력 -->
@@ -45,6 +45,115 @@
     	WHERE member_no = #{member_no}
     	AND account_no = #{account_no}
     </select>
+
+    <select id="findDraftByMemberAndProduct" resultType="com.example.bnk.dto.product.ProductJoinDraftDto">
+        SELECT *
+        FROM (
+            SELECT
+                s.SUBSCRIPTION_NO,
+                s.MEMBER_NO,
+                s.PRODUCT_NO,
+                s.ACCOUNT_NO,
+                s.JOIN_CHANNEL,
+                s.APPLIED_INTEREST_RATE,
+                s.SUBSCRIPTION_MONTHS,
+                s.SUBSCRIPTION_AMOUNT,
+                s.AUTO_TRANSFER_AMOUNT,
+                s.LINKED_ACCOUNT_ID,
+                s.SUBSCRIBED_AT,
+                s.MATURITY_DATE,
+                s.SUBSCRIPTION_STATUS,
+                s.REQUIRED_TERMS_AGREED,
+                s.OPTIONAL_TERMS_AGREED,
+                s.CREATED_AT,
+                s.UPDATED_AT,
+                p.PRODUCT_NAME,
+                p.PRODUCT_TYPE
+            FROM TB_PRODUCT_SALES s
+            JOIN TB_PRODUCT p ON s.PRODUCT_NO = p.PRODUCT_NO
+            WHERE s.MEMBER_NO = #{memberNo}
+              AND s.PRODUCT_NO = #{productNo}
+              AND s.SUBSCRIPTION_STATUS = 'DRAFT'
+            ORDER BY s.UPDATED_AT DESC NULLS LAST, s.CREATED_AT DESC NULLS LAST, s.SUBSCRIPTION_NO DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+
+    <select id="findBySubscriptionNo" resultType="com.example.bnk.dto.product.ProductJoinDraftDto">
+        SELECT
+            s.SUBSCRIPTION_NO,
+            s.MEMBER_NO,
+            s.PRODUCT_NO,
+            s.ACCOUNT_NO,
+            s.JOIN_CHANNEL,
+            s.APPLIED_INTEREST_RATE,
+            s.SUBSCRIPTION_MONTHS,
+            s.SUBSCRIPTION_AMOUNT,
+            s.AUTO_TRANSFER_AMOUNT,
+            s.LINKED_ACCOUNT_ID,
+            s.SUBSCRIBED_AT,
+            s.MATURITY_DATE,
+            s.SUBSCRIPTION_STATUS,
+            s.REQUIRED_TERMS_AGREED,
+            s.OPTIONAL_TERMS_AGREED,
+            s.CREATED_AT,
+            s.UPDATED_AT,
+            p.PRODUCT_NAME,
+            p.PRODUCT_TYPE
+        FROM TB_PRODUCT_SALES s
+        JOIN TB_PRODUCT p ON s.PRODUCT_NO = p.PRODUCT_NO
+        WHERE s.MEMBER_NO = #{memberNo}
+          AND s.SUBSCRIPTION_NO = #{subscriptionNo}
+    </select>
+
+    <insert id="insertDraft">
+        INSERT INTO TB_PRODUCT_SALES (
+            MEMBER_NO,
+            PRODUCT_NO,
+            JOIN_CHANNEL,
+            LINKED_ACCOUNT_ID,
+            SUBSCRIPTION_STATUS,
+            REQUIRED_TERMS_AGREED,
+            OPTIONAL_TERMS_AGREED,
+            CREATED_AT,
+            UPDATED_AT
+        ) VALUES (
+            #{memberNo},
+            #{productNo},
+            'MOBILE',
+            #{linkedAccountId, jdbcType=NUMERIC},
+            'DRAFT',
+            0,
+            0,
+            SYSDATE,
+            SYSDATE
+        )
+    </insert>
+
+    <update id="updateDraftTerms">
+        UPDATE TB_PRODUCT_SALES
+        SET SUBSCRIPTION_AMOUNT = #{subscriptionAmount},
+            SUBSCRIPTION_MONTHS = #{subscriptionMonths},
+            REQUIRED_TERMS_AGREED = #{requiredTermsAgreed},
+            OPTIONAL_TERMS_AGREED = #{optionalTermsAgreed},
+            UPDATED_AT = SYSDATE
+        WHERE MEMBER_NO = #{memberNo}
+          AND SUBSCRIPTION_NO = #{subscriptionNo}
+          AND SUBSCRIPTION_STATUS = 'DRAFT'
+    </update>
+
+    <update id="completeDraft">
+        UPDATE TB_PRODUCT_SALES
+        SET ACCOUNT_NO = #{accountNo},
+            APPLIED_INTEREST_RATE = #{appliedInterestRate},
+            SUBSCRIBED_AT = SYSDATE,
+            MATURITY_DATE = #{maturityDate},
+            SUBSCRIPTION_STATUS = 'COMPLETE',
+            UPDATED_AT = SYSDATE
+        WHERE MEMBER_NO = #{memberNo}
+          AND SUBSCRIPTION_NO = #{subscriptionNo}
+          AND SUBSCRIPTION_STATUS = 'DRAFT'
+    </update>
     
     
 </mapper>
