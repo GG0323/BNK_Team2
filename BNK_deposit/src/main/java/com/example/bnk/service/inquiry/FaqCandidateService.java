@@ -46,21 +46,11 @@ public class FaqCandidateService {
         System.out.println("FAQ 후보 갱신 요청 → FastAPI 호출");
         
         
-     // ── 임시: FastAPI 완성 전까지 가짜로 동작 ──
-        System.out.println("FAQ 후보 갱신 요청 (임시 - 파이썬 호출 안 함)");
-        try {
-            Thread.sleep(8000);   // 3초 동안 일하는 척 (빙글빙글 확인용)
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        return Map.of("ok", true, "new_candidates", 0, "message", "임시 응답");
-
-        
-        // 진짜 작동 코드
-//        return restClient.post()
-//                .uri("/refresh-faq-candidates")
-//                .retrieve()
-//                .body(Map.class);
+        /** Fast Api 호출 !!!! */
+        return restClient.post()
+                .uri("/fast/api/ai/2/faq/refresh")
+                .retrieve()
+                .body(Map.class);
     }
 	
     
@@ -102,7 +92,7 @@ public class FaqCandidateService {
         System.out.println("Fast API add_faq 호출: " + question);
         
 
-        // ── FastAPI 완성되면 위를 지우고 아래 살리기 ──
+        /** Fast Api 호출 !!!! */
         return restClient.post()
                 .uri("/fast/api/ai/2/faqs")
                 .body(Map.of("question", question, "answer", answer))
