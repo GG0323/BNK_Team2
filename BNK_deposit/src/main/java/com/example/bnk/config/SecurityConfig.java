@@ -33,7 +33,7 @@ public class SecurityConfig {
 		// 권한별 제어
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/css/**", "/js/**", "/images/**", "/img/**", "/fonts/**", "/favicon.ico").permitAll()
-				.requestMatchers("/common/**").permitAll()
+				.requestMatchers("/common/**", "/api/**").permitAll()
 				.anyRequest().authenticated()
 		);
 		

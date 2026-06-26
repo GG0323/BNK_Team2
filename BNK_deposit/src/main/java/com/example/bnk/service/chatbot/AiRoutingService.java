@@ -81,4 +81,50 @@ public class AiRoutingService {
             return "DEFAULT"; 
         }
     }
+    
+public String determineRoutingIntent2(String aiMessage) {
+        
+        String systemPrompt = 
+            "너는 답변을 다듬어주는 'AI 언어 엔진'이다." + 
+        	"너에게 주어진 답변을 대답형식으로 다듬어라." + 
+            "말은 무조건 높임말로 바꾸어야 하며, 있는 말 그대로를 사용하여야한다."+
+        	"만약 '죄송합니다. 현재 준비중입니다.'라는 답변을 받으면 그대로 출력하면 된다.";
+
+        try {
+            // 1. OpenAI 표준 규격에 맞게 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(apiKey);
+
+            // 2. OpenAI Chat Completion 규격 데이터 본문(Body) 빌드
+            Map<String, Object> requestBody = new HashMap<>();
+            requestBody.put("model", MODEL_NAME);
+
+            List<Map<String, String>> messages = new ArrayList<>();
+            messages.add(Map.of("role", "system", "content", systemPrompt));
+            messages.add(Map.of("role", "user", "content", aiMessage));
+            requestBody.put("messages", messages);
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+            // 3. OpenAI 서버로 직접 POST 통신 요청 날리기
+            ResponseEntity<Map> response = restTemplate.postForEntity(OPENAI_URL, entity, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                // 4. 복잡한 OpenAI JSON 결과 트리에서 정답 단어만 쏙 파싱하기
+                List choices = (List) response.getBody().get("choices");
+                Map firstChoice = (Map) choices.get(0);
+                Map messageResult = (Map) firstChoice.get("message");
+                String intentResult = (String) messageResult.get("content");
+
+                return intentResult.trim().toUpperCase();
+            }
+            
+            return "DEFAULT";
+
+        } catch (Exception e) {
+            System.err.println("OpenAI Direct API 통신 에러: " + e.getMessage());
+            return "DEFAULT"; 
+        }
+    }
 }
