@@ -411,7 +411,7 @@ function initBiniHeroGuide() {
 
                 if (isPreparingAnswer(finalAnswer)) {
                     finalIntent = 'GUIDE';
-                    finalAnswer = '아직은 예금, 적금, 금리 같은 금융용어 설명을 중심으로 도와드릴 수 있어요. “적금이 뭐야?”, “금리가 뭐야?”처럼 물어보세요.';
+                    finalAnswer = '예금, 적금, 금리 같은 금융용어과 FAQ 중심으로 도와드릴 수 있어요.';
                 }
 
                 appendBiniMessage('system', finalAnswer);
