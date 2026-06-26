@@ -32,7 +32,7 @@ from pathlib import Path
 
 import numpy as np
 from openai import OpenAI
-from sklearn.cluster import HDBSCAN          # pip install scikit-learn
+from sklearn.cluster import HDBSCAN
 from sklearn.preprocessing import normalize
 
 from app.core.config import BASE_DIR, OPENAI_API_KEY, OPENAI_EMBED_MODEL

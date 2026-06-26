@@ -125,6 +125,53 @@ class ApiClient {
     }
   }
 
+  Future<void> postForRedirect(
+    String path, {
+    bool useAuthCookie = false,
+  }) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}$path');
+    final headers = await _makeHeaders(
+      useAuthCookie: useAuthCookie,
+      includeContentType: false,
+    );
+
+    debugPrint('================ API POST REDIRECT ================');
+    debugPrint('[API URL] $uri');
+    debugPrint('[API HEADERS] ${_headersForLog(headers)}');
+    debugPrint('===================================================');
+
+    try {
+      final request = http.Request('POST', uri)
+        ..headers.addAll(headers)
+        ..followRedirects = false;
+
+      final streamed = await _client.send(request).timeout(_timeout);
+      final response = await http.Response.fromStream(streamed);
+
+      debugPrint('================ API RESPONSE ================');
+      debugPrint('[API STATUS] ${response.statusCode}');
+      debugPrint('[API BODY] ${utf8.decode(response.bodyBytes)}');
+      debugPrint('==============================================');
+
+      await _saveAuthCookieFrom(response);
+
+      if (response.statusCode >= 200 && response.statusCode < 400) {
+        return;
+      }
+
+      throw Exception('요청 처리 중 오류가 발생했습니다.');
+    } on TimeoutException {
+      debugPrint('[API ERROR] TimeoutException');
+      throw Exception(_timeoutMessage);
+    } on SocketException catch (error) {
+      debugPrint('[API ERROR] SocketException: $error');
+      throw Exception(_socketMessage);
+    } catch (error) {
+      debugPrint('[API ERROR] $error');
+      throw Exception(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
   Future<Map<String, dynamic>> get(
     String path, {
     bool useAuthCookie = false,
@@ -363,7 +410,14 @@ class ApiClient {
   Map<String, dynamic> _jsonBodyForLog(Map<String, dynamic> body) {
     final safeBody = Map<String, dynamic>.from(body);
 
-    for (final key in ['pin', 'answer1', 'answer2', 'password', 'frontAnswer', 'backAnswer']) {
+    for (final key in [
+      'pin',
+      'answer1',
+      'answer2',
+      'password',
+      'frontAnswer',
+      'backAnswer',
+    ]) {
       if (safeBody.containsKey(key)) {
         safeBody[key] = '***';
       }

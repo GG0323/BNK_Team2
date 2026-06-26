@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/secure_storage.dart';
+import '../../data/services/auth_api.dart';
 import '../auth/login_screen.dart';
 import '../home/home_screen.dart';
 
 class PinLoginScreen extends StatefulWidget {
   final String memberName;
 
-  const PinLoginScreen({
-    super.key,
-    required this.memberName,
-  });
+  const PinLoginScreen({super.key, required this.memberName});
 
   @override
   State<PinLoginScreen> createState() => _PinLoginScreenState();
 }
 
 class _PinLoginScreenState extends State<PinLoginScreen> {
+  final AuthApi _authApi = AuthApi();
+
   String _currentPin = '';
   List<String> _keypadNumbers = [];
 
@@ -70,9 +70,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => HomeScreen(
-            memberName: widget.memberName,
-          ),
+          builder: (_) => HomeScreen(memberName: widget.memberName),
         ),
       );
       return;
@@ -95,15 +93,13 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   }
 
   Future<void> _goToLoginAgain() async {
-    await SecureStorage.clearAll();
+    await _authApi.logout();
 
     if (!mounted) return;
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
   }
 
@@ -120,10 +116,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: filled ? AppColors.textPrimary : Colors.transparent,
-            border: Border.all(
-              color: AppColors.textPrimary,
-              width: 2,
-            ),
+            border: Border.all(color: AppColors.textPrimary, width: 2),
           ),
         );
       }),
@@ -141,18 +134,13 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(
-              color: AppColors.border,
-            ),
+            side: const BorderSide(color: AppColors.border),
           ),
         ),
         onPressed: () => _onNumberTap(text),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-          ),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
       ),
     );
@@ -206,15 +194,9 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildTextButton(
-              text: '삭제',
-              onPressed: _onDeleteTap,
-            ),
+            _buildTextButton(text: '삭제', onPressed: _onDeleteTap),
             _buildNumberButton(lastNumber),
-            _buildTextButton(
-              text: '재배열',
-              onPressed: _shuffleKeypad,
-            ),
+            _buildTextButton(text: '재배열', onPressed: _shuffleKeypad),
           ],
         ),
       ],

@@ -31,10 +31,11 @@ from pathlib import Path
 import chromadb
 from openai import OpenAI
 
-from app.core.config import BASE_DIR, OPENAI_API_KEY, OPENAI_EMBED_MODEL
+from app.core.config import OPENAI_API_KEY, OPENAI_EMBED_MODEL
 from app.services.faq_pipeline.p1_load_inquiries import fetch_inquiries  # 평가에서 순서 확인용
 
 HERE = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parents[3]
 
 EMBED_MODEL = OPENAI_EMBED_MODEL or "text-embedding-3-small"
 # 팀원 코드(FaqAdminService/FaqLlmService)와 동일한 FAQ 벡터DB 를 본다.
