@@ -102,6 +102,7 @@ public class ProductApiController {
 
         List<ProductListViewDto> productList =
                 productViewService.getProductListForMember(
+                        member.getMember_no(),
                         member.getMember_type(),
                         sort,
                         productType
@@ -136,6 +137,7 @@ public class ProductApiController {
 
         List<ProductListViewDto> productList =
                 productViewService.searchProductListForMember(
+                        member.getMember_no(),
                         member.getMember_type(),
                         keyword,
                         sort,

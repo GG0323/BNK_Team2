@@ -85,7 +85,13 @@ public class AiOrchestratorController {
         // 3단계: 클라이언트(웹 프론트 및 플러터)가 받기 좋은 규격으로 리턴
         Map<String, Object> result = new HashMap<>();
         result.put("intent", intent);       // 어떤 AI가 일했는지 트래킹용
-        result.put("answer", finalAnswer);   // 실제 유저가 볼 답변
+        
+        String realLastAnswer = aiRoutingService.determineRoutingIntent2(finalAnswer);
+
+        
+        result.put("answer", realLastAnswer);   // 실제 유저가 볼 답변
+        
+        
         
         return ResponseEntity.ok(result);
     }

@@ -16,222 +16,6 @@ function openCalculatorPopup() {
     );
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    initChatbotTrail();
-    initChatbotMessageEngine();
-    initBiniHeroGuide();
-	initBiniExpressionEasterEgg();
-});
-
-function initChatbotTrail() {
-    const chatbot = document.getElementById('trailChatbot');
-    const chatbotWindow = document.getElementById('chatbotWindow');
-    const closeBtn = document.getElementById('closeChatbot');
-    const chatbotInput = document.getElementById('chatbotInput');
-
-    if (!chatbot || !chatbotWindow || !closeBtn) {
-        return;
-    }
-
-    const CONTENT_WIDTH = 1200;
-    const CHATBOT_SIZE = 70;
-    const TOP_LIMIT = 120;
-    const EDGE_GAP = 15;
-
-    function getSafePosition(x, y) {
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-
-        let safeX = x;
-        let safeY = y;
-
-        if (safeX < EDGE_GAP) {
-            safeX = EDGE_GAP;
-        }
-
-        if (safeX > windowWidth - CHATBOT_SIZE - EDGE_GAP) {
-            safeX = windowWidth - CHATBOT_SIZE - EDGE_GAP;
-        }
-
-        if (safeY < TOP_LIMIT) {
-            safeY = TOP_LIMIT;
-        }
-
-        if (safeY > windowHeight - CHATBOT_SIZE - EDGE_GAP) {
-            safeY = windowHeight - CHATBOT_SIZE - EDGE_GAP;
-        }
-
-        return {
-            x: safeX,
-            y: safeY
-        };
-    }
-
-    function moveChatbot(x, y) {
-        const position = getSafePosition(x, y);
-        chatbot.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`;
-    }
-
-    function setDefaultChatbotPosition() {
-        const windowWidth = window.innerWidth;
-        const rightTrackX = (windowWidth + CONTENT_WIDTH) / 2 + 20;
-
-        const defaultX = Math.min(
-            rightTrackX,
-            windowWidth - CHATBOT_SIZE - 30
-        );
-
-        moveChatbot(defaultX, 180);
-    }
-
-    setDefaultChatbotPosition();
-
-    window.addEventListener('resize', setDefaultChatbotPosition);
-
-    window.addEventListener('mousemove', function (e) {
-        const windowWidth = window.innerWidth;
-
-        const rightTrackX = (windowWidth + CONTENT_WIDTH) / 2 + 20;
-
-        let targetX = rightTrackX;
-
-        if (e.clientX > rightTrackX) {
-            targetX = e.clientX - (CHATBOT_SIZE / 2);
-        }
-
-        const targetY = e.clientY - (CHATBOT_SIZE / 2);
-
-        moveChatbot(targetX, targetY);
-    });
-
-    chatbot.addEventListener('click', function (e) {
-        e.stopPropagation();
-
-        chatbotWindow.classList.add('active');
-        chatbot.classList.add('hidden');
-
-        setTimeout(function () {
-            if (chatbotInput) {
-                chatbotInput.focus();
-            }
-        }, 200);
-    });
-
-    closeBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-
-        chatbotWindow.classList.remove('active');
-        chatbot.classList.remove('hidden');
-    });
-
-    chatbotWindow.addEventListener('click', function (e) {
-        e.stopPropagation();
-    });
-
-    document.addEventListener('click', function () {
-        if (chatbotWindow.classList.contains('active')) {
-            chatbotWindow.classList.remove('active');
-            chatbot.classList.remove('hidden');
-        }
-    });
-}
-
-function initChatbotMessageEngine() {
-    const sendBtn = document.getElementById('sendBtn');
-    const chatbotInput = document.getElementById('chatbotInput');
-    const chatbotMessages = document.querySelector('.chatbot-messages');
-
-    if (!sendBtn || !chatbotInput || !chatbotMessages) {
-        return;
-    }
-
-    sendBtn.addEventListener('click', sendMessage);
-
-    chatbotInput.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    function sendMessage() {
-        const messageText = chatbotInput.value.trim();
-
-        if (!messageText) {
-            return;
-        }
-
-        appendMessage('user', messageText);
-        chatbotInput.value = '';
-
-        const loadingDiv = appendMessage('system', '부기가 답변을 생각하고 있어요... 🤖');
-
-        fetch('/api/orchestrator/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: messageText
-            })
-        })
-            .then(function (response) {
-                if (!response.ok) {
-                    throw new Error('네트워크 응답 실패');
-                }
-
-                const contentType = response.headers.get('content-type');
-
-                if (contentType && contentType.indexOf('application/json') !== -1) {
-                    return response.json();
-                }
-
-                return response.text().then(function (text) {
-                    return {
-                        answer: text,
-                        intent: 'DEFAULT'
-                    };
-                });
-            })
-            .then(function (data) {
-                if (loadingDiv) {
-                    loadingDiv.remove();
-                }
-
-                console.log('챗봇 라우팅 결과:', data.intent);
-
-                const finalAnswer = data.answer || String(data);
-                appendMessage('system', finalAnswer);
-            })
-            .catch(function (error) {
-                console.error('Chatbot Connect Error:', error);
-
-                if (loadingDiv) {
-                    loadingDiv.remove();
-                }
-
-                appendMessage('system', '죄송합니다. 서버 통신에 실패했습니다. 다시 시도해 주세요.');
-            });
-    }
-
-    function appendMessage(sender, text) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender);
-
-        const p = document.createElement('p');
-        p.textContent = text;
-
-        messageDiv.appendChild(p);
-        chatbotMessages.appendChild(messageDiv);
-
-        chatbotMessages.scrollTo({
-            top: chatbotMessages.scrollHeight,
-            behavior: 'smooth'
-        });
-
-        return messageDiv;
-    }
-}
 
 /* =========================
    비니 배너형 AI 가이드
@@ -242,9 +26,13 @@ function initBiniHeroGuide() {
     const openBtn = document.getElementById('openBiniGuide');
     const closeBtn = document.getElementById('closeBiniGuide');
     const biniCharacter = document.getElementById('biniCharacter');
+    const biniPreviewCharacter = document.getElementById('biniPreviewCharacter');
     const input = document.getElementById('biniHeroInput');
     const sendBtn = document.getElementById('biniHeroSendBtn');
     const messages = document.getElementById('biniHeroMessages');
+    const quickButtons = document.querySelectorAll('[data-bini-question]');
+    const previewCard = document.getElementById('biniPreviewCard');
+    const closeTipBtn = document.getElementById('closeBiniTip');
 
     if (!heroSection || !openBtn || !closeBtn || !biniCharacter || !input || !sendBtn || !messages) {
         return;
@@ -252,26 +40,20 @@ function initBiniHeroGuide() {
 
     let expressionTimer = null;
 
-    openBtn.addEventListener('click', function () {
-        heroSection.classList.add('bini-mode');
-        setBiniExpression('greeting');
+    openBtn.addEventListener('click', openBiniChat);
 
-        setTimeout(function () {
-            input.focus();
-            setBiniExpression('default');
-        }, 1200);
+    if (closeTipBtn && previewCard) {
+        closeTipBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            previewCard.classList.add('is-tip-hidden');
+        });
+    }
+
+    closeBtn.addEventListener('click', closeBiniChat);
+
+    sendBtn.addEventListener('click', function () {
+        sendBiniMessage();
     });
-
-    closeBtn.addEventListener('click', function () {
-        setBiniExpression('thanks');
-
-        setTimeout(function () {
-            heroSection.classList.remove('bini-mode');
-            setBiniExpression('default');
-        }, 350);
-    });
-
-    sendBtn.addEventListener('click', sendBiniMessage);
 
     input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -280,13 +62,67 @@ function initBiniHeroGuide() {
         }
     });
 
+    quickButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const question = button.dataset.biniQuestion;
+
+            input.value = question;
+            sendBiniMessage();
+        });
+    });
+
+    function openBiniChat() {
+        heroSection.classList.add('bini-mode');
+
+        const biniView = heroSection.querySelector('.hero-bini-view');
+
+        if (biniView) {
+            biniView.setAttribute('aria-hidden', 'false');
+        }
+
+        setBiniExpression('greeting');
+
+        setTimeout(function () {
+            input.focus();
+            setBiniExpression('default');
+        }, 760);
+    }
+
+    function closeBiniChat() {
+        setBiniExpression('thanks');
+
+        setTimeout(function () {
+            heroSection.classList.remove('bini-mode');
+
+            const biniView = heroSection.querySelector('.hero-bini-view');
+
+            if (biniView) {
+                biniView.setAttribute('aria-hidden', 'true');
+            }
+
+            setBiniExpression('default');
+
+            if (biniPreviewCharacter) {
+                biniPreviewCharacter.dataset.expression = 'greeting';
+            }
+        }, 340);
+    }
+
     function setBiniExpression(expression) {
         clearTimeout(expressionTimer);
-        biniCharacter.dataset.expression = expression || 'default';
+
+        const nextExpression = expression || 'default';
+
+        biniCharacter.dataset.expression = nextExpression;
+
+        if (biniPreviewCharacter) {
+            biniPreviewCharacter.dataset.expression = nextExpression === 'default' ? 'greeting' : nextExpression;
+        }
     }
 
     function resetBiniExpressionLater(delay) {
         clearTimeout(expressionTimer);
+
         expressionTimer = setTimeout(function () {
             if (heroSection.classList.contains('bini-mode')) {
                 setBiniExpression('default');
@@ -294,20 +130,31 @@ function initBiniHeroGuide() {
         }, delay || 4500);
     }
 
-    function sendBiniMessage() {
-        const messageText = input.value.trim();
+    function sendBiniMessage(forcedMessage) {
+        const messageText = String(forcedMessage || input.value || '').trim();
 
         if (!messageText) {
             setBiniExpression('surprised');
-            resetBiniExpressionLater(1600);
+            appendBiniMessage('system', '궁금한 금융용어를 입력해 주세요. 예를 들면 “적금이 뭐야?”처럼 물어볼 수 있어요.');
+            resetBiniExpressionLater(2000);
             return;
         }
 
         appendBiniMessage('user', messageText);
         input.value = '';
+
+        const localAnswer = getLocalBiniAnswer(messageText);
+
+        if (localAnswer) {
+            setBiniExpression(localAnswer.expression);
+            appendBiniMessage('system', localAnswer.answer);
+            resetBiniExpressionLater(4200);
+            return;
+        }
+
         setBiniExpression('thinking');
 
-        const loadingDiv = appendBiniMessage('system', '비니가 답변을 생각하고 있어요...');
+        const loadingDiv = appendBiniMessage('system', '비니가 답변을 생각하고 있어요.');
 
         fetch('/api/orchestrator/chat', {
             method: 'POST',
@@ -343,10 +190,17 @@ function initBiniHeroGuide() {
 
                 console.log('비니 라우팅 결과:', data.intent);
 
-                const finalAnswer = data.answer || String(data);
+                let finalAnswer = data.answer || String(data);
+                let finalIntent = data.intent || 'DEFAULT';
+
+                if (isPreparingAnswer(finalAnswer)) {
+                    finalIntent = 'GUIDE';
+                    finalAnswer = '아직은 예금, 적금, 금리 같은 금융용어 설명을 중심으로 도와드릴 수 있어요. “적금이 뭐야?”, “금리가 뭐야?”처럼 물어보세요.';
+                }
+
                 appendBiniMessage('system', finalAnswer);
 
-                setBiniExpression(getBiniExpression(data.intent, finalAnswer));
+                setBiniExpression(getBiniExpression(finalIntent, finalAnswer));
                 resetBiniExpressionLater(5000);
             })
             .catch(function (error) {
@@ -356,7 +210,7 @@ function initBiniHeroGuide() {
                     loadingDiv.remove();
                 }
 
-                appendBiniMessage('system', '죄송합니다. 서버 통신에 실패했습니다. 다시 시도해 주세요.');
+                appendBiniMessage('system', '죄송합니다. 서버 통신에 실패했습니다. 지금은 “적금이 뭐야?” 같은 금융용어 질문을 다시 시도해 주세요.');
                 setBiniExpression('sad');
                 resetBiniExpressionLater(5000);
             });
@@ -380,9 +234,49 @@ function initBiniHeroGuide() {
         return messageDiv;
     }
 
+    function getLocalBiniAnswer(message) {
+        const text = String(message || '')
+            .trim()
+            .replace(/[?!！?。.,~\s]/g, '')
+            .toLowerCase();
+
+        const greetings = ['안녕', '안녕하세요', '하이', 'hi', 'hello', '헬로'];
+
+        if (greetings.includes(text)) {
+            return {
+                expression: 'greeting',
+                answer: '안녕하세요! 저는 예금, 적금, 금리 같은 금융용어를 쉽게 설명해드리는 비니예요. “적금이 뭐야?”처럼 물어보세요.'
+            };
+        }
+
+        if (text === '고마워' || text === '감사' || text === '감사합니다') {
+            return {
+                expression: 'thanks',
+                answer: '천만에요! 어려운 금융용어가 있으면 언제든 물어봐 주세요.'
+            };
+        }
+
+        return null;
+    }
+
+    function isPreparingAnswer(answer) {
+        const text = String(answer || '');
+
+        return text.includes('현재 준비중')
+            || text.includes('준비 중')
+            || text.includes('준비중입니다');
+    }
+
     function getBiniExpression(intent, answer) {
         const normalizedIntent = String(intent || '').toUpperCase();
         const normalizedAnswer = String(answer || '');
+
+        if (
+            normalizedIntent.includes('GREETING') ||
+            normalizedAnswer.includes('안녕하세요')
+        ) {
+            return 'greeting';
+        }
 
         if (
             normalizedIntent.includes('RECOMMEND') ||
@@ -398,9 +292,11 @@ function initBiniHeroGuide() {
             normalizedIntent.includes('FAQ') ||
             normalizedIntent.includes('CALC') ||
             normalizedIntent.includes('EXPLAIN') ||
+            normalizedIntent.includes('GUIDE') ||
             normalizedAnswer.includes('뜻') ||
             normalizedAnswer.includes('의미') ||
-            normalizedAnswer.includes('설명')
+            normalizedAnswer.includes('설명') ||
+            normalizedAnswer.includes('금융용어')
         ) {
             return 'explain';
         }

@@ -157,6 +157,8 @@ function productCard(product) {
   const internetJoinYn = product.internet_join_yn;
   const mobileJoinYn = product.mobile_join_yn;
 
+  const isJoined = product.joined_yn === "Y" || product.joinedYn === "Y";
+
   const isMobileOnly =
     mobileJoinYn === "Y" &&
     branchJoinYn !== "Y" &&
@@ -169,6 +171,12 @@ function productCard(product) {
         <span class="type-badge">
           ${escapeHtml(productTypeLabel(productType))}
         </span>
+		
+		${
+		  isJoined
+		  ? `<span class="joined-badge">가입중</span>`
+		  : ""
+		 }
 
         ${
           isMobileOnly

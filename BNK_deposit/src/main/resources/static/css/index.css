@@ -404,10 +404,11 @@ button {
 
 /* =========================
    비니 배너형 AI 가이드
+   - 이 아래부터 비니 관련 CSS는 한 번만 존재해야 함
+   - 기본 화면: 휴대폰 자리의 비니만 표시
+   - hover: 작은 힌트 말풍선
+   - click: 배너 페이지가 이동하듯 채팅 화면으로 슬라이드 전환
    - 기존 floating 챗봇은 건드리지 않음
-   - 기본 배너는 문서 흐름에 남겨 잘림 방지
-   - 비니 화면만 absolute로 덮어서 전환
-   - 표정/외형은 견본 이미지에 최대한 가깝게 재보정
    ========================= */
 
 #biniHeroSection {
@@ -425,14 +426,16 @@ button {
 
 #biniHeroSection .hero-slider {
     position: relative;
+    min-height: 460px;
 }
 
 #biniHeroSection .hero-view {
+    min-height: 460px;
     padding: 64px 72px;
     transition:
-        transform 0.58s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.38s ease,
-        visibility 0.38s ease;
+        transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.36s ease,
+        visibility 0.36s ease;
 }
 
 #biniHeroSection .hero-default-view {
@@ -440,6 +443,7 @@ button {
     display: grid;
     grid-template-columns: 1.05fr 0.95fr;
     align-items: center;
+    gap: 38px;
     opacity: 1;
     visibility: visible;
     transform: translateX(0);
@@ -461,7 +465,7 @@ button {
 #biniHeroSection.bini-mode .hero-default-view {
     opacity: 0;
     visibility: hidden;
-    transform: translateX(-14%);
+    transform: translateX(-18%);
     pointer-events: none;
 }
 
@@ -472,55 +476,161 @@ button {
     pointer-events: auto;
 }
 
-.bini-open-btn {
-    height: 54px;
-    padding: 0 24px;
-    border-radius: 16px;
-    background: #ffe769;
+/* 기본 화면 비니 */
+.bini-preview-visual {
+    position: relative;
+    justify-content: center;
+    min-width: 0;
+}
+
+.bini-preview-card {
+    position: relative;
+    width: 360px;
+    min-height: 444px;
+    padding-top: 24px;
+    padding-bottom: 92px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    transform: translateY(0);
+}
+
+.bini-preview-button {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+}
+
+.bini-preview-button:hover {
+    transform: translateY(-3px);
+}
+
+.bini-preview-button:focus-visible {
+    outline: 4px solid rgba(49, 130, 246, 0.25);
+    outline-offset: 10px;
+    border-radius: 34px;
+}
+
+.bini-preview-character {
+    pointer-events: none;
+}
+
+/* 안내 말풍선: 기본 표시, X 버튼으로 닫기 가능 */
+.bini-hover-bubble {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    top: 368px;
+    z-index: 8;
+    width: 232px;
+    padding: 12px 34px 11px 15px;
+    border: 2px solid #101a30;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 14px 30px rgba(25, 31, 40, 0.12);
+    text-align: center;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: auto;
+    transition:
+        opacity 0.2s ease,
+        visibility 0.2s ease,
+        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bini-hover-bubble::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.98);
+    border-left: 2px solid #101a30;
+    border-bottom: 2px solid #101a30;
+    border-radius: 0 0 0 4px;
+    transform: translateX(-50%) rotate(135deg);
+}
+
+.bini-hover-bubble strong {
+    display: block;
+    margin-bottom: 4px;
     color: #191f28;
+    font-size: 14px;
+    line-height: 1.35;
+    letter-spacing: -0.4px;
+}
+
+.bini-hover-bubble span {
+    display: block;
+    color: #6b7684;
+    font-size: 12.5px;
+    line-height: 1.45;
+    letter-spacing: -0.2px;
+}
+
+.bini-preview-card.is-tip-hidden .bini-hover-bubble {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(8px) scale(0.96);
+    pointer-events: none;
+}
+
+.bini-tip-close-btn {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    z-index: 3;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #f2f4f6;
+    color: #6b7684;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    font-weight: 900;
-    box-shadow: 0 12px 24px rgba(255, 231, 105, 0.36);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    transition:
+        background-color 0.16s ease,
+        color 0.16s ease,
+        transform 0.16s ease;
 }
 
-.bini-open-btn:hover {
-    transform: translateY(-2px);
-    background: #ffdd33;
-    box-shadow: 0 16px 30px rgba(255, 231, 105, 0.48);
+.bini-tip-close-btn:hover {
+    background: #101a30;
+    color: #ffffff;
+    transform: scale(1.05);
 }
 
-.bini-guide-layout {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 326px 1fr;
-    align-items: center;
-    gap: 30px;
-}
 
-.bini-side {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* =========================
-   비니 캐릭터 외형
-   ========================= */
-
+/* 비니 캐릭터 외형 */
 .bini-character {
     position: relative;
     width: 264px;
+    z-index: 2;
+    display: block;
     transform: translateY(0);
+    transform-origin: center bottom;
     animation: biniFloat 3.4s ease-in-out infinite;
     filter: drop-shadow(0 22px 26px rgba(25, 31, 40, 0.10));
 }
 
 .bini-body {
     position: relative;
+    display: block;
     width: 100%;
     min-height: 328px;
     padding: 40px 12px 22px;
@@ -550,7 +660,6 @@ button {
     z-index: -2;
 }
 
-/* 상단 전광판: 검정-노랑-검정 */
 .bini-sign {
     position: absolute;
     z-index: 2;
@@ -577,11 +686,9 @@ button {
         0 9px 18px rgba(16, 26, 48, 0.16);
 }
 
-/* 얼굴 화면:
-   - 더 키워서 견본처럼 몸체 면적의 큰 비중 차지
-   - 좌우 바깥 여백과 위쪽 간격을 비슷하게 보정 */
 .bini-screen {
     position: relative;
+    display: block;
     width: 210px;
     height: 172px;
     margin: 0 auto 18px;
@@ -600,21 +707,31 @@ button {
 .bini-screen::after {
     content: "";
     position: absolute;
-    opacity: 0;
     pointer-events: none;
+    opacity: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 
-/* 눈: 미간 넓게
-   - 귀여움과 안정감 절충값
-   - 20px/top70은 귀엽지만 살짝 멍해 보일 수 있어서
-     19px/top66으로 조정 */
 .bini-eye {
     position: absolute;
     top: 66px;
     width: 19px;
     height: 19px;
+    left: auto;
+    right: auto;
+    border: 0;
     border-radius: 50%;
     background: #101a30;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: none;
     transition: all 0.18s ease;
 }
 
@@ -626,20 +743,21 @@ button {
     right: 50px;
 }
 
-/* 입: 선 끝이 죽지 않게 짧고 둥글게 */
-/* 기본 입: 굵고 끝이 둥근 곡선 입 */
-/* 기본 입: 눈썹처럼 굵고 둥근 곡선 선분 */
+.bini-eye::before,
+.bini-eye::after {
+    content: none;
+}
+
 .bini-mouth {
     position: absolute;
     left: 50%;
-    bottom: 42px;
-
-    width: 46px;
-    height: 24px;
-
+    bottom: 34px;
+    width: 58px;
+    height: 34px;
     border: 0;
+    border-radius: 0;
     background: transparent;
-
+    overflow: visible;
     transform: translateX(-50%);
     transition: all 0.18s ease;
 }
@@ -647,27 +765,25 @@ button {
 .bini-mouth::before {
     content: "";
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 0;
-
-    width: 42px;
-    height: 22px;
-
-    background: transparent;
-    border-bottom: 5px solid #101a30;
-    border-radius: 0 0 999px 999px;
-
-    transform: translateX(-50%);
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: none;
 }
 
 .bini-mouth::after {
     content: none;
 }
 
-/* 볼:
-   - 더 크고
-   - 더 진하고
-   - 세로를 키워 원형에 가까운 타원형 */
 .bini-cheek {
     position: absolute;
     top: 90px;
@@ -701,14 +817,12 @@ button {
     transition: all 0.18s ease;
 }
 
-/* 하단 BNK 패널 */
 .bini-logo-box {
     width: 160px;
     height: 72px;
     margin: 0 auto;
     border-radius: 17px;
-    background:
-        linear-gradient(180deg, #16233f 0%, #101a30 100%);
+    background: linear-gradient(180deg, #16233f 0%, #101a30 100%);
     color: #ffffff;
     display: flex;
     flex-direction: column;
@@ -729,58 +843,70 @@ button {
     background: #f3d400;
 }
 
-/* =========================
-   비니 표정: 견본 이미지 기준
-   ========================= */
-
-/* 기본 */
-.bini-character[data-expression="default"] .bini-mark {
-    background: transparent;
+/* 표정 */
+.bini-character[data-expression="default"] .bini-mark,
+.bini-character[data-expression="greeting"] .bini-mark,
+.bini-character[data-expression="happy"] .bini-mark,
+.bini-character[data-expression="thinking"] .bini-mark,
+.bini-character[data-expression="sad"] .bini-mark,
+.bini-character[data-expression="surprised"] .bini-mark,
+.bini-character[data-expression="thanks"] .bini-mark {
     border: 0;
+    background: transparent;
     box-shadow: none;
+    transform: none;
 }
 
 .bini-character[data-expression="default"] .bini-mark::before {
     content: "";
 }
 
-/* 환한 인사 / 기쁨
-   - 웃는 눈
-   - 검은 열린 입 + 빨간 바닥
-   - 반짝이 */
 .bini-character[data-expression="greeting"] .bini-eye,
-.bini-character[data-expression="happy"] .bini-eye {
-    width: 24px;
-    height: 13px;
-    border-radius: 50% 50% 0 0;
-    background: transparent;
-    border-top: 4px solid #101a30;
-    transform: translateY(4px);
+.bini-character[data-expression="happy"] .bini-eye,
+.bini-character[data-expression="thanks"] .bini-eye {
+    top: 62px;
+    width: 28px;
+    height: 18px;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg width='28' height='18' viewBox='0 0 28 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 12 C8 4 20 4 24 12' fill='none' stroke='%23101a30' stroke-width='4.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transform: none;
 }
 
 .bini-character[data-expression="greeting"] .eye-left,
-.bini-character[data-expression="happy"] .eye-left {
-    left: 45px;
+.bini-character[data-expression="happy"] .eye-left,
+.bini-character[data-expression="thanks"] .eye-left {
+    left: 46px;
 }
 
 .bini-character[data-expression="greeting"] .eye-right,
-.bini-character[data-expression="happy"] .eye-right {
-    right: 45px;
+.bini-character[data-expression="happy"] .eye-right,
+.bini-character[data-expression="thanks"] .eye-right {
+    right: 46px;
 }
 
 .bini-character[data-expression="greeting"] .bini-mouth,
-.bini-character[data-expression="happy"] .bini-mouth {
+.bini-character[data-expression="happy"] .bini-mouth,
+.bini-character[data-expression="explain"] .bini-mouth {
+    bottom: 38px;
     width: 30px;
     height: 22px;
-    background: #101a30;
     border: 0;
     border-radius: 0 0 18px 18px;
-    bottom: 42px;
+    background: #101a30;
     overflow: hidden;
 }
 
+.bini-character[data-expression="greeting"] .bini-mouth::before,
+.bini-character[data-expression="happy"] .bini-mouth::before,
+.bini-character[data-expression="explain"] .bini-mouth::before {
+    content: none;
+}
+
 .bini-character[data-expression="greeting"] .bini-mouth::after,
-.bini-character[data-expression="happy"] .bini-mouth::after {
+.bini-character[data-expression="happy"] .bini-mouth::after,
+.bini-character[data-expression="explain"] .bini-mouth::after {
     content: "";
     position: absolute;
     left: 50%;
@@ -797,52 +923,72 @@ button {
     content: "✦";
 }
 
-/* 고민
-   - 사용자 기준 왼쪽 눈썹만 휘게
-   - 오른쪽은 그냥 점눈
-   - 입은 둥근 아래굽음
-   - 물음표 */
-.bini-character[data-expression="thinking"] .bini-eye {
-    top: 62px;
+.bini-character[data-expression="default"] .bini-mouth::before {
+    background-image: url("data:image/svg+xml,%3Csvg width='58' height='34' viewBox='0 0 58 34' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 12 C21 24 37 24 43 12' fill='none' stroke='%23101a30' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.bini-character[data-expression="thinking"] .bini-eye,
+.bini-character[data-expression="sad"] .bini-eye {
+    top: 68px;
     width: 15px;
     height: 15px;
+    border: 0;
+    border-radius: 50%;
+    background: #101a30;
+    background-image: none;
 }
 
-.bini-character[data-expression="thinking"] .eye-left {
-    left: 53px;
+.bini-character[data-expression="thinking"] .eye-left,
+.bini-character[data-expression="sad"] .eye-left {
+    left: 52px;
 }
 
-.bini-character[data-expression="thinking"] .eye-right {
-    right: 53px;
+.bini-character[data-expression="thinking"] .eye-right,
+.bini-character[data-expression="sad"] .eye-right {
+    right: 52px;
 }
 
 .bini-character[data-expression="thinking"] .bini-screen::before {
     opacity: 1;
-    top: 38px;
-    left: 40px;
-
-    width: 30px;
-    height: 16px;
-
-    background: transparent;
-
-    border-bottom: 5px solid #101a30;
-    border-radius: 0 0 999px 999px;
-
-    transform: rotate(-10deg);
+    top: 43px;
+    left: 43px;
+    width: 32px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg width='32' height='20' viewBox='0 0 32 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8 C11 15 21 15 27 8' fill='none' stroke='%23101a30' stroke-width='4.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transform: rotate(-9deg);
 }
 
 .bini-character[data-expression="thinking"] .bini-screen::after {
     opacity: 0;
 }
 
-.bini-character[data-expression="thinking"] .bini-mouth {
-    width: 31px;
-    height: 16px;
+.bini-character[data-expression="thinking"] .bini-mouth,
+.bini-character[data-expression="sad"] .bini-mouth {
+    bottom: 34px;
+    width: 58px;
+    height: 34px;
     border: 0;
-    border-top: 4px solid #101a30;
-    border-radius: 999px 999px 0 0;
-    bottom: 42px;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.bini-character[data-expression="thinking"] .bini-mouth::before,
+.bini-character[data-expression="sad"] .bini-mouth::before {
+    content: "";
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='58' height='34' viewBox='0 0 58 34' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 22 C21 10 37 10 43 22' fill='none' stroke='%23101a30' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transform: none;
+}
+
+.bini-character[data-expression="thinking"] .bini-mouth::after,
+.bini-character[data-expression="sad"] .bini-mouth::after {
+    content: none;
 }
 
 .bini-character[data-expression="thinking"] .bini-mark {
@@ -853,139 +999,79 @@ button {
     content: "?";
 }
 
-/* 설명
-   - 견본처럼 한쪽 점눈 + 한쪽 < 윙크
-   - 말풍선 마크를 직접 그려서 broken 느낌 제거 */
 .bini-character[data-expression="explain"] .eye-left {
-    top: 62px;
+    top: 66px;
     left: 50px;
-    width: 16px;
-    height: 16px;
+    width: 19px;
+    height: 19px;
+    border: 0;
+    border-radius: 50%;
+    background: #101a30;
+    background-image: none;
+    transform: none;
 }
 
 .bini-character[data-expression="explain"] .eye-right {
-    top: 58px;
-    right: 47px;
-    width: 24px;
-    height: 24px;
-    border-radius: 0;
-    background: transparent;
-}
-
-.bini-character[data-expression="explain"] .eye-right::before {
-    content: "<";
-    position: absolute;
-    left: 0;
-    top: -7px;
-    color: #101a30;
-    font-size: 31px;
-    font-weight: 900;
-    line-height: 1;
-}
-
-.bini-character[data-expression="explain"] .bini-mouth {
-    width: 30px;
-    height: 22px;
-    background: #101a30;
+    top: 60px;
+    right: 43px;
+    width: 32px;
+    height: 28px;
     border: 0;
-    border-radius: 0 0 18px 18px;
-    bottom: 42px;
-    overflow: hidden;
+    border-radius: 0;
+    background-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg width='32' height='28' viewBox='0 0 32 28' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22 6 L10 14 L22 22' fill='none' stroke='%23101a30' stroke-width='4.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: none;
 }
 
-.bini-character[data-expression="explain"] .bini-mouth::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -2px;
-    width: 19px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ec6971;
-    transform: translateX(-50%);
+.bini-character[data-expression="explain"] .eye-right::before,
+.bini-character[data-expression="explain"] .eye-right::after {
+    content: none;
 }
 
 .bini-character[data-expression="explain"] .bini-mark {
-    width: 22px;
-    height: 18px;
-    min-width: 22px;
-    min-height: 18px;
-    border: 2.5px solid #8b93a4;
-    border-radius: 5px;
-    background: #ffffff;
-    box-sizing: border-box;
+    top: 16px;
+    right: 17px;
+    width: 28px;
+    height: 24px;
+    min-width: 28px;
+    min-height: 24px;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-image: url("data:image/svg+xml,%3Csvg width='28' height='24' viewBox='0 0 28 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 4 H20 C22.2 4 24 5.8 24 8 V13.5 C24 15.7 22.2 17.5 20 17.5 H14.2 L9.4 21 L10.4 17.5 H5 C2.8 17.5 1 15.7 1 13.5 V8 C1 5.8 2.8 4 5 4 Z' fill='%23ffffff' stroke='%238b93a4' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M7 9 H18 M7 13 H16' fill='none' stroke='%238b93a4' stroke-width='2.1' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
     box-shadow: none;
+    transform: none;
 }
 
-.bini-character[data-expression="explain"] .bini-mark::before {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 4px;
-    width: 10px;
-    height: 2px;
-    border-radius: 999px;
-    background: #8b93a4;
-    box-shadow: 0 4px 0 #8b93a4;
-}
-
+.bini-character[data-expression="explain"] .bini-mark::before,
 .bini-character[data-expression="explain"] .bini-mark::after {
-    content: "";
-    position: absolute;
-    right: 3px;
-    bottom: -4px;
-    width: 6px;
-    height: 6px;
-    border-left: 2.5px solid #8b93a4;
-    border-bottom: 2.5px solid #8b93a4;
-    background: #ffffff;
-    transform: rotate(-45deg);
-}
-
-/* 아쉬움
-   - 양쪽 처진 눈썹
-   - 물방울을 더 명확하게 */
-.bini-character[data-expression="sad"] .bini-eye {
-    top: 63px;
-    width: 15px;
-    height: 15px;
-}
-
-.bini-character[data-expression="sad"] .eye-left {
-    left: 53px;
-}
-
-.bini-character[data-expression="sad"] .eye-right {
-    right: 53px;
-}
-
-.bini-character[data-expression="sad"] .bini-screen::before,
-.bini-character[data-expression="sad"] .bini-screen::after {
-    opacity: 1;
-    top: 45px;
-    width: 18px;
-    height: 4px;
-    border-radius: 999px;
-    background: #101a30;
+    content: none;
 }
 
 .bini-character[data-expression="sad"] .bini-screen::before {
-    left: 43px;
-    transform: rotate(-11deg);
+    opacity: 1;
+    top: 44px;
+    left: 42px;
+    width: 30px;
+    height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg width='30' height='18' viewBox='0 0 30 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 7 C10 13 20 13 26 7' fill='none' stroke='%23101a30' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transform: rotate(-10deg);
 }
 
 .bini-character[data-expression="sad"] .bini-screen::after {
-    right: 43px;
-    transform: rotate(11deg);
-}
-
-.bini-character[data-expression="sad"] .bini-mouth {
-    width: 31px;
-    height: 16px;
-    border: 0;
-    border-top: 4px solid #101a30;
-    border-radius: 999px 999px 0 0;
-    bottom: 42px;
+    opacity: 1;
+    top: 44px;
+    right: 42px;
+    width: 30px;
+    height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg width='30' height='18' viewBox='0 0 30 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 7 C10 13 20 13 26 7' fill='none' stroke='%23101a30' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transform: rotate(10deg);
 }
 
 .bini-character[data-expression="sad"] .bini-mark {
@@ -1003,11 +1089,14 @@ button {
     content: "";
 }
 
-/* 놀람 */
 .bini-character[data-expression="surprised"] .bini-eye {
-    top: 61px;
-    width: 16px;
-    height: 16px;
+    top: 66px;
+    width: 18px;
+    height: 18px;
+    border: 0;
+    border-radius: 50%;
+    background: #101a30;
+    background-image: none;
 }
 
 .bini-character[data-expression="surprised"] .eye-left {
@@ -1019,12 +1108,32 @@ button {
 }
 
 .bini-character[data-expression="surprised"] .bini-mouth {
-    width: 18px;
-    height: 25px;
-    border: 4px solid #101a30;
-    border-radius: 50%;
-    background: transparent;
     bottom: 37px;
+    width: 28px;
+    height: 30px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.bini-character[data-expression="surprised"] .bini-mouth::before {
+    content: "";
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='28' height='30' viewBox='0 0 28 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='14' cy='15' rx='7' ry='10' fill='none' stroke='%23101a30' stroke-width='4.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: none;
+}
+
+.bini-character[data-expression="surprised"] .bini-mouth::after {
+    content: none;
 }
 
 .bini-character[data-expression="surprised"] .bini-mark {
@@ -1035,31 +1144,30 @@ button {
     content: "!";
 }
 
-/* 감사 */
-.bini-character[data-expression="thanks"] .bini-eye {
-    width: 22px;
-    height: 12px;
-    border-radius: 50% 50% 0 0;
-    background: transparent;
-    border-top: 4px solid #101a30;
-    transform: translateY(4px);
-}
-
-.bini-character[data-expression="thanks"] .eye-left {
-    left: 45px;
-}
-
-.bini-character[data-expression="thanks"] .eye-right {
-    right: 45px;
-}
-
 .bini-character[data-expression="thanks"] .bini-mouth {
-    width: 36px;
-    height: 20px;
+    bottom: 34px;
+    width: 54px;
+    height: 32px;
     border: 0;
-    border-bottom: 4px solid #101a30;
-    border-radius: 0 0 999px 999px;
-    bottom: 42px;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.bini-character[data-expression="thanks"] .bini-mouth::before {
+    content: "";
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='54' height='32' viewBox='0 0 54 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13 11 C19 22 35 22 41 11' fill='none' stroke='%23101a30' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    transform: none;
+}
+
+.bini-character[data-expression="thanks"] .bini-mouth::after {
+    content: none;
 }
 
 .bini-character[data-expression="thanks"] .bini-mark {
@@ -1072,9 +1180,20 @@ button {
     font-size: 22px;
 }
 
-/* =========================
-   비니 말풍선 채팅 패널
-   ========================= */
+/* 비니 채팅 화면 */
+.bini-guide-layout {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 326px 1fr;
+    align-items: center;
+    gap: 30px;
+}
+
+.bini-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .bini-chat-bubble {
     position: relative;
@@ -1105,7 +1224,8 @@ button {
 
 .bini-chat-header,
 .bini-chat-messages,
-.bini-chat-input-area {
+.bini-chat-input-area,
+.bini-chat-suggestions {
     position: relative;
     z-index: 1;
 }
@@ -1151,7 +1271,7 @@ button {
 
 .bini-chat-messages {
     flex: 1;
-    padding: 20px 22px;
+    padding: 20px 22px 12px;
     overflow-y: auto;
     background: #f8fafc;
     display: flex;
@@ -1196,12 +1316,41 @@ button {
     border-top-right-radius: 5px;
 }
 
+.bini-chat-suggestions {
+    padding: 10px 20px 0;
+    background: #ffffff;
+    border-top: 1px solid #eef1f4;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.bini-chip {
+    min-height: 32px;
+    padding: 0 11px;
+    border-radius: 999px;
+    background: #fff5c2;
+    color: #5f4700;
+    font-size: 12px;
+    font-weight: 900;
+    border: 1px solid rgba(243, 212, 0, 0.7);
+    transition:
+        transform 0.16s ease,
+        background-color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+.bini-chip:hover {
+    transform: translateY(-1px);
+    background: #ffe769;
+    box-shadow: 0 8px 16px rgba(255, 231, 105, 0.28);
+}
+
 .bini-chat-input-area {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 16px 20px;
-    border-top: 1px solid #eef1f4;
+    padding: 12px 20px 16px;
     background: #ffffff;
     border-radius: 0 0 30px 30px;
 }
@@ -1209,8 +1358,8 @@ button {
 .bini-chat-input-area input {
     flex: 1;
     min-width: 0;
-    height: 50px;
-    padding: 0 18px;
+    height: 48px;
+    padding: 0 17px;
     border: 1px solid #dbe0e6;
     border-radius: 999px;
     background: #ffffff;
@@ -1226,8 +1375,8 @@ button {
 }
 
 .bini-chat-input-area button {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: #191f28;
     color: #ffffff;
@@ -1257,6 +1406,34 @@ button {
     border-radius: 999px;
 }
 
+/* 이스터에그 표정 테스트 토스트 */
+.bini-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 34px;
+    z-index: 20000;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: #101a30;
+    color: #ffe769;
+    border: 2px solid #ffe769;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+    box-shadow: 0 12px 28px rgba(25, 31, 40, 0.24);
+    opacity: 0;
+    transform: translate(-50%, 10px);
+    pointer-events: none;
+    transition:
+        opacity 0.22s ease,
+        transform 0.22s ease;
+}
+
+.bini-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
 @keyframes biniFloat {
     0%, 100% {
         transform: translateY(0);
@@ -1266,6 +1443,7 @@ button {
     }
 }
 
+/* 반응형 */
 @media (max-width: 1180px) {
     #biniHeroSection .hero-default-view {
         grid-template-columns: 1fr;
@@ -1274,6 +1452,10 @@ button {
 
     #biniHeroSection .hero-bini-view {
         align-items: flex-start;
+    }
+
+    .bini-preview-visual {
+        justify-content: center;
     }
 
     .bini-guide-layout {
@@ -1316,26 +1498,63 @@ button {
         gap: 36px;
     }
 
-    .bini-open-btn {
+    .bini-preview-card {
         width: 100%;
-    }
-
-    .bini-guide-layout {
-        gap: 24px;
+        min-height: 470px;
+        align-items: flex-start;
+        padding-top: 18px;
     }
 
     .bini-character {
         width: 212px;
     }
 
+    .bini-body {
+        min-height: 278px;
+        padding: 34px 10px 18px;
+        border-radius: 38px 38px 31px 31px;
+    }
+
+    .bini-sign {
+        width: 162px;
+        height: 42px;
+        font-size: 14px;
+    }
+
     .bini-screen {
         width: 170px;
         height: 140px;
+        border-width: 9px;
+        border-radius: 27px;
     }
 
     .bini-logo-box {
         width: 136px;
         height: 60px;
+        font-size: 24px;
+    }
+
+    .bini-hover-bubble {
+        top: 350px;
+        left: 50%;
+        right: auto;
+        width: min(100%, 286px);
+        transform: translateX(-50%) translateY(10px) scale(0.96);
+    }
+
+    .bini-hover-bubble::before {
+        left: 50%;
+        top: -10px;
+        transform: translateX(-50%) rotate(135deg);
+    }
+
+    .bini-preview-card:hover .bini-hover-bubble,
+    .bini-preview-card:focus-visible .bini-hover-bubble {
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    .bini-guide-layout {
+        gap: 24px;
     }
 
     .bini-chat-bubble {
@@ -1352,517 +1571,34 @@ button {
     }
 }
 
-/* =========================================================
-   FINAL OVERRIDE: 비니 표정 좌표 통일 + 모든 곡선 SVG 처리
-   - 반드시 index.css 파일의 맨 아래에 둔다.
-   - HTML 수정 없음.
-   - border-top / border-bottom으로 만든 초승달형 곡선을 SVG stroke로 교체.
-   - 표정별 눈 중심 좌표를 최대한 통일해서 미간이 흔들려 보이지 않게 조정.
-   ========================================================= */
 
-/* -------------------------
-   1) 기본 얼굴 기준선
-   -------------------------
-   화면 너비 210px 기준:
-   - 왼쪽 눈 중심: 약 60px
-   - 오른쪽 눈 중심: 약 150px
-   - 중심 간격: 약 90px
-   ------------------------- */
-
-#biniHeroSection .bini-eye {
-    top: 66px;
-    width: 19px;
-    height: 19px;
-    left: auto;
-    right: auto;
-
-    border: 0;
-    border-radius: 50%;
-    background: #101a30;
-    background-image: none;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    transform: none;
-    transition: all 0.18s ease;
-}
-
-#biniHeroSection .eye-left {
-    left: 50px;
-}
-
-#biniHeroSection .eye-right {
-    right: 50px;
-}
-
-/* 이전 explain의 < 문자 제거 */
-#biniHeroSection .bini-eye::before,
-#biniHeroSection .bini-eye::after {
-    content: none;
-}
-
-/* 볼도 기본 위치 고정 */
-#biniHeroSection .bini-cheek {
-    top: 90px;
-    width: 20px;
-    height: 15px;
-}
-
-#biniHeroSection .cheek-left {
-    left: 31px;
-}
-
-#biniHeroSection .cheek-right {
-    right: 31px;
-}
-
-/* -------------------------
-   2) SVG 눈 모양
-   ------------------------- */
-
-/* 환한 인사 / 기쁨 / 감사: nn 형태의 웃는 눈 */
-#biniHeroSection .bini-character[data-expression="greeting"] .bini-eye,
-#biniHeroSection .bini-character[data-expression="happy"] .bini-eye,
-#biniHeroSection .bini-character[data-expression="thanks"] .bini-eye {
-    top: 62px;
-    width: 28px;
-    height: 18px;
-
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    background-image: url("data:image/svg+xml,%3Csvg width='28' height='18' viewBox='0 0 28 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 12 C8 4 20 4 24 12' fill='none' stroke='%23101a30' stroke-width='4.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-    transform: none;
-}
-
-#biniHeroSection .bini-character[data-expression="greeting"] .eye-left,
-#biniHeroSection .bini-character[data-expression="happy"] .eye-left,
-#biniHeroSection .bini-character[data-expression="thanks"] .eye-left {
-    left: 46px;
-}
-
-#biniHeroSection .bini-character[data-expression="greeting"] .eye-right,
-#biniHeroSection .bini-character[data-expression="happy"] .eye-right,
-#biniHeroSection .bini-character[data-expression="thanks"] .eye-right {
-    right: 46px;
-}
-
-/* 고민 / 아쉬움: 점눈 크기는 작게 하되 중심 좌표 유지 */
-#biniHeroSection .bini-character[data-expression="thinking"] .bini-eye,
-#biniHeroSection .bini-character[data-expression="sad"] .bini-eye {
-    top: 68px;
-    width: 15px;
-    height: 15px;
-
-    border: 0;
-    border-radius: 50%;
-    background: #101a30;
-    background-image: none;
-}
-
-#biniHeroSection .bini-character[data-expression="thinking"] .eye-left,
-#biniHeroSection .bini-character[data-expression="sad"] .eye-left {
-    left: 52px;
-}
-
-#biniHeroSection .bini-character[data-expression="thinking"] .eye-right,
-#biniHeroSection .bini-character[data-expression="sad"] .eye-right {
-    right: 52px;
-}
-
-/* 설명: 왼쪽은 점눈, 오른쪽은 SVG wink.
-   두 눈의 중심 좌표는 기본과 맞춤. */
-#biniHeroSection .bini-character[data-expression="explain"] .eye-left {
-    top: 66px;
-    left: 50px;
-    width: 19px;
-    height: 19px;
-
-    border: 0;
-    border-radius: 50%;
-    background: #101a30;
-    background-image: none;
-}
-
-#biniHeroSection .bini-character[data-expression="explain"] .eye-right {
-    top: 62px;
-    right: 46px;
-    width: 28px;
-    height: 18px;
-
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    background-image: url("data:image/svg+xml,%3Csvg width='28' height='18' viewBox='0 0 28 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 12 C8 4 20 4 24 12' fill='none' stroke='%23101a30' stroke-width='4.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    transform: none;
-}
-
-#biniHeroSection .bini-character[data-expression="explain"] .eye-right::before {
-    content: none;
-}
-
-/* 놀람: 원형 점눈. 중심 좌표 유지 */
-#biniHeroSection .bini-character[data-expression="surprised"] .bini-eye {
-    top: 66px;
-    width: 18px;
-    height: 18px;
-
-    border: 0;
-    border-radius: 50%;
-    background: #101a30;
-    background-image: none;
-}
-
-#biniHeroSection .bini-character[data-expression="surprised"] .eye-left {
-    left: 51px;
-}
-
-#biniHeroSection .bini-character[data-expression="surprised"] .eye-right {
-    right: 51px;
-}
-
-/* -------------------------
-   3) SVG 눈썹
-   ------------------------- */
-
-#biniHeroSection .bini-screen::before,
-#biniHeroSection .bini-screen::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    opacity: 0;
-
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-}
-
-/* 고민: 사용자 기준 왼쪽 눈썹만 둥근 SVG 곡선 */
-#biniHeroSection .bini-character[data-expression="thinking"] .bini-screen::before {
-    opacity: 1;
-    top: 43px;
-    left: 43px;
-    width: 32px;
-    height: 20px;
-
-    background-image: url("data:image/svg+xml,%3Csvg width='32' height='20' viewBox='0 0 32 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8 C11 15 21 15 27 8' fill='none' stroke='%23101a30' stroke-width='4.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    transform: rotate(-9deg);
-}
-
-#biniHeroSection .bini-character[data-expression="thinking"] .bini-screen::after {
-    opacity: 0;
-}
-
-/* 아쉬움: 양쪽 처진 SVG 눈썹 */
-#biniHeroSection .bini-character[data-expression="sad"] .bini-screen::before {
-    opacity: 1;
-    top: 44px;
-    left: 42px;
-    width: 30px;
-    height: 18px;
-
-    background-image: url("data:image/svg+xml,%3Csvg width='30' height='18' viewBox='0 0 30 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 7 C10 13 20 13 26 7' fill='none' stroke='%23101a30' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    transform: rotate(-10deg);
-}
-
-#biniHeroSection .bini-character[data-expression="sad"] .bini-screen::after {
-    opacity: 1;
-    top: 44px;
-    right: 42px;
-    width: 30px;
-    height: 18px;
-
-    background-image: url("data:image/svg+xml,%3Csvg width='30' height='18' viewBox='0 0 30 18' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 7 C10 13 20 13 26 7' fill='none' stroke='%23101a30' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    transform: rotate(10deg);
-}
-
-/* -------------------------
-   4) SVG 입 모양
-   ------------------------- */
-
-#biniHeroSection .bini-mouth {
-    position: absolute;
-    left: 50%;
-    bottom: 34px;
-    width: 58px;
-    height: 34px;
-
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    overflow: visible;
-
-    transform: translateX(-50%);
-    transition: all 0.18s ease;
-}
-
-#biniHeroSection .bini-mouth::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: auto;
-    bottom: auto;
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    transform: none;
-}
-
-#biniHeroSection .bini-mouth::after {
-    content: none;
-}
-
-/* 기본: 둥근 SVG 미소선 */
-#biniHeroSection .bini-character[data-expression="default"] .bini-mouth::before {
-    background-image: url("data:image/svg+xml,%3Csvg width='58' height='34' viewBox='0 0 58 34' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 12 C21 24 37 24 43 12' fill='none' stroke='%23101a30' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-/* 감사: 얌전한 둥근 SVG 미소선 */
-#biniHeroSection .bini-character[data-expression="thanks"] .bini-mouth {
-    bottom: 34px;
-    width: 54px;
-    height: 32px;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    overflow: visible;
-}
-
-#biniHeroSection .bini-character[data-expression="thanks"] .bini-mouth::before {
-    content: "";
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-    border-radius: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='54' height='32' viewBox='0 0 54 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13 11 C19 22 35 22 41 11' fill='none' stroke='%23101a30' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    transform: none;
-}
-
-#biniHeroSection .bini-character[data-expression="thanks"] .bini-mouth::after {
-    content: none;
-}
-
-/* 고민 / 아쉬움: 둥근 SVG 찡그림선 */
-#biniHeroSection .bini-character[data-expression="thinking"] .bini-mouth,
-#biniHeroSection .bini-character[data-expression="sad"] .bini-mouth {
-    bottom: 34px;
-    width: 58px;
-    height: 34px;
-
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    overflow: visible;
-}
-
-#biniHeroSection .bini-character[data-expression="thinking"] .bini-mouth::before,
-#biniHeroSection .bini-character[data-expression="sad"] .bini-mouth::before {
-    content: "";
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-    border-radius: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='58' height='34' viewBox='0 0 58 34' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 22 C21 10 37 10 43 22' fill='none' stroke='%23101a30' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    transform: none;
-}
-
-#biniHeroSection .bini-character[data-expression="thinking"] .bini-mouth::after,
-#biniHeroSection .bini-character[data-expression="sad"] .bini-mouth::after {
-    content: none;
-}
-
-/* 환한 인사 / 기쁨 / 설명: 열린 검은 입
-   열린 입은 선분이 아니라 면이므로 SVG가 아니라 면 도형으로 유지 */
-#biniHeroSection .bini-character[data-expression="greeting"] .bini-mouth,
-#biniHeroSection .bini-character[data-expression="happy"] .bini-mouth,
-#biniHeroSection .bini-character[data-expression="explain"] .bini-mouth {
-    bottom: 38px;
-    width: 30px;
-    height: 22px;
-
-    border: 0;
-    border-radius: 0 0 18px 18px;
-    background: #101a30;
-    overflow: hidden;
-}
-
-#biniHeroSection .bini-character[data-expression="greeting"] .bini-mouth::before,
-#biniHeroSection .bini-character[data-expression="happy"] .bini-mouth::before,
-#biniHeroSection .bini-character[data-expression="explain"] .bini-mouth::before {
-    content: none;
-}
-
-#biniHeroSection .bini-character[data-expression="greeting"] .bini-mouth::after,
-#biniHeroSection .bini-character[data-expression="happy"] .bini-mouth::after,
-#biniHeroSection .bini-character[data-expression="explain"] .bini-mouth::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -2px;
-    width: 20px;
-    height: 9px;
-    border-radius: 50%;
-    background: #ec6971;
-    transform: translateX(-50%);
-}
-
-/* 놀람: SVG O 입 */
-#biniHeroSection .bini-character[data-expression="surprised"] .bini-mouth {
-    bottom: 37px;
-    width: 28px;
-    height: 30px;
-
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    overflow: visible;
-}
-
-#biniHeroSection .bini-character[data-expression="surprised"] .bini-mouth::before {
-    content: "";
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-    border-radius: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='28' height='30' viewBox='0 0 28 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='14' cy='15' rx='7' ry='10' fill='none' stroke='%23101a30' stroke-width='4.4'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    transform: none;
-}
-
-#biniHeroSection .bini-character[data-expression="surprised"] .bini-mouth::after {
-    content: none;
-}
-
-/* =========================================================
-   FINAL PATCH: 설명 표정 오른쪽 눈 '<' 윙크 + 우측 상단 말풍선 아이콘 정렬
-   - 반드시 파일의 맨 아래에 둔다.
-   - 기존 FINAL OVERRIDE보다 아래에 있어야 적용된다.
-   - 사용자 기준 오른쪽 눈(.eye-right)을 '<' 형태의 SVG 윙크로 복구.
-   - 말풍선 아이콘은 border/pseudo 조합 대신 하나의 SVG 배경으로 처리해 어긋남을 줄임.
-   ========================================================= */
-
-/* 설명 표정: 사용자 기준 왼쪽 눈은 점눈 */
-#biniHeroSection .bini-character[data-expression="explain"] .eye-left {
-    top: 66px;
-    left: 50px;
-    width: 19px;
-    height: 19px;
-
-    border: 0;
-    border-radius: 50%;
-    background: #101a30;
-    background-image: none;
-    transform: none;
-}
-
-/* 설명 표정: 사용자 기준 오른쪽 눈은 '<' 윙크 */
-#biniHeroSection .bini-character[data-expression="explain"] .eye-right {
-    top: 60px;
-    right: 43px;
-    width: 32px;
-    height: 28px;
-
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    background-image: url("data:image/svg+xml,%3Csvg width='32' height='28' viewBox='0 0 32 28' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22 6 L10 14 L22 22' fill='none' stroke='%23101a30' stroke-width='4.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    transform: none;
-}
-
-/* 기존 '<' 문자 pseudo 제거 */
-#biniHeroSection .bini-character[data-expression="explain"] .eye-right::before,
-#biniHeroSection .bini-character[data-expression="explain"] .eye-right::after {
-    content: none;
-}
-
-/* 설명 표정: 우측 상단 말풍선 아이콘 정렬 */
-#biniHeroSection .bini-character[data-expression="explain"] .bini-mark {
-    top: 16px;
-    right: 17px;
-
-    width: 28px;
-    height: 24px;
-    min-width: 28px;
-    min-height: 24px;
-
-    border: 0;
-    border-radius: 0;
-    background-color: transparent;
-    background-image: url("data:image/svg+xml,%3Csvg width='28' height='24' viewBox='0 0 28 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 4 H20 C22.2 4 24 5.8 24 8 V13.5 C24 15.7 22.2 17.5 20 17.5 H14.2 L9.4 21 L10.4 17.5 H5 C2.8 17.5 1 15.7 1 13.5 V8 C1 5.8 2.8 4 5 4 Z' fill='%23ffffff' stroke='%238b93a4' stroke-width='2.2' stroke-linejoin='round'/%3E%3Cpath d='M7 9 H18 M7 13 H16' fill='none' stroke='%238b93a4' stroke-width='2.1' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    box-shadow: none;
-    transform: none;
-}
-
-/* 기존 말풍선 내부 선/꼬리 pseudo 제거 */
-#biniHeroSection .bini-character[data-expression="explain"] .bini-mark::before,
-#biniHeroSection .bini-character[data-expression="explain"] .bini-mark::after {
-    content: none;
-}
-
-.bini-toast {
-    position: fixed;
-    left: 50%;
-    bottom: 34px;
-    z-index: 20000;
-
-    padding: 12px 18px;
-    border-radius: 999px;
-
-    background: #191f28;
-    color: #ffffff;
-
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-
-    box-shadow: 0 12px 28px rgba(25, 31, 40, 0.22);
-
-    opacity: 0;
-    transform: translate(-50%, 10px);
-    pointer-events: none;
-
-    transition:
-        opacity 0.22s ease,
-        transform 0.22s ease;
-}
-
-.bini-toast.show {
-    opacity: 1;
-    transform: translate(-50%, 0);
+/* click 힌트는 제거 */
+.bini-click-hint { display: none !important; }
+
+
+/* 안내 말풍선 기본 표시 + 닫기 버튼 추가 보정 */
+@media (max-width: 768px) {
+    .bini-preview-card {
+        width: 100%;
+        min-height: 470px;
+        align-items: flex-start;
+        padding-top: 18px;
+        padding-bottom: 106px;
+    }
+
+    .bini-preview-button {
+        width: auto;
+    }
+
+    .bini-hover-bubble {
+        top: 350px;
+        left: 50%;
+        right: auto;
+        width: min(100%, 286px);
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    .bini-preview-card.is-tip-hidden .bini-hover-bubble {
+        transform: translateX(-50%) translateY(10px) scale(0.96);
+    }
 }

@@ -3,6 +3,7 @@ package com.example.bnk.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,15 +25,16 @@ public class SecurityConfig {
 		this.bankMemberService = bankMemberService;
 	}
 	
-	@Bean
+	@Bean @Order(99)
 	SecurityFilterChain filterChain(HttpSecurity http) {
 		
 		http.csrf(csrf -> csrf.disable());
 		
 		// 권한별 제어
 		http.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/css/**", "/js/**", "/images/**", "/**").permitAll()
-				.requestMatchers("/common/**").permitAll()
+				.requestMatchers("/css/**", "/js/**", "/images/**", "/img/**", "/fonts/**", "/favicon.ico").permitAll()
+				.requestMatchers("/common/**", "/api/**").permitAll()
+				.anyRequest().authenticated()
 		);
 		
 		// 직원 로그인 설정
@@ -60,9 +62,21 @@ public class SecurityConfig {
 	
 	@Bean @Order(3)
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {
+		http.csrf(csrf -> csrf.disable());
+
 		// 권한별 제어
-		http.securityMatcher("/", "/loginPage", "/signupPage", "/products/**")
-			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
+		http.securityMatcher(
+					"/", "/loginPage", "/signupPage",
+					"/products", "/products/**",
+					"/api/products", "/api/products/search", "/api/products/mobile-qr-image",
+					"/api/products/ai/recommend"
+			)
+			.authorizeHttpRequests(auth -> auth
+					.requestMatchers("/", "/loginPage", "/signupPage").permitAll()
+					.requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/search", "/api/products/mobile-qr-image").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/products/ai/recommend").permitAll()
+					.anyRequest().authenticated()
 		);
 		
 		return http.build();

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bnk.dao.member.IAccountOpeningDao">
+
+<select id="findByMemberNo" resultType="com.example.bnk.dto.member.AccountOpeningAuthDto">
+    SELECT
+        MEMBER_NO AS memberNo,
+        IDCARD_IMAGE_ENC AS idcardImageEnc,
+        IDCARD_IMAGE_NONCE AS idcardImageNonce,
+        IDCARD_IMAGE_TAG AS idcardImageTag,
+        IDFACE_IMAGE_ENC AS idfaceImageEnc,
+        IDFACE_IMAGE_NONCE AS idfaceImageNonce,
+        IDFACE_IMAGE_TAG AS idfaceImageTag,
+        OCR_RESULT_ENC AS ocrResultEnc,
+        OCR_RESULT_NONCE AS ocrResultNonce,
+        OCR_RESULT_TAG AS ocrResultTag,
+        FACE_IMAGE_ENC AS faceImageEnc,
+        FACE_IMAGE_NONCE AS faceImageNonce,
+        FACE_IMAGE_TAG AS faceImageTag,
+        SIMILARITY_SCORE AS similarityScore,
+        PRIVACY_CONSENT_YN AS privacyConsentYn
+    FROM TB_AUTHENTICATION
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</select>
+
+<insert id="insertAuthenticationBase">
+    INSERT INTO TB_AUTHENTICATION (
+        MEMBER_NO,
+        CREATED_AT,
+        EXPIRE_AT
+    )
+    VALUES (
+        #{memberNo, jdbcType=NUMERIC},
+        SYSDATE,
+        SYSDATE + 1
+    )
+</insert>
+
+<update id="updatePrivacyConsent">
+    UPDATE TB_AUTHENTICATION
+    SET
+        PRIVACY_CONSENT_YN = #{agreed, jdbcType=VARCHAR},
+        EXPIRE_AT = SYSDATE + 1
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</update>
+
+<update id="updateIdCardImage">
+    UPDATE TB_AUTHENTICATION
+    SET
+        IDCARD_IMAGE_ENC = #{idcardImageEnc, jdbcType=CLOB},
+        IDCARD_IMAGE_NONCE = #{idcardImageNonce, jdbcType=VARCHAR},
+        IDCARD_IMAGE_TAG = #{idcardImageTag, jdbcType=VARCHAR},
+        EXPIRE_AT = SYSDATE + 1
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</update>
+
+<select id="existsIdCardImage" resultType="int">
+    SELECT
+        CASE
+            WHEN IDCARD_IMAGE_ENC IS NOT NULL
+             AND IDCARD_IMAGE_NONCE IS NOT NULL
+             AND IDCARD_IMAGE_TAG IS NOT NULL
+            THEN 1
+            ELSE 0
+        END
+    FROM TB_AUTHENTICATION
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</select>
+
+<update id="updateFaceImage">
+    UPDATE TB_AUTHENTICATION
+    SET
+        FACE_IMAGE_ENC = #{faceImageEnc, jdbcType=CLOB},
+        FACE_IMAGE_NONCE = #{faceImageNonce, jdbcType=VARCHAR},
+        FACE_IMAGE_TAG = #{faceImageTag, jdbcType=VARCHAR},
+        EXPIRE_AT = SYSDATE + 1
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</update>
+
+<select id="existsFaceImage" resultType="int">
+    SELECT
+        CASE
+            WHEN FACE_IMAGE_ENC IS NOT NULL
+             AND FACE_IMAGE_NONCE IS NOT NULL
+             AND FACE_IMAGE_TAG IS NOT NULL
+            THEN 1
+            ELSE 0
+        END
+    FROM TB_AUTHENTICATION
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</select>
+
+<update id="updateOcrResult">
+    UPDATE TB_AUTHENTICATION
+    SET
+        OCR_RESULT_ENC = #{ocrResultEnc, jdbcType=CLOB},
+        OCR_RESULT_NONCE = #{ocrResultNonce, jdbcType=VARCHAR},
+        OCR_RESULT_TAG = #{ocrResultTag, jdbcType=VARCHAR},
+        EXPIRE_AT = SYSDATE + 1
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</update>
+
+<select id="existsOcrResult" resultType="int">
+    SELECT
+        CASE
+            WHEN OCR_RESULT_ENC IS NOT NULL
+             AND OCR_RESULT_NONCE IS NOT NULL
+             AND OCR_RESULT_TAG IS NOT NULL
+            THEN 1
+            ELSE 0
+        END
+    FROM TB_AUTHENTICATION
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+</select>
+
+<delete id="deleteIncompleteByMemberNo">
+    DELETE FROM TB_AUTHENTICATION
+    WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+      AND NOT EXISTS (
+        SELECT 1
+        FROM TB_ACCOUNT
+        WHERE MEMBER_NO = #{memberNo, jdbcType=NUMERIC}
+          AND ACCOUNT_STATUS = 'ACTIVE'
+      )
+</delete>
+</mapper>

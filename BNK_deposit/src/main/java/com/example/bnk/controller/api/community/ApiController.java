@@ -43,9 +43,7 @@ public class ApiController {
 	public ResponseEntity<?> checkLogin(@PathVariable("member_no") long member_no){
 	    try {
 	    	System.out.println("로그인 시도 시작");
-	        // 🔍 서비스와 DAO를 통해 오라클 DB에서 해당 member_no의 계정 정보 조회
-	        // 예시: CommunityAccountDto account = communityService.findByMemberNo(memberNo);
-	        CommunityAccountDto account = communityService.selectMember(member_no); // 임시 할당 (실제 로직으로 대체하세요)
+	        CommunityAccountDto account = communityService.selectMember(member_no);
 	        System.out.println(account);
 	        if (account != null && "ACTIVE".equals(account.getCommunity_status())) {
 	            return ResponseEntity.ok(Map.<String, Object>of(
@@ -55,7 +53,6 @@ public class ApiController {
 	                "created_at", account.getCreated_at()
 	            ));
 	        } else {
-	            // 💡 데이터가 1쌍일 때는 Map.of 만 써도 되지만, 통일감을 주기 위해 같이 바꿨습니다.
 	            return ResponseEntity.ok(Map.<String, Object>of("isMember", false));
 	        }
 	    } catch (Exception e) {
@@ -72,12 +69,10 @@ public class ApiController {
 		System.out.println("회원가입 시도");
 		System.out.println(dto.getMember_no());
 		
-        // 필요한 거 셋팅
 		long member_no = dto.getMember_no();
 		String nickname = dto.getNickname();
         int result = 0;
 		
-		// 2. dto.getNickname() -> 중복 검사 후 오라클 테이블에 INSERT!
 		if(communityService.searchMember(member_no) == 1) {
 			
 			// 닉네임 중복검사
@@ -88,16 +83,13 @@ public class ApiController {
 					    .body(Map.of("message", "이미 존재하는 닉네임입니다.."));
 			}
 			
-			// INSERT - 회원가입 완료 확인
 			result = communityService.registComuAccount(dto);
 			if(result == 1) {
 				System.out.println("회원가입 최종까지 성공!");
-				// 상품 만들어지면 주석 해제(커뮤니티 가입 시 우대금리 상승 코드임)
-//				productSalesService.upTermscommunityRegist(member_no);
+				productSalesService.upTermscommunityRegist(member_no);
 				return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "회원가입 성공!"));
 			}
 		}
-        // 🛑 400 에러와 함께 실패 메시지 반환
 		return ResponseEntity
 		    .status(HttpStatus.BAD_REQUEST)
 		    .body(Map.of("message", "이미 가입 되어있는 회원입니다."));
