@@ -28,6 +28,11 @@ public interface IProductSalesDao {
             @Param("productNo") long productNo
     );
 
+    ProductJoinDraftDto findLatestByMemberAndProduct(
+            @Param("memberNo") long memberNo,
+            @Param("productNo") long productNo
+    );
+
     ProductJoinDraftDto findBySubscriptionNo(
             @Param("memberNo") long memberNo,
             @Param("subscriptionNo") long subscriptionNo
@@ -35,17 +40,24 @@ public interface IProductSalesDao {
 
     int insertDraft(
             @Param("memberNo") long memberNo,
-            @Param("productNo") long productNo,
-            @Param("linkedAccountId") Long linkedAccountId
+            @Param("productNo") long productNo
     );
 
-    int updateDraftTerms(
+    int updateDraftTermsAgreement(
             @Param("memberNo") long memberNo,
             @Param("subscriptionNo") long subscriptionNo,
-            @Param("subscriptionAmount") long subscriptionAmount,
-            @Param("subscriptionMonths") long subscriptionMonths,
             @Param("requiredTermsAgreed") int requiredTermsAgreed,
             @Param("optionalTermsAgreed") int optionalTermsAgreed
+    );
+
+    int updateDraftContract(
+            @Param("memberNo") long memberNo,
+            @Param("subscriptionNo") long subscriptionNo,
+            @Param("linkedAccountId") long linkedAccountId,
+            @Param("subscriptionAmount") long subscriptionAmount,
+            @Param("subscriptionMonths") long subscriptionMonths,
+            @Param("autoTransferAmount") long autoTransferAmount,
+            @Param("appliedInterestRate") double appliedInterestRate
     );
 
     int completeDraft(

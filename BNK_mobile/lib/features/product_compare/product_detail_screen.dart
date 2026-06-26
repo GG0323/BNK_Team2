@@ -6,7 +6,7 @@ import '../../data/models/product_model.dart';
 import '../../data/services/product_join_api.dart';
 import '../account_opening/account_opening_screen.dart';
 import '../auth/login_screen.dart';
-import 'product_join_entry_screen.dart';
+import 'product_join_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -91,10 +91,7 @@ class ProductDetailScreen extends StatelessWidget {
 
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => ProductJoinEntryScreen(
-            product: product,
-            entryStatus: entryStatus,
-          ),
+          builder: (_) => ProductJoinScreen(product: product),
         ),
       );
     } catch (error) {

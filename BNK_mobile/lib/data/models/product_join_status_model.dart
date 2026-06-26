@@ -16,6 +16,7 @@ class ProductJoinStatusModel {
   final int? subscriptionAmount;
   final int? subscriptionMonths;
   final double? appliedInterestRate;
+  final String? maturityDate;
   final int requiredTermsAgreed;
   final int optionalTermsAgreed;
   final String message;
@@ -38,6 +39,7 @@ class ProductJoinStatusModel {
     required this.subscriptionAmount,
     required this.subscriptionMonths,
     required this.appliedInterestRate,
+    required this.maturityDate,
     required this.requiredTermsAgreed,
     required this.optionalTermsAgreed,
     required this.message,
@@ -62,6 +64,7 @@ class ProductJoinStatusModel {
       subscriptionAmount: _toIntOrNull(json['subscriptionAmount']),
       subscriptionMonths: _toIntOrNull(json['subscriptionMonths']),
       appliedInterestRate: _toDoubleOrNull(json['appliedInterestRate']),
+      maturityDate: json['maturityDate']?.toString(),
       requiredTermsAgreed: _toInt(json['requiredTermsAgreed']),
       optionalTermsAgreed: _toInt(json['optionalTermsAgreed']),
       message: (json['message'] ?? '').toString(),
@@ -70,7 +73,8 @@ class ProductJoinStatusModel {
 
   bool get requiredTermsDone => requiredTermsAgreed == 1;
   bool get optionalTermsDone => optionalTermsAgreed == 1;
-  bool get readyToComplete => currentStep == 'READY_TO_COMPLETE';
+  bool get contractInput => currentStep == 'CONTRACT_INPUT';
+  bool get contractConfirm => currentStep == 'CONTRACT_CONFIRM';
   bool get complete => currentStep == 'COMPLETE';
 
   static int _toInt(dynamic value) {
