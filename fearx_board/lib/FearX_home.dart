@@ -136,17 +136,17 @@ class FearXHomeContent extends StatelessWidget {
       // java로 DB에서 API 받아오고, 여기다가 리스트로 넣어야 함.
       children: const [
         Text(
-            "• 제목 1 받아오기",
+            "• 한 번 쯤은 이길 때 되지 않았나?",
             overflow: TextOverflow.ellipsis
         ),
         Divider(), // 글 사이 구분선.
         Text(
-            "• 제목 2 받아오기",
+            "• 난 얘네가 므시 가는거 보고싶음;;",
             overflow: TextOverflow.ellipsis
         ),
         Divider(),
         Text(
-            "• 제목 3 받아오기",
+            "• 부산은행 - FearX 최고!",
             overflow: TextOverflow.ellipsis
         ),
       ],
@@ -159,8 +159,8 @@ class FearXHomeContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("05/27 19:00", style: TextStyle(fontWeight: FontWeight.bold)),
-        const Text("vs KRX", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16)),
+        const Text("아직 예정된 경기가 없습니다!", style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text("모두의 응원이 담긴 한마디?", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
@@ -198,7 +198,7 @@ class FearXHomeContent extends StatelessWidget {
           const SizedBox(width: 15),
           const Expanded(
             child: Text(
-                "커뮤니티 클린 캠페인 안내 (욕설을 줄여주세요!)",
+                "커뮤니티 사용자 3명을 뽑아서 선물을 드립니다! ( 이벤트 )",
                 style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           const Icon(

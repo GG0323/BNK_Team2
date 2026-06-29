@@ -13,7 +13,7 @@ class CommunityJoinScreen extends StatefulWidget {
 class _CommunityJoinScreenState extends State<CommunityJoinScreen> {
   final TextEditingController _nicknameController = TextEditingController();
   bool _isLoading = false;
-  final String _serverUrl = "http://192.168.0.184:8080/api/community/register";
+  final String _serverUrl = "https://192.168.0.184:8443/api/community/register";
 
   Future<void> _registerNicknameWithDB() async {
     final String nickname = _nicknameController.text.trim();

@@ -30,10 +30,10 @@ class _SplashScreenState extends State<SplashScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance(); //[cite: 4]
 
     // 테스트용 회원 고유번호 저장[cite: 4]
-    int member_no = 82; //[cite: 4]
+    int member_no = 221; //[cite: 4]
     await prefs.setInt('bank_member', member_no); //[cite: 4]
 
-    final String checkLoginUrl = "http://192.168.0.184:8080/api/community/check-login/$member_no"; //[cite: 4]
+    final String checkLoginUrl = "https://192.168.0.184:8443/api/community/check-login/$member_no"; //[cite: 4]
 
     try {
       // 🚀 서버에 요청을 보내되, 최대 3초까지만 기다리도록 타임아웃 설정
