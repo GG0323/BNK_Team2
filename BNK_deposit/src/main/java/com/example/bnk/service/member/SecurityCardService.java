@@ -17,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityCardService {
 
-	private static final int SECURITY_CARD_COUNT = 20;
-	private static final int SECURITY_CARD_MAX_VALUE = 100;
-
 	private final ISecurityCardDao securityCardDao;
 	private final AesCryptoUtil aesUtil;
 	private final EmailService emailService;
@@ -49,16 +46,14 @@ public class SecurityCardService {
 
 	// 0~99 사이의 랜덤값 20개를 두 자리 문자열로 이어붙여 보안카드 번호 생성
 	private String generateSecurityCardNumber() {
-		StringBuilder number = new StringBuilder(SECURITY_CARD_COUNT * 2);
+		StringBuilder number = new StringBuilder(20 * 3);
 
-		for(int i = 0; i < SECURITY_CARD_COUNT; i++) {
-			int randomValue = secureRandom.nextInt(SECURITY_CARD_MAX_VALUE);
+		for(int i = 0, randomNum; i < 20; i++) {
+			randomNum = secureRandom.nextInt(100);
 			
-			if(randomValue < 10) {
-				number.append("0");
-			}
+			if(randomNum < 10) number.append("0");
 			
-			number.append(randomValue + " ");
+			number.append(randomNum + " ");
 		}
 		return number.toString();
 	}

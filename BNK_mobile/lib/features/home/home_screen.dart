@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/quick_menu_storage.dart';
-import '../../core/storage/secure_storage.dart';
 import '../../data/models/mypage_model.dart';
 import '../../data/services/member_api.dart';
 import '../account/account_list_screen.dart';
 import '../account_opening/account_opening_screen.dart';
-import '../auth/login_screen.dart';
 import '../branch/branch_map_screen.dart';
 import '../branch/branch_reservation_list_screen.dart';
 import '../mypage/mypage_screen.dart';
@@ -17,10 +15,7 @@ import '../quick_menu/quick_menu_edit_screen.dart';
 class HomeScreen extends StatefulWidget {
   final String memberName;
 
-  const HomeScreen({
-    super.key,
-    required this.memberName,
-  });
+  const HomeScreen({super.key, required this.memberName});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -56,50 +51,30 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _logout() async {
-    await SecureStorage.clearAll();
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
-    );
-  }
-
   String _formatMoney(int amount) {
     return amount.toString().replaceAllMapped(
-          RegExp(r'\B(?=(\d{3})+(?!\d))'),
-          (match) => ',',
-        );
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (match) => ',',
+    );
   }
 
   void _showPreparingMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   void _goToProductList() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const ProductListScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const ProductListScreen()),
     );
   }
 
   Future<void> _goToAccountOpening() async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => const AccountOpeningScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const AccountOpeningScreen()),
     );
 
     if (result == true && mounted) {
@@ -112,27 +87,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void _goToBranchMap() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const BranchMapScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const BranchMapScreen()),
     );
   }
 
   void _goToReservationList() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const BranchReservationListScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const BranchReservationListScreen()),
     );
   }
 
   Future<void> _goToMyPage() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const MyPageScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const MyPageScreen()),
     );
 
     await _loadQuickMenuSetting();
@@ -141,9 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _goToQuickMenuEdit() async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => const QuickMenuEditScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const QuickMenuEditScreen()),
     );
 
     if (result == true) {
@@ -161,9 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const AccountListScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const AccountListScreen()),
           );
         },
       ),
@@ -292,8 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<_QuickMenuItem> _getSelectedQuickMenus() {
-    final selectedMenus =
-        _getQuickMenuSlots().whereType<_QuickMenuItem>().toList();
+    final selectedMenus = _getQuickMenuSlots()
+        .whereType<_QuickMenuItem>()
+        .toList();
 
     if (selectedMenus.isEmpty) {
       return _getAllQuickMenus().take(8).toList();
@@ -370,11 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.border),
         ),
-        child: Icon(
-          icon,
-          size: 22,
-          color: AppColors.textPrimary,
-        ),
+        child: Icon(icon, size: 22, color: AppColors.textPrimary),
       ),
     );
   }
@@ -432,10 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: _goToAccountOpening,
                 child: const Text(
                   '입출금 계좌 개설하기',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
                 ),
               ),
             ),
@@ -513,10 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               child: const Text(
                 '이체',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
               ),
             ),
           ),
@@ -618,11 +574,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(18),
               border: Border.all(color: AppColors.border),
             ),
-            child: Icon(
-              menu.icon,
-              color: AppColors.primaryRed,
-              size: 27,
-            ),
+            child: Icon(menu.icon, color: AppColors.primaryRed, size: 27),
           ),
           const SizedBox(height: 8),
           Text(
@@ -796,10 +748,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 22),
       child: Row(
         children: [
-          _buildSmallSummaryBox(
-            title: '계좌',
-            value: '${mypage.accountCount}개',
-          ),
+          _buildSmallSummaryBox(title: '계좌', value: '${mypage.accountCount}개'),
           const SizedBox(width: 12),
           _buildSmallSummaryBox(
             title: '가입상품',
@@ -810,10 +759,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSmallSummaryBox({
-    required String title,
-    required String value,
-  }) {
+  Widget _buildSmallSummaryBox({required String title, required String value}) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
@@ -929,8 +875,9 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
-                color:
-                    selected ? AppColors.primaryRed : AppColors.textSecondary,
+                color: selected
+                    ? AppColors.primaryRed
+                    : AppColors.textSecondary,
               ),
             ),
           ],
@@ -940,8 +887,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHomeContent(MyPageModel mypage) {
-    final displayName =
-        mypage.memberName.isNotEmpty ? mypage.memberName : widget.memberName;
+    final displayName = mypage.memberName.isNotEmpty
+        ? mypage.memberName
+        : widget.memberName;
 
     return Column(
       children: [
@@ -1035,9 +983,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.primaryRed,
-                ),
+                child: CircularProgressIndicator(color: AppColors.primaryRed),
               );
             }
 
@@ -1046,9 +992,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             if (!snapshot.hasData) {
-              return const Center(
-                child: Text('마이페이지 정보가 없습니다.'),
-              );
+              return const Center(child: Text('마이페이지 정보가 없습니다.'));
             }
 
             return _buildHomeContent(snapshot.data!);

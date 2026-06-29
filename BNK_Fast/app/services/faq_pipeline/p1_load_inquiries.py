@@ -21,7 +21,7 @@ load_inquiries.py  ―  [파이프라인 1단계] DB에서 1:1 문의 읽어오�
 """
 
 import oracledb
-import pandas as pd # pip install pandas
+import pandas as pd
 
 from app.core.config import DB_USER, DB_PW, DB_HOST, DB_PORT, DB_SERVICE_NAME
 
@@ -146,7 +146,7 @@ if __name__ == "__main__":
     #    패키지 import(app.core.config)를 쓰므로 루트에서 모듈로 실행한다:
     #        python -m app.services.faq_pipeline.load_inquiries
     df = fetch_inquiries()
-    print(f"✅ 문의 {len(df)}건 로드 완료\n")
+    print(f"문의 {len(df)}건 로드 완료\n")
 
     print("[카테고리 분포]")
     print(df["INQUIRY_CATEGORY"].value_counts(), "\n")
@@ -158,4 +158,4 @@ if __name__ == "__main__":
     # 첫 USER 메시지가 비어있는 문의 점검(있으면 데이터 이상 신호)
     empty = df[df["FIRST_USER_MSG"].fillna("").str.strip() == ""]
     if len(empty):
-        print(f"\n⚠️ USER 메시지가 없는 문의 {len(empty)}건 (확인 필요)")
+        print(f"\nUSER 메시지가 없는 문의 {len(empty)}건 (확인 필요)")

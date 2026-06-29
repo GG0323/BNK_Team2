@@ -4,6 +4,7 @@ class ApiConstants {
 
   static const String appPing = '/api/auth/session-remaining';
   static const String appLogin = '/member/login';
+  static const String appLogout = '/member/logout';
   static const String appMe = '/api/member/myinfo';
 
   static const String memberMypage = '/api/member/mypage';
