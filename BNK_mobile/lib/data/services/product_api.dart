@@ -34,4 +34,16 @@ class ProductApi {
 
     return [];
   }
+
+  Future<ProductModel?> getProductByNo(int productNo) async {
+    final products = await getProducts();
+
+    for (final product in products) {
+      if (product.productNo == productNo) {
+        return product;
+      }
+    }
+
+    return null;
+  }
 }

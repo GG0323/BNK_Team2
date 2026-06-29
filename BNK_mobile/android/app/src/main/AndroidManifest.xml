@@ -27,6 +27,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- BNK 상품 QR 딥링크: bnkapp://product/join?product_no=39 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="bnkapp"
+                    android:host="product"
+                    android:pathPrefix="/join" />
+            </intent-filter>
+
         </activity>
 
         <meta-data
