@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/secure_storage.dart';
+import '../../data/services/auth_api.dart';
 import '../auth/login_screen.dart';
 import '../home/home_screen.dart';
 
 class PinLoginScreen extends StatefulWidget {
   final String memberName;
+  final bool returnOnSuccess;
 
   const PinLoginScreen({
     super.key,
     required this.memberName,
+    this.returnOnSuccess = false,
   });
 
   @override
@@ -20,6 +23,8 @@ class PinLoginScreen extends StatefulWidget {
 }
 
 class _PinLoginScreenState extends State<PinLoginScreen> {
+  final AuthApi _authApi = AuthApi();
+
   String _currentPin = '';
   List<String> _keypadNumbers = [];
 
@@ -67,12 +72,15 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
     if (savedPin == _currentPin) {
       if (!mounted) return;
 
+      if (widget.returnOnSuccess) {
+        Navigator.pop(context, true);
+        return;
+      }
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => HomeScreen(
-            memberName: widget.memberName,
-          ),
+          builder: (_) => HomeScreen(memberName: widget.memberName),
         ),
       );
       return;
@@ -95,15 +103,18 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   }
 
   Future<void> _goToLoginAgain() async {
-    await SecureStorage.clearAll();
+    await _authApi.logout();
 
     if (!mounted) return;
 
+    if (widget.returnOnSuccess) {
+      Navigator.pop(context, false);
+      return;
+    }
+
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
   }
 
@@ -120,10 +131,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: filled ? AppColors.textPrimary : Colors.transparent,
-            border: Border.all(
-              color: AppColors.textPrimary,
-              width: 2,
-            ),
+            border: Border.all(color: AppColors.textPrimary, width: 2),
           ),
         );
       }),
@@ -141,18 +149,13 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(
-              color: AppColors.border,
-            ),
+            side: const BorderSide(color: AppColors.border),
           ),
         ),
         onPressed: () => _onNumberTap(text),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-          ),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
         ),
       ),
     );
@@ -206,15 +209,9 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildTextButton(
-              text: '삭제',
-              onPressed: _onDeleteTap,
-            ),
+            _buildTextButton(text: '삭제', onPressed: _onDeleteTap),
             _buildNumberButton(lastNumber),
-            _buildTextButton(
-              text: '재배열',
-              onPressed: _shuffleKeypad,
-            ),
+            _buildTextButton(text: '재배열', onPressed: _shuffleKeypad),
           ],
         ),
       ],
@@ -223,6 +220,14 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final guideText = widget.returnOnSuccess
+        ? 'QR로 연결된 상품을 확인하기 전 PIN으로 본인 확인합니다.'
+        : '저장된 로그인 토큰을 사용하기 전 PIN으로 본인 확인합니다.';
+
+    final bottomGuideText = widget.returnOnSuccess
+        ? 'PIN 인증 성공 시\nQR로 연결된 상품 화면으로 이동합니다.'
+        : 'PIN 인증 성공 시\n저장된 토큰으로 앱 홈 화면에 진입합니다.';
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -263,9 +268,7 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 34),
-
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -278,30 +281,22 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 12),
-
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '저장된 로그인 토큰을 사용하기 전 PIN으로 본인 확인합니다.',
-                    style: TextStyle(
+                    guideText,
+                    style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary,
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 42),
-
                 _buildPinDots(),
-
                 const SizedBox(height: 38),
-
                 _buildKeypad(),
-
                 const SizedBox(height: 26),
-
                 SizedBox(
                   width: double.infinity,
                   child: TextButton(
@@ -315,7 +310,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                     ),
                   ),
                 ),
-
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -327,9 +321,9 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: const Text(
-                    'PIN 인증 성공 시\n저장된 토큰으로 앱 홈 화면에 진입합니다.',
-                    style: TextStyle(
+                  child: Text(
+                    bottomGuideText,
+                    style: const TextStyle(
                       fontSize: 13,
                       height: 1.5,
                       color: AppColors.textSecondary,
@@ -337,7 +331,6 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 18),
               ],
             ),

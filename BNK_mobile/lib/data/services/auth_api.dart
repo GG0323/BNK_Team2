@@ -12,14 +12,13 @@ class AuthApi {
     required String loginId,
     required String password,
   }) async {
-    debugPrint('[AUTH LOGIN] POST ${ApiConstants.baseUrl}${ApiConstants.appLogin}');
+    debugPrint(
+      '[AUTH LOGIN] POST ${ApiConstants.baseUrl}${ApiConstants.appLogin}',
+    );
 
     final response = await _apiClient.postForm(
       ApiConstants.appLogin,
-      body: {
-        'username': loginId,
-        'password': password,
-      },
+      body: {'username': loginId, 'password': password},
     );
 
     final bool success = response['result'] == 'success';
@@ -32,11 +31,10 @@ class AuthApi {
   }
 
   Future<void> ping() async {
-    debugPrint('[AUTH PING] GET ${ApiConstants.baseUrl}${ApiConstants.appPing}');
-    await _apiClient.get(
-      ApiConstants.appPing,
-      useAuthCookie: true,
+    debugPrint(
+      '[AUTH PING] GET ${ApiConstants.baseUrl}${ApiConstants.appPing}',
     );
+    await _apiClient.get(ApiConstants.appPing, useAuthCookie: true);
   }
 
   Future<MemberModel> getMe() async {
@@ -55,6 +53,15 @@ class AuthApi {
   }
 
   Future<void> logout() async {
-    await SecureStorage.deleteAuthCookie();
+    try {
+      await _apiClient.postForRedirect(
+        ApiConstants.appLogout,
+        useAuthCookie: true,
+      );
+    } catch (error) {
+      debugPrint('[AUTH LOGOUT] server logout skipped: $error');
+    } finally {
+      await SecureStorage.clearAll();
+    }
   }
 }

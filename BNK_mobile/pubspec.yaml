@@ -1,4 +1,4 @@
-name: bnkmobiletest
+name: bnkmobile
 description: "A new Flutter project."
 publish_to: 'none'
 
@@ -20,6 +20,8 @@ dependencies:
 
   flutter_naver_map: ^1.4.3
   geolocator: ^14.0.2
+  camera: ^0.12.0+1
+  app_links: ^7.0.0
 
 dev_dependencies:
   flutter_test:
