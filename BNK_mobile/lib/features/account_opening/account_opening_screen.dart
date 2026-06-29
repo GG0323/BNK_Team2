@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../data/services/account_opening_api.dart';
+import 'id_card_camera_screen.dart';
 
 class AccountOpeningScreen extends StatefulWidget {
   const AccountOpeningScreen({super.key});
@@ -92,12 +93,26 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
     });
   }
 
+  Future<void> _captureAndUploadIdCard() async {
+    final imagePath = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => const IdCardCameraScreen()),
+    );
+
+    if (imagePath == null) return;
+
+    await _run(() async {
+      _applyStatus(await _api.uploadIdCard(imagePath));
+    });
+  }
+
   Future<void> _loadOcr() async {
     await _run(() async {
       final data = await _api.getOcr();
       final ocr = data['ocr'];
       setState(() {
-        _ocr = ocr is Map<String, dynamic> ? Map<String, dynamic>.from(ocr) : {};
+        _ocr = ocr is Map<String, dynamic>
+            ? Map<String, dynamic>.from(ocr)
+            : {};
       });
     });
   }
@@ -117,10 +132,12 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
 
   Future<void> _verifySecurityCard() async {
     await _run(() async {
-      _applyStatus(await _api.verifySecurityCard(
-        frontAnswer: _frontAnswerController.text,
-        backAnswer: _backAnswerController.text,
-      ));
+      _applyStatus(
+        await _api.verifySecurityCard(
+          frontAnswer: _frontAnswerController.text,
+          backAnswer: _backAnswerController.text,
+        ),
+      );
     });
   }
 
@@ -215,10 +232,7 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
         return _imageUploadStep(
           title: '신분증 촬영',
           message: '주민등록증 또는 운전면허증을 화면에 맞춰 촬영해 주세요.',
-          onCamera: () => _pickAndUpload(
-            source: ImageSource.camera,
-            upload: _api.uploadIdCard,
-          ),
+          onCamera: _captureAndUploadIdCard,
           onGallery: () => _pickAndUpload(
             source: ImageSource.gallery,
             upload: _api.uploadIdCard,
@@ -287,14 +301,16 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
           if (_ocr.isEmpty)
             _secondaryButton(label: 'OCR 결과 불러오기', onPressed: _loadOcr)
           else ...[
-            ..._ocr.entries.map((entry) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: TextFormField(
-                    initialValue: entry.value?.toString() ?? '',
-                    decoration: _inputDecoration(entry.key),
-                    onChanged: (value) => _ocr[entry.key] = value,
-                  ),
-                )),
+            ..._ocr.entries.map(
+              (entry) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: TextFormField(
+                  initialValue: entry.value?.toString() ?? '',
+                  decoration: _inputDecoration(entry.key),
+                  onChanged: (value) => _ocr[entry.key] = value,
+                ),
+              ),
+            ),
             _primaryButton(label: '확인 완료', onPressed: _confirmOcr),
           ],
         ],
@@ -310,11 +326,17 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
         children: [
           Text(
             (_challenge?['message'] ?? '보안카드 인증번호를 요청해 주세요.').toString(),
-            style: const TextStyle(color: AppColors.textSecondary, height: 1.45),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              height: 1.45,
+            ),
           ),
           const SizedBox(height: 12),
           if (_challenge == null)
-            _secondaryButton(label: '인증번호 요청', onPressed: _createSecurityChallenge)
+            _secondaryButton(
+              label: '인증번호 요청',
+              onPressed: _createSecurityChallenge,
+            )
           else ...[
             TextField(
               controller: _frontAnswerController,
@@ -366,10 +388,12 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
           DropdownButtonFormField<String>(
             initialValue: _purpose,
             items: _purposes
-                .map((purpose) => DropdownMenuItem(
-                      value: purpose['code'],
-                      child: Text(purpose['label']!),
-                    ))
+                .map(
+                  (purpose) => DropdownMenuItem(
+                    value: purpose['code'],
+                    child: Text(purpose['label']!),
+                  ),
+                )
                 .toList(),
             onChanged: (value) => setState(() => _purpose = value ?? 'ETC'),
             decoration: _inputDecoration('사용 목적'),
@@ -416,7 +440,10 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
         children: [
           Text(
             message,
-            style: const TextStyle(color: AppColors.textSecondary, height: 1.45),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              height: 1.45,
+            ),
           ),
           const SizedBox(height: 14),
           _primaryButton(label: '카메라로 촬영', onPressed: onCamera),
@@ -440,7 +467,10 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
         children: [
           Text(
             message,
-            style: const TextStyle(color: AppColors.textSecondary, height: 1.45),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              height: 1.45,
+            ),
           ),
           const SizedBox(height: 14),
           _primaryButton(label: label, onPressed: onPressed),
@@ -476,7 +506,10 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
     );
   }
 
-  Widget _primaryButton({required String label, required VoidCallback onPressed}) {
+  Widget _primaryButton({
+    required String label,
+    required VoidCallback onPressed,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 48,
@@ -486,14 +519,19 @@ class _AccountOpeningScreenState extends State<AccountOpeningScreen> {
           backgroundColor: AppColors.primaryRed,
           foregroundColor: AppColors.white,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: Text(label, style: const TextStyle(fontWeight: FontWeight.w900)),
       ),
     );
   }
 
-  Widget _secondaryButton({required String label, required VoidCallback onPressed}) {
+  Widget _secondaryButton({
+    required String label,
+    required VoidCallback onPressed,
+  }) {
     return SizedBox(
       width: double.infinity,
       height: 48,
