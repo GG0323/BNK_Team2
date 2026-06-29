@@ -20,4 +20,6 @@ public class CommunityBoard {
 	private String board_status;		// 게시글 상태 ('ACTIVE','DELETED','HIDDEN')
 	private LocalDate created_at;		// 작성일시
 	private LocalDate updated_at;		// 수정일시
+	private String nickname;
+	private long reply_count;
 }
