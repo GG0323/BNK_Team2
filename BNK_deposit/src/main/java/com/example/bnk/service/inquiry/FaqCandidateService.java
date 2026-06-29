@@ -21,8 +21,8 @@ public class FaqCandidateService {
 	
     // 스프링부트 3.2+ 면 RestClient, 아니면 RestTemplate 로 // 둘 다 자바에서 다른 서버(여기선 파이썬 FastAPI)를 HTTP로 부르는 도구
 	// 파이선 api 불러오기
-    private final RestClient restClient = RestClient.create("http://localhost:8000");
-    //private final RestClient restClient = RestClient.create("http://192.168.0.87:8000");
+    //private final RestClient restClient = RestClient.create("http://localhost:8000");
+    private final RestClient restClient = RestClient.create("http://192.168.0.87:8000");
     
     
     //http://127.0.0.1:8000/docs - 스워거 주소
@@ -77,11 +77,11 @@ public class FaqCandidateService {
             return Map.of("ok", false, "message", "FAQ 등록 실패. 다시 시도해주세요.");
         }
 
-        // 3) Faq_candidate Dao 호출
+        // 3) Faq_candidate Dao 호출 - 승인과 함꼐 답변을 저장한다. 
         candidateDao.approveCandidate(candidateNo, "승인", answer);
         System.out.println("승인 완료: " + candidateNo);
         
-        // 4) FaQ 호출 - 
+        // 4) FaQ 호출 - 새롭게 FaQ롤 등록한다.
         faqDao.insertNewFaq(question, answer, category, 0, employeeNo);
         
         return Map.of("ok", true, "candidateNo", candidateNo);
