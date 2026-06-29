@@ -20,7 +20,7 @@ import com.example.bnk.utils.JwtUtil;
 
 @RestController
 @RequestMapping("/api/community")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class ApiController {
 
     private final JwtUtil jwtUtil;
