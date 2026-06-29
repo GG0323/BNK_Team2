@@ -36,7 +36,7 @@
     	UPDATE TB_PRODUCT_SALES
     	SET applied_interest_rate = applied_interest_rate + 1
     	WHERE member_no = #{member_no}
-    	AND product_no = 81;
+    	AND product_no = 81
     </update>
     
     <select id="selectUsersProduct" resultType="com.example.bnk.dto.member.MemberProductDto">

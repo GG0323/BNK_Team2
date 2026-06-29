@@ -68,7 +68,10 @@ public class MemberSecurityConfig {
 				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/member/accounts/open/**"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/products/join/**"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.PUT, "/api/products/join/**"),
-				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/products/join/**")
+				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/products/join/**"),
+				PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/community/**"),
+				PathPatternRequestMatcher.pathPattern(HttpMethod.PUT, "/api/community/**"),
+				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/community/**")
 		));
 		http.cors(Customizer.withDefaults());
 		http.exceptionHandling(exception -> exception
@@ -82,7 +85,8 @@ public class MemberSecurityConfig {
 					"/member/**", "/loginPage", "/signupPage",
 					"/api/member/**", "/dormant/**", "/api/dormant/**",
 					"/api/products/member", "/api/products/member/**",
-					"/api/products/join/**"
+					"/api/products/join/**",
+					"/api/community/**"
 			)
 			.authorizeHttpRequests(auth -> auth
 					.requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
@@ -94,6 +98,7 @@ public class MemberSecurityConfig {
 							"/api/products/member/search",
 							"/api/products/member/detail").hasAuthority("MEMBER")
 					.requestMatchers("/api/products/join/**").hasAuthority("MEMBER")
+					.requestMatchers("/api/community/**").hasAuthority("MEMBER")
 					.anyRequest().permitAll()
 		);
 

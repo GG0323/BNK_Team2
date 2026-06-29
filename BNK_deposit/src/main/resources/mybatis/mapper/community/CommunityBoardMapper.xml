@@ -3,61 +3,146 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bnk.dao.community.ICommunityBoardDao">
-	<!-- 최신 순 -->
-<!--     <select id="selectAllPostsDESC" resultType="com.example.bnk.dto.community.CommunityBoard">
-        SELECT *
-        FROM tb_community_board
-        ORDER BY create_at DESC
-    </select> -->
-    
-    <!-- 오래된 순 -->
-<!--    	<select id="selectAllPostsASC" resultType="com.example.bnk.dto.community.CommunityBoard">
-        SELECT *
-        FROM tb_community_board
-        ORDER BY create_at ASC
-    </select> -->
-    
-    <!-- 좋아요 순 -->
-<!--     <select id="selectLikeAllPosts" resultType="com.example.bnk.dto.community.CommunityBoard">
-        SELECT *
-        FROM tb_community_board
-        ORDER BY like_count DESC
-    </select> -->
-    
-    
-<!--     <select id="searchPosts" resultType="com.example.bnk.dto.community.CommunityBoard">
-	    SELECT 
-	        board.board_no, 
-	       	account.nickname, 
-	        board_title, 
-	        board_content, 
-	        create_at
-	    FROM tb_community_board board
-	    INNER JOIN tb_community_account account 
-            ON board.community_account_no = account.community_account_no
-	    WHERE board_title LIKE '%' || #{keyword} || '%'
-	       OR account.nickname LIKE '%' || #{keyword} || '%'
-	    ORDER BY create_at DESC
-	</select> -->
 
-	<!-- 댓글 작성하기 -->
-<!-- 	<insert id="insertPost" parameterType="com.example.bnk.dto.community.CommunityBoard">
-	    INSERT INTO tb_test_comunity_cherta 
-	    	(test_no, test_name, test_title, test_content, test_time)
-		VALUES 
-			(seq_test_comunity_cherta.NEXTVAL, #{test_name}, #{test_title}, #{test_content}, SYSDATE)
-	</insert> -->
-	
-	<!-- 게시글 좋아요 1 증가 -->
-<!-- 	<update id="updatePostLike">
-	    UPDATE tb_test_comunity_cherta 
-	    SET test_like = NVL(test_like, 0) + 1 
-	    WHERE test_no = #{test_no}
-	</update> -->
-	
-	<!-- 현재 게시글의 좋아요 수만 따로 가져오기 -->
-<!-- 	<select id="getPostLikeCount" resultType="int">
-	    SELECT test_like FROM tb_test_comunity_cherta WHERE test_no = #{test_no}
-	</select> -->
-	
+	<select id="selectBoards" resultType="com.example.bnk.dto.community.CommunityBoard">
+		SELECT
+			b.board_no,
+			b.community_account_no,
+			b.board_title,
+			b.board_content,
+			b.like_count,
+			b.view_count,
+			b.board_status,
+			b.created_at,
+			b.updated_at,
+			a.nickname,
+			(
+				SELECT COUNT(*)
+				FROM TB_COMMUNITY_BOARD_REPLY r
+				WHERE r.board_no = b.board_no
+				  AND r.reply_status = 'ACTIVE'
+			) AS reply_count
+		FROM TB_COMMUNITY_BOARD b
+		INNER JOIN TB_COMMUNITY_ACCOUNT a
+			ON a.community_account_no = b.community_account_no
+		WHERE b.board_status = 'ACTIVE'
+		<if test="keyword != null and keyword != ''">
+			AND (
+				b.board_title LIKE '%' || #{keyword} || '%'
+				OR DBMS_LOB.INSTR(b.board_content, #{keyword}) &gt; 0
+				OR a.nickname LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<choose>
+			<when test="sort == 'likes'">
+				ORDER BY b.like_count DESC, b.board_no DESC
+			</when>
+			<when test="sort == 'oldest'">
+				ORDER BY b.board_no ASC
+			</when>
+			<otherwise>
+				ORDER BY b.board_no DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectBoard" resultType="com.example.bnk.dto.community.CommunityBoard">
+		SELECT
+			b.board_no,
+			b.community_account_no,
+			b.board_title,
+			b.board_content,
+			b.like_count,
+			b.view_count,
+			b.board_status,
+			b.created_at,
+			b.updated_at,
+			a.nickname,
+			(
+				SELECT COUNT(*)
+				FROM TB_COMMUNITY_BOARD_REPLY r
+				WHERE r.board_no = b.board_no
+				  AND r.reply_status = 'ACTIVE'
+			) AS reply_count
+		FROM TB_COMMUNITY_BOARD b
+		INNER JOIN TB_COMMUNITY_ACCOUNT a
+			ON a.community_account_no = b.community_account_no
+		WHERE b.board_no = #{board_no}
+		  AND b.board_status = 'ACTIVE'
+	</select>
+
+	<select id="selectLatestBoardByAccount" resultType="com.example.bnk.dto.community.CommunityBoard">
+		SELECT *
+		FROM (
+			SELECT
+				b.board_no,
+				b.community_account_no,
+				b.board_title,
+				b.board_content,
+				b.like_count,
+				b.view_count,
+				b.board_status,
+				b.created_at,
+				b.updated_at,
+				a.nickname,
+				(
+					SELECT COUNT(*)
+					FROM TB_COMMUNITY_BOARD_REPLY r
+					WHERE r.board_no = b.board_no
+					  AND r.reply_status = 'ACTIVE'
+				) AS reply_count
+			FROM TB_COMMUNITY_BOARD b
+			INNER JOIN TB_COMMUNITY_ACCOUNT a
+				ON a.community_account_no = b.community_account_no
+			WHERE b.community_account_no = #{community_account_no}
+			  AND b.board_status = 'ACTIVE'
+			ORDER BY b.board_no DESC
+		)
+		WHERE ROWNUM = 1
+	</select>
+
+	<insert id="insertBoard" parameterType="com.example.bnk.dto.community.CommunityBoard">
+		INSERT INTO TB_COMMUNITY_BOARD (
+			community_account_no,
+			board_title,
+			board_content,
+			like_count,
+			view_count,
+			board_status,
+			created_at,
+			updated_at
+		) VALUES (
+			#{community_account_no},
+			#{board_title},
+			#{board_content},
+			0,
+			0,
+			'ACTIVE',
+			SYSDATE,
+			SYSDATE
+		)
+	</insert>
+
+	<update id="updateViewCount">
+		UPDATE TB_COMMUNITY_BOARD
+		SET view_count = NVL(view_count, 0) + 1
+		WHERE board_no = #{board_no}
+		  AND board_status = 'ACTIVE'
+	</update>
+
+	<update id="updateLikeCount">
+		UPDATE TB_COMMUNITY_BOARD
+		SET like_count = NVL(like_count, 0) + 1
+		WHERE board_no = #{board_no}
+		  AND board_status = 'ACTIVE'
+	</update>
+
+	<update id="deleteBoard">
+		UPDATE TB_COMMUNITY_BOARD
+		SET board_status = 'DELETED',
+			updated_at = SYSDATE
+		WHERE board_no = #{board_no}
+		  AND community_account_no = #{community_account_no}
+		  AND board_status = 'ACTIVE'
+	</update>
 </mapper>
