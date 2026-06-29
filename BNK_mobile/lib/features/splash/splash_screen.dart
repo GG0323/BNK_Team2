@@ -9,7 +9,12 @@ import '../auth/login_screen.dart';
 import '../pin/pin_login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final bool enableAutoNavigation;
+
+  const SplashScreen({
+    super.key,
+    this.enableAutoNavigation = true,
+  });
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -18,9 +23,27 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final AuthApi _authApi = AuthApi();
 
+  bool _navigationStarted = false;
+
   @override
   void initState() {
     super.initState();
+    _startNavigationIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(covariant SplashScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!oldWidget.enableAutoNavigation && widget.enableAutoNavigation) {
+      _startNavigationIfNeeded();
+    }
+  }
+
+  void _startNavigationIfNeeded() {
+    if (_navigationStarted || !widget.enableAutoNavigation) return;
+
+    _navigationStarted = true;
     _checkLoginState();
   }
 
@@ -55,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
       );
-    } catch (e) {
+    } catch (_) {
       await SecureStorage.clearAll();
 
       if (!mounted) return;
@@ -75,6 +98,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final statusText = widget.enableAutoNavigation
+        ? '자동 로그인 정보를 확인하는 중...'
+        : 'QR 상품 정보를 확인하는 중...';
+
     return Scaffold(
       backgroundColor: AppColors.splashBackground,
       body: SafeArea(
@@ -83,7 +110,6 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             children: [
               const Spacer(),
-
               const Text(
                 'BNK',
                 style: TextStyle(
@@ -94,7 +120,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: 14),
-
               const Text(
                 '부산은행 모바일뱅킹',
                 style: TextStyle(
@@ -103,9 +128,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: AppColors.white,
                 ),
               ),
-
               const SizedBox(height: 48),
-
               Container(
                 width: double.infinity,
                 height: 52,
@@ -114,18 +137,16 @@ class _SplashScreenState extends State<SplashScreen> {
                   borderRadius: BorderRadius.circular(28),
                 ),
                 alignment: Alignment.center,
-                child: const Text(
-                  '자동 로그인 정보를 확인하는 중...',
-                  style: TextStyle(
+                child: Text(
+                  statusText,
+                  style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
-
               const Spacer(),
-
               const Text(
                 '저장된 토큰 있음 → 간편 로그인\n저장된 토큰 없음 → 최초 로그인',
                 textAlign: TextAlign.center,
@@ -135,7 +156,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Color(0xFFB8C3D6),
                 ),
               ),
-
               const SizedBox(height: 24),
             ],
           ),
