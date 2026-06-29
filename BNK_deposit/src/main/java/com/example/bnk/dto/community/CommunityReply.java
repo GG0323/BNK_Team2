@@ -18,4 +18,5 @@ public class CommunityReply {
 	private String reply_status;		// 댓글 상태 ('ACTIVE','DELETED','HIDDEN')
 	private LocalDate created_at;		// 작성일시
 	private LocalDate updated_at;		// 수정일시
+	private String nickname;
 }
