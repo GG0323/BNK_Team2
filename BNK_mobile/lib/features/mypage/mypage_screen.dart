@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/secure_storage.dart';
 import '../../data/models/mypage_model.dart';
+import '../../data/services/auth_api.dart';
 import '../../data/services/member_api.dart';
 import '../account/account_list_screen.dart';
 import '../auth/login_screen.dart';
@@ -19,8 +20,10 @@ class MyPageScreen extends StatefulWidget {
 
 class _MyPageScreenState extends State<MyPageScreen> {
   final MemberApi _memberApi = MemberApi();
+  final AuthApi _authApi = AuthApi();
 
   late Future<MyPageModel> _myPageFuture;
+  bool _isLoggingOut = false;
 
   @override
   void initState() {
@@ -29,17 +32,53 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 
   Future<void> _logout() async {
-    await SecureStorage.clearAll();
+    if (_isLoggingOut) return;
 
-    if (!mounted) return;
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
-      (route) => false,
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('로그아웃'),
+          content: const Text('현재 기기에서 로그아웃하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('취소'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('로그아웃'),
+            ),
+          ],
+        );
+      },
     );
+
+    if (shouldLogout != true || !mounted) return;
+
+    setState(() {
+      _isLoggingOut = true;
+    });
+
+    try {
+      await _authApi.logout();
+
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoggingOut = false;
+      });
+
+      _showPreparingMessage('로그아웃 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    }
   }
 
   Future<void> _resetPin(String memberName) async {
@@ -49,29 +88,20 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => PinSetupScreen(
-          memberName: memberName,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => PinSetupScreen(memberName: memberName)),
     );
   }
 
   void _goToQuickMenuEdit() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const QuickMenuEditScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const QuickMenuEditScreen()),
     );
   }
 
   void _showPreparingMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -214,11 +244,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              color: AppColors.primaryRed,
-              size: 26,
-            ),
+            Icon(icon, color: AppColors.primaryRed, size: 26),
             const SizedBox(height: 14),
             Text(
               title,
@@ -285,9 +311,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const AccountListScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const AccountListScreen()),
             );
           },
         ),
@@ -326,9 +350,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const ProductListScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const ProductListScreen()),
             );
           },
         ),
@@ -394,9 +416,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
         ),
         _buildDivider(),
         _buildMenuItem(
-          icon: Icons.logout_rounded,
-          title: '자동 로그인 해제',
-          subtitle: '저장된 토큰과 PIN 정보를 삭제합니다.',
+          icon: _isLoggingOut
+              ? Icons.hourglass_top_rounded
+              : Icons.logout_rounded,
+          title: '로그아웃',
+          subtitle: '현재 기기의 로그인 정보를 삭제합니다.',
           onTap: _logout,
         ),
       ],
@@ -485,9 +509,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
     );
   }
 
-  Widget _buildMenuGroup({
-    required List<Widget> children,
-  }) {
+  Widget _buildMenuGroup({required List<Widget> children}) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -495,9 +517,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: AppColors.border),
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 
@@ -521,11 +541,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 color: const Color(0xFFFFF0F0),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(
-                icon,
-                color: AppColors.primaryRed,
-                size: 24,
-              ),
+              child: Icon(icon, color: AppColors.primaryRed, size: 24),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -566,10 +582,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
   Widget _buildDivider() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 18),
-      child: Divider(
-        height: 1,
-        color: AppColors.border,
-      ),
+      child: Divider(height: 1, color: AppColors.border),
     );
   }
 
@@ -663,9 +676,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         foregroundColor: AppColors.textPrimary,
         title: const Text(
           '마이페이지',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
       body: FutureBuilder<MyPageModel>(
@@ -673,9 +684,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primaryRed,
-              ),
+              child: CircularProgressIndicator(color: AppColors.primaryRed),
             );
           }
 
@@ -684,9 +693,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           }
 
           if (!snapshot.hasData) {
-            return const Center(
-              child: Text('마이페이지 정보가 없습니다.'),
-            );
+            return const Center(child: Text('마이페이지 정보가 없습니다.'));
           }
 
           return _buildContent(snapshot.data!);

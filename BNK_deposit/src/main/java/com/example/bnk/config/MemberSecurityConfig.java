@@ -60,6 +60,7 @@ public class MemberSecurityConfig {
 		// 모바일에서 로그인할 때 csrf 토큰을 발급 받을 수 없으므로 예외처리용
 		http.csrf(csrf -> csrf.ignoringRequestMatchers(
 				PathPatternRequestMatcher.pathPattern("/member/login"),
+				PathPatternRequestMatcher.pathPattern("/member/logout"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/member/accounts/open"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.DELETE, "/api/member/accounts/open"),
 				PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/api/member/accounts/open/**"),
