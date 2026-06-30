@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,8 +34,22 @@ public class SecurityConfig {
 		// 권한별 제어
 		http.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/css/**", "/js/**", "/images/**", "/img/**", "/fonts/**", "/favicon.ico").permitAll()
-				.requestMatchers("/common/**", "/api/**").permitAll()
+				.requestMatchers("/common/**", "/api/**", "/api/orchestrator/**", "/error").permitAll()
 				.anyRequest().authenticated()
+		);
+
+		http.exceptionHandling(exception -> exception
+				.authenticationEntryPoint((request, response, authException) -> {
+					if (request.getRequestURI().startsWith("/api/")) {
+						response.setStatus(401);
+						response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+						response.setCharacterEncoding("UTF-8");
+						response.getWriter().write("{\"success\":false,\"message\":\"로그인이 필요합니다.\"}");
+						return;
+					}
+
+					response.sendRedirect("/loginPage");
+				})
 		);
 		
 		// 직원 로그인 설정
@@ -69,13 +84,16 @@ public class SecurityConfig {
 					"/", "/loginPage", "/signupPage",
 					"/products", "/products/**",
 					"/api/products", "/api/products/search", "/api/products/mobile-qr-image",
-					"/api/products/ai/recommend"
+					"/api/products/ai/recommend",
+					"/api/orchestrator/**", "/api/ai/**", "/api/finance/**",
+					"/error"
 			)
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers("/", "/loginPage", "/signupPage").permitAll()
+					.requestMatchers("/", "/loginPage", "/signupPage", "/error").permitAll()
 					.requestMatchers(HttpMethod.GET, "/products", "/products/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/search", "/api/products/mobile-qr-image").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/products/ai/recommend").permitAll()
+					.requestMatchers("/api/orchestrator/**", "/api/ai/**", "/api/finance/**").permitAll()
 					.anyRequest().authenticated()
 		);
 		
