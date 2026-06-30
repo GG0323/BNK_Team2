@@ -17,6 +17,7 @@ import com.example.bnk.service.chatbot.AiRoutingService;
 
 @RestController
 @RequestMapping("/api/orchestrator")
+
 @CrossOrigin(
         originPatterns = {
                 "http://localhost:*",

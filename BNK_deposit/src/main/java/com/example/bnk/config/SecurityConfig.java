@@ -76,7 +76,17 @@ public class SecurityConfig {
 	}
 	
 	@Bean @Order(3)
-	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {
+	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+		http.cors(cors -> cors.configurationSource(request -> {
+			org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
+			config.setAllowedOriginPatterns(java.util.List.of("*"));
+			config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+			config.setAllowedHeaders(java.util.List.of("*"));
+			config.setAllowCredentials(true);
+			return config;
+		}));
+		http.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll());
+				
 		http.csrf(csrf -> csrf.disable());
 
 		// 권한별 제어
