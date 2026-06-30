@@ -4,26 +4,44 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.bnk.dao.inquiry.IFaqCandidateDao;
 import com.example.bnk.dao.inquiry.IFaqDao;
 import com.example.bnk.dto.inquiry.FaqCandidateDto;
+import com.example.bnk.dto.inquiry.FaqFastApiRegDto;
+import com.example.bnk.service.employees.staff.StaffPendingService;
+
+import org.springframework.beans.factory.annotation.Qualifier; 
 
 @Service
 public class FaqCandidateService {
+
+    private final StaffPendingService staffPendingService;
+    private final RestTemplate restTemplate; 
 	
 	@Autowired
 	private IFaqCandidateDao candidateDao;
 	@Autowired
 	private IFaqDao faqDao;
 	
+	private static final String FASTAPI_BASE = "http://192.168.0.87:8000";
+	//private static final String FASTAPI_BASE = "http://localhost:8000";
     // 스프링부트 3.2+ 면 RestClient, 아니면 RestTemplate 로 // 둘 다 자바에서 다른 서버(여기선 파이썬 FastAPI)를 HTTP로 부르는 도구
 	// 파이선 api 불러오기
     //private final RestClient restClient = RestClient.create("http://localhost:8000");
-    private final RestClient restClient = RestClient.create("http://192.168.0.87:8000");
+    //private final RestClient restClient = RestClient.create("http://192.168.0.87:8000");
     
+    
+    // 생성자?
+    FaqCandidateService(StaffPendingService staffPendingService, @Qualifier("fastApiRestTemplate") RestTemplate restTemplate) {
+    	this.staffPendingService = staffPendingService;
+        this.restTemplate = restTemplate;
+    }
     
     //http://127.0.0.1:8000/docs - 스워거 주소
     
@@ -42,17 +60,29 @@ public class FaqCandidateService {
      * 동기 호출이라 파이썬이 끝날 때까지 대기(화면은 빙글빙글).
      * 반환은 요약 dict 예: {"ok":true, "new_candidates":5}
      */
+//    public Map<String, Object> triggerRefresh() {
+//        System.out.println("FAQ 후보 갱신 요청 → FastAPI 호출");
+//
+//        /** Fast Api 호출 !!!! */
+//        return restClient.post()
+//                .uri("/fast/api/ai/2/faq/refresh")
+//                .retrieve()
+//                .body(Map.class);
+//    } 새롭게 만든 버전
     public Map<String, Object> triggerRefresh() {
         System.out.println("FAQ 후보 갱신 요청 → FastAPI 호출");
-        
-        
-        /** Fast Api 호출 !!!! */
-        return restClient.post()
-                .uri("/fast/api/ai/2/faq/refresh")
-                .retrieve()
-                .body(Map.class);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result = restTemplate.postForObject(
+                FASTAPI_BASE + "/fast/api/ai/2/faq/refresh",
+                null,                 // 바디 없음
+                Map.class
+        );
+        return result;
     }
-	
+    
+    
+    
     
     // 후보테이블 상태값 변경
     public void rejectCandidate(Long candidateNo) {
@@ -89,16 +119,28 @@ public class FaqCandidateService {
 
     /** 파이썬 add_faq 호출.*/
     private Map<String, Object> callAddFaq(String question, String answer) {
-        System.out.println("Fast API add_faq 호출: " + question);
-        
+    	FaqFastApiRegDto reqDto = new FaqFastApiRegDto(question, answer);
+        System.out.println("보내는 DTO = " + reqDto);
 
-        /** Fast Api 호출 !!!! */
-        return restClient.post()
-                .uri("/fast/api/ai/2/faqs")
-                .body(Map.of("question", question, "answer", answer))
-                .retrieve()
-                .body(Map.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<FaqFastApiRegDto> entity = new HttpEntity<>(reqDto, headers);
+
+        try {
+            // FastAPI가 bare true/false 반환 → Boolean 으로 받기
+            Boolean ok = restTemplate.postForObject(
+                    FASTAPI_BASE + "/fast/api/ai/2/faqs",
+                    entity,
+                    Boolean.class
+            );
+            System.out.println("FastAPI 응답 ok = " + ok);
+            return Map.of("ok", Boolean.TRUE.equals(ok));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Map.of("ok", false, "error", e.getMessage());
+        }
     }
+    
     
     
     

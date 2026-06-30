@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import com.example.bnk.service.chatbot.AiRoutingService;
 
 @RestController
-@RequestMapping("/api/orchestrator")
+@RequestMapping("/api/orchestrator/multi")
 @CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
 public class AiOrchestratorMultiController {
 

@@ -16,7 +16,7 @@ import com.example.bnk.service.chatbot.AiRoutingService;
 
 @RestController
 @RequestMapping("/api/orchestrator")
-@CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
+//@CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
 public class AiOrchestratorController {
 
     @Autowired
@@ -53,13 +53,13 @@ public class AiOrchestratorController {
         switch (intent) {
             case "COMPARE":
                 // 상품 비교 AI 서버 호출 (예시 포트: 8081) -> 안만든대요..
-                finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/compare", userMessage);
+                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/api/ai/compare", userMessage);
                 System.out.println("COMPARE");
                 break;
                 
             case "RECOMMEND":
                 // 상품 추천 AI 서버 호출 (예시 포트: 8081) -> 안만든대요..
-                finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/recommend", userMessage);
+                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/api/ai/recommend", userMessage);
                 System.out.println("RECOMMEND");
                 break;
                 
