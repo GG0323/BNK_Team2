@@ -3,6 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 import chromadb
+from chromadb.errors import NotFoundError
 from openai import OpenAI
 
 from app.core.config import BASE_DIR, OPENAI_API_KEY, OPENAI_EMBED_MODEL, OPENAI_MODEL
@@ -112,10 +113,19 @@ class FaqLlmService:
         )
         query_vector = embedding_response.data[0].embedding
 
-        results = self._collection.query(
-            query_embeddings=[query_vector],
-            n_results=N_RESULTS,
-        )
+        try:
+            results = self._collection.query(
+                query_embeddings=[query_vector],
+                n_results=N_RESULTS,
+            )
+        except NotFoundError:
+            self._collection = self._chroma_client.get_collection(
+                name=FAQ_COLLECTION_NAME
+            )
+            results = self._collection.query(
+                query_embeddings=[query_vector],
+                n_results=N_RESULTS,
+            )
 
         # 결과 없음 방어
         if not results["documents"] or not results["documents"][0]:
