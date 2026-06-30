@@ -50,7 +50,8 @@ def faq(payload: FaqRequest) -> Dict[str, Any]:
 
 # faqs.json 최신화, 백터 DB 리빌드  /fast/api/ai/2/faqs
 @router.post("/2/faqs", response_model=bool)
-def add_faq(payload: FaqAddRequest) -> bool:
+async def add_faq(payload: FaqAddRequest) -> bool:
+    print(await FaqAddRequest.body())
     return faq_admin_service.add_faq(payload.question, payload.answer)
 
 # 파이프라인 호출 컨트롤러  /fast/api/ai/2/faq/refresh
