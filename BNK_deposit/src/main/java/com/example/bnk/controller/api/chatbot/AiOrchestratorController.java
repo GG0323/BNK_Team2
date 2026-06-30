@@ -53,12 +53,6 @@ public class AiOrchestratorController {
         String finalAnswer;
 
         switch (intent) {
-            case "COMPARE":
-                finalAnswer = callTargetAiServer(fastApiUrl("/fast/api/ai/2/product/compare"), userMessage);
-                break;
-            case "RECOMMEND":
-                finalAnswer = callTargetAiServer(fastApiUrl("/fast/api/ai/2/product/recommend"), userMessage);
-                break;
             case "DICTIONARY":
                 finalAnswer = callTargetAiServer(fastApiUrl("/fast/api/ai/2/dictionary"), userMessage);
                 break;
