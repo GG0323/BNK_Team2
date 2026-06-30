@@ -31,4 +31,29 @@ class ApiConstants {
   static const String reservationList = '/api/member/reservation/list';
   static const String reservationCreate = '/api/member/reservation/create';
   static const String reservationCancel = '/api/member/reservation/cancel';
+
+  static const String communityRegister = '/api/community/register';
+  static const String communityMe = '/api/community/me';
+  static const String communityNickname = '/api/community/me/nickname';
+  static const String communityBoards = '/api/community/boards';
+
+  static String communityCheckLogin(int memberNo) {
+    return '/api/community/check-login/$memberNo';
+  }
+
+  static String communityBoard(int boardNo) {
+    return '/api/community/boards/$boardNo';
+  }
+
+  static String communityBoardLike(int boardNo) {
+    return '/api/community/boards/$boardNo/like';
+  }
+
+  static String communityReplies(int boardNo) {
+    return '/api/community/boards/$boardNo/replies';
+  }
+
+  static String communityReply(int replyNo) {
+    return '/api/community/replies/$replyNo';
+  }
 }

@@ -8,6 +8,7 @@ import '../account/account_list_screen.dart';
 import '../account_opening/account_opening_screen.dart';
 import '../branch/branch_map_screen.dart';
 import '../branch/branch_reservation_list_screen.dart';
+import '../community/community_screen.dart';
 import '../mypage/mypage_screen.dart';
 import '../product_compare/product_list_screen.dart';
 import '../quick_menu/quick_menu_edit_screen.dart';
@@ -95,6 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const BranchReservationListScreen()),
+    );
+  }
+
+  void _goToCommunity() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CommunityScreen()),
     );
   }
 
@@ -670,6 +678,72 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildCommunityEntryCard() {
+    return InkWell(
+      borderRadius: BorderRadius.circular(22),
+      onTap: _goToCommunity,
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.fromLTRB(22, 22, 22, 0),
+        padding: const EdgeInsets.fromLTRB(20, 18, 18, 18),
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF0F0),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(
+                Icons.forum_outlined,
+                color: AppColors.primaryRed,
+                size: 26,
+              ),
+            ),
+            const SizedBox(width: 15),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '커뮤니티',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    'BNK FearX 소식과 게시판 바로가기',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textSecondary,
+              size: 28,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildRecommendCard() {
     return InkWell(
       borderRadius: BorderRadius.circular(24),
@@ -906,6 +980,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onActionTap: _goToQuickMenuEdit,
                 ),
                 _buildQuickMenuGrid(),
+                _buildCommunityEntryCard(),
                 _buildSectionTitle(title: '내 금융 요약'),
                 _buildFinanceSummary(mypage),
                 _buildSectionTitle(title: '추천 상품'),
