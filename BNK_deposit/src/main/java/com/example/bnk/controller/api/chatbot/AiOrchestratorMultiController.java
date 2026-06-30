@@ -1,6 +1,8 @@
 package com.example.bnk.controller.api.chatbot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import com.example.bnk.service.chatbot.AiRoutingService;
 
 @RestController
-@RequestMapping("/api/orchestrator")
-//@CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
-public class AiOrchestratorController {
+@RequestMapping("/api/orchestrator/multi")
+@CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
+public class AiOrchestratorMultiController {
 
     @Autowired
     private AiRoutingService aiRoutingService;
@@ -25,20 +27,21 @@ public class AiOrchestratorController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @PostMapping("/chat")
-    public ResponseEntity<Map<String, Object>> handleChat(@RequestBody Map<String, String> payload) {
-        String userMessage = payload.get("message");
+    @PostMapping("/chat")                                                          //변경1
+    public ResponseEntity<Map<String, Object>> handleChat(@RequestBody Map<String, Object> payload) {
+        //변경2
+    	//String userMessage = (String) payload.get("message");
         
-        /*
-         * handleChat(@RequestBody Map<String, Object > payload
         // message는 문자열로 꺼냄 (payload 타입이 Object라 캐스팅)
-        String userMessage = payload.get("message") != null ? payload.get("message").toString() : "";
+    	Object messageObj = payload.get("message");
+    	String userMessage = (messageObj != null) ? messageObj.toString() : "";
+        
         // history 꺼내기 (프론트가 안 보내면 빈 리스트 → 단발 처리, 안 터짐)
         Object historyObj = payload.get("history");
         List<Object> history = (historyObj instanceof List)
                 ? (List<Object>) historyObj
                 : new ArrayList<>();
-        */
+        
         
         
         // 1단계: 장진우 담당 라우팅 엔진으로 의도(Intent) 파악
@@ -53,13 +56,13 @@ public class AiOrchestratorController {
         switch (intent) {
             case "COMPARE":
                 // 상품 비교 AI 서버 호출 (예시 포트: 8081) -> 안만든대요..
-                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/api/ai/compare", userMessage);
+                finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/compare", userMessage);
                 System.out.println("COMPARE");
                 break;
                 
             case "RECOMMEND":
                 // 상품 추천 AI 서버 호출 (예시 포트: 8081) -> 안만든대요..
-                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/api/ai/recommend", userMessage);
+                finalAnswer = callTargetAiServer("http://localhost:8081/api/ai/recommend", userMessage);
                 System.out.println("RECOMMEND");
                 break;
                 
@@ -71,8 +74,8 @@ public class AiOrchestratorController {
                 
             case "FAQ":
                 // FAQ 벡터 검색 AI 서버 호출 (예시 포트: 8083)
-            	//finalAnswer = callFaqAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage, history);
-                finalAnswer = callTargetAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage);
+            	finalAnswer = callFaqAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage, history);
+                //finalAnswer = callTargetAiServer("http://192.168.0.87:8000/fast/api/ai/2/faq", userMessage);
                 System.out.println("FAQ");
                 break;
                 
@@ -111,7 +114,7 @@ public class AiOrchestratorController {
         }
     }
     
-    /*
+    // 추가
     // FAQ 전용 헬퍼: query + history를 함께 보냄 (멀티턴)
     private String callFaqAiServer(String url, String message, List<Object> history) {
         try {
@@ -126,6 +129,6 @@ public class AiOrchestratorController {
             return "죄송합니다. 해당 금융 AI 서비스 모듈이 준비 중이거나 응답이 지연되고 있습니다. 잠시 후 다시 시도해주세요.";
         }
     }
-    */
+    
     
 }
