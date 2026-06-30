@@ -67,6 +67,9 @@ function initChatbotTrail() {
     }
 
     setDefaultChatbotPosition();
+	setTimeout(function() {
+        chatbot.classList.add('visible'); // 1초 뒤에 visible 이라는 이름표를 붙여줍니다.
+    }, 2000);
 
     window.addEventListener('resize', setDefaultChatbotPosition);
 
