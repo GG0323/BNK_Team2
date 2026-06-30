@@ -16,7 +16,7 @@ import com.example.bnk.service.chatbot.AiRoutingService;
 
 @RestController
 @RequestMapping("/api/orchestrator")
-@CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
+//@CrossOrigin(origins = "*") // 플러터 앱이나 웹 프론트에서 통신할 수 있도록 CORS 허용
 public class AiOrchestratorController {
 
     @Autowired
