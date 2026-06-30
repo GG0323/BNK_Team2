@@ -561,89 +561,103 @@
 
 
     <!--
-        로그인 회원용 인기 추천 TOP 3
-
-        적용 기능:
-        1. 맞춤 추천 대상이 아니거나 맞춤 추천 결과가 없을 때 fallback 용도
-        2. COMPLETE 상태이면서 아직 만기 전인 상품은 추천에서 제외
-        3. DRAFT / EXPIRED는 추천 제외 대상으로 보지 않는다.
-        4. 회원 유형에 맞는 상품만 추천
-           - PERSONAL: ALL + PERSONAL
-           - BUSINESS: ALL + BUSINESS
-    -->
-    <select id="selectPopularRecommendedProductsForMember"
-            resultType="com.example.bnk.dto.product.ProductListViewDto">
-
-        SELECT *
-        FROM (
-            SELECT
-                p.product_no,
-                p.product_name,
-                p.product_type,
-                p.min_interest_rate,
-                p.max_interest_rate,
-                p.interest_payment_type,
-                p.interest_calc_type,
-                p.product_status,
-                p.branch_join_yn,
-                p.internet_join_yn,
-                p.mobile_join_yn,
-                p.sale_start_date,
-                p.sale_end_date,
-
-                d.subtitle,
-                d.content,
-                d.image_url,
-
-                c.customer_type,
-
-                'N' AS joined_yn
-
-            FROM TB_PRODUCT p
-            LEFT JOIN TB_PRODUCT_DESCRIPTION d
-                ON p.product_no = d.product_no
-            JOIN TB_PRODUCT_CONDITION c
-                ON p.product_no = c.product_no
-            LEFT JOIN (
-                SELECT
-                    product_no,
-                    COUNT(*) AS sales_count
-                FROM TB_PRODUCT_SALES
-                WHERE subscription_status &lt;&gt; 'DRAFT'
-                GROUP BY product_no
-            ) s
-                ON p.product_no = s.product_no
-
-            WHERE p.product_status = 'SALE'
-              AND p.product_type IN ('DEPOSIT', 'SAVINGS')
-              AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
-              AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
-              AND (
-                    c.customer_type = 'ALL'
-                    OR c.customer_type = (
-                        SELECT m.member_type
-                        FROM TB_BANK_MEMBER m
-                        WHERE m.member_no = #{memberNo}
-                    )
-              )
-              AND NOT EXISTS (
-                    SELECT 1
-                    FROM TB_PRODUCT_SALES ps
-                    WHERE ps.member_no = #{memberNo}
-                      AND ps.product_no = p.product_no
-                      AND ps.subscription_status = 'COMPLETE'
-                      AND (ps.maturity_date IS NULL OR ps.maturity_date &gt;= TRUNC(SYSDATE))
-              )
-
-            ORDER BY
-                NVL(s.sales_count, 0) DESC,
-                NVL(p.max_interest_rate, 0) DESC,
-                NVL(p.min_interest_rate, 0) DESC,
-                p.product_no DESC
-        )
-        WHERE ROWNUM &lt;= 3
-
-    </select>
+	    로그인 회원용 인기 추천 TOP 3
+	
+	    적용 기능:
+	    1. 맞춤 추천 대상이 아니거나 맞춤 추천 결과가 없을 때 fallback 용도
+	    2. COMPLETE 상태이면서 아직 만기 전인 상품은 추천에서 제외
+	    3. DRAFT / EXPIRED는 추천 제외 대상으로 보지 않는다.
+	    4. 회원 유형에 맞는 상품만 추천
+	       - PERSONAL: ALL + PERSONAL
+	       - BUSINESS: ALL + BUSINESS
+	    5. BNK가을야구예금(product_no = 26)은 무조건 추천 TOP 3에 포함
+	-->
+	<select id="selectPopularRecommendedProductsForMember"
+	        resultType="com.example.bnk.dto.product.ProductListViewDto">
+	
+	    SELECT *
+	    FROM (
+	        SELECT
+	            p.product_no,
+	            p.product_name,
+	            p.product_type,
+	            p.min_interest_rate,
+	            p.max_interest_rate,
+	            p.interest_payment_type,
+	            p.interest_calc_type,
+	            p.product_status,
+	            p.branch_join_yn,
+	            p.internet_join_yn,
+	            p.mobile_join_yn,
+	            p.sale_start_date,
+	            p.sale_end_date,
+	
+	            d.subtitle,
+	            d.content,
+	            d.image_url,
+	
+	            c.customer_type,
+	
+	            'N' AS joined_yn,
+	
+	            NVL(s.sales_count, 0) AS sales_count
+	
+	        FROM TB_PRODUCT p
+	        LEFT JOIN TB_PRODUCT_DESCRIPTION d
+	            ON p.product_no = d.product_no
+	        JOIN TB_PRODUCT_CONDITION c
+	            ON p.product_no = c.product_no
+	        LEFT JOIN (
+	            SELECT
+	                product_no,
+	                COUNT(*) AS sales_count
+	            FROM TB_PRODUCT_SALES
+	            WHERE subscription_status &lt;&gt; 'DRAFT'
+	            GROUP BY product_no
+	        ) s
+	            ON p.product_no = s.product_no
+	
+	        WHERE
+	            (
+	                p.product_no = 26
+	            )
+	            OR
+	            (
+	                p.product_status = 'SALE'
+	                AND p.product_type IN ('DEPOSIT', 'SAVINGS')
+	                AND (p.sale_start_date IS NULL OR p.sale_start_date &lt;= SYSDATE)
+	                AND (p.sale_end_date IS NULL OR p.sale_end_date &gt;= SYSDATE)
+	                AND (
+	                    c.customer_type = 'ALL'
+	                    OR c.customer_type = (
+	                        SELECT m.member_type
+	                        FROM TB_BANK_MEMBER m
+	                        WHERE m.member_no = #{memberNo}
+	                    )
+	                )
+	                AND NOT EXISTS (
+	                    SELECT 1
+	                    FROM TB_PRODUCT_SALES ps
+	                    WHERE ps.member_no = #{memberNo}
+	                      AND ps.product_no = p.product_no
+	                      AND ps.subscription_status = 'COMPLETE'
+	                      AND (ps.maturity_date IS NULL OR ps.maturity_date &gt;= TRUNC(SYSDATE))
+	                )
+	            )
+	
+	        ORDER BY
+	            CASE
+	                WHEN p.product_no = 26 THEN 0
+	                ELSE 1
+	            END,
+	            NVL(s.sales_count, 0) DESC,
+	            NVL(p.max_interest_rate, 0) DESC,
+	            NVL(p.min_interest_rate, 0) DESC,
+	            p.product_no DESC
+	    )
+	    WHERE ROWNUM &lt;= 3
+	
+	</select>
 
 
     <!--

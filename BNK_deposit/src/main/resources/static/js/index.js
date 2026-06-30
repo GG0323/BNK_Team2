@@ -195,7 +195,7 @@ function initBiniHeroGuide() {
 
                 if (isPreparingAnswer(finalAnswer)) {
                     finalIntent = 'GUIDE';
-                    finalAnswer = '아직은 예금, 적금, 금리 같은 금융용어 설명을 중심으로 도와드릴 수 있어요. “적금이 뭐야?”, “금리가 뭐야?”처럼 물어보세요.';
+                    finalAnswer = '예금, 적금, 금리 같은 금융용어과 FAQ 중심으로 도와드릴 수 있어요.';
                 }
 
                 appendBiniMessage('system', finalAnswer);
@@ -210,7 +210,7 @@ function initBiniHeroGuide() {
                     loadingDiv.remove();
                 }
 
-                appendBiniMessage('system', '죄송합니다. 서버 통신에 실패했습니다. 지금은 “적금이 뭐야?” 같은 금융용어 질문을 다시 시도해 주세요.');
+                appendBiniMessage('system', '죄송합니다. 서버 통신에 실패했습니다. 나중에 다시 시도해주세요');
                 setBiniExpression('sad');
                 resetBiniExpressionLater(5000);
             });
