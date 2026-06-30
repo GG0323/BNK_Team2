@@ -87,7 +87,7 @@ public String determineRoutingIntent2(String aiMessage) {
         String systemPrompt = 
             "너는 답변을 다듬어주는 'AI 언어 엔진'이다." + 
         	"너에게 주어진 답변을 대답형식으로 다듬어라." + 
-            "말은 무조건 높임말로 바꾸어야 하며, 있는 말 그대로를 사용하여야한다."+
+            "말은 무조건 높임말로 바꾸어서 출력할 것."+
         	"만약 '죄송합니다. 현재 준비중입니다.'라는 답변을 받으면 그대로 출력하면 된다.";
 
         try {
