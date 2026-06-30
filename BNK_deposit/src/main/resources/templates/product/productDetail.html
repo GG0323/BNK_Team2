@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>BNK 상품 상세</title>
-
+    <link rel="stylesheet" th:href="@{/css/chatbot.css}" />
     <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
     <th:block th:replace="~{fragments/header :: headerCss}"></th:block>
     <th:block th:replace="~{fragments/footer :: footerCss}"></th:block>
 
     <script src="/js/product/productDetail.js" defer></script>
     <script th:src="@{/js/product/productDetailTabs.js}" defer></script>
+    <script th:src="@{/js/chatbot.js}" defer></script>
 
     <script>
         function openTaxBenefitDictionaryPopup() {
@@ -55,6 +56,7 @@
 
 <body>
 <div th:replace="~{fragments/header :: header_default}"></div>
+<div th:replace="~{fragments/chatbotFragment :: chatbot}"></div>
 
 <div class="page-wrap">
 
