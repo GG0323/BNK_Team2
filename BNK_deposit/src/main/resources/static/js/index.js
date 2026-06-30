@@ -195,7 +195,7 @@ function initBiniHeroGuide() {
 
                 if (isPreparingAnswer(finalAnswer)) {
                     finalIntent = 'GUIDE';
-                    finalAnswer = '예금, 적금, 금리 같은 금융용어과 FAQ 중심으로 도와드릴 수 있어요.';
+                    finalAnswer = '예금, 적금, 금리 같은 금융용어와 FAQ 중심으로 도와드릴 수 있어요.';
                 }
 
                 appendBiniMessage('system', finalAnswer);
