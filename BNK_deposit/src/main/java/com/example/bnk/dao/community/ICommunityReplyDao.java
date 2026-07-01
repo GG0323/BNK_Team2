@@ -10,10 +10,16 @@ import com.example.bnk.dto.community.CommunityReply;
 @Mapper
 public interface ICommunityReplyDao {
 	List<CommunityReply> selectReplies(@Param("board_no") long boardNo);
+	CommunityReply selectReply(@Param("reply_no") long replyNo);
 	CommunityReply selectLatestReplyByAccount(
 			@Param("board_no") long boardNo,
 			@Param("community_account_no") long communityAccountNo
 	);
 	int insertReply(CommunityReply reply);
+	int updateReply(
+			@Param("reply_no") long replyNo,
+			@Param("community_account_no") long communityAccountNo,
+			@Param("reply_content") String content
+	);
 	int deleteReply(@Param("reply_no") long replyNo, @Param("community_account_no") long communityAccountNo);
 }

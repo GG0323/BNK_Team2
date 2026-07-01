@@ -125,6 +125,25 @@ public class ApiController {
 		}
 	}
 
+	@PutMapping("/boards/{boardNo}")
+	public ResponseEntity<ApiResponse<?>> updateBoard(
+			@PathVariable("boardNo") long boardNo,
+			@RequestBody Map<String, Object> request,
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		try {
+			CommunityBoard board = communityService.updateBoard(
+					memberNo(memberDetails),
+					boardNo,
+					requiredText(request, "title"),
+					requiredText(request, "content")
+			);
+			return ResponseEntity.ok(ApiResponse.ok("寃뚯떆湲???섏젙?섏뿀?듬땲??", board));
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
+		}
+	}
+
 	@DeleteMapping("/boards/{boardNo}")
 	public ResponseEntity<ApiResponse<?>> deleteBoard(
 			@PathVariable("boardNo") long boardNo,
@@ -156,6 +175,24 @@ public class ApiController {
 					requiredText(request, "content")
 			);
 			return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok("댓글이 등록되었습니다.", reply));
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
+		}
+	}
+
+	@PutMapping("/replies/{replyNo}")
+	public ResponseEntity<ApiResponse<?>> updateReply(
+			@PathVariable("replyNo") long replyNo,
+			@RequestBody Map<String, Object> request,
+			@AuthenticationPrincipal MemberDetails memberDetails
+	) {
+		try {
+			CommunityReply reply = communityService.updateReply(
+					memberNo(memberDetails),
+					replyNo,
+					requiredText(request, "content")
+			);
+			return ResponseEntity.ok(ApiResponse.ok("?볤????섏젙?섏뿀?듬땲??", reply));
 		} catch (IllegalArgumentException | IllegalStateException e) {
 			return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
 		}

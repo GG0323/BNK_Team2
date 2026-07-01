@@ -8,6 +8,8 @@ class CommunityBoardModel {
   final int replyCount;
   final String nickname;
   final String createdAt;
+  final String updatedAt;
+  final bool modified;
 
   const CommunityBoardModel({
     required this.boardNo,
@@ -19,6 +21,8 @@ class CommunityBoardModel {
     required this.replyCount,
     required this.nickname,
     required this.createdAt,
+    required this.updatedAt,
+    required this.modified,
   });
 
   factory CommunityBoardModel.fromJson(Map<String, dynamic> json) {
@@ -34,12 +38,26 @@ class CommunityBoardModel {
       replyCount: _toInt(json['replyCount'] ?? json['reply_count']),
       nickname: (json['nickname'] ?? '익명').toString(),
       createdAt: (json['createdAt'] ?? json['created_at'] ?? '').toString(),
+      updatedAt: (json['updatedAt'] ?? json['updated_at'] ?? '').toString(),
+      modified: _toBool(json['modifiedYn'] ?? json['modified_yn']),
     );
+  }
+
+  String get displayDate {
+    if (!modified) return createdAt;
+
+    return '$createdAt · $updatedAt (수정)';
   }
 
   static int _toInt(dynamic value) {
     if (value is int) return value;
     if (value is num) return value.toInt();
     return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  static bool _toBool(dynamic value) {
+    if (value is bool) return value;
+    final text = value?.toString().toUpperCase();
+    return text == 'Y' || text == 'TRUE' || text == '1';
   }
 }

@@ -121,6 +121,22 @@ public class CommunityService {
 	}
 
 	@Transactional
+	public CommunityBoard updateBoard(long memberNo, long boardNo, String title, String content) {
+		CommunityAccountDto account = requireActiveAccount(memberNo);
+		int updated = communityBoardDao.updateBoard(
+				boardNo,
+				account.getCommunity_account_no(),
+				title,
+				content
+		);
+		if (updated != 1) {
+			throw new IllegalArgumentException("?섏젙??寃뚯떆湲??李얠쓣 ???놁뒿?덈떎.");
+		}
+
+		return communityBoardDao.selectBoard(boardNo);
+	}
+
+	@Transactional
 	public void deleteBoard(long memberNo, long boardNo) {
 		CommunityAccountDto account = requireActiveAccount(memberNo);
 		int updated = communityBoardDao.deleteBoard(boardNo, account.getCommunity_account_no());
@@ -149,6 +165,17 @@ public class CommunityService {
 		}
 
 		return communityReplyDao.selectLatestReplyByAccount(boardNo, account.getCommunity_account_no());
+	}
+
+	@Transactional
+	public CommunityReply updateReply(long memberNo, long replyNo, String content) {
+		CommunityAccountDto account = requireActiveAccount(memberNo);
+		int updated = communityReplyDao.updateReply(replyNo, account.getCommunity_account_no(), content);
+		if (updated != 1) {
+			throw new IllegalArgumentException("?섏젙???볤???李얠쓣 ???놁뒿?덈떎.");
+		}
+
+		return communityReplyDao.selectReply(replyNo);
 	}
 
 	@Transactional

@@ -22,4 +22,5 @@ public class CommunityBoard {
 	private LocalDate updated_at;		// 수정일시
 	private String nickname;
 	private long reply_count;
+	private String modified_yn;
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../data/models/community_board_model.dart';
 import '../../data/services/community_api.dart';
 
 class CommunityBoardWriteScreen extends StatefulWidget {
-  const CommunityBoardWriteScreen({super.key});
+  final CommunityBoardModel? board;
+
+  const CommunityBoardWriteScreen({super.key, this.board});
 
   @override
   State<CommunityBoardWriteScreen> createState() =>
@@ -17,6 +20,18 @@ class _CommunityBoardWriteScreenState extends State<CommunityBoardWriteScreen> {
   final TextEditingController _contentController = TextEditingController();
 
   bool _submitting = false;
+  bool get _isEditMode => widget.board != null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final board = widget.board;
+    if (board != null) {
+      _titleController.text = board.title;
+      _contentController.text = board.content;
+    }
+  }
 
   @override
   void dispose() {
@@ -42,7 +57,15 @@ class _CommunityBoardWriteScreenState extends State<CommunityBoardWriteScreen> {
     setState(() => _submitting = true);
 
     try {
-      await _communityApi.createBoard(title: title, content: content);
+      if (_isEditMode) {
+        await _communityApi.updateBoard(
+          boardNo: widget.board!.boardNo,
+          title: title,
+          content: content,
+        );
+      } else {
+        await _communityApi.createBoard(title: title, content: content);
+      }
 
       if (!mounted) return;
 
@@ -71,9 +94,9 @@ class _CommunityBoardWriteScreenState extends State<CommunityBoardWriteScreen> {
         backgroundColor: AppColors.cardBackground,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
-        title: const Text(
-          '게시글 작성',
-          style: TextStyle(fontWeight: FontWeight.w900),
+        title: Text(
+          _isEditMode ? '게시글 수정' : '게시글 작성',
+          style: const TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
       body: SafeArea(
@@ -152,9 +175,9 @@ class _CommunityBoardWriteScreenState extends State<CommunityBoardWriteScreen> {
                             color: AppColors.white,
                           ),
                         )
-                      : const Text(
-                          '등록',
-                          style: TextStyle(
+                      : Text(
+                          _isEditMode ? '수정 완료' : '등록',
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
                           ),

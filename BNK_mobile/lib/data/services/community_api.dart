@@ -113,6 +113,20 @@ class CommunityApi {
     return CommunityBoardModel.fromJson(_dataMap(response));
   }
 
+  Future<CommunityBoardModel> updateBoard({
+    required int boardNo,
+    required String title,
+    required String content,
+  }) async {
+    final response = await _apiClient.put(
+      ApiConstants.communityBoard(boardNo),
+      useAuthCookie: true,
+      body: {'title': title, 'content': content},
+    );
+
+    return CommunityBoardModel.fromJson(_dataMap(response));
+  }
+
   Future<CommunityBoardModel> likeBoard(int boardNo) async {
     final response = await _apiClient.post(
       ApiConstants.communityBoardLike(boardNo),
@@ -147,6 +161,19 @@ class CommunityApi {
   }) async {
     final response = await _apiClient.post(
       ApiConstants.communityReplies(boardNo),
+      useAuthCookie: true,
+      body: {'content': content},
+    );
+
+    return CommunityReplyModel.fromJson(_dataMap(response));
+  }
+
+  Future<CommunityReplyModel> updateReply({
+    required int replyNo,
+    required String content,
+  }) async {
+    final response = await _apiClient.put(
+      ApiConstants.communityReply(replyNo),
       useAuthCookie: true,
       body: {'content': content},
     );

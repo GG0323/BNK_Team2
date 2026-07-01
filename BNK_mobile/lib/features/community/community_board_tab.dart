@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/storage/community_storage.dart';
 import '../../data/models/community_board_model.dart';
 import '../../data/models/community_reply_model.dart';
 import '../../data/services/community_api.dart';
@@ -57,7 +58,7 @@ class _CommunityBoardTabState extends State<CommunityBoardTab> {
   }
 
   Future<void> _openDetail(CommunityBoardModel preview) async {
-    await showModalBottomSheet<void>(
+    await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.cardBackground,
@@ -246,15 +247,31 @@ class _BoardCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    board.nickname,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        board.nickname,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        board.displayDate,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 _CountChip(icon: Icons.favorite_border, value: board.likeCount),
@@ -293,6 +310,7 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
   late Future<void> _future;
   CommunityBoardModel? _board;
   List<CommunityReplyModel> _replies = const [];
+  int _myCommunityAccountNo = 0;
 
   @override
   void initState() {
@@ -309,13 +327,22 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
   Future<void> _load() async {
     final board = await widget.communityApi.getBoard(widget.boardNo);
     final replies = await widget.communityApi.getReplies(widget.boardNo);
+    final profile = await CommunityStorage.getProfile();
 
     if (!mounted) return;
 
     setState(() {
       _board = board;
       _replies = replies;
+      _myCommunityAccountNo = profile.communityAccountNo;
     });
+  }
+
+  bool get _isMyBoard =>
+      _board != null && _board!.communityAccountNo == _myCommunityAccountNo;
+
+  bool _isMyReply(CommunityReplyModel reply) {
+    return reply.communityAccountNo == _myCommunityAccountNo;
   }
 
   Future<void> _like() async {
@@ -349,6 +376,126 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
         ),
       );
     }
+  }
+
+  Future<void> _editBoard() async {
+    final board = _board;
+    if (board == null) return;
+
+    final updated = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CommunityBoardWriteScreen(board: board),
+      ),
+    );
+
+    if (updated == true) {
+      await _load();
+    }
+  }
+
+  Future<void> _deleteBoard() async {
+    final confirmed = await _confirm('게시글을 삭제할까요?');
+    if (confirmed != true) return;
+
+    try {
+      await widget.communityApi.deleteBoard(widget.boardNo);
+
+      if (!mounted) return;
+
+      Navigator.pop(context, true);
+    } catch (error) {
+      _showMessage(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<void> _editReply(CommunityReplyModel reply) async {
+    final controller = TextEditingController(text: reply.content);
+
+    final content = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('댓글 수정'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            keyboardType: TextInputType.multiline,
+            minLines: 2,
+            maxLines: 5,
+            decoration: const InputDecoration(labelText: '내용'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.pop(dialogContext, controller.text.trim()),
+              child: const Text('수정'),
+            ),
+          ],
+        );
+      },
+    );
+
+    controller.dispose();
+
+    if (content == null) return;
+    if (content.isEmpty) {
+      _showMessage('내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      await widget.communityApi.updateReply(
+        replyNo: reply.replyNo,
+        content: content,
+      );
+      await _load();
+    } catch (error) {
+      _showMessage(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<void> _deleteReply(CommunityReplyModel reply) async {
+    final confirmed = await _confirm('댓글을 삭제할까요?');
+    if (confirmed != true) return;
+
+    try {
+      await widget.communityApi.deleteReply(reply.replyNo);
+      await _load();
+    } catch (error) {
+      _showMessage(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  Future<bool?> _confirm(String message) {
+    return showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
   }
 
   @override
@@ -407,6 +554,21 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
                           ),
                         ),
                       ),
+                      if (_isMyBoard)
+                        PopupMenuButton<String>(
+                          tooltip: '게시글 메뉴',
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              _editBoard();
+                            } else if (value == 'delete') {
+                              _deleteBoard();
+                            }
+                          },
+                          itemBuilder: (context) => const [
+                            PopupMenuItem(value: 'edit', child: Text('수정')),
+                            PopupMenuItem(value: 'delete', child: Text('삭제')),
+                          ],
+                        ),
                       IconButton(
                         tooltip: '닫기',
                         onPressed: () => Navigator.pop(context),
@@ -416,7 +578,7 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${board.nickname} · ${board.createdAt}',
+                    '${board.nickname} · ${board.displayDate}',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -462,7 +624,12 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
                   for (final reply in _replies)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: _ReplyTile(reply: reply),
+                      child: _ReplyTile(
+                        reply: reply,
+                        isMine: _isMyReply(reply),
+                        onEdit: () => _editReply(reply),
+                        onDelete: () => _deleteReply(reply),
+                      ),
                     ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -506,8 +673,16 @@ class _BoardDetailSheetState extends State<_BoardDetailSheet> {
 
 class _ReplyTile extends StatelessWidget {
   final CommunityReplyModel reply;
+  final bool isMine;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
-  const _ReplyTile({required this.reply});
+  const _ReplyTile({
+    required this.reply,
+    required this.isMine,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -521,15 +696,36 @@ class _ReplyTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            reply.nickname,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textPrimary,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  reply.nickname,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              if (isMine)
+                PopupMenuButton<String>(
+                  tooltip: '댓글 메뉴',
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      onEdit();
+                    } else if (value == 'delete') {
+                      onDelete();
+                    }
+                  },
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(value: 'edit', child: Text('수정')),
+                    PopupMenuItem(value: 'delete', child: Text('삭제')),
+                  ],
+                ),
+            ],
           ),
           const SizedBox(height: 6),
           Text(
@@ -539,6 +735,15 @@ class _ReplyTile extends StatelessWidget {
               height: 1.4,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            reply.displayDate,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
             ),
           ),
         ],

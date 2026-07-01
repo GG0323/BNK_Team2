@@ -19,4 +19,5 @@ public class CommunityReply {
 	private LocalDate created_at;		// 작성일시
 	private LocalDate updated_at;		// 수정일시
 	private String nickname;
+	private String modified_yn;
 }

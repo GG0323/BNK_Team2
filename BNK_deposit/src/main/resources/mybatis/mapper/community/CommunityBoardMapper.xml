@@ -15,6 +15,7 @@
 			b.board_status,
 			b.created_at,
 			b.updated_at,
+			CASE WHEN b.updated_at > b.created_at THEN 'Y' ELSE 'N' END AS modified_yn,
 			a.nickname,
 			(
 				SELECT COUNT(*)
@@ -57,6 +58,7 @@
 			b.board_status,
 			b.created_at,
 			b.updated_at,
+			CASE WHEN b.updated_at > b.created_at THEN 'Y' ELSE 'N' END AS modified_yn,
 			a.nickname,
 			(
 				SELECT COUNT(*)
@@ -84,6 +86,7 @@
 				b.board_status,
 				b.created_at,
 				b.updated_at,
+				CASE WHEN b.updated_at > b.created_at THEN 'Y' ELSE 'N' END AS modified_yn,
 				a.nickname,
 				(
 					SELECT COUNT(*)
@@ -127,6 +130,16 @@
 		UPDATE TB_COMMUNITY_BOARD
 		SET view_count = NVL(view_count, 0) + 1
 		WHERE board_no = #{board_no}
+		  AND board_status = 'ACTIVE'
+	</update>
+
+	<update id="updateBoard">
+		UPDATE TB_COMMUNITY_BOARD
+		SET board_title = #{board_title},
+			board_content = #{board_content},
+			updated_at = SYSDATE
+		WHERE board_no = #{board_no}
+		  AND community_account_no = #{community_account_no}
 		  AND board_status = 'ACTIVE'
 	</update>
 

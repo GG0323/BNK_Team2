@@ -13,6 +13,12 @@ public interface ICommunityBoardDao {
 	CommunityBoard selectBoard(@Param("board_no") long boardNo);
 	CommunityBoard selectLatestBoardByAccount(@Param("community_account_no") long communityAccountNo);
 	int insertBoard(CommunityBoard board);
+	int updateBoard(
+			@Param("board_no") long boardNo,
+			@Param("community_account_no") long communityAccountNo,
+			@Param("board_title") String title,
+			@Param("board_content") String content
+	);
 	int updateViewCount(@Param("board_no") long boardNo);
 	int updateLikeCount(@Param("board_no") long boardNo);
 	int deleteBoard(@Param("board_no") long boardNo, @Param("community_account_no") long communityAccountNo);

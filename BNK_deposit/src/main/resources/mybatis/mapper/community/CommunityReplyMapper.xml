@@ -13,6 +13,7 @@
 			r.reply_status,
 			r.created_at,
 			r.updated_at,
+			CASE WHEN r.updated_at > r.created_at THEN 'Y' ELSE 'N' END AS modified_yn,
 			a.nickname
 		FROM TB_COMMUNITY_BOARD_REPLY r
 		INNER JOIN TB_COMMUNITY_ACCOUNT a
@@ -33,6 +34,7 @@
 				r.reply_status,
 				r.created_at,
 				r.updated_at,
+				CASE WHEN r.updated_at > r.created_at THEN 'Y' ELSE 'N' END AS modified_yn,
 				a.nickname
 			FROM TB_COMMUNITY_BOARD_REPLY r
 			INNER JOIN TB_COMMUNITY_ACCOUNT a
@@ -43,6 +45,24 @@
 			ORDER BY r.reply_no DESC
 		)
 		WHERE ROWNUM = 1
+	</select>
+
+	<select id="selectReply" resultType="com.example.bnk.dto.community.CommunityReply">
+		SELECT
+			r.reply_no,
+			r.board_no,
+			r.community_account_no,
+			r.reply_content,
+			r.reply_status,
+			r.created_at,
+			r.updated_at,
+			CASE WHEN r.updated_at > r.created_at THEN 'Y' ELSE 'N' END AS modified_yn,
+			a.nickname
+		FROM TB_COMMUNITY_BOARD_REPLY r
+		INNER JOIN TB_COMMUNITY_ACCOUNT a
+			ON a.community_account_no = r.community_account_no
+		WHERE r.reply_no = #{reply_no}
+		  AND r.reply_status = 'ACTIVE'
 	</select>
 
 	<insert id="insertReply" parameterType="com.example.bnk.dto.community.CommunityReply">
@@ -66,6 +86,15 @@
 	<update id="deleteReply">
 		UPDATE TB_COMMUNITY_BOARD_REPLY
 		SET reply_status = 'DELETED',
+			updated_at = SYSDATE
+		WHERE reply_no = #{reply_no}
+		  AND community_account_no = #{community_account_no}
+		  AND reply_status = 'ACTIVE'
+	</update>
+
+	<update id="updateReply">
+		UPDATE TB_COMMUNITY_BOARD_REPLY
+		SET reply_content = #{reply_content},
 			updated_at = SYSDATE
 		WHERE reply_no = #{reply_no}
 		  AND community_account_no = #{community_account_no}
