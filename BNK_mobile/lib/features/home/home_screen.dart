@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/events/account_refresh_notifier.dart';
 import '../../core/storage/quick_menu_storage.dart';
+import '../../data/models/account_model.dart';
 import '../../data/models/mypage_model.dart';
+import '../../data/services/account_api.dart';
 import '../../data/services/member_api.dart';
 import '../account/account_list_screen.dart';
 import '../account_opening/account_opening_screen.dart';
@@ -24,8 +27,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final MemberApi _memberApi = MemberApi();
+  final AccountApi _accountApi = AccountApi();
 
-  late Future<MyPageModel> _myPageFuture;
+  late Future<_HomeData> _homeDataFuture;
 
   List<String> _quickMenuSlotIds = List<String>.from(
     QuickMenuStorage.defaultSlotIds,
@@ -36,8 +40,56 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _myPageFuture = _memberApi.getMyPage();
+    _homeDataFuture = _loadHomeData();
+    AccountRefreshNotifier.listenable.addListener(_refreshMyPage);
     _loadQuickMenuSetting();
+  }
+
+  @override
+  void dispose() {
+    AccountRefreshNotifier.listenable.removeListener(_refreshMyPage);
+    super.dispose();
+  }
+
+  void _refreshMyPage() {
+    if (!mounted) return;
+
+    setState(() {
+      _homeDataFuture = _loadHomeData();
+    });
+  }
+
+  Future<_HomeData> _loadHomeData() async {
+    final results = await Future.wait<dynamic>([
+      _memberApi.getMyPage(),
+      _accountApi.getMyAccounts(),
+    ]);
+
+    final mypage = results[0] as MyPageModel;
+    final accounts = results[1] as List<AccountModel>;
+
+    return _HomeData(
+      mypage: mypage,
+      primaryAccount: _selectPrimaryAccount(accounts),
+    );
+  }
+
+  AccountModel? _selectPrimaryAccount(List<AccountModel> accounts) {
+    for (final account in accounts) {
+      if (_isPrimaryAccount(account)) {
+        return account;
+      }
+    }
+
+    return null;
+  }
+
+  bool _isPrimaryAccount(AccountModel account) {
+    final purpose = account.accountPurpose?.toUpperCase();
+
+    return account.accountStatus == 'ACTIVE' &&
+        purpose != 'DEPOSIT' &&
+        purpose != 'SAVINGS';
   }
 
   Future<void> _loadQuickMenuSetting() async {
@@ -65,11 +117,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _goToProductList() {
-    Navigator.push(
+  Future<void> _goToProductList() async {
+    final joinCompleted = await Navigator.push<bool>(
       context,
       MaterialPageRoute(builder: (_) => const ProductListScreen()),
     );
+
+    if (joinCompleted == true) {
+      _refreshMyPage();
+    }
   }
 
   Future<void> _goToAccountOpening() async {
@@ -80,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result == true && mounted) {
       setState(() {
-        _myPageFuture = _memberApi.getMyPage();
+        _homeDataFuture = _loadHomeData();
       });
     }
   }
@@ -349,8 +405,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBalanceCard(MyPageModel mypage, String displayName) {
-    if (mypage.accountCount == 0) {
+  Widget _buildBalanceCard(AccountModel? primaryAccount, String displayName) {
+    if (primaryAccount == null) {
       return Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(horizontal: 22),
@@ -451,7 +507,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '${_formatMoney(mypage.totalBalance)}원',
+                  '${_formatMoney(primaryAccount.balance)}원',
                   style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w900,
@@ -960,7 +1016,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHomeContent(MyPageModel mypage) {
+  Widget _buildHomeContent(_HomeData homeData) {
+    final mypage = homeData.mypage;
     final displayName = mypage.memberName.isNotEmpty
         ? mypage.memberName
         : widget.memberName;
@@ -973,7 +1030,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 _buildTopHeader(displayName),
                 const SizedBox(height: 10),
-                _buildBalanceCard(mypage, displayName),
+                _buildBalanceCard(homeData.primaryAccount, displayName),
                 _buildSectionTitle(
                   title: '빠른 메뉴',
                   actionText: '편집',
@@ -1036,7 +1093,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    _myPageFuture = _memberApi.getMyPage();
+                    _homeDataFuture = _loadHomeData();
                   });
                 },
                 child: const Text('다시 시도'),
@@ -1053,8 +1110,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: FutureBuilder<MyPageModel>(
-          future: _myPageFuture,
+        child: FutureBuilder<_HomeData>(
+          future: _homeDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -1076,6 +1133,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class _HomeData {
+  final MyPageModel mypage;
+  final AccountModel? primaryAccount;
+
+  const _HomeData({required this.mypage, required this.primaryAccount});
 }
 
 class _QuickMenuItem {

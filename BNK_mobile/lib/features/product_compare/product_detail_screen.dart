@@ -7,6 +7,7 @@ import '../../data/services/product_join_api.dart';
 import '../account_opening/account_opening_screen.dart';
 import '../auth/login_screen.dart';
 import 'product_join_screen.dart';
+import 'product_list_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final ProductModel product;
@@ -73,9 +74,9 @@ class ProductDetailScreen extends StatelessWidget {
 
         if (!context.mounted) return;
 
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const AccountOpeningScreen()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const AccountOpeningScreen()));
         return;
       }
 
@@ -89,11 +90,21 @@ class ProductDetailScreen extends StatelessWidget {
         return;
       }
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => ProductJoinScreen(product: product),
-        ),
+      final joinCompleted = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(builder: (_) => ProductJoinScreen(product: product)),
       );
+
+      if (joinCompleted == true && context.mounted) {
+        final navigator = Navigator.of(context);
+
+        if (navigator.canPop()) {
+          navigator.pop(true);
+        } else {
+          navigator.pushReplacement(
+            MaterialPageRoute(builder: (_) => const ProductListScreen()),
+          );
+        }
+      }
     } catch (error) {
       if (!context.mounted) return;
 

@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/events/account_refresh_notifier.dart';
 import '../../data/models/account_model.dart';
 import '../../data/models/product_join_status_model.dart';
 import '../../data/models/product_model.dart';
@@ -12,7 +13,6 @@ import '../../data/models/product_terms_images_model.dart';
 import '../../data/services/product_join_api.dart';
 import '../account/account_list_screen.dart';
 import '../account_opening/account_opening_screen.dart';
-import 'product_list_screen.dart';
 
 class ProductJoinScreen extends StatefulWidget {
   final ProductModel product;
@@ -210,10 +210,8 @@ class _ProductJoinScreenState extends State<ProductJoinScreen> {
         _securityStep = false;
       });
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const ProductListScreen()),
-        (route) => false,
-      );
+      AccountRefreshNotifier.notifyChanged();
+      Navigator.of(context).pop(true);
     } catch (error) {
       _showMessage(error.toString().replaceFirst('Exception: ', ''));
     } finally {

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../data/models/product_model.dart';
+import '../../data/services/auth_api.dart';
 import '../../data/services/product_api.dart';
+import '../branch/branch_map_screen.dart';
+import '../home/home_screen.dart';
+import '../mypage/mypage_screen.dart';
 import 'product_ai_recommend_screen.dart';
 import 'product_compare_screen.dart';
 import 'product_detail_screen.dart';
@@ -18,6 +22,7 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final ProductApi _productApi = ProductApi();
+  final AuthApi _authApi = AuthApi();
 
   late Future<List<ProductModel>> _productsFuture;
 
@@ -31,12 +36,66 @@ class _ProductListScreenState extends State<ProductListScreen> {
     _productsFuture = _productApi.getProducts();
   }
 
-  void _goToDetail(ProductModel product) {
+  Future<void> _goToDetail(ProductModel product) async {
+    final joinCompleted = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (_) => ProductDetailScreen(product: product)),
+    );
+
+    if (joinCompleted == true && mounted) {
+      setState(() {
+        _selectedProducts.clear();
+        _productsFuture = _productApi.getProducts();
+      });
+    }
+  }
+
+  void _goToHome() {
+    final navigator = Navigator.of(context);
+
+    if (navigator.canPop()) {
+      navigator.popUntil((route) => route.isFirst);
+      return;
+    }
+
+    _replaceWithHome();
+  }
+
+  Future<void> _replaceWithHome() async {
+    try {
+      final member = await _authApi.getMe();
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(memberName: member.memberName),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      _showPreparingMessage(error.toString().replaceFirst('Exception: ', ''));
+    }
+  }
+
+  void _goToBranchMap() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => ProductDetailScreen(product: product),
-      ),
+      MaterialPageRoute(builder: (_) => const BranchMapScreen()),
+    );
+  }
+
+  void _goToMyPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const MyPageScreen()),
+    );
+  }
+
+  void _showPreparingMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -44,22 +103,20 @@ class _ProductListScreenState extends State<ProductListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProductAiRecommendScreen(
-          products: products,
-        ),
+        builder: (_) => ProductAiRecommendScreen(products: products),
       ),
     );
   }
 
   void _toggleProduct(ProductModel product) {
     final alreadySelected = _selectedProducts.any(
-          (item) => item.productNo == product.productNo,
+      (item) => item.productNo == product.productNo,
     );
 
     if (alreadySelected) {
       setState(() {
         _selectedProducts.removeWhere(
-              (item) => item.productNo == product.productNo,
+          (item) => item.productNo == product.productNo,
         );
       });
       return;
@@ -244,10 +301,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
-  Widget _buildFilterChip({
-    required String label,
-    required String value,
-  }) {
+  Widget _buildFilterChip({required String label, required String value}) {
     final selected = _selectedType == value;
 
     return InkWell(
@@ -304,7 +358,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             const SizedBox(height: 14),
             ...filteredProducts.map((product) {
               final selected = _selectedProducts.any(
-                    (item) => item.productNo == product.productNo,
+                (item) => item.productNo == product.productNo,
               );
 
               return ProductCard(
@@ -389,6 +443,98 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
+  Widget _buildMainNavigation() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(18, 8, 18, 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildMainNavigationItem(
+            title: '홈',
+            icon: Icons.home_rounded,
+            selected: false,
+            onTap: _goToHome,
+          ),
+          _buildMainNavigationItem(
+            title: '상품',
+            icon: Icons.savings_outlined,
+            selected: true,
+            onTap: () {},
+          ),
+          _buildMainNavigationItem(
+            title: '영업점',
+            icon: Icons.location_on_outlined,
+            selected: false,
+            onTap: _goToBranchMap,
+          ),
+          _buildMainNavigationItem(
+            title: '마이',
+            icon: Icons.person_outline_rounded,
+            selected: false,
+            onTap: _goToMyPage,
+          ),
+          _buildMainNavigationItem(
+            title: '전체',
+            icon: Icons.menu_rounded,
+            selected: false,
+            onTap: () {
+              _showPreparingMessage('전체 메뉴는 이후 연결 예정입니다.');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainNavigationItem({
+    required String title,
+    required IconData icon,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: SizedBox(
+        width: 54,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 23,
+              color: selected ? AppColors.primaryRed : AppColors.textSecondary,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: selected
+                    ? AppColors.primaryRed
+                    : AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -397,10 +543,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
         foregroundColor: AppColors.textPrimary,
-        title: const Text(
-          '상품',
-          style: TextStyle(fontWeight: FontWeight.w900),
-        ),
+        actions: [
+          IconButton(
+            tooltip: '홈',
+            icon: const Icon(Icons.home_rounded),
+            onPressed: _goToHome,
+          ),
+        ],
+        title: const Text('상품', style: TextStyle(fontWeight: FontWeight.w900)),
       ),
       body: FutureBuilder<List<ProductModel>>(
         future: _productsFuture,
@@ -424,11 +574,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
           return _buildList(products);
         },
       ),
-      bottomNavigationBar: CompareBottomPanel(
-        selectedProducts: _selectedProducts,
-        onCompareTap: _goToCompare,
-        onClearTap: _clearSelectedProducts,
-      ),
+      bottomNavigationBar: _selectedProducts.isEmpty
+          ? _buildMainNavigation()
+          : CompareBottomPanel(
+              selectedProducts: _selectedProducts,
+              onCompareTap: _goToCompare,
+              onClearTap: _clearSelectedProducts,
+            ),
     );
   }
 }

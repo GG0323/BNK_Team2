@@ -4,6 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../data/models/community_board_model.dart';
 import '../../data/models/community_reply_model.dart';
 import '../../data/services/community_api.dart';
+import 'community_board_write_screen.dart';
 
 class CommunityBoardTab extends StatefulWidget {
   const CommunityBoardTab({super.key});
@@ -44,84 +45,11 @@ class _CommunityBoardTabState extends State<CommunityBoardTab> {
     });
   }
 
-  Future<void> _openWriteDialog() async {
-    final titleController = TextEditingController();
-    final contentController = TextEditingController();
-
-    final created = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        final bottomInset = MediaQuery.of(dialogContext).viewInsets.bottom;
-
-        return Padding(
-          padding: EdgeInsets.only(bottom: bottomInset),
-          child: AlertDialog(
-            scrollable: true,
-            insetPadding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 24,
-            ),
-            title: const Text('게시글 작성'),
-            content: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: titleController,
-                    decoration: const InputDecoration(labelText: '제목'),
-                    maxLength: 80,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  TextField(
-                    controller: contentController,
-                    decoration: const InputDecoration(labelText: '내용'),
-                    keyboardType: TextInputType.multiline,
-                    minLines: 3,
-                    maxLines: 5,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: const Text('취소'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await _communityApi.createBoard(
-                      title: titleController.text.trim(),
-                      content: contentController.text.trim(),
-                    );
-
-                    if (dialogContext.mounted) {
-                      Navigator.pop(dialogContext, true);
-                    }
-                  } catch (error) {
-                    if (dialogContext.mounted) {
-                      ScaffoldMessenger.of(dialogContext).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            error.toString().replaceFirst('Exception: ', ''),
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    }
-                  }
-                },
-                child: const Text('등록'),
-              ),
-            ],
-          ),
-        );
-      },
+  Future<void> _openWriteScreen() async {
+    final created = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (_) => const CommunityBoardWriteScreen()),
     );
-
-    titleController.dispose();
-    contentController.dispose();
 
     if (created == true) {
       _refresh();
@@ -193,7 +121,7 @@ class _CommunityBoardTabState extends State<CommunityBoardTab> {
               const SizedBox(width: 8),
               IconButton.filled(
                 tooltip: '글쓰기',
-                onPressed: _openWriteDialog,
+                onPressed: _openWriteScreen,
                 icon: const Icon(Icons.edit_outlined),
               ),
             ],
@@ -241,7 +169,7 @@ class _CommunityBoardTabState extends State<CommunityBoardTab> {
                   icon: Icons.forum_outlined,
                   message: '아직 게시글이 없습니다.',
                   actionText: '첫 글 작성',
-                  onActionTap: _openWriteDialog,
+                  onActionTap: _openWriteScreen,
                 );
               }
 
