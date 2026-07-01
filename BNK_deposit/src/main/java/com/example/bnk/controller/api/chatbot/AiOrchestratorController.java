@@ -17,7 +17,6 @@ import com.example.bnk.service.chatbot.AiRoutingService;
 
 @RestController
 @RequestMapping("/api/orchestrator")
-
 @CrossOrigin(
         originPatterns = {
                 "http://localhost:*",
@@ -40,7 +39,7 @@ public class AiOrchestratorController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${fastapi.base-url:http://localhost:8000}")
+    @Value("${fastapi.base-url:http://192.168.0.87:8000}")
     private String fastApiBaseUrl;
 
     @PostMapping("/chat")
