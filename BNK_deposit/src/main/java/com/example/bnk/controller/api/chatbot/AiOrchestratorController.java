@@ -104,7 +104,7 @@ public class AiOrchestratorController {
     }
 
     private String fastApiUrl(String path) {
-        String baseUrl = fastApiBaseUrl == null ? "http://localhost:8000" : fastApiBaseUrl.trim();
+        String baseUrl = fastApiBaseUrl == null ? "http://192.168.0.87:8000" : fastApiBaseUrl.trim();
 
         if (baseUrl.endsWith("/")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
