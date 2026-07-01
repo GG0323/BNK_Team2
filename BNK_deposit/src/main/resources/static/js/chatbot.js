@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     initChatbotTrail();
     initChatbotMessageEngine();
-    initBiniHeroGuide();
-	initBiniExpressionEasterEgg();
 });
 
 function initChatbotTrail() {

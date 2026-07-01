@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', function () {
+    initBiniHeroGuide();
+    initBiniExpressionEasterEgg();
+});
+
 function openCalculatorPopup() {
     const width = 670;
     const height = 980;
